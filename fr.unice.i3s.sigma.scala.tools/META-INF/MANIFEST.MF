@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Sigma Scala Tools
-Bundle-SymbolicName: fr.unice.i3s.sigma.support.scala.tools
+Bundle-SymbolicName: fr.unice.i3s.sigma.scala.tools
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: SALTY Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
