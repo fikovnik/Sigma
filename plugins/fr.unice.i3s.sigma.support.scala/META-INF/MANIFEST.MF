@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SIGMA Scala Support
+Bundle-SymbolicName: fr.unice.i3s.sigma.scala;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: I3S laboratory
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.scala-ide.scala.library;bundle-version="2.9.2",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.emf.ecore;bundle-version="2.7.0",
+ fr.unice.i3s.sigma.core;bundle-version="1.0.0";visibility:=reexport
+Export-Package: fr.unice.i3s.sigma.scala,
+ fr.unice.i3s.sigma.scala.utils
+Bundle-ClassPath: .
+Eclipse-BuddyPolicy: dependent

@@ -1,0 +1,77 @@
+delegatesTemplateMapping ::= [
+  "SigmaScalaInvocationDelegate" : "invocationDelegate",
+  "SigmaScalaSettingDelegate" : "settingDelegate",
+  "SigmaScalaValiationDelegate" : "validationDelegate",
+  default : "UnknowTemplate"
+]
+
+template(d) ::= <<
+package <d.package>
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.Buffer
+
+import fr.unice.i3s.sigma.support.scala.utils._
+
+/**
+  * Delegate helper object for EMF EClass {@code <d.class.name>}.
+  *
+  * @see <d.class.name>
+  */
+object <d.name> {
+  <d.content:{e | <e:(delegatesTemplateMapping.(e.class.simpleName))()>}; separator="\n\n">	
+}
+
+>>
+
+invocationDelegate(d) ::= <<
+/**
+  * Invocation delegate for the {@code <d.target.name>(<d.target.eParameters:param(); separator=",">)},
+  * an operation defined in {@code <d.target.eContainingClass.name>} class.
+  *
+  * @param self containing class
+  * @returns a value that will subsequently returned by the original {@code <d.target.name>} operation
+  * @see <d.target.eContainingClass.name>#<d.target.name>(<d.target.eParameters:param(); separator=",">)
+  */
+<d.expectedMethodSignature> = {
+  // TODO: implement
+  throw new UnsupportedOperationException("Invocation delegate for '<d.target.name>' operation has not been implemented yet.")
+}
+>>
+
+settingDelegate(d) ::= <<
+/**
+  * Setting delegate for the {@code <d.target.name>},
+  * a property defined in {@code <d.target.eContainingClass.name>} class.
+  *
+  * @param self containing class
+  * @returns a value that will subsequently returned by the original {@code <d.target.name>} property
+  * @see <d.target.eContainingClass.name>#<d.target.name>
+  */
+<d.expectedMethodSignature> = {
+  // TODO: implement
+  throw new UnsupportedOperationException("Setting delegate for '<d.target.name>' property has not been implemented yet.")
+}
+>>
+
+validationDelegate(d) ::= <<
+/**
+  * Validation delegate for the {@code <d.constraint>} constraint defined in {@code <d.target.name>}.
+  *
+  * @param self containing class
+  * @returns {@code true} if the constraint {@code <d.constraint>} is satisfied on {@code self}
+  */
+<d.expectedMethodSignature> = {
+  // TODO: implement
+  throw new UnsupportedOperationException("Validation delegate for '<d.constraint>' invariant has not been implemented yet.")
+}
+>>
+
+returnTypeMapping ::= [
+    "EBoolean" : "false",
+    default : "null"
+]
+
+param(e) ::= "<if (e.eType.instanceClass)><e.eType.instanceClass.simpleName><else><e.eType.name><endif>"
+
+returnType(e) ::= "<if (e.required || e.many)><returnTypeMapping.(e.eType.name)><else>None<endif>"

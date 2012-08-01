@@ -12,8 +12,8 @@
 	# these are optional
 	# $Nav->setLinkList(array());
 
-	$pageAuthor		= "John Doe and many others";
-	$pageTitle 		= "My User's Guide";
+	$pageAuthor		= "Filip Křikava and Philippe Collet";
+	$pageTitle 		= "Sigma Documentation";
 
 	$App->AddExtraHtmlHeader('<link rel="stylesheet" type="text/css" href="code.css"/>' . "\n\t");
 	$App->AddExtraHtmlHeader('<link rel="stylesheet" type="text/css" href="book.css"/>' . "\n\t");

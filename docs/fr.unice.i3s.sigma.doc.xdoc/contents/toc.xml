@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<toc topic="contents/00-Main.html" label="My User's Guide" >
-	<topic href="contents/01-Introduction.html#Introduction" label="Introduction" >
-		<topic href="contents/01-Introduction.html#Links" label="References" >
-		</topic>
-		<topic href="contents/01-Introduction.html#CodeSections" label="Code Sections" >
-		</topic>
-		<topic href="contents/01-Introduction.html#Lists" label="Lists and Tables" >
-		</topic>
-		<topic href="contents/01-Introduction.html#Tables" label="Tables" >
-		</topic>
-		<topic href="contents/01-Introduction.html#TODO" label="TODO" >
-		</topic>
-		<topic href="contents/01-Introduction.html#Images" label="Images" >
-		</topic>
+<toc topic="contents/sigma.html" label="Sigma Documentation" >
+	<topic href="contents/sigma_2.html#Sigma%20Documentation_2" label="Introduction" >
 	</topic>
-	<topic href="contents/02-GettingStarted.html#GettingStarted" label="Getting Started" >
+	<topic href="contents/sigma_3.html#Sigma%20Documentation_3" label="Reference Documentation" >
+		<topic href="contents/sigma_3.html#overview" label="Overview" >
+			<topic href="contents/sigma_3.html#overview_4" label="Basics" >
+				<topic href="contents/sigma_3.html#overview_4_2" label="Extensibility" >
+				</topic>
+				<topic href="contents/sigma_3.html#overview_4_3" label="Reusability" >
+				</topic>
+				<topic href="contents/sigma_3.html#overview_4_4" label="Handling Undefined and Invalid Values" >
+				</topic>
+				<topic href="contents/sigma_3.html#overview_4_5" label="Type Casts" >
+				</topic>
+			</topic>
+			<topic href="contents/sigma_3.html#structinv" label="Structural Invariants" >
+			</topic>
+			<topic href="contents/sigma_3.html#overview_6" label="Drawbacks" >
+			</topic>
+			<topic href="contents/sigma_3.html#overview_7" label="Why Scala?" >
+			</topic>
+		</topic>
 	</topic>
 </toc>

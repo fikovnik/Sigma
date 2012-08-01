@@ -1,0 +1,32 @@
+// Following are the Scala compatible delegates
+<%for (GenFeature genFeature : (isImplementation ? genClass.getImplementedGenFeatures() : genClass.getDeclaredGenFeatures())) {%>
+<%if (genFeature.isGet() && (isImplementation || !genFeature.isSuppressedGetVisibility())) {%>
+
+  /**
+   * Scala compatible getter method for {@code <%=genFeature.getName()%>} property,
+   * delegating to {@code <%=genFeature.getGetAccessor()%>()}
+   *
+   * @return the value of the '<em><%=genFeature.getFormattedName()%></em>' <%=genFeature.getFeatureKind()%>.
+   * @see #<%=genFeature.getGetAccessor()%>
+   * @generated
+   */
+<% boolean doOption = !genFeature.getEcoreFeature().isRequired() && !genFeature.getEcoreFeature().isMany(); %>
+<%if (!isImplementation) {%>
+  <% if (doOption) { %>
+  <%=genModel.getImportedName("scala.Option")%><<%=genFeature.getImportedType(genClass)%>>
+  <%} else {%>
+  <%=genFeature.getImportedType(genClass)%>
+  <%}%> <%=genFeature.getName()%>();
+<%} else {%>
+  <% if (doOption) { %>
+  public <%=genModel.getImportedName("scala.Option")%><<%=genFeature.getImportedType(genClass)%>> <%=genFeature.getName()%><%if (genClass.hasCollidingGetAccessorOperation(genFeature)) {%>_<%}%>() {
+      return <%=genModel.getImportedName("scala.Option")%>.<<%=genFeature.getImportedType(genClass)%>>apply(<%=genFeature.getGetAccessor()%>());
+  }
+  <%} else {%>
+  public <%=genFeature.getImportedType(genClass)%> <%=genFeature.getName()%><%if (genClass.hasCollidingGetAccessorOperation(genFeature)) {%>_<%}%>() {
+      return <%=genFeature.getGetAccessor()%>();
+  }
+<%} // else %>  
+<%} // else %> 
+<%} // if %>
+<%} // for %>
