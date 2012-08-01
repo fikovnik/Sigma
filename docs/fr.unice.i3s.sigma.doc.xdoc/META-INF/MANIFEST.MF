@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: fr.unice.i3s.sigma.doc.xdoc
+Bundle-SymbolicName: fr.unice.i3s.sigma.doc.xdoc;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: My Company
+Require-Bundle: org.eclipse.help
