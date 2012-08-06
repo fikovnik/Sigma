@@ -5,8 +5,8 @@ Bundle-SymbolicName: fr.unice.i3s.sigma.scala.tools
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: SALTY Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: fr.unice.i3s.sigma.support.scala;bundle-version="1.0.0",
- org.scala-ide.scala.library;bundle-version="2.9.2",
+Require-Bundle: org.scala-ide.scala.library;bundle-version="2.9.2",
+ fr.unice.i3s.sigma.scala;bundle-version="1.0.0",
  org.antlr.stringtemplate;bundle-version="4.0.2",
  org.eclipse.emf.ecore;bundle-version="2.7.0",
  org.eclipse.emf.ecore.xmi;bundle-version="2.7.0",

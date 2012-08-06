@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ANTLR StringTemplate
+Bundle-SymbolicName: org.antlr.stringtemplate
+Bundle-Version: 4.0.4
+Bundle-ClassPath: target/antlr-2.7.7.jar,
+ target/antlr-runtime-3.3.jar,
+ target/ST4-4.0.4.jar,
+ target/stringtemplate-3.2.1.jar
+Bundle-Vendor: I3S Laboratory
+Import-Package: org.stringtemplate.v4,
+ org.stringtemplate.v4.compiler,
+ org.stringtemplate.v4.debug,
+ org.stringtemplate.v4.gui,
+ org.stringtemplate.v4.misc
+Export-Package: org.stringtemplate.v4;version="4.0.4",
+ org.stringtemplate.v4.compiler;version="4.0.4",
+ org.stringtemplate.v4.debug;version="4.0.4",
+ org.stringtemplate.v4.gui;version="4.0.4",
+ org.stringtemplate.v4.misc;version="4.0.4"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

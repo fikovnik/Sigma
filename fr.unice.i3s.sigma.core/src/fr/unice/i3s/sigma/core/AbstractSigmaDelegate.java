@@ -4,7 +4,6 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.transform;
-import static java.util.Locale.ENGLISH;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -189,14 +188,4 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 	protected abstract boolean checkDelegateMethod(Method input);
 
 	protected abstract String getExpectedMethodSignature();
-
-	/**
-	 * Returns a String which capitalizes the first letter of the string.
-	 */
-	public static String capitalize(String name) {
-		if (name == null || name.length() == 0) {
-			return name;
-		}
-		return name.substring(0, 1).toUpperCase(ENGLISH) + name.substring(1);
-	}
 }

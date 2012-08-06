@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>fr.unice.i3s.sigma</groupId>
+	<artifactId>fr.unice.i3s.sigma.releng</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<tycho.version>0.15.0</tycho.version>
+		<scala.version>2.9.2</scala.version>
+	</properties>
+
+	<modules>
+		<!-- SIGMA modules -->
+		<module>../fr.unice.i3s.sigma.core</module>
+		<module>../fr.unice.i3s.sigma.core.tests</module>
+		<module>../fr.unice.i3s.sigma.scala</module>
+		<module>../fr.unice.i3s.sigma.scala.tools</module>
+		<module>../fr.unice.i3s.sigma.scala.tests</module>
+		<module>../fr.unice.i3s.sigma.target-platform</module>
+
+		<!-- 3rd party modules -->
+		<module>../org.apache.commons.lang3</module>
+		<module>../org.antlr.stringtemplate</module>
+		<module>../org.scalatest.scalatest_2.9.2</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.5</version>
+					<executions>
+						<execution>
+							<id>copy-dependencies</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}</outputDirectory>
+							</configuration>
+						</execution>
+						<execution>
+							<id>copy-dependencie-sources</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}</outputDirectory>
+								<classifier>sources</classifier>
+								<failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+<!-- 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.5</version>
+					<configuration>
+						<filesets>
+							<fileset>
+								<directory>.</directory>
+								<includes>
+									<include>*.jar</include>
+								</includes>
+								<followSymlinks>false</followSymlinks>
+							</fileset>
+						</filesets>
+					</configuration>
+				</plugin>
+ -->			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<excludeResources>
+						<excludeResource>**/*.scala</excludeResource>
+					</excludeResources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<resolver>p2</resolver>
+					<pomDependencies>consider</pomDependencies>
+					<target>
+						<artifact>
+							<groupId>fr.unice.i3s.sigma</groupId>
+							<artifactId>fr.unice.i3s.sigma.target-platform</artifactId>
+							<version>1.0.0-SNAPSHOT</version>
+							<classifier>e37</classifier>
+						</artifact>
+					</target>
+					<ignoreTychoRepositories>true</ignoreTychoRepositories>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- configuration of the scala compiler -->
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<jvmArgs>
+						<jvmArg>-Xms512m</jvmArg>
+						<jvmArg>-Xmx1024m</jvmArg>
+					</jvmArgs>
+					<scalaVersion>${scala.version}</scalaVersion>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

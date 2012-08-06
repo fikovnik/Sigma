@@ -125,7 +125,7 @@ public class SigmaInvocationDelegate extends AbstractSigmaDelegate<EOperation>
 	}
 
 	protected String getDelegateMethodName() {
-		return "invoke" + capitalize(target.getName());
+		return "invoke" + Utils.capitalize(target.getName());
 	}
 
 }

@@ -98,9 +98,9 @@ public class SigmaSettingDelegate extends
 
 		if (retType.getClassifierID() == EcorePackage.EBOOLEAN
 				|| retType.getClassifierID() == EcorePackage.EBOOLEAN_OBJECT) {
-			return "is" + capitalize(target.getName());
+			return "is" + Utils.capitalize(target.getName());
 		} else {
-			return "get" + capitalize(target.getName());
+			return "get" + Utils.capitalize(target.getName());
 		}
 	}
 

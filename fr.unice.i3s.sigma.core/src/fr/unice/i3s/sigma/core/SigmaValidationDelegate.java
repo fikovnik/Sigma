@@ -39,7 +39,7 @@ public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> 
 
 	@Override
 	protected String getDelegateMethodName() {
-		return "validate" + capitalize(annotationDetailKey);
+		return "validate" + Utils.capitalize(annotationDetailKey);
 	}
 
 	@Override

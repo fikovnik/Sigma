@@ -15,20 +15,20 @@ import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.mapAsScalaMap
 import tools._
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
-import fr.unice.i3s.sigma.support.scala.SigmaScalaDelegateDomain
+import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
 
 object AnnotationGenerator extends App {
 
-  def eClassConstraints(clazz : EClass) : Array[String] = {
+  def eClassConstraints(clazz: EClass): Array[String] = {
     Option(clazz.getEAnnotation(EcorePackage.eINSTANCE.getNsURI)).flatMap { a =>
-      Option(a.getDetails.get("constraints")).map { c => 
-        for (e <- c.split(" ")) 
+      Option(a.getDetails.get("constraints")).map { c =>
+        for (e <- c.split(" "))
           yield e.trim
       }
     }.getOrElse(Array())
   }
 
-  def addEAnnotationDetail(e : EModelElement, source : String, detail : Option[(String, String)] = None) {
+  def addEAnnotationDetail(e: EModelElement, source: String, detail: Option[(String, String)] = None) {
     var a = e.getEAnnotation(source)
     if (a == null) {
       a = EcoreFactory.eINSTANCE.createEAnnotation()
@@ -37,24 +37,24 @@ object AnnotationGenerator extends App {
     }
 
     detail match {
-      case Some((k,v)) if (a.getDetails.containsKey(k)) => 
+      case Some((k, v)) if (a.getDetails.containsKey(k)) =>
         a.getDetails.removeKey(k)
-        a.getDetails.put(k,v)
-      case Some((k,v)) => 
-        a.getDetails.put(k,v)
-      case _ => 		  
+        a.getDetails.put(k, v)
+      case Some((k, v)) =>
+        a.getDetails.put(k, v)
+      case _ =>
     }
   }
 
   val delegateURI = SigmaScalaDelegateDomain.DELEGATE_URI
-  val addSigmaAnnotationDetail = addEAnnotationDetail(_ : EModelElement, delegateURI, _ : Option[(String, String)])
+  val addSigmaAnnotationDetail = addEAnnotationDetail(_: EModelElement, delegateURI, _: Option[(String, String)])
 
-  def processEClass(clazz : EClass, pkgName : String) {
+  def processEClass(clazz: EClass, pkgName: String) {
     val d = pkgName + "." + clazz.getName + "Delegate"
-    
+
     clazz.getEAnnotations --= clazz.getEAnnotations.filter(_.getSource == delegateURI)
-    addSigmaAnnotationDetail(clazz, Some(SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY,d))
-    
+    addSigmaAnnotationDetail(clazz, Some(SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY, d))
+
     for (e <- clazz.getEStructuralFeatures) {
       if (e.isDerived) {
         e.getEAnnotations --= e.getEAnnotations.filter(_.getSource == delegateURI)
@@ -82,10 +82,10 @@ object AnnotationGenerator extends App {
   for (genPkg <- genModel.getGenPackages) {
     val pkg = genPkg.getEcorePackage
     val pkgFQN = genPkg.getBasePackage + "." + genPkg.getPackageName + ".delegates"
-    
+
     Option(pkg.getEAnnotation(EcorePackage.eINSTANCE.getNsURI)).map { a =>
       val details = a.getDetails
-      
+
       if (!details.containsKey("invocationDelegates")) {
         details.put("invocationDelegates", delegateURI)
       }
@@ -99,7 +99,7 @@ object AnnotationGenerator extends App {
 
     for (clazz <- pkg.getEClassifiers) {
       clazz match {
-        case c : EClass => processEClass(c, pkgFQN)
+        case c: EClass => processEClass(c, pkgFQN)
         case _ =>
       }
     }

@@ -1,8 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry path="target/classes" kind="output"/>
-  <classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
-  <classpathentry path="org.eclipse.pde.core.requiredPlugins" kind="con"/>
-  <classpathentry sourcepath="M2_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1-sources.jar" path="M2_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar" kind="var"/>
-  <classpathentry sourcepath="/Users/krikava/.m2/repository/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1-sources.jar" path="target/pax-eclipse" exported="true" kind="lib"/>
-  <classpathentry sourcepath="/Users/krikava/.m2/repository/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1-sources.jar" path="target/pax-eclipse/commons-lang3-3.1.jar" exported="true" kind="lib"/>
+	<classpathentry exported="true" kind="lib" path="target/commons-lang3-3.1.jar" sourcepath="target/commons-lang3-3.1-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

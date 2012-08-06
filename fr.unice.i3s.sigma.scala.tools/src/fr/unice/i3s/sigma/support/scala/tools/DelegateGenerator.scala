@@ -21,10 +21,10 @@ import org.eclipse.emf.ecore.EcorePackage
 import org.stringtemplate.v4.STGroupFile
 import fr.unice.i3s.sigma.core.AbstractSigmaDelegate
 import fr.unice.i3s.sigma.core.SigmaDelegateDomain._
-import fr.unice.i3s.sigma.support.scala.SigmaScalaDelegateDomain
-import fr.unice.i3s.sigma.support.scala.SigmaScalaSettingDelegate
-import fr.unice.i3s.sigma.support.scala.SigmaScalaInvocationDelegate
-import fr.unice.i3s.sigma.support.scala.SigmaScalaValiationDelegate
+import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
+import fr.unice.i3s.sigma.scala.SigmaScalaSettingDelegate
+import fr.unice.i3s.sigma.scala.SigmaScalaInvocationDelegate
+import fr.unice.i3s.sigma.scala.SigmaScalaValiationDelegate
 import org.eclipse.emf.ecore.EAnnotation
 import java.io.File
 import com.google.common.io.Files
@@ -39,12 +39,12 @@ import tools._
 
 object DelegateGenerator extends App {
 
-  def delegateClazz(e : EModelElement) = {
+  def delegateClazz(e: EModelElement) = {
     Option(e.getEAnnotation(SigmaScalaDelegateDomain.DELEGATE_URI)) map { a =>
       Option(e match {
-        case _ : EAttribute => a.getDetails().get(SETTER_CONSTRAINT_KEY)
-        case _ : EReference => a.getDetails().get(SETTER_CONSTRAINT_KEY)
-        case _ : EOperation => a.getDetails().get(INVOCATION_CONSTRAINT_KEY)
+        case _: EAttribute => a.getDetails().get(SETTER_CONSTRAINT_KEY)
+        case _: EReference => a.getDetails().get(SETTER_CONSTRAINT_KEY)
+        case _: EOperation => a.getDetails().get(INVOCATION_CONSTRAINT_KEY)
       }).orElse(Option(a.getDetails.get(DELEGATE_CONSTRAINT_KEY)))
     }
   }
@@ -67,10 +67,10 @@ object DelegateGenerator extends App {
 
   val stg = new STGroupFile("fr/unice/i3s/sigma/support/scala/tools/delegates.stg")
   stg.setListener(new STErrorListener {
-    def compileTimeError(msg : STMessage) { println(msg) }
-    def runTimeError(msg : STMessage) { println(msg) }
-    def IOError(msg : STMessage) { println(msg) }
-    def internalError(msg : STMessage) { println(msg) }
+    def compileTimeError(msg: STMessage) { println(msg) }
+    def runTimeError(msg: STMessage) { println(msg) }
+    def IOError(msg: STMessage) { println(msg) }
+    def internalError(msg: STMessage) { println(msg) }
   })
 
   for (genPkg <- genModel.getGenPackages) {
@@ -85,7 +85,7 @@ object DelegateGenerator extends App {
       scala.sys.exit(1)
     }
 
-    for (clazz <- pkg.getEClassifiers() collect { case c : EClass => c }) {
+    for (clazz <- pkg.getEClassifiers() collect { case c: EClass => c }) {
       val content = collection.mutable.Buffer[AbstractSigmaDelegate[_]]()
 
       val features = if (generateAll)
@@ -97,8 +97,8 @@ object DelegateGenerator extends App {
         delegateClazz(e) match {
           case Some(o) => {
             content += (e match {
-              case e : EStructuralFeature => new SigmaScalaSettingDelegate(e, domain)
-              case e : EOperation => new SigmaScalaInvocationDelegate(e, domain)
+              case e: EStructuralFeature => new SigmaScalaSettingDelegate(e, domain)
+              case e: EOperation => new SigmaScalaInvocationDelegate(e, domain)
               case _ => throw new RuntimeException()
             })
           }

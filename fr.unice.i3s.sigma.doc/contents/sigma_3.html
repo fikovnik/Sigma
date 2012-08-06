@@ -191,9 +191,9 @@ When evaluated, some expressions in OCL can result into invalid or undefined val
 Since neglecting them will lead to null pointer exceptions, we also need to handle these cases in Scala.
 </p>
 <p>
-In order to simplify the code we make use of the Scala <abbr title="scala.Option" >Option</abbr> class.
+In order to simplify the code we make use of the Scala <abbr title="" >@</abbr> <a class="srcLink" href="broken-link in org.eclipse.xtext.common.types.impl.JvmAnnotationTypeImpl@4acf7c4 (eProxyURI: platform:/resource/fr.unice.i3s.sigma.core.doc/xdoc/overview.xdoc#xtextLink_::0.0.3.0.3.2.2.1.0.1::0::/2)" title="View Source Code" >(src)</a> class.
 As the name suggests, it is just a simple abstract container that wraps around an instance of some type <span class="inlinecode">T</span> which represents an optional value.
-The two possible instances are <abbr title="scala.Some" >Some</abbr> and <abbr title="scala.None" >None</abbr> denoting whether there is an actual value for <span class="inlinecode">T</span>.
+The two possible instances are <abbr title="" >@</abbr> <a class="srcLink" href="broken-link in org.eclipse.xtext.common.types.impl.JvmAnnotationTypeImpl@756d19d1 (eProxyURI: platform:/resource/fr.unice.i3s.sigma.core.doc/xdoc/overview.xdoc#xtextLink_::0.0.3.0.3.2.2.1.0.5::0::/2)" title="View Source Code" >(src)</a> and <abbr title="" >@</abbr> <a class="srcLink" href="broken-link in org.eclipse.xtext.common.types.impl.JvmAnnotationTypeImpl@77b6d374 (eProxyURI: platform:/resource/fr.unice.i3s.sigma.core.doc/xdoc/overview.xdoc#xtextLink_::0.0.3.0.3.2.2.1.0.7::0::/2)" title="View Source Code" >(src)</a> denoting whether there is an actual value for <span class="inlinecode">T</span>.
 </p>
 <p>
 For instance, in the previous example, we checked if a name attribute is non empty string.
@@ -208,7 +208,7 @@ The EMF code generator does not make any difference between <span class="inlinec
 </div>
 
 %
-However, we can simply extend the EMF code generator dynamic templates and implicitly generate <abbr title="scala.Option" >Option</abbr> return type:
+However, we can simply extend the EMF code generator dynamic templates and implicitly generate <abbr title="" >@</abbr> <a class="srcLink" href="broken-link in org.eclipse.xtext.common.types.impl.JvmAnnotationTypeImpl@526c14f6 (eProxyURI: platform:/resource/fr.unice.i3s.sigma.core.doc/xdoc/overview.xdoc#xtextLink_::0.0.3.0.3.2.2.2.0.9::0::/2)" title="View Source Code" >(src)</a> return type:
 <div class="literallayout">
 <div class="incode">
 <p class="code">
@@ -222,7 +222,7 @@ However, we can simply extend the EMF code generator dynamic templates and impli
 Because we use a different name for getters (without the <span class="inlinecode">get</span>) the resulting class is still compatible with the rest of the EMF world.
 </p>
 <p>
-As the Scala documentation <a href="http://www.scala-lang.org/api/current/scala/Option.html">suggests</a> the most idiomatic way to use an <abbr title="scala.Option" >Option</abbr> instance is to treat it as a collection or monad, which results in a very concise and null pointer safe implementation:
+As the Scala documentation <a href="http://www.scala-lang.org/api/current/scala/Option.html">suggests</a> the most idiomatic way to use an <abbr title="" >@</abbr> <a class="srcLink" href="broken-link in org.eclipse.xtext.common.types.impl.JvmAnnotationTypeImpl@75d46211 (eProxyURI: platform:/resource/fr.unice.i3s.sigma.core.doc/xdoc/overview.xdoc#xtextLink_::0.0.3.0.3.2.2.3.0.3::0::/2)" title="View Source Code" >(src)</a> instance is to treat it as a collection or monad, which results in a very concise and null pointer safe implementation:
 <div class="literallayout">
 <div class="incode">
 <p class="code">
@@ -296,7 +296,7 @@ Therefore a function representing an invariant can return either:
 		</div>
 		</div>
 		
-		    In this case we use the <abbr title="scala.Option" >Option</abbr> construct to avoid using <span class="inlinecode">null</span> as a valid return value.
+		    In this case we use the <abbr title="" >@</abbr> <a class="srcLink" href="broken-link in org.eclipse.xtext.common.types.impl.JvmAnnotationTypeImpl@f783ebb (eProxyURI: platform:/resource/fr.unice.i3s.sigma.core.doc/xdoc/overview.xdoc#xtextLink_::0.0.3.1.2.1.0.1.0.1.0.0.0.3::0::/2)" title="View Source Code" >(src)</a> construct to avoid using <span class="inlinecode">null</span> as a valid return value.
 	</li>
 	<li>
 		An object encapsulating the additional details.
