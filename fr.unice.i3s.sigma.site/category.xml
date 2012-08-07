@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/fr.unice.i3s.sigma.feature_1.0.0.qualifier.jar" id="fr.unice.i3s.sigma.feature" version="1.0.0.qualifier">
+      <category name="fr.unice.i3s.sigma.category"/>
+   </feature>
+   <feature url="features/fr.unice.i3s.sigma.scala.feature_1.0.0.qualifier.jar" id="fr.unice.i3s.sigma.scala.feature" version="1.0.0.qualifier">
+      <category name="fr.unice.i3s.sigma.category"/>
+   </feature>
+   <category-def name="fr.unice.i3s.sigma.category" label="SIGMA"/>
+</site>

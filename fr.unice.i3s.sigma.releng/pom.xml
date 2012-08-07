@@ -22,6 +22,9 @@
 		<module>../fr.unice.i3s.sigma.scala.tools</module>
 		<module>../fr.unice.i3s.sigma.scala.tests</module>
 		<module>../fr.unice.i3s.sigma.target-platform</module>
+		<module>../fr.unice.i3s.sigma.feature</module>
+		<module>../fr.unice.i3s.sigma.scala.feature</module>
+		<module>../fr.unice.i3s.sigma.site</module>
 
 		<!-- 3rd party modules -->
 		<module>../org.apache.commons.lang3</module>
@@ -66,23 +69,12 @@
 						</execution>
 					</executions>
 				</plugin>
-<!-- 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.5</version>
-					<configuration>
-						<filesets>
-							<fileset>
-								<directory>.</directory>
-								<includes>
-									<include>*.jar</include>
-								</includes>
-								<followSymlinks>false</followSymlinks>
-							</fileset>
-						</filesets>
-					</configuration>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-repository-plugin</artifactId>
+					<version>${tycho.version}</version>
 				</plugin>
- -->			</plugins>
+			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
