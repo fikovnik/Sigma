@@ -35,7 +35,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.EObject
 import org.stringtemplate.v4.STErrorListener
 import org.stringtemplate.v4.misc.STMessage
-import tools._
 
 object DelegateGenerator extends App {
 
@@ -54,7 +53,7 @@ object DelegateGenerator extends App {
     scala.sys.exit(1)
   }
 
-  val (genModel, rs) = load[GenModel](args(0))
+  val (genModel, rs) = tools.load[GenModel](args(0))
   val targetDir = new File(args(1))
   val generateAll = if (args.length == 3) true else false
 
@@ -116,7 +115,7 @@ object DelegateGenerator extends App {
         val template = stg.getInstanceOf("template")
 
         template.addAggr("d.{package, class, name, content}",
-          pkgFQN, clazz, delegateName, bufferAsJavaList(content))
+          Array(pkgFQN, clazz, delegateName, bufferAsJavaList(content)))
 
         Files.write(template.render, new File(out, delegateName + ".scala"), Charsets.UTF_8)
         println("\t- Generated: " + delegateName);

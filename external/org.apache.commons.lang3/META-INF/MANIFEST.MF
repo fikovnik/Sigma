@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: krikava
+Build-Jdk: 1.6.0_33
+Export-Package: org.apache.commons.lang3;version="3.1.0",
+ org.apache.commons.lang3.builder;version="3.1.0",
+ org.apache.commons.lang3.concurrent;version="3.1.0",
+ org.apache.commons.lang3.event;version="3.1.0",
+ org.apache.commons.lang3.exception;version="3.1.0",
+ org.apache.commons.lang3.math;version="3.1.0",
+ org.apache.commons.lang3.mutable;version="3.1.0",
+ org.apache.commons.lang3.reflect;version="3.1.0",
+ org.apache.commons.lang3.text;version="3.1.0",
+ org.apache.commons.lang3.text.translate;version="3.1.0",
+ org.apache.commons.lang3.time;version="3.1.0",
+ org.apache.commons.lang3.tuple;version="3.1.0"
+Bundle-Vendor: I3S Laboratory
+Bundle-ClassPath: .
+Bundle-Version: 3.1.0
+Bundle-Name: Apache Commons Lang3
+Bundle-ManifestVersion: 2
+Import-Package: org.apache.commons.lang3.builder,
+ org.apache.commons.lang3.concurrent,
+ org.apache.commons.lang3.event,
+ org.apache.commons.lang3.exception,
+ org.apache.commons.lang3.math,
+ org.apache.commons.lang3.mutable,
+ org.apache.commons.lang3.reflect,
+ org.apache.commons.lang3.text,
+ org.apache.commons.lang3.text.translate,
+ org.apache.commons.lang3.time,
+ org.apache.commons.lang3.tuple
+Bundle-SymbolicName: org.apache.commons.lang3
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ScalaTest
 Bundle-SymbolicName: org.scalatest.scalatest_2.9.2
 Bundle-Version: 1.8
-Bundle-ClassPath: target/scalatest_2.9.2-1.8.jar
+Bundle-ClassPath: .
 Bundle-Vendor: I3S Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.scalatest;version="1.8";

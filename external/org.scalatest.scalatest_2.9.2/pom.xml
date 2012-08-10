@@ -5,28 +5,32 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>fr.unice.i3s.sigma</groupId>
-		<artifactId>fr.unice.i3s.sigma.releng</artifactId>
+		<groupId>fr.unice.i3s.sigma.external</groupId>
+		<artifactId>fr.unice.i3s.sigma.external.releng</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../fr.unice.i3s.sigma.releng</relativePath>
+		<relativePath>../fr.unice.i3s.sigma.external.releng</relativePath>
 	</parent>
 
-	<artifactId>org.antlr.stringtemplate</artifactId>
-	<version>4.0.4</version>
+	<artifactId>org.scalatest.scalatest_2.9.2</artifactId>
+	<version>1.8.0</version>
 	<packaging>eclipse-plugin</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>ST4</artifactId>
-			<version>4.0.4</version>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_2.9.2</artifactId>
+			<version>1.8</version>
 		</dependency>
-		</dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
+				<configuration>
+					<!-- exclude all optional transitive dependency -->
+					<excludeGroupIds>org.scala-lang,p2.eclipse-plugin</excludeGroupIds>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -14,60 +14,59 @@
 		<scala.version>2.9.2</scala.version>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>update-dependencies</id>
+			<activation>
+				<file>
+					<missing>../external/fr.unice.i3s.sigma.external.site/target/repository</missing>
+				</file>
+			</activation>
+			<modules>
+				<module>../external/fr.unice.i3s.sigma.external.releng</module>
+			</modules>
+		</profile>
+	</profiles>
+
 	<modules>
-		<!-- SIGMA modules -->
 		<module>../fr.unice.i3s.sigma.core</module>
 		<module>../fr.unice.i3s.sigma.core.tests</module>
 		<module>../fr.unice.i3s.sigma.scala</module>
 		<module>../fr.unice.i3s.sigma.scala.tools</module>
 		<module>../fr.unice.i3s.sigma.scala.tests</module>
-		<module>../fr.unice.i3s.sigma.target-platform</module>
 		<module>../fr.unice.i3s.sigma.feature</module>
 		<module>../fr.unice.i3s.sigma.scala.feature</module>
 		<module>../fr.unice.i3s.sigma.site</module>
-
-		<!-- 3rd party modules -->
-		<module>../org.apache.commons.lang3</module>
-		<module>../org.antlr.stringtemplate</module>
-		<module>../org.scalatest.scalatest_2.9.2</module>
 	</modules>
+
+	<repositories>
+		<repository>
+			<id>guava-osgi</id>
+			<name>Google Guava OSGi update site</name>
+			<layout>p2</layout>
+			<url>http://guava-osgi.googlecode.com/svn/trunk/repository/</url>
+		</repository>
+		<repository>
+			<id>scala-ide</id>
+			<name>Scala IDE p2 repository</name>
+			<layout>p2</layout>
+			<url>http://download.scala-ide.org/releases-29/stable/tycho-site</url>
+		</repository>
+		<repository>
+			<id>eclipse-indigo</id>
+			<name>Eclipse Indigo p2 repository</name>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/indigo/</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.5</version>
-				</plugin>
-				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>2.5</version>
-					<executions>
-						<execution>
-							<id>copy-dependencies</id>
-							<phase>initialize</phase>
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${project.build.directory}</outputDirectory>
-							</configuration>
-						</execution>
-						<execution>
-							<id>copy-dependencie-sources</id>
-							<phase>initialize</phase>
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${project.build.directory}</outputDirectory>
-								<classifier>sources</classifier>
-								<failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
-							</configuration>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
@@ -99,31 +98,29 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho.version}</version>
-				<configuration>
-					<resolver>p2</resolver>
-					<pomDependencies>consider</pomDependencies>
-					<target>
-						<artifact>
-							<groupId>fr.unice.i3s.sigma</groupId>
-							<artifactId>fr.unice.i3s.sigma.target-platform</artifactId>
-							<version>1.0.0-SNAPSHOT</version>
-							<classifier>e37</classifier>
-						</artifact>
-					</target>
-					<ignoreTychoRepositories>true</ignoreTychoRepositories>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-				</configuration>
+				<!-- <configuration> <resolver>p2</resolver> <pomDependencies>consider</pomDependencies> 
+					<target> <artifact> <groupId>fr.unice.i3s.sigma</groupId> <artifactId>fr.unice.i3s.sigma.target-platform</artifactId> 
+					<version>1.0.0-SNAPSHOT</version> <classifier>e37</classifier> </artifact> 
+					</target> <ignoreTychoRepositories>true</ignoreTychoRepositories> <environments> 
+					<environment> <os>linux</os> <ws>gtk</ws> <arch>x86</arch> </environment> 
+					<environment> <os>linux</os> <ws>gtk</ws> <arch>x86_64</arch> </environment> 
+					<environment> <os>win32</os> <ws>win32</ws> <arch>x86</arch> </environment> 
+					<environment> <os>win32</os> <ws>win32</ws> <arch>x86_64</arch> </environment> 
+					<environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86_64</arch> </environment> 
+					</environments> </configuration> -->
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<!-- configuration of the scala compiler -->

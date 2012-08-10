@@ -6,4 +6,4 @@ else
  goals=$@
 fi 
 
-mvn -f fr.unice.i3s.sigma.releng/pom.xml $goals
+mvn -f external/fr.unice.i3s.sigma.external.releng/pom.xml $goals
