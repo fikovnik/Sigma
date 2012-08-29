@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.support.scala.tools
+package fr.unice.i3s.sigma.scala.tools
 
 import fr.unice.i3s.sigma.core.SigmaDelegateDomain
 import org.eclipse.emf.common.util.URI
@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EcoreFactory
 import org.eclipse.emf.ecore.EcorePackage
 import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.mapAsScalaMap
-import tools._
+import fr.unice.i3s.sigma.scala.tools._
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
 
@@ -103,7 +103,10 @@ object AnnotationGenerator extends App {
         case _ =>
       }
     }
+    
+    pkg.eResource.save(null)
+    println("Saving package %s to %s" format (pkg.getName, pkg.eResource))
   }
 
-  rs.getResources.foreach(_.save(null))
+//  rs.getResources.foreach(_.save(null))
 }

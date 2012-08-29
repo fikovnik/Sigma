@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.support.scala.tools
+package fr.unice.i3s.sigma.scala
 
 import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl

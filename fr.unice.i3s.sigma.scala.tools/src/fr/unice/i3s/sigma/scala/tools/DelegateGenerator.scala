@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.support.scala.tools
+package fr.unice.i3s.sigma.scala.tools
 
 import java.util.List
 import scala.collection.JavaConversions._
@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EcorePackage
 import org.stringtemplate.v4.STGroupFile
 import fr.unice.i3s.sigma.core.AbstractSigmaDelegate
 import fr.unice.i3s.sigma.core.SigmaDelegateDomain._
+import fr.unice.i3s.sigma.scala.tools._
 import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
 import fr.unice.i3s.sigma.scala.SigmaScalaSettingDelegate
 import fr.unice.i3s.sigma.scala.SigmaScalaInvocationDelegate
@@ -53,7 +54,7 @@ object DelegateGenerator extends App {
     scala.sys.exit(1)
   }
 
-  val (genModel, rs) = tools.load[GenModel](args(0))
+  val (genModel, rs) = load[GenModel](args(0))
   val targetDir = new File(args(1))
   val generateAll = if (args.length == 3) true else false
 
@@ -64,7 +65,7 @@ object DelegateGenerator extends App {
   //fr.unice.i3s.actress.modeling.core.types.delegates
   val domain = new SigmaScalaDelegateDomain
 
-  val stg = new STGroupFile("fr/unice/i3s/sigma/support/scala/tools/delegates.stg")
+  val stg = new STGroupFile("fr/unice/i3s/sigma/scala/tools/delegates.stg")
   stg.setListener(new STErrorListener {
     def compileTimeError(msg: STMessage) { println(msg) }
     def runTimeError(msg: STMessage) { println(msg) }
