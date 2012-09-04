@@ -22,11 +22,7 @@ package object tools {
     Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap() +=
       ("ecore" -> new XMIResourceFactoryImpl())
 
-    val rs = new ResourceSetImpl()
-    val r = rs.getResource(URI.createFileURI(new File(fname).getAbsolutePath), true)
-    EcoreUtil.resolveAll(rs)
-
-    (r.getContents().get(0).asInstanceOf[A], rs)
+    utils.load[A](fname)
   }
 
 }
