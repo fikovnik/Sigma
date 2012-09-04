@@ -4,6 +4,7 @@ import scala.collection.GenTraversableOnce
 import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.seqAsJavaList
 
+import scala.collection.JavaConversions.mapAsScalaMap
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -96,6 +97,7 @@ package object utils {
   implicit def scalaListAsEList[A](a: List[A]): EList[A] =
     delegatingEList(seqAsJavaList(a))
 
-  // TODO: maps
+  implicit def eMapAsScalaMap[A,B](a: EMap[A,B]): scala.collection.mutable.Map[A,B] =
+    mapAsScalaMap(a.map())
 
 }
