@@ -1,6 +1,6 @@
 package fr.unice.i3s.sigma.scala
 
-
+import scala.collection.JavaConversions._
 import java.io.File
 import java.util.Collections
 import scala.collection.GenTraversableOnce
@@ -26,6 +26,8 @@ import com.google.common.base.Charsets
 import com.google.common.io.Files
 import fr.unice.i3s.sigma.core.SigmaDelegateDomain.delegatingEList
 import org.eclipse.emf.common.util.EMap
+import org.eclipse.emf.ecore.xmi.XMIResource
+import org.eclipse.emf.ecore.xmi.XMLResource
 
 /**
  * A utility package that extends some Scala types with OCL-like operations.
@@ -50,8 +52,8 @@ package object utils {
   // TODO: to refactor
 
   def loadFromString[T <: EObject](content: String,
-                                   extension: String,
-                                   options: Map[_, _] = null): T = {
+    extension: String,
+    options: Map[_, _] = null): T = {
 
     val temp = File.createTempFile("emfutils", "." + extension)
     Files.write(content, temp, Charsets.UTF_8)
@@ -64,21 +66,21 @@ package object utils {
   }
 
   def loadFromFile[T <: EObject](file: File,
-                                 options: Map[_, _] = null): T = {
+    options: Map[_, _] = null): T = {
 
     val uri = URI.createFileURI(file.getAbsolutePath())
     loadFromURI(uri, options)
   }
 
   def loadFromURI[T <: EObject](uri: URI,
-                                options: Map[_, _] = null): T = {
+    options: Map[_, _] = null): T = {
 
     loadResource(uri, options).getContents().get(0).asInstanceOf[T]
   }
 
   def loadResourceFromString(content: String,
-                             extension: String,
-                             options: Map[_, _] = null): Resource = {
+    extension: String,
+    options: Map[_, _] = null): Resource = {
 
     val temp = File.createTempFile("emfutils", "." + extension)
     Files.write(content, temp, Charsets.UTF_8)
@@ -91,13 +93,13 @@ package object utils {
   }
 
   def loadResourceFromFile(file: File,
-                           options: Map[_, _] = null): Resource = {
+    options: Map[_, _] = null): Resource = {
     val uri = URI.createFileURI(file.getAbsolutePath())
     loadResource(uri, options)
   }
 
   def loadResource(uri: URI,
-                   options: Map[_, _] = null) = {
+    options: Map[_, _] = null) = {
     val resourceSet = new ResourceSetImpl();
     Option(options) match {
       case Some(o) =>
@@ -143,7 +145,11 @@ package object utils {
     val resource = resourceSet.createResource(uri)
 
     resource.getContents().add(root)
-    resource.save(Collections.EMPTY_MAP)
+
+    // TODO: reogranize - should be a boolean param
+    // TODO: should we have XMI dependency?
+    resource.save(Map(
+      XMLResource.OPTION_SCHEMA_LOCATION -> (true: java.lang.Boolean)))
   }
 
   // EMF Validation helpers
@@ -311,7 +317,7 @@ package object utils {
   implicit def scalaListAsEList[A](a: List[A]): EList[A] =
     delegatingEList(seqAsJavaList(a))
 
-  implicit def eMapAsScalaMap[A,B](a: EMap[A,B]): scala.collection.mutable.Map[A,B] =
+  implicit def eMapAsScalaMap[A, B](a: EMap[A, B]): scala.collection.mutable.Map[A, B] =
     mapAsScalaMap(a.map())
 
 }
