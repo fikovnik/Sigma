@@ -1,9 +1,3 @@
 #!/bin/sh
 
-if [ $# -eq 0 ]; then
- goals="clean install"
-else
- goals=$@
-fi 
-
-mvn -f external/fr.unice.i3s.sigma.external.releng/pom.xml $goals
+mvn -f fr.unice.i3s.sigma.releng.p2/pom.xml install

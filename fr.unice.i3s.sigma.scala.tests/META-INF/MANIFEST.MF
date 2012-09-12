@@ -11,6 +11,6 @@ Export-Package: fr.unice.i3s.sigma.scala.scalatest
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.scala-ide.scala.library;bundle-version="2.9.2",
- org.junit;bundle-version="4.8.2",
  fr.unice.i3s.sigma.scala;bundle-version="1.0.0",
- org.scalatest.scalatest_2.9.2;bundle-version="1.8.0"
+ org.junit;bundle-version="4.8.2",
+ org.scalatest;bundle-version="2.0.0"

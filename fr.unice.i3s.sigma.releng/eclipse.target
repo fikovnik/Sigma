@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target includeMode="feature" name="e37" sequenceNumber="15">
+<target includeMode="feature" name="e37" sequenceNumber="16">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.scala-ide.sdt.feature.feature.group" version="2.1.0.m1-2_09-201204131819-c58d6d8"/>
@@ -20,6 +20,6 @@
 <unit id="com.google.guava.sdk.feature.feature.group" version="11.0.1"/>
 <repository location="http://guava-osgi.googlecode.com/svn/trunk/repository/"/>
 </location>
-<location path="${project_loc}/../external/fr.unice.i3s.sigma.external.site/target/repository" type="Directory"/>
+<location path="${project_loc}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
 </locations>
 </target>

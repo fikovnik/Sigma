@@ -6,13 +6,14 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: SALTY Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.scala-ide.scala.library;bundle-version="2.9.2",
- fr.unice.i3s.sigma.scala;bundle-version="1.0.0",
- org.antlr.stringtemplate;bundle-version="4.0.2",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.emf.ecore;bundle-version="2.7.0",
  org.eclipse.emf.ecore.xmi;bundle-version="2.7.0",
  org.eclipse.text;bundle-version="3.5.101",
  org.eclipse.jdt.core;bundle-version="3.7.1",
  org.eclipse.emf.codegen.ecore;bundle-version="2.7.0",
+ fr.unice.i3s.sigma.scala;bundle-version="1.0.0",
  com.google.guava;bundle-version="10.0.1",
- org.eclipse.core.runtime;bundle-version="3.7.0"
+ org.antlr.stringtemplate;bundle-version="4.0.2",
+ org.antlr.runtime;bundle-version="3.3.0"
 Export-Package: fr.unice.i3s.sigma.scala.tools

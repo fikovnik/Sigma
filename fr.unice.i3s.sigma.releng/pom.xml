@@ -14,20 +14,6 @@
 		<scala.version>2.9.2</scala.version>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>update-dependencies</id>
-			<activation>
-				<file>
-					<missing>../external/fr.unice.i3s.sigma.external.site/target/repository</missing>
-				</file>
-			</activation>
-			<modules>
-				<module>../external/fr.unice.i3s.sigma.external.releng</module>
-			</modules>
-		</profile>
-	</profiles>
-
 	<modules>
 		<module>../fr.unice.i3s.sigma.core</module>
 		<module>../fr.unice.i3s.sigma.core.tests</module>
@@ -42,7 +28,7 @@
 	<repositories>
 		<repository>
 			<id>guava-osgi</id>
-			<name>Google Guava OSGi update site</name>
+			<name>Google Guava OSGi p2 repository</name>
 			<layout>p2</layout>
 			<url>http://guava-osgi.googlecode.com/svn/trunk/repository/</url>
 		</repository>
@@ -57,6 +43,12 @@
 			<name>Eclipse Indigo p2 repository</name>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/releases/indigo/</url>
+		</repository>
+		<repository>
+			<id>sigma-external</id>
+			<name>SIGMA External p2 repository</name>
+			<url>file://${basedir}/../fr.unice.i3s.sigma.releng.p2/target/repository/</url>
+			<layout>p2</layout>
 		</repository>
 	</repositories>
 
