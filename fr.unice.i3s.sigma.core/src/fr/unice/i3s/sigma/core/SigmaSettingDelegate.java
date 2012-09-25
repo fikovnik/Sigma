@@ -95,9 +95,9 @@ public class SigmaSettingDelegate extends
 	@Override
 	protected String getDelegateMethodName() {
 		EClassifier retType = target.getEType();
-
-		if (retType.getClassifierID() == EcorePackage.EBOOLEAN
-				|| retType.getClassifierID() == EcorePackage.EBOOLEAN_OBJECT) {
+		
+		if (retType == EcorePackage.eINSTANCE.getEBoolean()
+				|| retType == EcorePackage.eINSTANCE.getEBooleanObject()) {
 			return "is" + Utils.capitalize(target.getName());
 		} else {
 			return "get" + Utils.capitalize(target.getName());
