@@ -80,6 +80,7 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
   }
 
   override def elementTypeName(c: ETypedElement) = {
+    // FIXME: this can fail and then it might be eaten up by the stringtemplate
     var typeName = genericType(c.getEGenericType)
 
     typeName = if (c.isMany) COLLECTION_TYPE.getSimpleName + "[" + typeName + "]" else typeName
