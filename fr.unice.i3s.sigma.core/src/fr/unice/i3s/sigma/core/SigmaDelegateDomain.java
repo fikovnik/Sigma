@@ -155,35 +155,41 @@ public class SigmaDelegateDomain {
 		return value;
 	}
 
-	public SigmaDelegateException handleIllegalArgumentException(Method delegate, Object object,
-			IllegalArgumentException e) {
+	public SigmaDelegateException handleIllegalArgumentException(
+			Method delegate, Object object, IllegalArgumentException e) {
 		e.printStackTrace();
-		return new SigmaDelegateException(
-				"Unable to invoke delegate method: '"
-						+ delegate.toString() + "' on '" + object + "'", e);
+
+		// FIXME: if the problem is in implementation of the toString() method
+		// this will keep failing
+		return new SigmaDelegateException("Unable to invoke delegate method: '"
+				+ delegate.toString() + "' on '" + object + "'", e);
 	}
 
-	public SigmaDelegateException handleIllegalAccessException(Method delegate, Object object,
-			IllegalAccessException e) {
+	public SigmaDelegateException handleIllegalAccessException(Method delegate,
+			Object object, IllegalAccessException e) {
 		e.printStackTrace();
-		return new SigmaDelegateException(
-				"Unable to invoke delegate method: '"
-						+ delegate.toString() + "' on '" + object + "'", e);
+
+		// FIXME: if the problem is in implementation of the toString() method
+		// this will keep failing
+		return new SigmaDelegateException("Unable to invoke delegate method: '"
+				+ delegate.toString() + "' on '" + object + "'", e);
 	}
 
-	public SigmaDelegateException handleInvocationTargetException(Method delegate, Object object,
-			InvocationTargetException e) {
+	public SigmaDelegateException handleInvocationTargetException(
+			Method delegate, Object object, InvocationTargetException e) {
 		e.getTargetException().printStackTrace();
-		return new SigmaDelegateException(
-				"Unable to invoke delegate method: '"
-						+ delegate.toString() + "' on '" + object + "': "
-						+ e.getTargetException(),
-				e.getTargetException());
+
+		// FIXME: if the problem is in implementation of the toString() method
+		// this will keep failing
+		return new SigmaDelegateException("Unable to invoke delegate method: '"
+				+ delegate.toString() + "' on '" + object + "': "
+				+ e.getTargetException(), e.getTargetException());
 	}
 
-	public SigmaValidationResult toSigmaValidationResult(Object status, String constraint, Object object) {
+	public SigmaValidationResult toSigmaValidationResult(Object status,
+			String constraint, Object object) {
 		boolean s = false;
-		
+
 		if (status instanceof Boolean) {
 			s = ((Boolean) status).booleanValue();
 		}
@@ -191,13 +197,16 @@ public class SigmaDelegateDomain {
 		if (s) {
 			return SigmaValidationResult.ok();
 		} else {
+
+			// FIXME: if the problem is in implementation of the toString()
+			// method this will keep failing
 			return SigmaValidationResult.error("The '" + constraint
 					+ "' constraint is violated on'" + object.toString() + "'");
 		}
 	}
 
 	private static final SigmaDelegateDomain instance = new SigmaDelegateDomain();
-	
+
 	public static SigmaDelegateDomain getDefaultInstance() {
 		return instance;
 	}
