@@ -2,3 +2,4 @@ target
 .cache
 
 /fabfile.pyc
+/fr.unice.i3s.sigma.scala.scalatest/bin/

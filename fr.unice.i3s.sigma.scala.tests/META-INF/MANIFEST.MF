@@ -7,7 +7,6 @@ Bundle-ClassPath: .
 Bundle-Vendor: I3S laboratory
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: fr.unice.i3s.sigma.scala.scalatest
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.scala-ide.scala.library;bundle-version="2.9.2",
