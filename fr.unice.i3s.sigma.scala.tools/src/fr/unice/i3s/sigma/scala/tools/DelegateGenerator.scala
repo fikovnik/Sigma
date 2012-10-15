@@ -19,8 +19,8 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.eclipse.emf.ecore.EcorePackage
 import org.stringtemplate.v4.STGroupFile
-import fr.unice.i3s.sigma.core.AbstractSigmaDelegate
-import fr.unice.i3s.sigma.core.SigmaDelegateDomain._
+import fr.unice.i3s.sigma.delegates.AbstractSigmaDelegate
+import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain._
 import fr.unice.i3s.sigma.scala.tools._
 import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
 import fr.unice.i3s.sigma.scala.SigmaScalaSettingDelegate

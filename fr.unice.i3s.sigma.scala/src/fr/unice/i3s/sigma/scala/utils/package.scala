@@ -24,7 +24,9 @@ import org.eclipse.emf.ecore.util.Diagnostician
 import org.eclipse.emf.ecore.util.EcoreUtil
 import com.google.common.base.Charsets
 import com.google.common.io.Files
-import fr.unice.i3s.sigma.core.SigmaDelegateDomain.delegatingEList
+
+import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.delegatingEList;
+
 import org.eclipse.emf.common.util.EMap
 import org.eclipse.emf.ecore.xmi.XMIResource
 import org.eclipse.emf.ecore.xmi.XMLResource

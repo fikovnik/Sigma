@@ -1,7 +1,7 @@
 package fr.unice.i3s.sigma.scala
 
 import scala.collection.JavaConversions._
-import fr.unice.i3s.sigma.core.SigmaInvocationDelegate
+import fr.unice.i3s.sigma.delegates.SigmaInvocationDelegate
 import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EParameter
 

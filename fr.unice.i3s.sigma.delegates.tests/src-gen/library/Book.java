@@ -28,8 +28,8 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see library.LibraryPackage#getBook()
- * @model annotation="http://www.eclipse.org/emf/2002/Ecore constraints='SufficientCopies'"
- *        annotation="http://www.i3s.unice.fr/Sigma SufficientCopies='' delegate='library.delegate.BookDelegate'"
+ * @model annotation="http://www.eclipse.org/emf/2002/Ecore constraints='SufficientCopies AtLeastOneCopy'"
+ *        annotation="http://www.i3s.unice.fr/Sigma SufficientCopies='' AtLeastOneCopy='' delegate='library.delegate.BookDelegate'"
  * @generated
  */
 public interface Book extends EObject {
@@ -68,12 +68,12 @@ public interface Book extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Copies</em>' attribute.
-	 * @see #setCopies(BigInteger)
+	 * @see #setCopies(int)
 	 * @see library.LibraryPackage#getBook_Copies()
 	 * @model required="true" ordered="false"
 	 * @generated
 	 */
-	BigInteger getCopies();
+	int getCopies();
 
 	/**
 	 * Sets the value of the '{@link library.Book#getCopies <em>Copies</em>}' attribute.
@@ -83,7 +83,7 @@ public interface Book extends EObject {
 	 * @see #getCopies()
 	 * @generated
 	 */
-	void setCopies(BigInteger value);
+	void setCopies(int value);
 
 	/**
 	 * Returns the value of the '<em><b>Library</b></em>' reference.
@@ -94,22 +94,11 @@ public interface Book extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Library</em>' reference.
-	 * @see #setLibrary(Library)
 	 * @see library.LibraryPackage#getBook_Library()
-	 * @model required="true" transient="true" derived="true" ordered="false"
+	 * @model required="true" transient="true" changeable="false" volatile="true" derived="true" ordered="false"
 	 * @generated
 	 */
 	Library getLibrary();
-
-	/**
-	 * Sets the value of the '{@link library.Book#getLibrary <em>Library</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Library</em>' reference.
-	 * @see #getLibrary()
-	 * @generated
-	 */
-	void setLibrary(Library value);
 
 	/**
 	 * Returns the value of the '<em><b>Loans</b></em>' reference list.

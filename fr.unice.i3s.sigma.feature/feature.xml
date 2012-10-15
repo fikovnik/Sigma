@@ -31,4 +31,18 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="fr.unice.i3s.sigma.delegates"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.unice.i3s.sigma.ui.ide"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

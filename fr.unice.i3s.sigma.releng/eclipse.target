@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target includeMode="feature" name="e37" sequenceNumber="16">
+<target includeMode="feature" name="e37" sequenceNumber="19">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.scala-ide.sdt.feature.feature.group" version="2.1.0.m1-2_09-201204131819-c58d6d8"/>
-<repository location="http://download.scala-ide.org/releases-29/milestone/site/"/>
+<unit id="com.google.guava.runtime.feature.feature.group" version="11.0.1"/>
+<unit id="com.google.guava.sdk.feature.feature.group" version="11.0.1"/>
+<repository location="http://guava-osgi.googlecode.com/svn/trunk/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.sdk" version="3.7.2.M20120208-0800"/>
@@ -15,11 +16,17 @@
 <unit id="org.eclipse.emf.compare.feature.group" version="1.2.2.v20120214-0915"/>
 <repository location="http://download.eclipse.org/releases/indigo/"/>
 </location>
-<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.google.guava.runtime.feature.feature.group" version="11.0.1"/>
-<unit id="com.google.guava.sdk.feature.feature.group" version="11.0.1"/>
-<repository location="http://guava-osgi.googlecode.com/svn/trunk/repository/"/>
-</location>
 <location path="${project_loc}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.scala-ide.sdt.feature.feature.group" version="2.0.2.v-2_09-201207120929-81d0972"/>
+<repository location="http://download.scala-ide.org/releases-29/stable/site"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<unit id="org.eclipse.swtbot.eclipse.test.junit4.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<unit id="org.eclipse.swtbot.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<unit id="org.eclipse.swtbot.forms.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<repository location="http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site"/>
+</location>
 </locations>
 </target>

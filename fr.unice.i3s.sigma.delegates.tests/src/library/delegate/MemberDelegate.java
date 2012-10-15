@@ -15,23 +15,24 @@ import library.Member;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
-import fr.unice.i3s.sigma.core.SigmaValidationResult;
+import fr.unice.i3s.sigma.core.ValidationResult;
 
 public final class MemberDelegate {
 
 	private MemberDelegate() {
 	}
-	
-	public static SigmaValidationResult validateAtMostTwoLoans(Member self) {
+
+	public static ValidationResult validateAtMostTwoLoans(Member self) {
 		int loans = self.getLoans().size();
 		if (loans > 2) {
-			return SigmaValidationResult.error("Too many loans: "+loans+" max: 2");
+			return ValidationResult.error("Too many loans: " + loans
+					+ " max: 2");
 		} else {
-			return SigmaValidationResult.ok();
+			return ValidationResult.ok();
 		}
 	}
 
-	public static SigmaValidationResult validateUniqueLoans(Member self) {
+	public static ValidationResult validateUniqueLoans(Member self) {
 		Set<Book> duplicates = new HashSet<Book>();
 		for (Loan loan1 : self.getLoans()) {
 			for (Loan loan2 : self.getLoans()) {
@@ -40,18 +41,19 @@ public final class MemberDelegate {
 				}
 			}
 		}
-		
+
 		if (duplicates.size() > 0) {
-			return SigmaValidationResult.error("Duplicate loans of books: "+duplicates);
+			return ValidationResult.error("Duplicate loans of books: "
+					+ duplicates);
 		} else {
-			return SigmaValidationResult.ok();
+			return ValidationResult.ok();
 		}
 	}
-	
+
 	public static Library getLibrary(Member self) {
 		return Library.class.cast(self.eContainer());
 	}
-	
+
 	public static Collection<Loan> getLoans(final Member self) {
 		return filter(self.getLibrary().getLoans(), new Predicate<Loan>() {
 			@Override
@@ -60,7 +62,7 @@ public final class MemberDelegate {
 			}
 		});
 	}
-	
+
 	public static Collection<Book> getBooks(final Member self) {
 		return transform(self.getLoans(), new Function<Loan, Book>() {
 			@Override
@@ -69,6 +71,5 @@ public final class MemberDelegate {
 			}
 		});
 	}
-	
-	
+
 }

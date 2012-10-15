@@ -154,15 +154,6 @@ public class MemberImpl extends EObjectImpl implements Member {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setLibrary(Library newLibrary) {
-		LIBRARY__ESETTING_DELEGATE.dynamicSet(this, null, 0, newLibrary);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@SuppressWarnings("unchecked")
 	public EList<Loan> getLoans() {
 		return (EList<Loan>)LOANS__ESETTING_DELEGATE.dynamicGet(this, null, 0, true, false);
@@ -211,9 +202,6 @@ public class MemberImpl extends EObjectImpl implements Member {
 			case LibraryPackage.MEMBER__NAME:
 				setName((String)newValue);
 				return;
-			case LibraryPackage.MEMBER__LIBRARY:
-				setLibrary((Library)newValue);
-				return;
 			case LibraryPackage.MEMBER__LOANS:
 				getLoans().clear();
 				getLoans().addAll((Collection<? extends Loan>)newValue);
@@ -236,9 +224,6 @@ public class MemberImpl extends EObjectImpl implements Member {
 		switch (featureID) {
 			case LibraryPackage.MEMBER__NAME:
 				setName(NAME_EDEFAULT);
-				return;
-			case LibraryPackage.MEMBER__LIBRARY:
-				setLibrary((Library)null);
 				return;
 			case LibraryPackage.MEMBER__LOANS:
 				getLoans().clear();

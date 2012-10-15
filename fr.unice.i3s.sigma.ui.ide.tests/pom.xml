@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemalocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>fr.unice.i3s.sigma</groupId>
+		<artifactId>fr.unice.i3s.sigma.releng</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../fr.unice.i3s.sigma.releng/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>fr.unice.i3s.sigma.ui.ide.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<properties>
+		<uitest.vmparams>-Dorg.eclipse.swtbot.search.timeout=10000 -Xmx1024m -XX:MaxPermSize=384m</uitest.vmparams>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>skip-ui-tests</id>
+			<activation>
+				<property>
+					<name>skip-ui-tests</name>
+				</property>
+			</activation>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
+		<profile>
+			<id>macosx</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs>${uitest.vmparams} -XstartOnFirstThread</ui.test.vmargs>
+			</properties>
+		</profile>
+		<profile>
+			<id>other-os</id>
+			<activation>
+				<os>
+					<name>not-mac</name>
+					<family>!mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs>${uitest.vmparams}</ui.test.vmargs>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<useUIHarness>true</useUIHarness>
+					<useUIThread>false</useUIThread>
+					<product>org.eclipse.sdk.ide</product>
+					<application>org.eclipse.ui.ide.workbench</application>
+					<argLine>${ui.test.vmargs}</argLine>
+<!-- 					<dependencies>
+						<dependency>
+							<type>p2-installable-unit</type>
+							<groupId>fr.unice.i3s.sigma</groupId>
+							<artifactId>fr.unice.i3s.sigma.feature</artifactId>
+							<version>1.0.0</version>
+						</dependency>
+						<dependency>
+							<type>p2-installable-unit</type>
+							<groupId>fr.unice.i3s.sigma</groupId>
+							<artifactId>fr.unice.i3s.sigma.examples.feature</artifactId>
+							<version>1.0.0</version>
+						</dependency>
+					</dependencies>
+ -->				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+

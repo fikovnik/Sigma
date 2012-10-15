@@ -11,7 +11,7 @@ import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.eclipse.emf.ecore.EValidator
-import fr.unice.i3s.sigma.core.SigmaDelegateDomain
+import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
 import fr.unice.i3s.sigma.scala.utils._
 import org.eclipse.emf.common.util.EList
 

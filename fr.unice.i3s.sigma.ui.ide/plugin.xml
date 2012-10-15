@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="fr.unice.i3s.sigma.ui.ide.validation.marker"
+         name="SIGMA marker resolvers"
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="fr.unice.i3s.sigma.ui.ide.validation.SigmaValidatorMarkerResolutionGenerator"
+            markerType="org.eclipse.emf.ecore.diagnostic">
+      </markerResolutionGenerator>
+   </extension>
+
+</plugin>

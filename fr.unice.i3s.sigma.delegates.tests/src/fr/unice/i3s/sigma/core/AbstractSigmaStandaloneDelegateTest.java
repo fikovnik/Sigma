@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.junit.BeforeClass;
 
-import fr.unice.i3s.sigma.core.SigmaDelegateDomain;
+import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain;
 
 public abstract class AbstractSigmaStandaloneDelegateTest {
 

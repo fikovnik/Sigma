@@ -1,6 +1,6 @@
 package fr.unice.i3s.sigma.scala.tools
 
-import fr.unice.i3s.sigma.core.SigmaDelegateDomain
+import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.ecore.resource.Resource
@@ -103,10 +103,10 @@ object AnnotationGenerator extends App {
         case _ =>
       }
     }
-    
+
     pkg.eResource.save(null)
     println("Saving package %s to %s" format (pkg.getName, pkg.eResource))
   }
 
-//  rs.getResources.foreach(_.save(null))
+  //  rs.getResources.foreach(_.save(null))
 }

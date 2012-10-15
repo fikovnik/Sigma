@@ -74,7 +74,7 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final BigInteger COPIES_EDEFAULT = null;
+	protected static final int COPIES_EDEFAULT = 0;
 
 	/**
 	 * The cached value of the '{@link #getCopies() <em>Copies</em>}' attribute.
@@ -84,7 +84,7 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 * @ordered
 	 */
-	protected BigInteger copies = COPIES_EDEFAULT;
+	protected int copies = COPIES_EDEFAULT;
 
 	/**
 	 * The cached setting delegate for the '{@link #getLibrary() <em>Library</em>}' reference.
@@ -151,7 +151,7 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BigInteger getCopies() {
+	public int getCopies() {
 		return copies;
 	}
 
@@ -160,8 +160,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCopies(BigInteger newCopies) {
-		BigInteger oldCopies = copies;
+	public void setCopies(int newCopies) {
+		int oldCopies = copies;
 		copies = newCopies;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, LibraryPackage.BOOK__COPIES, oldCopies, copies));
@@ -183,15 +183,6 @@ public class BookImpl extends EObjectImpl implements Book {
 	 */
 	public Library basicGetLibrary() {
 		return (Library)LIBRARY__ESETTING_DELEGATE.dynamicGet(this, null, 0, false, false);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setLibrary(Library newLibrary) {
-		LIBRARY__ESETTING_DELEGATE.dynamicSet(this, null, 0, newLibrary);
 	}
 
 	/**
@@ -262,10 +253,7 @@ public class BookImpl extends EObjectImpl implements Book {
 				setName((String)newValue);
 				return;
 			case LibraryPackage.BOOK__COPIES:
-				setCopies((BigInteger)newValue);
-				return;
-			case LibraryPackage.BOOK__LIBRARY:
-				setLibrary((Library)newValue);
+				setCopies((Integer)newValue);
 				return;
 			case LibraryPackage.BOOK__LOANS:
 				getLoans().clear();
@@ -289,9 +277,6 @@ public class BookImpl extends EObjectImpl implements Book {
 			case LibraryPackage.BOOK__COPIES:
 				setCopies(COPIES_EDEFAULT);
 				return;
-			case LibraryPackage.BOOK__LIBRARY:
-				setLibrary((Library)null);
-				return;
 			case LibraryPackage.BOOK__LOANS:
 				getLoans().clear();
 				return;
@@ -310,7 +295,7 @@ public class BookImpl extends EObjectImpl implements Book {
 			case LibraryPackage.BOOK__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case LibraryPackage.BOOK__COPIES:
-				return COPIES_EDEFAULT == null ? copies != null : !COPIES_EDEFAULT.equals(copies);
+				return copies != COPIES_EDEFAULT;
 			case LibraryPackage.BOOK__LIBRARY:
 				return LIBRARY__ESETTING_DELEGATE.dynamicIsSet(this, null, 0);
 			case LibraryPackage.BOOK__LOANS:
