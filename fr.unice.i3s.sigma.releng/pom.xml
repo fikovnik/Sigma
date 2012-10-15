@@ -20,14 +20,15 @@
 		<module>../fr.unice.i3s.sigma.delegates.tests</module>
 		<module>../fr.unice.i3s.sigma.ui.ide</module>
 		<module>../fr.unice.i3s.sigma.ui.ide.tests</module>
+		<module>../fr.unice.i3s.sigma.feature</module>
 		<module>../fr.unice.i3s.sigma.scala</module>
 		<module>../fr.unice.i3s.sigma.scala.tools</module>
 		<module>../fr.unice.i3s.sigma.scala.scalatest</module>
 		<module>../fr.unice.i3s.sigma.scala.tests</module>
-		<module>../fr.unice.i3s.sigma.examples.library</module>
-		<module>../fr.unice.i3s.sigma.feature</module>
-		<module>../fr.unice.i3s.sigma.examples.feature</module>
 		<module>../fr.unice.i3s.sigma.scala.feature</module>
+		<module>../fr.unice.i3s.sigma.examples</module>
+		<module>../fr.unice.i3s.sigma.examples.library</module>
+		<module>../fr.unice.i3s.sigma.examples.feature</module>
 		<module>../fr.unice.i3s.sigma.site</module>
 	</modules>
 

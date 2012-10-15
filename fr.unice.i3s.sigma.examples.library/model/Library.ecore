@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library"
+    nsURI="http://www.i3s.unice.fr/sigma/examples/Library" nsPrefix="library">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.i3s.unice.fr/Sigma"/>
+    <details key="settingDelegates" value="http://www.i3s.unice.fr/Sigma"/>
+    <details key="validationDelegates" value="http://www.i3s.unice.fr/Sigma"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EClass" name="Library">
+    <eAnnotations source="http://www.i3s.unice.fr/Sigma">
+      <details key="delegate" value="fr.unice.i3s.sigma.examples.library.delegate.LibraryDelegate"/>
+    </eAnnotations>
+    <eOperations name="getBookByName" eType="#//Book">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+      <eParameters name="name" eType="#//ECharSequence"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="books" ordered="false"
+        upperBound="-1" eType="#//Book" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="loans" ordered="false"
+        upperBound="-1" eType="#//Loan" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" ordered="false"
+        upperBound="-1" eType="#//Member" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" changeable="false"
+        volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Book">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="SufficientCopies AtLeastOneCopy"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.i3s.unice.fr/Sigma">
+      <details key="SufficientCopies" value=""/>
+      <details key="AtLeastOneCopy" value=""/>
+      <details key="delegate" value="fr.unice.i3s.sigma.examples.library.delegate.BookDelegate"/>
+    </eAnnotations>
+    <eOperations name="isAvailable" ordered="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="copies" ordered="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="library" ordered="false"
+        lowerBound="1" eType="#//Library" changeable="false" volatile="true" transient="true"
+        derived="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="loans" ordered="false"
+        upperBound="-1" eType="#//Loan" volatile="true" derived="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Member">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="AtMostTwoLoans UniqueLoans"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.i3s.unice.fr/Sigma">
+      <details key="AtMostTwoLoans" value=""/>
+      <details key="UniqueLoans" value=""/>
+      <details key="delegate" value="fr.unice.i3s.sigma.examples.library.delegate.MemberDelegate"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="library" ordered="false"
+        lowerBound="1" eType="#//Library" changeable="false" volatile="true" transient="true"
+        derived="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="loans" ordered="false"
+        upperBound="-1" eType="#//Loan" volatile="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="books" ordered="false"
+        unique="false" upperBound="-1" eType="#//Book" volatile="true" derived="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Loan">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="book" ordered="false" lowerBound="1"
+        eType="#//Book"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="member" ordered="false"
+        lowerBound="1" eType="#//Member"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" ordered="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="ECharSequence" instanceClassName="java.lang.CharSequence"/>
+</ecore:EPackage>

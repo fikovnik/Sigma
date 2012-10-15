@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="zipAll">
+
+	<property name="target" location="examples" />
+
+	<macrodef name="zipExample">
+		<attribute name="name" />
+		<sequential>
+			<zip destfile="${target}/@{name}.zip" basedir="../@{name}" excludes="pom.xml,bin/**,target/**" />
+		</sequential>
+	</macrodef>
+
+	<target name="zipAll">
+		<zipExample name="fr.unice.i3s.sigma.examples.library" />
+	</target>
+
+</project>

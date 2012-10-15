@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="fr.unice.i3s.sigma.Examples"
+            name="Sigma Examples"
+            parentCategory="org.eclipse.ui.Examples" />
+	</extension>
+	<extension point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.eclipse.ui.Examples/fr.unice.i3s.sigma.Examples"
+            class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+            icon="icons/genproject.gif"
+            id="fr.unice.i3s.sigma.examples.NewLibraryExampleWizard"
+            name="Library Example">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.emf.common.ui.examples">
+      <example
+            pageImage="icons/genproject.gif"
+            wizardID="fr.unice.i3s.sigma.examples.NewLibraryExampleWizard">
+         <projectDescriptor
+               contentURI="examples/fr.unice.i3s.sigma.examples.library.zip"
+               name="fr.unice.i3s.sigma.examples.library"
+               description="A sample project showing Sigma features in plain Java.">
+         </projectDescriptor>
+      </example>
+   </extension>
+
+</plugin>
