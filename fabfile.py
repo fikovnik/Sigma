@@ -19,8 +19,11 @@ import sys
 
 env.hosts = [REMOTE]
 
-def _mvn(args):
-    return local('mvn %s' % args)
+def _mvn(args,offline=False):
+    if offline:
+        return local('mvn -o %s' % args)
+    else:
+        return local('mvn %s' % args)
 
 def clean():
     return _mvn('-f %s/pom.xml clean' % RELENG)
@@ -28,12 +31,12 @@ def clean():
 def build_dep():
     return _mvn('-f %s/pom.xml install' % DEV_P2)
 
-def build():
+def build(offline=False):
     if not os.path.exists('%s/target/repository' % DEV_P2):
         if build_dep().failed:
             abort('Unable to build P2 site with external dependencies')
 
-    return _mvn('-f %s/pom.xml install' % RELENG)
+    return _mvn('-f %s/pom.xml install' % RELENG, offline)
 
 def p2latest():
     """
