@@ -8,7 +8,7 @@ import fr.unice.i3s.sigma.core.SigmaQuickFixExecutionException;
 public class SigmaQuickFix<T extends EObject> implements ISigmaQuickFix {
 
 	public interface IFix<T> {
-		public void execute(T self);
+		public void execute(T self) throws SigmaQuickFixExecutionException;
 	}
 
 	private final Class<T> clazz;

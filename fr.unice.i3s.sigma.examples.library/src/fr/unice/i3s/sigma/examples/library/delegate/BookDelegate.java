@@ -4,15 +4,10 @@ import static com.google.common.collect.Collections2.filter;
 
 import java.util.Collection;
 
-import org.eclipse.emf.ecore.EObject;
-
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-
-import fr.unice.i3s.sigma.core.ISigmaQuickFix;
-import fr.unice.i3s.sigma.core.SigmaQuickFixExecutionException;
 import fr.unice.i3s.sigma.core.ValidationResult;
 import fr.unice.i3s.sigma.delegates.SigmaQuickFix;
+import fr.unice.i3s.sigma.delegates.SigmaQuickFix.IFix;
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.Loan;
@@ -27,19 +22,14 @@ public class BookDelegate {
 			return ValidationResult.ok();
 		}
 
-		return new ValidationResult(ValidationResult.ERROR,
-				"There has to be at lest one copy",
-				ImmutableList.<ISigmaQuickFix> of(new SigmaQuickFix(
-						Book.class, "Add a copy") {
-
-					@Override
-					public void execute(EObject self)
-							throws SigmaQuickFixExecutionException {
-						Book book = (Book) self;
-						book.setCopies(1);
-					}
-
-				}));
+		return ValidationResult.error("There has to be at lest one copy",
+				new SigmaQuickFix<Book>(Book.class, "Add a copy",
+						new IFix<Book>() {
+							@Override
+							public void execute(Book self) {
+								self.setCopies(1);
+							}
+						}));
 	}
 
 	public static ValidationResult validateSufficientCopies(final Book self) {
