@@ -2,4 +2,7 @@ target
 .cache
 
 /fabfile.pyc
-/fr.unice.i3s.sigma.scala.scalatest/bin/
+bin/
+/screenshots/
+/fr.unice.i3s.sigma.examples/examples/
+/fr.unice.i3s.sigma.ui.ide.tests/screenshots/
