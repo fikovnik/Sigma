@@ -190,14 +190,18 @@ public class SigmaDelegateDomain {
 
 	// TODO: should this be here? should be in the actual delegator
 	public ValidationResult toSigmaValidationResult(Object status,
-			String constraint, Object object) {
-		boolean s = false;
+			Method delegate, String constraint, Object object) {
+		boolean result = false;
 		String message = null;
 
+		// the other types that are supported are
 		if (status instanceof Boolean) {
-			s = ((Boolean) status).booleanValue();
-		} else if (status instanceof String) {
-			s = status == null ? true : false;
+			// booleans
+			result = ((Boolean) status).booleanValue();
+		} else if ((status instanceof String)
+				|| String.class.isAssignableFrom(delegate.getReturnType())) {
+			// string
+			result = status == null ? true : false;
 			message = (String) status;
 		}
 
@@ -208,7 +212,7 @@ public class SigmaDelegateDomain {
 					new Object[] { constraint, object.toString() });
 		}
 
-		if (s) {
+		if (result) {
 			return ValidationResult.ok();
 		} else {
 			return ValidationResult.error(message);

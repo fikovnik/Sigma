@@ -15,17 +15,18 @@ public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> 
 		super(target, domain, constraint);
 	}
 
-	public ValidationResult validate(EClassifier eClassifier,
-			Object object, String constraint, String expression) {
+	public ValidationResult validate(EClassifier eClassifier, Object object,
+			String constraint, String expression) {
 		Method delegate = getDelegateChecked(object);
 
 		try {
 			Object status = delegate.invoke(null, object);
-			
+
 			if (status instanceof ValidationResult) {
 				return (ValidationResult) status;
 			} else {
-				return domain.toSigmaValidationResult(status, constraint, object);
+				return domain.toSigmaValidationResult(status, delegate,
+						constraint, object);
 			}
 		} catch (IllegalArgumentException e) {
 			throw domain.handleIllegalArgumentException(delegate, object, e);
@@ -48,8 +49,7 @@ public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> 
 	@Override
 	protected boolean checkDelegateMethod(Method input) {
 		// must have compatible return type
-		if (!(input.getReturnType().isAssignableFrom(
-				ValidationResult.class)
+		if (!(input.getReturnType().isAssignableFrom(ValidationResult.class)
 				|| !input.getReturnType().isAssignableFrom(boolean.class) || !input
 				.getReturnType().isAssignableFrom(Boolean.class))) {
 			return false;

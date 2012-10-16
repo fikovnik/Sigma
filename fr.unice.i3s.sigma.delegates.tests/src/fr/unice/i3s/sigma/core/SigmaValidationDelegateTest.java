@@ -1,7 +1,6 @@
 package fr.unice.i3s.sigma.core;
 
-import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.*;
 import java.util.List;
 
 import org.eclipse.emf.common.util.Diagnostic;
@@ -29,6 +28,37 @@ public final class SigmaValidationDelegateTest extends
 
 		List<Diagnostic> problems = diagnostics.getChildren();
 		assertEquals(0, problems.size());
+	}
+
+	/**
+	 * This test should check the behavior of a constraint that returns String:
+	 * 
+	 * <ol>
+	 * <li>{@code null} - constraint holds
+	 * <li>an instance of {@code String} - constraint is violated
+	 * </ol>
+	 */
+	@Test
+	public void testConstraintWithMessage() throws Exception {
+		TestClass tc = tm.createTestClass();
+
+		// violate
+		tc.setAttribute(3);
+		Diagnostic diagnostics = Diagnostician.INSTANCE.validate(tc);
+		assertEquals(Diagnostic.ERROR, diagnostics.getSeverity());
+
+		List<Diagnostic> problems = diagnostics.getChildren();
+		assertEquals(1, problems.size());
+		// check message
+		assertEquals("The 'WithMessage' constraint is violated on '"
+				+ EcoreUtil.getIdentification(tc) + "'", problems.get(0)
+				.getMessage());
+
+		// not violate
+		tc.setAttribute(8);
+		diagnostics = Diagnostician.INSTANCE.validate(tc);
+		assertEquals(Diagnostic.OK, diagnostics.getSeverity());
+		System.out.println(diagnostics);
 	}
 
 	@Test

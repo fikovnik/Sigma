@@ -17,13 +17,12 @@ public final class TestClassDelegate {
 		return true; // 64 % self.getAttribute() == 0;
 	}
 
-	public static boolean validateWithMessage(TestClass self) {
-		return true;
-		// if (self.getAttribute() == 2 || self.getAttribute() == 8) {
-		// return null;
-		// } else {
-		// return "The number should be 2 or 8";
-		// }
+	public static String validateWithMessage(TestClass self) {
+		if (self.getAttribute() == 3) {
+			return "The number must not be 3";
+		} else {
+			return null;
+		}
 	}
 
 	public static ValidationResult validateWithQuickFix(TestClass self) {
