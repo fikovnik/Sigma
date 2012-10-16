@@ -6,6 +6,7 @@
 	<macrodef name="zipExample">
 		<attribute name="name" />
 		<sequential>
+			<echo message="Zipping example: @{name}" />
 			<zip destfile="${target}/@{name}.zip" basedir="../@{name}" excludes="pom.xml,bin/**,target/**" />
 		</sequential>
 	</macrodef>
