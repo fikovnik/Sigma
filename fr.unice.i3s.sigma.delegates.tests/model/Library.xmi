@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<library:Library xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:library="http://www.i3s.unice.fr/Sigma/Tests" name="lib">
+<library:Library xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:library="http://www.i3s.unice.fr/Sigma/Tests" xsi:schemaLocation="http://www.i3s.unice.fr/Sigma/Tests Library.ecore" name="lib">
   <books name="b1" copies="1" />
   <books name="b2" copies="2" />
   <loans book="//@books.1" member="//@members.2"/>
