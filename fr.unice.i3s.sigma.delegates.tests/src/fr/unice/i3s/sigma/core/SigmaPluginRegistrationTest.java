@@ -4,8 +4,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.Platform;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
+@RunWith(Suite.class)
+@SuiteClasses({ SigmaInvocationDelegateTest.class,
+		SigmaSettingDelegateTest.class, SigmaValidationDelegateTest.class })
 public final class SigmaPluginRegistrationTest {
 
 	@BeforeClass
@@ -13,21 +18,6 @@ public final class SigmaPluginRegistrationTest {
 		assertTrue(
 				"These tests are meant to be running as Eclipse plug-in tests",
 				Platform.isRunning());
-	}
-
-	@Test
-	public void testInvocationDelegate() {
-		new SigmaInvocationDelegateTest().testDelegation();
-	}
-
-	@Test
-	public void testSettingDelegate() {
-		new SigmaSettingDelegateTest().testDelegation();
-	}
-
-	@Test
-	public void testValidationDelegate() throws Exception {
-		new SigmaValidationDelegateTest().testDelegate();
 	}
 
 }

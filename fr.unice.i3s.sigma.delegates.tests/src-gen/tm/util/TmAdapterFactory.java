@@ -4,9 +4,7 @@
  *
  * $Id$
  */
-package library.util;
-
-import library.*;
+package tm.util;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -15,22 +13,24 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 
+import tm.*;
+
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see library.LibraryPackage
+ * @see tm.TmPackage
  * @generated
  */
-public class LibraryAdapterFactory extends AdapterFactoryImpl {
+public class TmAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static LibraryPackage modelPackage;
+	protected static TmPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -38,9 +38,9 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LibraryAdapterFactory() {
+	public TmAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = LibraryPackage.eINSTANCE;
+			modelPackage = TmPackage.eINSTANCE;
 		}
 	}
 
@@ -69,23 +69,11 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected LibrarySwitch<Adapter> modelSwitch =
-		new LibrarySwitch<Adapter>() {
+	protected TmSwitch<Adapter> modelSwitch =
+		new TmSwitch<Adapter>() {
 			@Override
-			public Adapter caseLibrary(Library object) {
-				return createLibraryAdapter();
-			}
-			@Override
-			public Adapter caseBook(Book object) {
-				return createBookAdapter();
-			}
-			@Override
-			public Adapter caseMember(Member object) {
-				return createMemberAdapter();
-			}
-			@Override
-			public Adapter caseLoan(Loan object) {
-				return createLoanAdapter();
+			public Adapter caseTestClass(TestClass object) {
+				return createTestClassAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -108,58 +96,16 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link library.Library <em>Library</em>}'.
+	 * Creates a new adapter for an object of class '{@link tm.TestClass <em>Test Class</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see library.Library
+	 * @see tm.TestClass
 	 * @generated
 	 */
-	public Adapter createLibraryAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link library.Book <em>Book</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see library.Book
-	 * @generated
-	 */
-	public Adapter createBookAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link library.Member <em>Member</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see library.Member
-	 * @generated
-	 */
-	public Adapter createMemberAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link library.Loan <em>Loan</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see library.Loan
-	 * @generated
-	 */
-	public Adapter createLoanAdapter() {
+	public Adapter createTestClassAdapter() {
 		return null;
 	}
 
@@ -175,4 +121,4 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //LibraryAdapterFactory
+} //TmAdapterFactory

@@ -3,6 +3,7 @@ package fr.unice.i3s.sigma.core;
 import static com.google.common.collect.Iterables.isEmpty;
 import static fr.unice.i3s.sigma.core.Assert.require;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -99,8 +100,18 @@ public final class ValidationResult {
 		return new ValidationResult(WARNING, message);
 	}
 
+	public static ValidationResult warning(String message,
+			ISigmaQuickFix... quickFixes) {
+		return new ValidationResult(ERROR, message, Arrays.asList(quickFixes));
+	}
+
 	public static ValidationResult error(String message) {
 		return new ValidationResult(ERROR, message);
+	}
+
+	public static ValidationResult error(String message,
+			ISigmaQuickFix... quickFixes) {
+		return new ValidationResult(ERROR, message, Arrays.asList(quickFixes));
 	}
 
 	public static ValidationResult cancel() {

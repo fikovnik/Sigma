@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 import fr.unice.i3s.sigma.core.ISigmaQuickFix;
 import fr.unice.i3s.sigma.core.SigmaQuickFixExecutionException;
 import fr.unice.i3s.sigma.core.ValidationResult;
-import fr.unice.i3s.sigma.delegates.AbstractSigmaQuickFix;
+import fr.unice.i3s.sigma.delegates.SigmaQuickFix;
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.Loan;
@@ -29,7 +29,7 @@ public class BookDelegate {
 
 		return new ValidationResult(ValidationResult.ERROR,
 				"There has to be at lest one copy",
-				ImmutableList.<ISigmaQuickFix> of(new AbstractSigmaQuickFix(
+				ImmutableList.<ISigmaQuickFix> of(new SigmaQuickFix(
 						Book.class, "Add a copy") {
 
 					@Override
