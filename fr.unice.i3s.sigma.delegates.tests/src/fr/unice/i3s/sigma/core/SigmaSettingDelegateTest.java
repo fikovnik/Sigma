@@ -5,20 +5,17 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import tm.TestClass;
-import tm.TmFactory;
-import tm.TmPackage;
+import tm.delegates.TestClassDelegate;
 
 public class SigmaSettingDelegateTest extends
 		AbstractSigmaStandaloneDelegateTest {
 
 	@Test
 	public void testDelegation() {
-		TmFactory fm = TmPackage.eINSTANCE.getTmFactory();
+		TestClass self = createTestClass("ABCDEF");
 
-		TestClass tc = fm.createTestClass();
-		tc.setAttribute(10);
-
-		assertEquals(5, tc.getDerivedAttribute());
+		assertEquals(TestClassDelegate.getDerivedAttribute(self),
+				self.getDerivedAttribute());
 	}
 
 }

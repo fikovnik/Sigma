@@ -5,80 +5,122 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.ecore.util.Diagnostician;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.unice.i3s.sigma.delegates.Messages;
+import fr.unice.i3s.sigma.delegates.SigmaEObjectValidator;
+import static fr.unice.i3s.sigma.core.Utils.*;
 import tm.TestClass;
-import tm.TmFactory;
-import tm.TmPackage;
+import tm.util.TmValidator;
 
 public final class SigmaValidationDelegateTest extends
 		AbstractSigmaStandaloneDelegateTest {
 
-	private final TmFactory tm = TmPackage.eINSTANCE.getTmFactory();
+	@BeforeClass
+	public static void checkSigmaValidator() {
+		assertTrue(
+				"Validator must be a "
+						+ SigmaEObjectValidator.class.getSimpleName(),
+				TmValidator.INSTANCE instanceof SigmaEObjectValidator);
+	}
 
 	@Test
-	public void testNoConstraintViloation() {
-		TestClass tc = tm.createTestClass();
-		tc.setAttribute(8);
+	public void testNoConstraintViolation() {
+		TestClass self = createTestClass("ABCDEF");
 
-		Diagnostic diagnostics = Diagnostician.INSTANCE.validate(tc);
-		System.out.println(diagnostics);
+		Diagnostic diagnostics = Diagnostician.INSTANCE.validate(self);
+		// System.out.println(diagnostics);
 		assertEquals(Diagnostic.OK, diagnostics.getSeverity());
 
 		List<Diagnostic> problems = diagnostics.getChildren();
 		assertEquals(0, problems.size());
 	}
 
+	@Test
+	public void testAConstraintViolated() {
+		TestClass self = createTestClass("BCDEF");
+
+		Diagnostic diagnostics = Diagnostician.INSTANCE.validate(self);
+		// System.out.println(diagnostics);
+		assertEquals(Diagnostic.ERROR, diagnostics.getSeverity());
+
+		List<Diagnostic> problems = diagnostics.getChildren();
+		assertEquals(1, problems.size());
+		assertEquals(
+				bind(Messages.Sigma_GenericConstraintViolatedNoMessage, "A",
+						self), problems.get(0).getMessage());
+		assertEquals(self, problems.get(0).getData().get(0));
+	}
+
 	/**
-	 * This test should check the behavior of a constraint that returns String:
-	 * 
-	 * <ol>
-	 * <li>{@code null} - constraint holds
-	 * <li>an instance of {@code String} - constraint is violated
-	 * </ol>
+	 * Tests custom message used by having String return type
 	 */
 	@Test
-	public void testConstraintWithMessage() throws Exception {
-		TestClass tc = tm.createTestClass();
+	public void testEConstraintViolation() {
+		TestClass self = createTestClass("ABCDF");
 
-		// violate
-		tc.setAttribute(3);
-		Diagnostic diagnostics = Diagnostician.INSTANCE.validate(tc);
+		Diagnostic diagnostics = Diagnostician.INSTANCE.validate(self);
+		// System.out.println(diagnostics);
 		assertEquals(Diagnostic.ERROR, diagnostics.getSeverity());
 
 		List<Diagnostic> problems = diagnostics.getChildren();
 		assertEquals(1, problems.size());
-		// check message
-		assertEquals("The 'WithMessage' constraint is violated on '"
-				+ EcoreUtil.getIdentification(tc) + "'", problems.get(0)
-				.getMessage());
-
-		// not violate
-		tc.setAttribute(8);
-		diagnostics = Diagnostician.INSTANCE.validate(tc);
-		assertEquals(Diagnostic.OK, diagnostics.getSeverity());
-		System.out.println(diagnostics);
+		assertEquals("E is missing", problems.get(0).getMessage());
+		assertEquals(self, problems.get(0).getData().get(0));
 	}
 
-	@Test
-	public void testSimpleConstraintViloation() {
-		TestClass tc = tm.createTestClass();
-		tc.setAttribute(0);
-
-		Diagnostic diagnostics = Diagnostician.INSTANCE.validate(tc);
-		assertEquals(Diagnostic.ERROR, diagnostics.getSeverity());
-
-		List<Diagnostic> problems = diagnostics.getChildren();
-		assertEquals(1, problems.size());
-		// check message
-		assertEquals(
-				"The 'NonZero' constraint is violated on '"
-						+ EcoreUtil.getIdentification(tc) + "'", problems
-						.get(0).getMessage());
-		// check the data entry
-		assertEquals(1, problems.get(0).getData().size());
-		assertEquals(tc, problems.get(0).getData().get(0));
-	}
+	// /**
+	// * This test should check the behavior of a constraint that returns
+	// String:
+	// *
+	// * <ol>
+	// * <li>{@code null} - constraint holds
+	// * <li>an instance of {@code String} - constraint is violated
+	// * </ol>
+	// */
+	// @Test
+	// public void testConstraintWithMessage() throws Exception {
+	// TestClass tc = tm.createTestClass();
+	//
+	// // violate
+	// tc.setAttribute(2);
+	// Diagnostic diagnostics = Diagnostician.INSTANCE.validate(tc);
+	// assertEquals(Diagnostic.ERROR, diagnostics.getSeverity());
+	//
+	// List<Diagnostic> problems = diagnostics.getChildren();
+	// System.out.println(problems);
+	// assertEquals(1, problems.size());
+	// // check message
+	// assertEquals("The 'WithMessage' constraint is violated on '"
+	// + EcoreUtil.getIdentification(tc) + "'", problems.get(0)
+	// .getMessage());
+	//
+	// // not violate
+	// tc.setAttribute(8);
+	// diagnostics = Diagnostician.INSTANCE.validate(tc);
+	// assertEquals(Diagnostic.OK, diagnostics.getSeverity());
+	// System.out.println(diagnostics);
+	// }
+	//
+	// @Test
+	// public void testSimpleConstraintViloation() {
+	// TestClass tc = tm.createTestClass();
+	// tc.setAttribute(0);
+	//
+	// Diagnostic diagnostics = Diagnostician.INSTANCE.validate(tc);
+	// assertEquals(Diagnostic.ERROR, diagnostics.getSeverity());
+	//
+	// List<Diagnostic> problems = diagnostics.getChildren();
+	// assertEquals(1, problems.size());
+	// // check message
+	// assertEquals(
+	// "The 'NonZero' constraint is violated on '"
+	// + EcoreUtil.getIdentification(tc) + "'", problems
+	// .get(0).getMessage());
+	// // check the data entry
+	// assertEquals(1, problems.get(0).getData().size());
+	// assertEquals(tc, problems.get(0).getData().get(0));
+	// }
 
 }

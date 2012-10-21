@@ -16,7 +16,8 @@ public class SigmaValidationDelegateFactory implements ValidationDelegate {
 
 	private final Map<String, SigmaValidationDelegate> delegates = new HashMap<String, SigmaValidationDelegate>();
 
-	private final SigmaDelegateDomain domain = SigmaDelegateDomain.getDefaultInstance();
+	private final SigmaDelegateDomain domain = SigmaDelegateDomain
+			.getDefaultInstance();
 
 	public SigmaValidationDelegate getDelegate(EClassifier eClassifier,
 			String constraint) {
@@ -40,26 +41,35 @@ public class SigmaValidationDelegateFactory implements ValidationDelegate {
 		return new SigmaValidationDelegate(eClassifier, domain, constraint);
 	}
 
+	// following methods are used from the plain EObjectValidator
+
 	@Override
 	public boolean validate(EClass eClass, EObject eObject,
 			Map<Object, Object> context, EOperation invariant, String expression) {
-		return validate(eClass, eObject, invariant.getName(), expression).isValidOrCanceled();
+		return doValidate(eClass, eObject, context, invariant.getName(),
+				expression).isValidOrCanceled();
 	}
 
 	@Override
 	public boolean validate(EClass eClass, EObject eObject,
 			Map<Object, Object> context, String constraint, String expression) {
-		return validate(eClass, eObject, constraint, expression).isValidOrCanceled();
+		return doValidate(eClass, eObject, context, constraint, expression)
+				.isValidOrCanceled();
 	}
 
 	@Override
 	public boolean validate(EDataType eDataType, Object value,
 			Map<Object, Object> context, String constraint, String expression) {
-		return validate(eDataType, value, constraint, expression).isValidOrCanceled();
+		return doValidate(eDataType, value, context, constraint, expression)
+				.isValidOrCanceled();
 	}
 
-	private ValidationResult validate(EClassifier eClassifier,
-			Object object, String constraint, String expression) {
+	/**
+	 * This method is consequently used by the {@link SigmaEObjectValidator} so
+	 * it has access to the full results.
+	 */
+	private ValidationResult doValidate(EClassifier eClassifier, Object object,
+			Map<Object, Object> context, String constraint, String expression) {
 		SigmaValidationDelegate delegate = getDelegate(eClassifier, constraint);
 		return delegate.validate(eClassifier, object, constraint, expression);
 	}

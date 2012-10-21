@@ -1,5 +1,7 @@
 package fr.unice.i3s.sigma.delegates;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.BasicDiagnostic;
@@ -12,8 +14,15 @@ import org.eclipse.emf.ecore.util.EObjectValidator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.osgi.util.NLS;
 
+import com.google.common.base.Predicate;
+
+import static com.google.common.collect.Iterables.any;
+import static com.google.common.collect.Iterables.find;
+import static com.google.common.collect.Maps.filterKeys;
+import static com.google.common.collect.Maps.newHashMap;
 import static fr.unice.i3s.sigma.core.Assert.notNull;
 
+import fr.unice.i3s.sigma.core.Utils;
 import fr.unice.i3s.sigma.core.ValidationResult;
 import fr.unice.i3s.sigma.ui.ide.validation.ISigmaQuickFixManager;
 import fr.unice.i3s.sigma.ui.ide.validation.SigmaQuickFixManager;
@@ -31,6 +40,50 @@ import fr.unice.i3s.sigma.ui.ide.validation.SigmaQuickFixManager;
  * 
  */
 public class SigmaEObjectValidator extends EObjectValidator {
+
+	static class PartialValidationResults {
+		private final Map<String, ValidationResult> results = newHashMap();
+
+		public boolean hasExecuted(String constraint) {
+			notNull(constraint);
+			return results.containsKey(constraint);
+		}
+
+		public ValidationResult getResult(String contraint) {
+			notNull(contraint);
+			return results.get(contraint);
+		}
+
+		public Map<String, ValidationResult> getResults(
+				final Collection<String> constraints) {
+
+			notNull(constraints);
+			return filterKeys(results, new Predicate<String>() {
+				@Override
+				public boolean apply(String input) {
+					return constraints.contains(input);
+				}
+			});
+		}
+
+		public static Integer key(Object object) {
+			notNull(object);
+			return Integer.valueOf(31 + object.hashCode());
+
+		}
+
+		public void setResult(String constraint, ValidationResult result) {
+			notNull(constraint);
+			notNull(result);
+			results.put(constraint, result);
+		}
+
+		@Override
+		public String toString() {
+			return results.toString();
+		}
+
+	}
 
 	private ISigmaQuickFixManager resolutionManager;
 	private boolean isQuckFixManagerAvailable = false;
@@ -53,21 +106,48 @@ public class SigmaEObjectValidator extends EObjectValidator {
 		this.isQuckFixManagerAvailable = true;
 	}
 
+	/**
+	 * @param validationDelegate
+	 *            URI of the validation delegate defined in the EMF model in the
+	 *            Ecore annotation at the package level
+	 */
 	@Override
-	public boolean validate(EClass eClass, EObject eObject,
-			DiagnosticChain diagnostics, Map<Object, Object> context,
-			String validationDelegate, String constraint, String expression,
-			int severity, String source, int code) {
+	// @formatter:off
+	public boolean validate(
+			EClass eClass, 
+			EObject eObject,
+			DiagnosticChain diagnostics, 
+			Map<Object, Object> context,
+			String validationDelegate, 
+			String constraint, 
+			String expression,
+			int severity, 
+			String source, 
+			int code) {
+	// @formatter:on
 
 		ValidationDelegate delegate = getValidationDelegateRegistry(context)
 				.getValidationDelegate(validationDelegate);
 
 		if (delegate instanceof SigmaValidationDelegateFactory) {
 
-			return validateUsingSigmaDelegate(eClass, eObject, diagnostics,
-					context, constraint, expression, severity, source, code,
-					((SigmaValidationDelegateFactory) delegate).getDelegate(
-							eClass, constraint));
+			// @formatter:off
+			SigmaValidationDelegateFactory delegateFactory = (SigmaValidationDelegateFactory) delegate;
+			SigmaValidationDelegate sigmaDelegate = delegateFactory.getDelegate(eClass, constraint);
+			
+			return validateUsingSigmaDelegate(
+					eClass, 
+					eObject, 
+					diagnostics,
+					context, 
+					validationDelegate, 
+					constraint, 
+					expression,
+					severity, 
+					source, 
+					code,
+					sigmaDelegate);
+			// @formatter:on
 		} else if (delegate != null) {
 
 			return validateUsingDefaultDelegate(eClass, eObject, diagnostics,
@@ -228,47 +308,173 @@ public class SigmaEObjectValidator extends EObjectValidator {
 		return true;
 	}
 
-	private boolean validateUsingSigmaDelegate(EClass eClass, EObject eObject,
-			DiagnosticChain diagnostics, Map<Object, Object> context,
-			String constraint, String expression, int severity, String source,
-			int code, SigmaValidationDelegate delegate) {
+// @formatter:off
+	private boolean validateUsingSigmaDelegate(
+			EClass eClass, 
+			EObject eObject,
+			DiagnosticChain diagnostics, 
+			Map<Object, Object> context,
+			String validationDelegate, 
+			String constraint, 
+			String expression,
+			int severity, 
+			String source, 
+			int code,
+			SigmaValidationDelegate delegate) {
+// @formatter:on
 
-		try {
-			ValidationResult result = delegate.validate(eClass, eObject,
-					constraint, expression);
-			if (!result.isValidOrCanceled()) {
-				diagnostics.add(SigmaDiagnostic.fromResult(eObject, constraint,
-						source, code, result));
+		notNull(eObject);
 
-				// add the result to the maker resolution
-				addToQuickFixes(eObject, result);
+		// 0. try to get partial results
+		final Integer key = PartialValidationResults.key(eObject);
+		final PartialValidationResults partialResults = getParticalResults(
+				context, key);
 
-				return false;
+		// 1. has this constraint been already executed on this object?
+		if (partialResults.hasExecuted(constraint)) {
+			// they were so we just return the result value since it has already
+			// been reported in the chain
+			return partialResults.getResult(constraint).isValidOrCanceled();
+		}
+
+		List<String> deps = delegate.getDependencies(eObject);
+
+		System.out.println("----");
+		System.out.println("EObject: " + eObject);
+		System.out.println("Evaluating constraint: " + constraint);
+		System.out.println("Partial results: " + partialResults);
+		System.out.println("Dependencies: " + deps);
+		System.out.println("----");
+
+		// 2. has this constraint dependencies that has not yet been executed on
+		// this object? This has to run in the loop and we need to do the checks
+		// every time since one constraint validation might in turn trigger
+		// another constraints validations
+		while (true) {
+			// get the results of the so far evaluated dependent constraints
+			Map<String, ValidationResult> depsSoFar = partialResults
+					.getResults(deps);
+
+			// has any dependent constraint already failed
+			boolean failure = any(depsSoFar.values(),
+					new Predicate<ValidationResult>() {
+						@Override
+						public boolean apply(ValidationResult input) {
+							return !input.isValidOrCanceled();
+						}
+					});
+
+			if (failure) {
+				// there has been already a constraint that has failed
+				// we return true, because effectively this constraint has not
+				// been
+				// violated, it has only not been evaluated. The failure is
+				// already
+				// in the diagnostics chain.
+				partialResults.setResult(constraint, ValidationResult.cancel());
+				return true;
 			}
-		} catch (SigmaDelegateNotFoundException e) {
-			if (diagnostics != null) {
-				String message = NLS.bind(Messages.Sigma_NoValidationDelegate,
-						new Object[] { getObjectLabel(eObject, context),
-								delegate.getExpectedMethodSignature(),
-								expression });
 
-				diagnostics.add(SigmaDiagnostic.fromException(constraint,
-						eObject, source, code, message, e));
-			}
-		} catch (Throwable e) {
-			if (diagnostics != null) {
-				String message = NLS
-						.bind(Messages.Sigma_ValidationDelegateException,
-								new Object[] { constraint,
-										getObjectLabel(eObject, context),
-										delegate, e });
+			// get the first one that has not been executed
+			String nextUnchecked = find(deps, new Predicate<String>() {
+				@Override
+				public boolean apply(String input) {
+					return !partialResults.hasExecuted(input);
+				}
+			}, null);
 
-				diagnostics.add(SigmaDiagnostic.fromException(constraint,
-						eObject, source, code, message, e));
+			if (nextUnchecked == null) {
+				break;
+			} else {
+// @formatter:off				
+				validate(
+						eClass, 
+						eObject, 
+						diagnostics, 
+						context,
+						validationDelegate, 
+						nextUnchecked,
+						expression, 
+						severity, 
+						source, 
+						code);
+// @formatter:on
 			}
 		}
 
-		return true;
+		// 3. execute - ok so far so good - all dependencies has been satisfied
+		ValidationResult result = null;
+
+		try {
+			// here is the actual validation
+			result = delegate.validate(eClass, eObject, constraint, expression);
+		} catch (SigmaDelegateNotFoundException e) {
+
+			// delegate could not be found
+			if (diagnostics != null) {
+				String message = Utils.bind(
+						Messages.Sigma_NoValidationDelegate,
+						getObjectLabel(eObject, context),
+						delegate.getExpectedMethodSignature(), expression);
+
+				diagnostics.add(SigmaDiagnostic.fromException(constraint,
+						eObject, source, code, message, e));
+
+				result = ValidationResult
+						.error("Evaluation failed with exception: "
+								+ e.getMessage());
+			}
+		} catch (Throwable e) {
+
+			// an exception during the delegate validation
+			if (diagnostics != null) {
+				String message = Utils.bind(
+						Messages.Sigma_ValidationDelegateException, constraint,
+						getObjectLabel(eObject, context), delegate, e);
+
+				diagnostics.add(SigmaDiagnostic.fromException(constraint,
+						eObject, source, code, message, e));
+
+				result = ValidationResult
+						.error("Evaluation failed with exception: "
+								+ e.getMessage());
+			}
+		} finally {
+
+			// regardless how it went, we did execute
+			partialResults.setResult(constraint, result);
+		}
+
+		switch (result.getSeverity()) {
+		case ValidationResult.INFO:
+		case ValidationResult.WARNING:
+		case ValidationResult.ERROR:
+			// report
+			diagnostics.add(SigmaDiagnostic.fromResult(eObject, constraint,
+					source, code, result));
+
+			// add the result to the maker resolution
+			addToQuickFixes(eObject, result);
+			break;
+		case ValidationResult.CANCEL:
+			// report
+			diagnostics.add(SigmaDiagnostic.fromResult(eObject, constraint,
+					source, code, result));
+			break;
+		}
+
+		return result.isValidOrCanceled();
+	}
+
+	private PartialValidationResults getParticalResults(
+			Map<Object, Object> context, Integer key) {
+		PartialValidationResults partialResults = (PartialValidationResults) context
+				.get(key);
+		if (partialResults == null) {
+			partialResults = new PartialValidationResults();
+			context.put(key, partialResults);
+		}
+		return partialResults;
 	}
 
 	@Override

@@ -99,13 +99,13 @@ public interface TmPackage extends EPackage {
 	int TEST_CLASS_FEATURE_COUNT = 2;
 
 	/**
-	 * The operation id for the '<em>Get Square</em>' operation.
+	 * The operation id for the '<em>Method</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TEST_CLASS___GET_SQUARE = 0;
+	int TEST_CLASS___METHOD = 0;
 
 	/**
 	 * The number of operations of the '<em>Test Class</em>' class.
@@ -150,14 +150,14 @@ public interface TmPackage extends EPackage {
 	EAttribute getTestClass_DerivedAttribute();
 
 	/**
-	 * Returns the meta object for the '{@link tm.TestClass#getSquare() <em>Get Square</em>}' operation.
+	 * Returns the meta object for the '{@link tm.TestClass#method() <em>Method</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Get Square</em>' operation.
-	 * @see tm.TestClass#getSquare()
+	 * @return the meta object for the '<em>Method</em>' operation.
+	 * @see tm.TestClass#method()
 	 * @generated
 	 */
-	EOperation getTestClass__GetSquare();
+	EOperation getTestClass__Method();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -209,12 +209,12 @@ public interface TmPackage extends EPackage {
 		EAttribute TEST_CLASS__DERIVED_ATTRIBUTE = eINSTANCE.getTestClass_DerivedAttribute();
 
 		/**
-		 * The meta object literal for the '<em><b>Get Square</b></em>' operation.
+		 * The meta object literal for the '<em><b>Method</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation TEST_CLASS___GET_SQUARE = eINSTANCE.getTestClass__GetSquare();
+		EOperation TEST_CLASS___METHOD = eINSTANCE.getTestClass__Method();
 
 	}
 

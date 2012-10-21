@@ -15,10 +15,9 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.EValidator;
-import org.eclipse.osgi.util.NLS;
-
 import com.google.common.collect.ImmutableList;
 
+import fr.unice.i3s.sigma.core.Utils;
 import fr.unice.i3s.sigma.core.ValidationResult;
 
 public class SigmaDelegateDomain {
@@ -188,7 +187,6 @@ public class SigmaDelegateDomain {
 				+ e.getTargetException(), e.getTargetException());
 	}
 
-	// TODO: should this be here? should be in the actual delegator
 	public ValidationResult toSigmaValidationResult(Object status,
 			Method delegate, String constraint, Object object) {
 		boolean result = false;
@@ -208,8 +206,9 @@ public class SigmaDelegateDomain {
 		if (message == null) {
 			// FIXME: if the problem is in implementation of the toString()
 			// method this will keep failing
-			message = NLS.bind(Messages.Sigma_GenericConstraintViolated,
-					new Object[] { constraint, object.toString() });
+			message = Utils.bind(
+					Messages.Sigma_GenericConstraintViolatedNoMessage,
+					constraint, object.toString());
 		}
 
 		if (result) {

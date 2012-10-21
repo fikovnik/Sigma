@@ -2,11 +2,14 @@ package fr.unice.i3s.sigma.delegates;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EClassifier;
-
 import fr.unice.i3s.sigma.core.Utils;
 import fr.unice.i3s.sigma.core.ValidationResult;
+import fr.unice.i3s.sigma.core.annotations.Satisfies;
 
 public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> {
 
@@ -15,8 +18,10 @@ public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> 
 		super(target, domain, constraint);
 	}
 
+	// TODO: remove some not used arguments
 	public ValidationResult validate(EClassifier eClassifier, Object object,
 			String constraint, String expression) {
+
 		Method delegate = getDelegateChecked(object);
 
 		try {
@@ -97,5 +102,15 @@ public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> 
 		sb.append(" [" + getExpectedMethodSignature() + "]");
 
 		return sb.toString();
+	}
+
+	public List<String> getDependencies(Object object) {
+		Method delegate = getDelegateChecked(object);
+		Satisfies satisfies = delegate.getAnnotation(Satisfies.class);
+		if (satisfies == null) {
+			return Collections.emptyList();
+		}
+
+		return Arrays.asList(satisfies.value());
 	}
 }

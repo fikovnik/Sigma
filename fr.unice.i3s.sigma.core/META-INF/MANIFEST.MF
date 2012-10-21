@@ -3,9 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SIGMA Core
 Bundle-SymbolicName: fr.unice.i3s.sigma.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.7.0",
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;bundle-version="2.7.0",
  com.google.guava;bundle-version="10.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: fr.unice.i3s.sigma.core;version="1.0.0"
+Export-Package: fr.unice.i3s.sigma.core;version="1.0.0",
+ fr.unice.i3s.sigma.core.annotations
 Bundle-Vendor: SALTY Project
 Bundle-ClassPath: .

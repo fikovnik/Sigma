@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see tm.TmPackage#getTestClass()
- * @model annotation="http://www.i3s.unice.fr/Sigma delegate='tm.delegates.TestClassDelegate' NonZero='' SmallerThan100='' Divides64='' WithMessage='' WithQuickFix=''"
- *        annotation="http://www.eclipse.org/emf/2002/Ecore constraints='NonZero SmallerThan100 Divides64 WithMessage WithQuickFix'"
+ * @model annotation="http://www.i3s.unice.fr/Sigma delegate='tm.delegates.TestClassDelegate' A='' B='' C='' D='' E=''"
+ *        annotation="http://www.eclipse.org/emf/2002/Ecore constraints='A B C D E F'"
  * @generated
  */
 public interface TestClass extends EObject {
@@ -36,12 +36,12 @@ public interface TestClass extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Attribute</em>' attribute.
-	 * @see #setAttribute(int)
+	 * @see #setAttribute(String)
 	 * @see tm.TmPackage#getTestClass_Attribute()
-	 * @model required="true" ordered="false"
+	 * @model ordered="false"
 	 * @generated
 	 */
-	int getAttribute();
+	String getAttribute();
 
 	/**
 	 * Sets the value of the '{@link tm.TestClass#getAttribute <em>Attribute</em>}' attribute.
@@ -51,7 +51,7 @@ public interface TestClass extends EObject {
 	 * @see #getAttribute()
 	 * @generated
 	 */
-	void setAttribute(int value);
+	void setAttribute(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Derived Attribute</b></em>' attribute.
@@ -66,14 +66,14 @@ public interface TestClass extends EObject {
 	 * @model required="true" transient="true" changeable="false" volatile="true" derived="true" ordered="false"
 	 * @generated
 	 */
-	int getDerivedAttribute();
+	String getDerivedAttribute();
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @model kind="operation" required="true"
+	 * @model required="true"
 	 * @generated
 	 */
-	int getSquare();
+	String method();
 
 } // TestClass

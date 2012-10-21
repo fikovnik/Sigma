@@ -46,7 +46,7 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int ATTRIBUTE_EDEFAULT = 0;
+	protected static final String ATTRIBUTE_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' attribute.
@@ -56,7 +56,7 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	 * @generated
 	 * @ordered
 	 */
-	protected int attribute = ATTRIBUTE_EDEFAULT;
+	protected String attribute = ATTRIBUTE_EDEFAULT;
 
 	/**
 	 * The cached setting delegate for the '{@link #getDerivedAttribute() <em>Derived Attribute</em>}' attribute.
@@ -92,7 +92,7 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getAttribute() {
+	public String getAttribute() {
 		return attribute;
 	}
 
@@ -101,8 +101,8 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setAttribute(int newAttribute) {
-		int oldAttribute = attribute;
+	public void setAttribute(String newAttribute) {
+		String oldAttribute = attribute;
 		attribute = newAttribute;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, TmPackage.TEST_CLASS__ATTRIBUTE, oldAttribute, attribute));
@@ -113,28 +113,28 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getDerivedAttribute() {
-		return (Integer)DERIVED_ATTRIBUTE__ESETTING_DELEGATE.dynamicGet(this, null, 0, true, false);
+	public String getDerivedAttribute() {
+		return (String)DERIVED_ATTRIBUTE__ESETTING_DELEGATE.dynamicGet(this, null, 0, true, false);
 	}
 
 	/**
-	 * The cached invocation delegate for the '{@link #getSquare() <em>Get Square</em>}' operation.
+	 * The cached invocation delegate for the '{@link #method() <em>Method</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getSquare()
+	 * @see #method()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final EOperation.Internal.InvocationDelegate GET_SQUARE__EINVOCATION_DELEGATE = ((EOperation.Internal)TmPackage.Literals.TEST_CLASS___GET_SQUARE).getInvocationDelegate();
+	protected static final EOperation.Internal.InvocationDelegate METHOD__EINVOCATION_DELEGATE = ((EOperation.Internal)TmPackage.Literals.TEST_CLASS___METHOD).getInvocationDelegate();
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getSquare() {
+	public String method() {
 		try {
-			return (Integer)GET_SQUARE__EINVOCATION_DELEGATE.dynamicInvoke(this, null);
+			return (String)METHOD__EINVOCATION_DELEGATE.dynamicInvoke(this, null);
 		}
 		catch (InvocationTargetException ite) {
 			throw new WrappedException(ite);
@@ -166,7 +166,7 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case TmPackage.TEST_CLASS__ATTRIBUTE:
-				setAttribute((Integer)newValue);
+				setAttribute((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -196,7 +196,7 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case TmPackage.TEST_CLASS__ATTRIBUTE:
-				return attribute != ATTRIBUTE_EDEFAULT;
+				return ATTRIBUTE_EDEFAULT == null ? attribute != null : !ATTRIBUTE_EDEFAULT.equals(attribute);
 			case TmPackage.TEST_CLASS__DERIVED_ATTRIBUTE:
 				return DERIVED_ATTRIBUTE__ESETTING_DELEGATE.dynamicIsSet(this, null, 0);
 		}
@@ -211,8 +211,8 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case TmPackage.TEST_CLASS___GET_SQUARE:
-				return getSquare();
+			case TmPackage.TEST_CLASS___METHOD:
+				return method();
 		}
 		return super.eInvoke(operationID, arguments);
 	}

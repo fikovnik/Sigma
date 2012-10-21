@@ -26,7 +26,7 @@ public final class ValidationResult {
 	 * 
 	 * @see Diagnostic#INFO
 	 */
-	public static int INFO = Diagnostic.INFO;
+	public static final int INFO = Diagnostic.INFO;
 
 	/**
 	 * The bit mask value <code>0x2</code> for a {@link #getSeverity severity}
@@ -50,7 +50,7 @@ public final class ValidationResult {
 	 * 
 	 * @see Diagnostic#CANCEL
 	 */
-	public static int CANCEL = Diagnostic.CANCEL;
+	public static final int CANCEL = Diagnostic.CANCEL;
 
 	private final int severity;
 
@@ -88,12 +88,58 @@ public final class ValidationResult {
 		return quickFixes;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("ValidationResult ");
+		switch (severity) {
+		case OK: {
+			sb.append("OK");
+			break;
+		}
+		case INFO: {
+			sb.append("INFO");
+			break;
+		}
+		case WARNING: {
+			sb.append("WARNING");
+			break;
+		}
+		case ERROR: {
+			sb.append("ERROR");
+			break;
+		}
+		case CANCEL: {
+			sb.append("CANCEL");
+			break;
+		}
+		default: {
+			sb.append("Unknown");
+			break;
+		}
+		}
+
+		sb.append(" ");
+		sb.append(message);
+
+		sb.append(" (");
+		sb.append(quickFixes.size());
+		sb.append(" quickfixes)");
+
+		return sb.toString();
+	}
+
 	public static ValidationResult ok() {
 		return new ValidationResult(OK, "");
 	}
 
 	public static ValidationResult info(String message) {
 		return new ValidationResult(INFO, message);
+	}
+
+	public static ValidationResult info(String message,
+			ISigmaQuickFix... quickFixes) {
+		return new ValidationResult(INFO, message, Arrays.asList(quickFixes));
 	}
 
 	public static ValidationResult warning(String message) {

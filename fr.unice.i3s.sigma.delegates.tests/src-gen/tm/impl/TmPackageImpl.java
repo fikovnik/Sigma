@@ -136,7 +136,7 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getTestClass__GetSquare() {
+	public EOperation getTestClass__Method() {
 		return testClassEClass.getEOperations().get(0);
 	}
 
@@ -171,7 +171,7 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		testClassEClass = createEClass(TEST_CLASS);
 		createEAttribute(testClassEClass, TEST_CLASS__ATTRIBUTE);
 		createEAttribute(testClassEClass, TEST_CLASS__DERIVED_ATTRIBUTE);
-		createEOperation(testClassEClass, TEST_CLASS___GET_SQUARE);
+		createEOperation(testClassEClass, TEST_CLASS___METHOD);
 	}
 
 	/**
@@ -205,10 +205,10 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(testClassEClass, TestClass.class, "TestClass", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getTestClass_Attribute(), ecorePackage.getEInt(), "attribute", null, 1, 1, TestClass.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getTestClass_DerivedAttribute(), ecorePackage.getEInt(), "derivedAttribute", null, 1, 1, TestClass.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getTestClass_Attribute(), ecorePackage.getEString(), "attribute", null, 0, 1, TestClass.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getTestClass_DerivedAttribute(), ecorePackage.getEString(), "derivedAttribute", null, 1, 1, TestClass.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
 
-		initEOperation(getTestClass__GetSquare(), ecorePackage.getEInt(), "getSquare", 1, 1, IS_UNIQUE, IS_ORDERED);
+		initEOperation(getTestClass__Method(), ecorePackage.getEString(), "method", 1, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -240,7 +240,7 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		  (testClassEClass, 
 		   source, 
 		   new String[] {
-			 "constraints", "NonZero SmallerThan100 Divides64 WithMessage WithQuickFix"
+			 "constraints", "A B C D E F"
 		   });		
 	}
 
@@ -257,14 +257,14 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		   source, 
 		   new String[] {
 			 "delegate", "tm.delegates.TestClassDelegate",
-			 "NonZero", "",
-			 "SmallerThan100", "",
-			 "Divides64", "",
-			 "WithMessage", "",
-			 "WithQuickFix", ""
+			 "A", "",
+			 "B", "",
+			 "C", "",
+			 "D", "",
+			 "E", ""
 		   });			
 		addAnnotation
-		  (getTestClass__GetSquare(), 
+		  (getTestClass__Method(), 
 		   source, 
 		   new String[] {
 		   });		

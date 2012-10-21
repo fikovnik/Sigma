@@ -1,51 +1,82 @@
 package tm.delegates;
 
-import fr.unice.i3s.sigma.core.ValidationResult;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import tm.TestClass;
+import fr.unice.i3s.sigma.core.ValidationResult;
+import fr.unice.i3s.sigma.core.annotations.Satisfies;
+import fr.unice.i3s.sigma.delegates.SigmaQuickFix;
+import fr.unice.i3s.sigma.delegates.SigmaQuickFix.IFix;
 
+/**
+ * 
+ * Dependencies:
+ * 
+ * <pre>
+ * A -> 
+ * B -> E, F 
+ * C ->
+ * D -> B
+ * E -> C
+ * F ->
+ * </pre>
+ * 
+ * 
+ */
+@Satisfies("checkNonEmpty")
 public final class TestClassDelegate {
 
-	public static boolean validateNonZero(TestClass self) {
-		return self.getAttribute() != 0;
+	public static boolean validateA(TestClass self) {
+		return self.getAttribute().contains("A");
 	}
 
-	public static boolean validateSmallerThan100(TestClass self) {
-		return self.getAttribute() < 100;
+	@Satisfies({ "E", "F" })
+	public static boolean validateB(TestClass self) {
+		return self.getAttribute().contains("B");
 	}
 
-	public static boolean validateDivides64(TestClass self) {
-		return true; // 64 % self.getAttribute() == 0;
+	public static boolean validateC(TestClass self) {
+		return self.getAttribute().contains("C");
 	}
 
-	public static String validateWithMessage(TestClass self) {
-		if (self.getAttribute() == 3) {
-			return "The number must not be 3";
-		} else {
+	@Satisfies("B")
+	public static boolean validateD(TestClass self) {
+		return self.getAttribute().contains("D");
+	}
+
+	@Satisfies("C")
+	public static String validateE(TestClass self) {
+		if (self.getAttribute().contains("E")) {
 			return null;
+		} else {
+			return "E is missing";
 		}
 	}
 
-	public static ValidationResult validateWithQuickFix(TestClass self) {
-		// if (self.getAttribute() != 8) {
-		// return ValidationResult.warning("The number must be 8",
-		// new SigmaQuickFix<TestClass>(TestClass.class,
-		// "Make the number become 8", new IFix<TestClass>() {
-		// @Override
-		// public void execute(TestClass self) {
-		// self.setAttribute(8);
-		// }
-		// }));
-		// } else {
-		return ValidationResult.ok();
-		// }
+	public static ValidationResult validateF(TestClass self) {
+		if (self.getAttribute().contains("F")) {
+			return ValidationResult.ok();
+		}
+
+		return ValidationResult.warning("F is missing",
+				new SigmaQuickFix<TestClass>(TestClass.class,
+						"Add F at the end", new IFix<TestClass>() {
+							@Override
+							public void execute(TestClass self) {
+								self.setAttribute(self.getAttribute() + "F");
+							}
+						}));
 	}
 
-	public static int getDerivedAttribute(TestClass self) {
-		return self.getAttribute() / 2;
+	public static String getDerivedAttribute(TestClass self) {
+		return self.getAttribute() + self.getAttribute();
 	}
 
-	public static int invokeGetSquare(TestClass self) {
-		return self.getAttribute() * self.getAttribute();
+	public static String invokeMethod(TestClass self) {
+		return ">>" + self.getAttribute() + "<<";
+	}
+
+	public static boolean checkNonEmpty(TestClass self) {
+		return !isNullOrEmpty(self.getAttribute());
 	}
 
 }
