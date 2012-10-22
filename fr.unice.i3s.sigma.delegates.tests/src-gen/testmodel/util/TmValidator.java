@@ -4,25 +4,24 @@
  *
  * $Id$
  */
-package tm.util;
+package testmodel.util;
 
 import java.util.Map;
 
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EPackage;
 
+import testmodel.TestClass;
+import testmodel.TmPackage;
 import fr.unice.i3s.sigma.delegates.SigmaEObjectValidator;
-
-import tm.*;
 
 /**
  * <!-- begin-user-doc --> The <b>Validator</b> for the model. <!-- end-user-doc
  * -->
  * 
- * @see tm.TmPackage
+ * @see testmodel.TmPackage
  * @generated
  */
 public class TmValidator extends SigmaEObjectValidator {
@@ -43,7 +42,7 @@ public class TmValidator extends SigmaEObjectValidator {
 	 * @see org.eclipse.emf.common.util.Diagnostic#getCode()
 	 * @generated
 	 */
-	public static final String DIAGNOSTIC_SOURCE = "tm";
+	public static final String DIAGNOSTIC_SOURCE = "testmodel";
 
 	/**
 	 * A constant with a fixed name that can be used as the base value for

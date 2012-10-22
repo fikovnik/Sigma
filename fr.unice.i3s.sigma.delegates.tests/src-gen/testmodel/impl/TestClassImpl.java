@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package tm.impl;
+package testmodel.impl;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -15,13 +15,13 @@ import org.eclipse.emf.common.util.WrappedException;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
-import tm.TestClass;
-import tm.TmPackage;
+import testmodel.TestClass;
+import testmodel.TmPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -30,8 +30,8 @@ import tm.TmPackage;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link tm.impl.TestClassImpl#getAttribute <em>Attribute</em>}</li>
- *   <li>{@link tm.impl.TestClassImpl#getDerivedAttribute <em>Derived Attribute</em>}</li>
+ *   <li>{@link testmodel.impl.TestClassImpl#getAttribute <em>Attribute</em>}</li>
+ *   <li>{@link testmodel.impl.TestClassImpl#getDerivedAttribute <em>Derived Attribute</em>}</li>
  * </ul>
  * </p>
  *

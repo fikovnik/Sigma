@@ -1,10 +1,11 @@
 package fr.unice.i3s.sigma.core;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import tm.TestClass;
-import tm.delegates.TestClassDelegate;
+import testmodel.TestClass;
+import testmodel.delegates.TestClassDelegate;
 
 public class SigmaInvocationDelegateTest extends
 		AbstractSigmaStandaloneDelegateTest {

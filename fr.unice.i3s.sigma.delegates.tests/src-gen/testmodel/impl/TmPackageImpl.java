@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package tm.impl;
+package testmodel.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -14,11 +14,11 @@ import org.eclipse.emf.ecore.EValidator;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
-import tm.TestClass;
-import tm.TmFactory;
-import tm.TmPackage;
+import testmodel.TestClass;
+import testmodel.TmFactory;
+import testmodel.TmPackage;
 
-import tm.util.TmValidator;
+import testmodel.util.TmValidator;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,7 +45,7 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see tm.TmPackage#eNS_URI
+	 * @see testmodel.TmPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
@@ -256,7 +256,7 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		  (testClassEClass, 
 		   source, 
 		   new String[] {
-			 "delegate", "tm.delegates.TestClassDelegate",
+			 "delegate", "testmodel.delegates.TestClassDelegate",
 			 "A", "",
 			 "B", "",
 			 "C", "",

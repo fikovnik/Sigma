@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import tm.TestClass;
-import tm.delegates.TestClassDelegate;
+import testmodel.TestClass;
+import testmodel.delegates.TestClassDelegate;
 
 public class SigmaSettingDelegateTest extends
 		AbstractSigmaStandaloneDelegateTest {

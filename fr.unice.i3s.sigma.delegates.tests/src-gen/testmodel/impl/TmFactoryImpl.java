@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package tm.impl;
+package testmodel.impl;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
-import tm.*;
+import testmodel.*;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,7 +31,7 @@ public class TmFactoryImpl extends EFactoryImpl implements TmFactory {
 	 */
 	public static TmFactory init() {
 		try {
-			TmFactory theTmFactory = (TmFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.i3s.unice.fr/Sigma/Tests"); 
+			TmFactory theTmFactory = (TmFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.i3s.unice.fr/Sigma/TestModel"); 
 			if (theTmFactory != null) {
 				return theTmFactory;
 			}

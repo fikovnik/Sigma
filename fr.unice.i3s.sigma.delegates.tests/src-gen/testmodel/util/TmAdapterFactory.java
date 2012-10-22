@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package tm.util;
+package testmodel.util;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -13,14 +13,14 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 
-import tm.*;
+import testmodel.*;
 
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see tm.TmPackage
+ * @see testmodel.TmPackage
  * @generated
  */
 public class TmAdapterFactory extends AdapterFactoryImpl {
@@ -96,13 +96,13 @@ public class TmAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link tm.TestClass <em>Test Class</em>}'.
+	 * Creates a new adapter for an object of class '{@link testmodel.TestClass <em>Test Class</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see tm.TestClass
+	 * @see testmodel.TestClass
 	 * @generated
 	 */
 	public Adapter createTestClassAdapter() {

@@ -1,6 +1,9 @@
 package fr.unice.i3s.sigma.core;
 
-import static org.junit.Assert.*;
+import static fr.unice.i3s.sigma.core.Utils.bind;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.eclipse.emf.common.util.Diagnostic;
@@ -8,11 +11,10 @@ import org.eclipse.emf.ecore.util.Diagnostician;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import testmodel.TestClass;
+import testmodel.util.TmValidator;
 import fr.unice.i3s.sigma.delegates.Messages;
 import fr.unice.i3s.sigma.delegates.SigmaEObjectValidator;
-import static fr.unice.i3s.sigma.core.Utils.*;
-import tm.TestClass;
-import tm.util.TmValidator;
 
 public final class SigmaValidationDelegateTest extends
 		AbstractSigmaStandaloneDelegateTest {

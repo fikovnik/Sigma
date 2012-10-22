@@ -1,7 +1,7 @@
-package tm.delegates;
+package testmodel.delegates;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import tm.TestClass;
+import testmodel.TestClass;
 import fr.unice.i3s.sigma.core.ValidationResult;
 import fr.unice.i3s.sigma.core.annotations.Satisfies;
 import fr.unice.i3s.sigma.delegates.SigmaQuickFix;

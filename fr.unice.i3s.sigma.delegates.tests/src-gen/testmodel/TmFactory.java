@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package tm;
+package testmodel;
 
 import org.eclipse.emf.ecore.EFactory;
 
@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EFactory;
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
  * <!-- end-user-doc -->
- * @see tm.TmPackage
+ * @see testmodel.TmPackage
  * @generated
  */
 public interface TmFactory extends EFactory {
@@ -23,7 +23,7 @@ public interface TmFactory extends EFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	TmFactory eINSTANCE = tm.impl.TmFactoryImpl.init();
+	TmFactory eINSTANCE = testmodel.impl.TmFactoryImpl.init();
 
 	/**
 	 * Returns a new object of class '<em>Test Class</em>'.

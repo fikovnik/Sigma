@@ -4,14 +4,14 @@
  *
  * $Id$
  */
-package tm.util;
+package testmodel.util;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.Switch;
 
-import tm.*;
+import testmodel.*;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,7 +23,7 @@ import tm.*;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see tm.TmPackage
+ * @see testmodel.TmPackage
  * @generated
  */
 public class TmSwitch<T> extends Switch<T> {

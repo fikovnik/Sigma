@@ -3,9 +3,9 @@ package fr.unice.i3s.sigma.core;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.BeforeClass;
 
-import tm.TestClass;
-import tm.TmFactory;
-import tm.TmPackage;
+import testmodel.TestClass;
+import testmodel.TmFactory;
+import testmodel.TmPackage;
 import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain;
 
 public abstract class AbstractSigmaStandaloneDelegateTest {

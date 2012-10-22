@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package tm;
+package testmodel;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -23,7 +23,7 @@ import org.eclipse.emf.ecore.EPackage;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see tm.TmFactory
+ * @see testmodel.TmFactory
  * @model kind="package"
  *        annotation="http://www.eclipse.org/emf/2002/Ecore invocationDelegates='http://www.i3s.unice.fr/Sigma' settingDelegates='http://www.i3s.unice.fr/Sigma' validationDelegates='http://www.i3s.unice.fr/Sigma'"
  * @generated
@@ -35,7 +35,7 @@ public interface TmPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNAME = "tm";
+	String eNAME = "testmodel";
 
 	/**
 	 * The package namespace URI.
@@ -43,7 +43,7 @@ public interface TmPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.i3s.unice.fr/Sigma/Tests";
+	String eNS_URI = "http://www.i3s.unice.fr/Sigma/TestModel";
 
 	/**
 	 * The package namespace name.
@@ -51,7 +51,7 @@ public interface TmPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_PREFIX = "tm";
+	String eNS_PREFIX = "testmodel";
 
 	/**
 	 * The singleton instance of the package.
@@ -59,14 +59,14 @@ public interface TmPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	TmPackage eINSTANCE = tm.impl.TmPackageImpl.init();
+	TmPackage eINSTANCE = testmodel.impl.TmPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link tm.impl.TestClassImpl <em>Test Class</em>}' class.
+	 * The meta object id for the '{@link testmodel.impl.TestClassImpl <em>Test Class</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see tm.impl.TestClassImpl
-	 * @see tm.impl.TmPackageImpl#getTestClass()
+	 * @see testmodel.impl.TestClassImpl
+	 * @see testmodel.impl.TmPackageImpl#getTestClass()
 	 * @generated
 	 */
 	int TEST_CLASS = 0;
@@ -118,43 +118,43 @@ public interface TmPackage extends EPackage {
 
 
 	/**
-	 * Returns the meta object for class '{@link tm.TestClass <em>Test Class</em>}'.
+	 * Returns the meta object for class '{@link testmodel.TestClass <em>Test Class</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for class '<em>Test Class</em>'.
-	 * @see tm.TestClass
+	 * @see testmodel.TestClass
 	 * @generated
 	 */
 	EClass getTestClass();
 
 	/**
-	 * Returns the meta object for the attribute '{@link tm.TestClass#getAttribute <em>Attribute</em>}'.
+	 * Returns the meta object for the attribute '{@link testmodel.TestClass#getAttribute <em>Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Attribute</em>'.
-	 * @see tm.TestClass#getAttribute()
+	 * @see testmodel.TestClass#getAttribute()
 	 * @see #getTestClass()
 	 * @generated
 	 */
 	EAttribute getTestClass_Attribute();
 
 	/**
-	 * Returns the meta object for the attribute '{@link tm.TestClass#getDerivedAttribute <em>Derived Attribute</em>}'.
+	 * Returns the meta object for the attribute '{@link testmodel.TestClass#getDerivedAttribute <em>Derived Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Derived Attribute</em>'.
-	 * @see tm.TestClass#getDerivedAttribute()
+	 * @see testmodel.TestClass#getDerivedAttribute()
 	 * @see #getTestClass()
 	 * @generated
 	 */
 	EAttribute getTestClass_DerivedAttribute();
 
 	/**
-	 * Returns the meta object for the '{@link tm.TestClass#method() <em>Method</em>}' operation.
+	 * Returns the meta object for the '{@link testmodel.TestClass#method() <em>Method</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the '<em>Method</em>' operation.
-	 * @see tm.TestClass#method()
+	 * @see testmodel.TestClass#method()
 	 * @generated
 	 */
 	EOperation getTestClass__Method();
@@ -183,11 +183,11 @@ public interface TmPackage extends EPackage {
 	 */
 	interface Literals {
 		/**
-		 * The meta object literal for the '{@link tm.impl.TestClassImpl <em>Test Class</em>}' class.
+		 * The meta object literal for the '{@link testmodel.impl.TestClassImpl <em>Test Class</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see tm.impl.TestClassImpl
-		 * @see tm.impl.TmPackageImpl#getTestClass()
+		 * @see testmodel.impl.TestClassImpl
+		 * @see testmodel.impl.TmPackageImpl#getTestClass()
 		 * @generated
 		 */
 		EClass TEST_CLASS = eINSTANCE.getTestClass();
