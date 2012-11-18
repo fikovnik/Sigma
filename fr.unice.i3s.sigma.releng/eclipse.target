@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target includeMode="feature" name="e37" sequenceNumber="20">
+<target includeMode="feature" name="e37" sequenceNumber="22">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.google.guava.runtime.feature.feature.group" version="11.0.1"/>
-<unit id="com.google.guava.sdk.feature.feature.group" version="11.0.1"/>
-<repository location="http://guava-osgi.googlecode.com/svn/trunk/repository/"/>
+<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<unit id="org.eclipse.swtbot.eclipse.test.junit4.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<unit id="org.eclipse.swtbot.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<unit id="org.eclipse.swtbot.forms.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
+<repository location="http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.sdk" version="3.7.2.M20120208-0800"/>
@@ -18,19 +20,13 @@
 </location>
 <location path="${project_loc}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.scala-ide.sdt.feature.feature.group" version="2.0.2.v-2_09-201207120929-81d0972"/>
-<repository location="http://download.scala-ide.org/releases-29/stable/site"/>
+<unit id="com.google.guava.runtime.feature.feature.group" version="11.0.1"/>
+<unit id="com.google.guava.sdk.feature.feature.group" version="11.0.1"/>
+<repository location="http://guava-osgi.googlecode.com/svn/trunk/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
-<unit id="org.eclipse.swtbot.eclipse.test.junit4.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
-<unit id="org.eclipse.swtbot.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
-<unit id="org.eclipse.swtbot.forms.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
-<repository location="http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site"/>
-</location>
-<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.uml2.sdk.feature.group" version="3.2.1.v201109082252"/>
-<repository location="http://download.eclipse.org/releases/indigo/"/>
+<unit id="org.scala-ide.sdt.feature.feature.group" version="2.1.0.m2-2_10-201211061739-221811e"/>
+<repository location="http://download.scala-ide.org/sdk/e37/scala210/dev/site/"/>
 </location>
 </locations>
 </target>

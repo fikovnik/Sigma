@@ -51,7 +51,7 @@
 									</instructions>
 								</artifact>
 								<artifact>
-									<id>org.scalatest:scalatest_2.9.2:2.0.M3</id>
+									<id>org.scalatest:scalatest_2.10.0-RC2:2.0.M5</id>
 									<source>true</source>
 									<transitive>false</transitive>
 									<instructions>
@@ -79,11 +79,11 @@
 		</plugins>
 	</build>
 
-	<repositories>
-		<repository>
+	<pluginRepositories>
+		<pluginRepository>
 			<id>reficio</id>
 			<url>http://repo.reficio.org/maven/</url>
-		</repository>
-	</repositories>
+		</pluginRepository>
+	</pluginRepositories>
 
 </project>
