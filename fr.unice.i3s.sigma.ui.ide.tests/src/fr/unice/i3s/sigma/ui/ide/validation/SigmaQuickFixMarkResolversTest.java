@@ -22,6 +22,8 @@ import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.results.VoidResult;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -32,6 +34,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import fr.unice.i3s.sigma.ui.ide.validation.helpers.TreeHasItems;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class SigmaQuickFixMarkResolversTest {
@@ -45,7 +49,10 @@ public class SigmaQuickFixMarkResolversTest {
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		bot.viewByTitle("Welcome").close();
+		// if instead of an application org.eclipse.ui.ide.workbench
+		// we run product org.eclipse.sdk.ide
+		// we need to close the initial Welcome view
+		// bot.viewByTitle("Welcome").close();
 	}
 
 	@Before
@@ -55,11 +62,11 @@ public class SigmaQuickFixMarkResolversTest {
 
 	@AfterClass
 	public static void sleep() {
-		bot.sleep(2000);
+		// bot.sleep(2000);
 	}
 
 	@Test
-	public void testName() throws Exception {
+	public void testBasicQuickFixScenario() throws Exception {
 		final String xmiFile = "Library-2BooksWithNoCopies.xmi";
 
 		// new project
@@ -88,10 +95,21 @@ public class SigmaQuickFixMarkResolversTest {
 
 		// open Problems view
 		SWTBot problemsBot = openView("org.eclipse.ui.views.ProblemView").bot();
-		// try the quick fix
-		problemsBot.tree().expandNode("Errors (2 items)").getItems()[0]
-				.select().pressShortcut(Keystrokes.COMMAND,
-						KeyStroke.getInstance('1'));
+		SWTBotTree problemsTree = problemsBot.tree();
+		// wait till errors appear in the tree
+		bot.waitUntil(new TreeHasItems(problemsTree));
+
+		// expand tree
+		SWTBotTreeItem errorsGroup = problemsTree.getAllItems()[0];
+		errorsGroup.expand();
+		// get the first error
+		SWTBotTreeItem firstError = errorsGroup.getItems()[0].select();
+		// execute quick fix
+		// btw: the right click does not work since the menu item will be
+		// disposed before the click() manages to click it.
+		// firstError.contextMenu("Quick Fix").click();
+		firstError
+				.pressShortcut(Keystrokes.COMMAND, KeyStroke.getInstance('1'));
 		screenshot();
 
 		s = bot.shell("Quick Fix");
@@ -155,9 +173,9 @@ public class SigmaQuickFixMarkResolversTest {
 		return bot.editorByTitle(file.getName());
 	}
 
-	private void refreshProject(String projectName) {
-		SWTBot projExpBot = bot.viewById(
-				"org.eclipse.ui.navigator.ProjectExplorer").bot();
+	private void refreshProject(String projectName) throws PartInitException {
+		SWTBot projExpBot = openView("org.eclipse.ui.navigator.ProjectExplorer")
+				.bot();
 		projExpBot.tree().getTreeItem(projectName).contextMenu("Refresh")
 				.click();
 	}

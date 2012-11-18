@@ -13,7 +13,9 @@
 	<packaging>eclipse-test-plugin</packaging>
 
 	<properties>
-		<uitest.vmparams>-Dorg.eclipse.swtbot.search.timeout=10000 -Xmx1024m -XX:MaxPermSize=384m</uitest.vmparams>
+		<uitest.vmparams>-Dorg.eclipse.swtbot.search.timeout=10000 -Xmx1024m
+			-XX:MaxPermSize=384m
+		</uitest.vmparams>
 	</properties>
 
 	<profiles>
@@ -37,7 +39,8 @@
 				</os>
 			</activation>
 			<properties>
-				<ui.test.vmargs>${uitest.vmparams} -XstartOnFirstThread</ui.test.vmargs>
+				<ui.test.vmargs>${uitest.vmparams} -XstartOnFirstThread
+				</ui.test.vmargs>
 			</properties>
 		</profile>
 		<profile>
@@ -54,6 +57,14 @@
 		</profile>
 	</profiles>
 
+	<!-- IMPORTANT: following will a new eclipse application with only the bundles 
+		that are resolved as the dependencies from current therefore in the MANIFEST.MF 
+		there have to be all dependencies that is required for the run. This means 
+		also all the non-direct dependencies, like when SWT bot is looking for some 
+		view or an editor, etc. For example: SWTBot projExpBot = openView("org.eclipse.ui.navigator.ProjectExplorer") 
+		.bot(); should cause to have org.eclipse.ui.navigator.resources in the dependencies. 
+		Since it might be hard to cherry-pick them like this it is easier to bloat 
+		it with things like org.eclipse.pde.ui :-) -->
 	<build>
 		<plugins>
 			<plugin>
@@ -66,21 +77,7 @@
 					<product>org.eclipse.sdk.ide</product>
 					<application>org.eclipse.ui.ide.workbench</application>
 					<argLine>${ui.test.vmargs}</argLine>
-<!-- 					<dependencies>
-						<dependency>
-							<type>p2-installable-unit</type>
-							<groupId>fr.unice.i3s.sigma</groupId>
-							<artifactId>fr.unice.i3s.sigma.feature</artifactId>
-							<version>1.0.0</version>
-						</dependency>
-						<dependency>
-							<type>p2-installable-unit</type>
-							<groupId>fr.unice.i3s.sigma</groupId>
-							<artifactId>fr.unice.i3s.sigma.examples.feature</artifactId>
-							<version>1.0.0</version>
-						</dependency>
-					</dependencies>
- -->				</configuration>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
