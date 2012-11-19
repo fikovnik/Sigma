@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sigma Scala Library Example
+Bundle-SymbolicName: fr.unice.i3s.sigma.scala.examples.library
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.emf;bundle-version="2.6.0",
+ fr.unice.i3s.sigma.scala;bundle-version="1.0.0"

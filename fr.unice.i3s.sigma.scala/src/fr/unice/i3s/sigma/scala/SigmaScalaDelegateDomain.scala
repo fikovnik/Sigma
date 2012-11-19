@@ -13,7 +13,12 @@ import org.eclipse.emf.ecore.ETypedElement
 import org.eclipse.emf.ecore.EValidator
 import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
 import fr.unice.i3s.sigma.scala.utils._
+import fr.unice.i3s.sigma.core.{ ValidationResult => JValidationResult }
 import org.eclipse.emf.common.util.EList
+import fr.unice.i3s.sigma.core.ISigmaQuickFix
+import fr.unice.i3s.sigma.delegates.SigmaQuickFix
+import org.eclipse.emf.ecore.EObject
+import java.lang.reflect.Method
 
 final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
@@ -154,14 +159,19 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
     }
   }
 
-  //  override def toSigmaValidationResult(status : Object, constraint : String, `object` : Object) = {
-  //    status match {
-  //      case s : Some[Boolean] => super.toSigmaValidationResult(s.get, constraint, `object`)
-  //      case None => SigmaValidationResult
-  //        .cancel("Constaint '%s' has not been checked on %s"
-  //          format (constraint, `object`))
-  //      case _ => super.toSigmaValidationResult(status, constraint, `object`)
-  //    }
-  //  }
+  override def toSigmaValidationResult(status: Object, delegate: Method, constraint: String, `object`: Object) = {
+
+    status match {
+      //      case Option[String] => super.toSigmaValidationResult(s.get, delegate, constraint, `object`)
+      case vr: ValidationResult => vr match {
+        case _: OK => JValidationResult.ok()
+        case Info(message) => JValidationResult.info(message)
+        case Warning(message, quickFix) => JValidationResult.warning(message, new SigmaScalaQuickFix(quickFix))
+        case Error(message) => JValidationResult.error(message)
+        case _: Cancel => JValidationResult.cancel()
+      }
+      case _ => super.toSigmaValidationResult(status, delegate, constraint, `object`)
+    }
+  }
 
 }

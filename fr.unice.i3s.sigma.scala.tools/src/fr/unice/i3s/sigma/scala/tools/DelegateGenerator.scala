@@ -75,7 +75,10 @@ object DelegateGenerator extends App {
 
   for (genPkg <- genModel.getGenPackages) {
     val pkg = genPkg.getEcorePackage
-    val pkgFQN = genPkg.getBasePackage + "." + genPkg.getPackageName + ".delegates"
+    val pkgFQN = Option(genPkg.getBasePackage)
+      .map(_ + ".")
+      .getOrElse("") + genPkg.getPackageName + ".delegates"
+
     val out = new File(targetDir, pkg.getName)
 
     println("Generating package: " + pkgFQN + " into " + out)
