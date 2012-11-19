@@ -445,6 +445,8 @@ public class SigmaEObjectValidator extends EObjectValidator {
 			partialResults.setResult(constraint, result);
 		}
 
+		assert result != null;
+
 		switch (result.getSeverity()) {
 		case ValidationResult.INFO:
 		case ValidationResult.WARNING:
