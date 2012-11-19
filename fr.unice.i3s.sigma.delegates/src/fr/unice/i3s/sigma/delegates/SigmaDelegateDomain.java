@@ -27,10 +27,6 @@ public class SigmaDelegateDomain {
 
 	public static final String DELEGATE_CONSTRAINT_KEY = "delegate"; //$NON-NLS-1$
 
-	public static final String INVOCATION_CONSTRAINT_KEY = "body"; //$NON-NLS-1$
-
-	public static final String SETTER_CONSTRAINT_KEY = "derivation"; //$NON-NLS-1$
-
 	/**
 	 * Registers globally Java version of the Sigma delegates for the
 	 * {@link #DELEGATE_URI} URI. This includes:

@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see testmodel.TmPackage#getTestClass()
- * @model annotation="http://www.i3s.unice.fr/Sigma delegate='testmodel.delegates.TestClassDelegate' A='' B='' C='' D='' E='' F=''"
+ * @model annotation="http://www.i3s.unice.fr/Sigma A='' B='' C='' D='' E='' F=''"
  *        annotation="http://www.eclipse.org/emf/2002/Ecore constraints='A B C D E F'"
  * @generated
  */

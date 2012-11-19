@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EPackage;
  * @see testmodel.TmFactory
  * @model kind="package"
  *        annotation="http://www.eclipse.org/emf/2002/Ecore invocationDelegates='http://www.i3s.unice.fr/Sigma' settingDelegates='http://www.i3s.unice.fr/Sigma' validationDelegates='http://www.i3s.unice.fr/Sigma'"
+ *        annotation="http://www.i3s.unice.fr/Sigma delegate='testmodel.delegates'"
  * @generated
  */
 public interface TmPackage extends EPackage {
@@ -118,6 +119,71 @@ public interface TmPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '{@link testmodel.impl.TestOverridingImpl <em>Test Overriding</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see testmodel.impl.TestOverridingImpl
+	 * @see testmodel.impl.TmPackageImpl#getTestOverriding()
+	 * @generated
+	 */
+	int TEST_OVERRIDING = 1;
+
+	/**
+	 * The feature id for the '<em><b>Attribute</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_OVERRIDING__ATTRIBUTE = 0;
+
+	/**
+	 * The feature id for the '<em><b>Normal Attribute</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_OVERRIDING__NORMAL_ATTRIBUTE = 1;
+
+	/**
+	 * The number of structural features of the '<em>Test Overriding</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_OVERRIDING_FEATURE_COUNT = 2;
+
+	/**
+	 * The operation id for the '<em>Method</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_OVERRIDING___METHOD = 0;
+
+	/**
+	 * The operation id for the '<em>Normal Method</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_OVERRIDING___NORMAL_METHOD = 1;
+
+	/**
+	 * The number of operations of the '<em>Test Overriding</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_OVERRIDING_OPERATION_COUNT = 2;
+
+
+	/**
 	 * Returns the meta object for class '{@link testmodel.TestClass <em>Test Class</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -158,6 +224,58 @@ public interface TmPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getTestClass__Method();
+
+	/**
+	 * Returns the meta object for class '{@link testmodel.TestOverriding <em>Test Overriding</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Test Overriding</em>'.
+	 * @see testmodel.TestOverriding
+	 * @generated
+	 */
+	EClass getTestOverriding();
+
+	/**
+	 * Returns the meta object for the attribute '{@link testmodel.TestOverriding#getAttribute <em>Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Attribute</em>'.
+	 * @see testmodel.TestOverriding#getAttribute()
+	 * @see #getTestOverriding()
+	 * @generated
+	 */
+	EAttribute getTestOverriding_Attribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link testmodel.TestOverriding#getNormalAttribute <em>Normal Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Normal Attribute</em>'.
+	 * @see testmodel.TestOverriding#getNormalAttribute()
+	 * @see #getTestOverriding()
+	 * @generated
+	 */
+	EAttribute getTestOverriding_NormalAttribute();
+
+	/**
+	 * Returns the meta object for the '{@link testmodel.TestOverriding#method() <em>Method</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Method</em>' operation.
+	 * @see testmodel.TestOverriding#method()
+	 * @generated
+	 */
+	EOperation getTestOverriding__Method();
+
+	/**
+	 * Returns the meta object for the '{@link testmodel.TestOverriding#normalMethod() <em>Normal Method</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Normal Method</em>' operation.
+	 * @see testmodel.TestOverriding#normalMethod()
+	 * @generated
+	 */
+	EOperation getTestOverriding__NormalMethod();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -215,6 +333,48 @@ public interface TmPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation TEST_CLASS___METHOD = eINSTANCE.getTestClass__Method();
+
+		/**
+		 * The meta object literal for the '{@link testmodel.impl.TestOverridingImpl <em>Test Overriding</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see testmodel.impl.TestOverridingImpl
+		 * @see testmodel.impl.TmPackageImpl#getTestOverriding()
+		 * @generated
+		 */
+		EClass TEST_OVERRIDING = eINSTANCE.getTestOverriding();
+
+		/**
+		 * The meta object literal for the '<em><b>Attribute</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TEST_OVERRIDING__ATTRIBUTE = eINSTANCE.getTestOverriding_Attribute();
+
+		/**
+		 * The meta object literal for the '<em><b>Normal Attribute</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TEST_OVERRIDING__NORMAL_ATTRIBUTE = eINSTANCE.getTestOverriding_NormalAttribute();
+
+		/**
+		 * The meta object literal for the '<em><b>Method</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TEST_OVERRIDING___METHOD = eINSTANCE.getTestOverriding__Method();
+
+		/**
+		 * The meta object literal for the '<em><b>Normal Method</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TEST_OVERRIDING___NORMAL_METHOD = eINSTANCE.getTestOverriding__NormalMethod();
 
 	}
 

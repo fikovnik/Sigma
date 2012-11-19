@@ -22,7 +22,7 @@ public class SigmaInvocationDelegate extends AbstractSigmaDelegate<EOperation>
 
 	public SigmaInvocationDelegate(EOperation operation,
 			SigmaDelegateDomain domain) {
-		super(operation, domain, SigmaDelegateDomain.INVOCATION_CONSTRAINT_KEY);
+		super(operation, domain, SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY);
 	}
 
 	@Override
@@ -32,9 +32,10 @@ public class SigmaInvocationDelegate extends AbstractSigmaDelegate<EOperation>
 		Method delegate = getDelegateChecked(targetObject);
 
 		try {
-			Object[] args = new Object[1 + (arguments == null ? 0 : arguments.size())];
+			Object[] args = new Object[1 + (arguments == null ? 0 : arguments
+					.size())];
 			args[0] = targetObject;
-			for (int i = 0; i < args.length-1; i++) {
+			for (int i = 0; i < args.length - 1; i++) {
 				args[i + 1] = domain.processArgument(target.getEParameters()
 						.get(i), arguments.get(i));
 			}
@@ -42,11 +43,14 @@ public class SigmaInvocationDelegate extends AbstractSigmaDelegate<EOperation>
 			Object value = delegate.invoke(null, args);
 			return domain.processResult(target, value);
 		} catch (IllegalArgumentException e) {
-			throw domain.handleIllegalArgumentException(delegate, targetObject, e);
+			throw domain.handleIllegalArgumentException(delegate, targetObject,
+					e);
 		} catch (IllegalAccessException e) {
-			throw domain.handleIllegalAccessException(delegate, targetObject, e);
+			throw domain
+					.handleIllegalAccessException(delegate, targetObject, e);
 		} catch (InvocationTargetException e) {
-			throw domain.handleInvocationTargetException(delegate, targetObject, e);
+			throw domain.handleInvocationTargetException(delegate,
+					targetObject, e);
 		}
 	}
 
@@ -89,6 +93,7 @@ public class SigmaInvocationDelegate extends AbstractSigmaDelegate<EOperation>
 		return true;
 	}
 
+	@Override
 	protected String getExpectedMethodSignature() {
 		StringBuilder sb = new StringBuilder();
 
@@ -126,6 +131,7 @@ public class SigmaInvocationDelegate extends AbstractSigmaDelegate<EOperation>
 		return sb.toString();
 	}
 
+	@Override
 	protected String getDelegateMethodName() {
 		return "invoke" + Utils.capitalize(target.getName());
 	}

@@ -23,7 +23,7 @@ public class SigmaSettingDelegate extends
 	public SigmaSettingDelegate(EStructuralFeature eStructuralFeature,
 			SigmaDelegateDomain domain) {
 		super(eStructuralFeature, domain,
-				SigmaDelegateDomain.SETTER_CONSTRAINT_KEY);
+				SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY);
 
 		settingDelegate = new BasicSettingDelegate.Stateless(eStructuralFeature) {
 
@@ -58,6 +58,7 @@ public class SigmaSettingDelegate extends
 		}
 	}
 
+	@Override
 	protected String getExpectedMethodSignature() {
 		StringBuilder sb = new StringBuilder();
 
@@ -97,7 +98,7 @@ public class SigmaSettingDelegate extends
 	@Override
 	protected String getDelegateMethodName() {
 		EClassifier retType = target.getEType();
-		
+
 		if (retType == EcorePackage.eINSTANCE.getEBoolean()
 				|| retType == EcorePackage.eINSTANCE.getEBooleanObject()) {
 			return "is" + Utils.capitalize(target.getName());
@@ -106,12 +107,14 @@ public class SigmaSettingDelegate extends
 		}
 	}
 
+	@Override
 	public final Setting dynamicSetting(InternalEObject owner,
 			DynamicValueHolder settings, int dynamicFeatureID) {
 		return settingDelegate
 				.dynamicSetting(owner, settings, dynamicFeatureID);
 	}
 
+	@Override
 	public final Object dynamicGet(InternalEObject owner,
 			DynamicValueHolder settings, int dynamicFeatureID, boolean resolve,
 			boolean coreType) {
@@ -119,21 +122,25 @@ public class SigmaSettingDelegate extends
 				resolve, coreType);
 	}
 
+	@Override
 	public final boolean dynamicIsSet(InternalEObject owner,
 			DynamicValueHolder settings, int dynamicFeatureID) {
 		return settingDelegate.dynamicIsSet(owner, settings, dynamicFeatureID);
 	}
 
+	@Override
 	public final void dynamicSet(InternalEObject owner,
 			DynamicValueHolder settings, int dynamicFeatureID, Object newValue) {
 		settingDelegate.dynamicSet(owner, settings, dynamicFeatureID, newValue);
 	}
 
+	@Override
 	public final void dynamicUnset(InternalEObject owner,
 			DynamicValueHolder settings, int dynamicFeatureID) {
 		settingDelegate.dynamicUnset(owner, settings, dynamicFeatureID);
 	}
 
+	@Override
 	public final NotificationChain dynamicInverseAdd(InternalEObject owner,
 			DynamicValueHolder settings, int dynamicFeatureID,
 			InternalEObject otherEnd, NotificationChain notifications) {
@@ -141,6 +148,7 @@ public class SigmaSettingDelegate extends
 				dynamicFeatureID, otherEnd, notifications);
 	}
 
+	@Override
 	public final NotificationChain dynamicInverseRemove(InternalEObject owner,
 			DynamicValueHolder settings, int dynamicFeatureID,
 			InternalEObject otherEnd, NotificationChain notifications) {

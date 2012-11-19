@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import testmodel.TestClass;
+import testmodel.TestOverriding;
 import testmodel.TmFactory;
 import testmodel.TmPackage;
 
@@ -33,6 +34,13 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 	 * @generated
 	 */
 	private EClass testClassEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass testOverridingEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -145,6 +153,51 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getTestOverriding() {
+		return testOverridingEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTestOverriding_Attribute() {
+		return (EAttribute)testOverridingEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTestOverriding_NormalAttribute() {
+		return (EAttribute)testOverridingEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getTestOverriding__Method() {
+		return testOverridingEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getTestOverriding__NormalMethod() {
+		return testOverridingEClass.getEOperations().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public TmFactory getTmFactory() {
 		return (TmFactory)getEFactoryInstance();
 	}
@@ -172,6 +225,12 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		createEAttribute(testClassEClass, TEST_CLASS__ATTRIBUTE);
 		createEAttribute(testClassEClass, TEST_CLASS__DERIVED_ATTRIBUTE);
 		createEOperation(testClassEClass, TEST_CLASS___METHOD);
+
+		testOverridingEClass = createEClass(TEST_OVERRIDING);
+		createEAttribute(testOverridingEClass, TEST_OVERRIDING__ATTRIBUTE);
+		createEAttribute(testOverridingEClass, TEST_OVERRIDING__NORMAL_ATTRIBUTE);
+		createEOperation(testOverridingEClass, TEST_OVERRIDING___METHOD);
+		createEOperation(testOverridingEClass, TEST_OVERRIDING___NORMAL_METHOD);
 	}
 
 	/**
@@ -210,6 +269,14 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 
 		initEOperation(getTestClass__Method(), ecorePackage.getEString(), "method", 1, 1, IS_UNIQUE, IS_ORDERED);
 
+		initEClass(testOverridingEClass, TestOverriding.class, "TestOverriding", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getTestOverriding_Attribute(), ecorePackage.getEString(), "attribute", null, 1, 1, TestOverriding.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getTestOverriding_NormalAttribute(), ecorePackage.getEString(), "normalAttribute", null, 1, 1, TestOverriding.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+
+		initEOperation(getTestOverriding__Method(), ecorePackage.getEString(), "method", 1, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getTestOverriding__NormalMethod(), ecorePackage.getEString(), "normalMethod", 1, 1, IS_UNIQUE, IS_ORDERED);
+
 		// Create resource
 		createResource(eNS_URI);
 
@@ -235,13 +302,19 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 			 "invocationDelegates", "http://www.i3s.unice.fr/Sigma",
 			 "settingDelegates", "http://www.i3s.unice.fr/Sigma",
 			 "validationDelegates", "http://www.i3s.unice.fr/Sigma"
-		   });			
+		   });				
 		addAnnotation
 		  (testClassEClass, 
 		   source, 
 		   new String[] {
 			 "constraints", "A B C D E F"
-		   });		
+		   });					
+		addAnnotation
+		  (testOverridingEClass, 
+		   source, 
+		   new String[] {
+			 "constraints", "constraint normalConstraint"
+		   });				
 	}
 
 	/**
@@ -253,10 +326,15 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 	protected void createSigmaAnnotations() {
 		String source = "http://www.i3s.unice.fr/Sigma";			
 		addAnnotation
+		  (this, 
+		   source, 
+		   new String[] {
+			 "delegate", "testmodel.delegates"
+		   });		
+		addAnnotation
 		  (testClassEClass, 
 		   source, 
 		   new String[] {
-			 "delegate", "testmodel.delegates.TestClassDelegate",
 			 "A", "",
 			 "B", "",
 			 "C", "",
@@ -271,6 +349,36 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		   });		
 		addAnnotation
 		  (getTestClass_DerivedAttribute(), 
+		   source, 
+		   new String[] {
+		   });		
+		addAnnotation
+		  (testOverridingEClass, 
+		   source, 
+		   new String[] {
+			 "delegate", "testmodel.delegates.OverrideClassDelegate",
+			 "constraint", "testmodel.delegates.OverrideConstraintDelegate.checkA",
+			 "normalConstraint", ""
+		   });			
+		addAnnotation
+		  (getTestOverriding__Method(), 
+		   source, 
+		   new String[] {
+			 "delegate", "testmodel.delegates.OverrideMethodDelegate.method"
+		   });		
+		addAnnotation
+		  (getTestOverriding__NormalMethod(), 
+		   source, 
+		   new String[] {
+		   });		
+		addAnnotation
+		  (getTestOverriding_Attribute(), 
+		   source, 
+		   new String[] {
+			 "delegate", "testmodel.delegates.OverridePropertyDelegate.attribute"
+		   });		
+		addAnnotation
+		  (getTestOverriding_NormalAttribute(), 
 		   source, 
 		   new String[] {
 		   });

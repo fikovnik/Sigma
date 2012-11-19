@@ -6,9 +6,11 @@
     <details key="settingDelegates" value="http://www.i3s.unice.fr/Sigma"/>
     <details key="validationDelegates" value="http://www.i3s.unice.fr/Sigma"/>
   </eAnnotations>
+  <eAnnotations source="http://www.i3s.unice.fr/Sigma">
+    <details key="delegate" value="testmodel.delegates"/>
+  </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="TestClass">
     <eAnnotations source="http://www.i3s.unice.fr/Sigma">
-      <details key="delegate" value="testmodel.delegates.TestClassDelegate"/>
       <details key="A" value=""/>
       <details key="B" value=""/>
       <details key="C" value=""/>
@@ -25,6 +27,36 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" ordered="false"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="derivedAttribute" ordered="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        changeable="false" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TestOverriding">
+    <eAnnotations source="http://www.i3s.unice.fr/Sigma">
+      <details key="delegate" value="testmodel.delegates.OverrideClassDelegate"/>
+      <details key="constraint" value="testmodel.delegates.OverrideConstraintDelegate.checkA"/>
+      <details key="normalConstraint" value=""/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="constraint normalConstraint"/>
+    </eAnnotations>
+    <eOperations name="method" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma">
+        <details key="delegate" value="testmodel.delegates.OverrideMethodDelegate.method"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="normalMethod" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" ordered="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        changeable="false" volatile="true" transient="true" derived="true">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma">
+        <details key="delegate" value="testmodel.delegates.OverridePropertyDelegate.attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="normalAttribute" ordered="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         changeable="false" volatile="true" transient="true" derived="true">
       <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>

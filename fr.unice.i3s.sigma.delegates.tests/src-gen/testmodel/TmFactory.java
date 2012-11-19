@@ -35,6 +35,15 @@ public interface TmFactory extends EFactory {
 	TestClass createTestClass();
 
 	/**
+	 * Returns a new object of class '<em>Test Overriding</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Test Overriding</em>'.
+	 * @generated
+	 */
+	TestOverriding createTestOverriding();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

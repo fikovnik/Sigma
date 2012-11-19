@@ -4,7 +4,6 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.transform;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -14,13 +13,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+
+import static fr.unice.i3s.sigma.core.Utils.getAnnotationDetail;
+import static fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY;
 
 public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 
@@ -63,19 +65,69 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 
 		// 2. try to find the delegate
 
-		// consult the class hierarchy in case the target object is different
-		// from the target class
-		if (targetEObject != null && target.eContainer() != targetEClass) {
-			Iterable<EClass> hierarchy = getClassHierarchy(targetEClass);
+		// 2.1 try the feature annotation (structural
+		// feature/operation/constraint)
+		String delegateName = getAnnotationDetail(target, domain.getURI(),
+				annotationDetailKey);
+		if (!isNullOrEmpty(delegateName)) {
+			int methodSep = delegateName.lastIndexOf('.');
+
+			if (methodSep == -1) {
+				throw new SigmaDelegateNotFoundException(
+						"Unable to find a delegate method for "
+								+ target.getName()
+								+ ". Found annotation: `"
+								+ delegateName
+								+ "` is missing method name. In this case it has"
+								+ " to be in a for of a <fully qualified class "
+								+ "name>.<method name>");
+			}
+
+			String className = delegateName.substring(0, methodSep);
+			String methodName = delegateName.substring(methodSep + 1);
+			candidate = findDelegateMethod(className, methodName);
+
+			if (candidate == null) {
+				throw new SigmaDelegateNotFoundException(
+						"Unable to find a delegate method for "
+								+ target.getName() + ". Found annotation: `"
+								+ delegateName
+								+ "`, but could not find expected method: "
+								+ getExpectedMethodSignature()
+								+ " in the class: " + className);
+			}
+		}
+
+		// 2.2 try the class / package annotation
+		if (candidate == null) {
+			Iterable<EClass> hierarchy = null;
+			if (targetEObject != null && target.eContainer() != targetEClass) {
+				hierarchy = getClassHierarchy(targetEClass);
+			} else {
+				hierarchy = ImmutableList.<EClass> of(targetEClass);
+			}
 
 			for (EClass e : hierarchy) {
-				String className = getDelegateClassName(e);
-				if (className != null) {
-					candidate = findDelegateMethod(className);
-				}
+				String className = getClassDelegateName(e);
 
-				if (candidate != null) {
-					break;
+				if (className != null) {
+					candidate = findDelegateMethod(className,
+							getDelegateMethodName());
+
+					if (candidate != null) {
+						break;
+					} else {
+						throw new SigmaDelegateNotFoundException(
+								"Unable to find a delegate method for "
+										+ target.getName()
+										+ ". Found superclass "
+										+ e.getName()
+										+ " annotation: `"
+										+ delegateName
+										+ ", but could not find expected method: "
+										+ getExpectedMethodSignature()
+										+ " in the class: " + className);
+					}
 				}
 			}
 
@@ -96,23 +148,38 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 													}
 												})));
 			}
-		} else {
-
-			String className = getDelegateClassName(targetEClass);
-			if (className != null) {
-				candidate = findDelegateMethod(className);
-			}
-
-			if (candidate == null) {
-				throw new SigmaDelegateNotFoundException(
-						"Unable to find a delegate method for "
-								+ target.getName() + " expected: "
-								+ getExpectedMethodSignature());
-			}
 		}
 
 		delegates.put(targetEClass, candidate);
 		return candidate;
+
+	}
+
+	private String getClassDelegateName(EClass e) {
+		// 1. try the class itself
+		String delegateName = getAnnotationDetail(e, domain.getURI(),
+				DELEGATE_CONSTRAINT_KEY);
+
+		if (delegateName != null) {
+			return delegateName;
+		}
+
+		// 2. try the package
+		// TODO: support multiple packages
+		delegateName = getAnnotationDetail(e.getEPackage(), domain.getURI(),
+				DELEGATE_CONSTRAINT_KEY);
+
+		if (delegateName != null) {
+			delegateName = getClassDelegateNameBasedOnPackageDelegate(
+					delegateName, e);
+		}
+
+		return delegateName;
+	}
+
+	private String getClassDelegateNameBasedOnPackageDelegate(
+			String delegateName, EClass clazz) {
+		return delegateName + "." + clazz.getName() + "Delegate";
 	}
 
 	private Collection<EClass> getClassHierarchy(EClass clazz) {
@@ -126,29 +193,8 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 		return hierarchy;
 	}
 
-	protected String getDelegateClassName(EClass superType) {
-		EAnnotation annotation = superType.getEAnnotation(domain.getURI());
-		if (annotation == null) {
-			return null;
-		}
-
-		// 1. try the associated key that overrides the defaults
-		String delegate = annotation.getDetails().get(annotationDetailKey);
-		if (!isNullOrEmpty(delegate)) {
-			return delegate;
-		}
-
-		// 2. try the "delegate" key
-		delegate = annotation.getDetails().get(
-				SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY);
-		if (!isNullOrEmpty(delegate)) {
-			return delegate;
-		}
-
-		return null;
-	}
-
-	protected Method findDelegateMethod(String delegateClassName) {
+	protected Method findDelegateMethod(String delegateClassName,
+			final String methodName) {
 		Class<?> clazz = domain.loadDelegateClass(delegateClassName);
 		if (clazz == null) {
 			return null;
@@ -159,7 +205,7 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 			@Override
 			public boolean apply(Method input) {
 				// must have a correct name
-				if (!input.getName().equals(getDelegateMethodName())) {
+				if (!input.getName().equals(methodName)) {
 					return false;
 				}
 				// must be static

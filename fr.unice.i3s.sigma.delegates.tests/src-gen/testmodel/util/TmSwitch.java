@@ -76,6 +76,12 @@ public class TmSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case TmPackage.TEST_OVERRIDING: {
+				TestOverriding testOverriding = (TestOverriding)theEObject;
+				T result = caseTestOverriding(testOverriding);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -92,6 +98,21 @@ public class TmSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseTestClass(TestClass object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Test Overriding</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Test Overriding</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTestOverriding(TestOverriding object) {
 		return null;
 	}
 

@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EPackage;
 
+import testmodel.*;
 import testmodel.TestClass;
 import testmodel.TmPackage;
 import fr.unice.i3s.sigma.delegates.SigmaEObjectValidator;
@@ -95,6 +96,9 @@ public class TmValidator extends SigmaEObjectValidator {
 		switch (classifierID) {
 		case TmPackage.TEST_CLASS:
 			return validateTestClass((TestClass) value, diagnostics, context);
+		case TmPackage.TEST_OVERRIDING:
+			return validateTestOverriding((TestOverriding) value, diagnostics,
+					context);
 		default:
 			return true;
 		}
@@ -289,6 +293,104 @@ public class TmValidator extends SigmaEObjectValidator {
 				context, "http://www.i3s.unice.fr/Sigma", "F",
 				TEST_CLASS__F__EEXPRESSION, Diagnostic.ERROR,
 				DIAGNOSTIC_SOURCE, 0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateTestOverriding(TestOverriding testOverriding,
+			DiagnosticChain diagnostics, Map<Object, Object> context) {
+		if (!validate_NoCircularContainment(testOverriding, diagnostics,
+				context)) {
+			return false;
+		}
+		boolean result = validate_EveryMultiplicityConforms(testOverriding,
+				diagnostics, context);
+		if (result || diagnostics != null) {
+			result &= validate_EveryDataValueConforms(testOverriding,
+					diagnostics, context);
+		}
+		if (result || diagnostics != null) {
+			result &= validate_EveryReferenceIsContained(testOverriding,
+					diagnostics, context);
+		}
+		if (result || diagnostics != null) {
+			result &= validate_EveryBidirectionalReferenceIsPaired(
+					testOverriding, diagnostics, context);
+		}
+		if (result || diagnostics != null) {
+			result &= validate_EveryProxyResolves(testOverriding, diagnostics,
+					context);
+		}
+		if (result || diagnostics != null) {
+			result &= validate_UniqueID(testOverriding, diagnostics, context);
+		}
+		if (result || diagnostics != null) {
+			result &= validate_EveryKeyUnique(testOverriding, diagnostics,
+					context);
+		}
+		if (result || diagnostics != null) {
+			result &= validate_EveryMapEntryUnique(testOverriding, diagnostics,
+					context);
+		}
+		if (result || diagnostics != null) {
+			result &= validateTestOverriding_constraint(testOverriding,
+					diagnostics, context);
+		}
+		if (result || diagnostics != null) {
+			result &= validateTestOverriding_normalConstraint(testOverriding,
+					diagnostics, context);
+		}
+		return result;
+	}
+
+	/**
+	 * The cached validation expression for the constraint constraint of '
+	 * <em>Test Overriding</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected static final String TEST_OVERRIDING__CONSTRAINT__EEXPRESSION = "testmodel.delegates.OverrideConstraintDelegate.checkA";
+
+	/**
+	 * Validates the constraint constraint of '<em>Test Overriding</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateTestOverriding_constraint(
+			TestOverriding testOverriding, DiagnosticChain diagnostics,
+			Map<Object, Object> context) {
+		return validate(TmPackage.Literals.TEST_OVERRIDING, testOverriding,
+				diagnostics, context, "http://www.i3s.unice.fr/Sigma",
+				"constraint", TEST_OVERRIDING__CONSTRAINT__EEXPRESSION,
+				Diagnostic.ERROR, DIAGNOSTIC_SOURCE, 0);
+	}
+
+	/**
+	 * The cached validation expression for the normalConstraint constraint of '
+	 * <em>Test Overriding</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected static final String TEST_OVERRIDING__NORMAL_CONSTRAINT__EEXPRESSION = "";
+
+	/**
+	 * Validates the normalConstraint constraint of '<em>Test Overriding</em>'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateTestOverriding_normalConstraint(
+			TestOverriding testOverriding, DiagnosticChain diagnostics,
+			Map<Object, Object> context) {
+		return validate(TmPackage.Literals.TEST_OVERRIDING, testOverriding,
+				diagnostics, context, "http://www.i3s.unice.fr/Sigma",
+				"normalConstraint",
+				TEST_OVERRIDING__NORMAL_CONSTRAINT__EEXPRESSION,
+				Diagnostic.ERROR, DIAGNOSTIC_SOURCE, 0);
 	}
 
 	/**
