@@ -6,15 +6,16 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.eclipse.emf.common.util.DelegatingEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.EValidator;
+
 import com.google.common.collect.ImmutableList;
 
 import fr.unice.i3s.sigma.core.Utils;
@@ -30,6 +31,21 @@ public class SigmaDelegateDomain {
 
 	public static final String SETTER_CONSTRAINT_KEY = "derivation"; //$NON-NLS-1$
 
+	/**
+	 * Registers globally Java version of the Sigma delegates for the
+	 * {@link #DELEGATE_URI} URI. This includes:
+	 * <ul>
+	 * <li>Invocation delegate {@link SigmaInvocationDelegate}
+	 * <li>Setting delegate {@link SettingDelegate}
+	 * <li>Validation delegate {@link ValidationDelegate}
+	 * </ul>
+	 * 
+	 * In order to fully leverage the extended return type of the Sigma
+	 * validation delegate a {@link SigmaEObjectValidation} must be registered
+	 * as the package validator. Normally, this is not the case and it has to be
+	 * done explicitly by changing the generate {@code <PackageName>Validator}
+	 * super class to be {@link SigmaEObjectValidator}.
+	 */
 	public static void installGlobally() {
 		EOperation.Internal.InvocationDelegate.Factory.Registry.INSTANCE.put(
 				DELEGATE_URI, new SigmaInvocationDelegateFactory());
@@ -40,15 +56,6 @@ public class SigmaDelegateDomain {
 		EValidator.ValidationDelegate.Registry.INSTANCE.put(DELEGATE_URI,
 				new SigmaValidationDelegateFactory());
 
-	}
-
-	public static void installSigmaObjectValidator(EPackage... pkgs) {
-		if (pkgs != null) {
-			for (EPackage pkg : pkgs) {
-				EValidator.Registry.INSTANCE.put(pkg,
-						new SigmaEObjectValidator());
-			}
-		}
 	}
 
 	public static <E> EList<E> delegatingEList(final List<E> underlyingList) {
