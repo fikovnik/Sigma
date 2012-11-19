@@ -9,61 +9,86 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<profiles>
+		<profile>
+			<id>nyx-mirror</id>
+			<repositories>
+				<repository>
+					<id>nyx</id>
+					<name>NYX mirror</name>
+					<layout>p2</layout>
+					<url>http://nyx.unice.fr/p2/eclipse/</url>
+				</repository>
+			</repositories>
+		</profile>
+		<profile>
+			<id>no-mirror</id>
+			<!-- IMPORTANT: This profile will be activated as long as there are no 
+				other profiles in this POM that will be activated. This is kind of all or 
+				nothing behavior. -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<id>guava</id>
+					<name>Google Guava P2 repository</name>
+					<layout>p2</layout>
+					<url>${p2.guava}</url>
+				</repository>
+				<repository>
+					<id>scala-ide</id>
+					<name>Scala IDE P2 repository</name>
+					<layout>p2</layout>
+					<url>${p2.scala-ide}</url>
+				</repository>
+				<repository>
+					<id>eclipse</id>
+					<name>Eclipse P2 repository</name>
+					<layout>p2</layout>
+					<url>${p2.eclipse}</url>
+				</repository>
+				<repository>
+					<id>swtbot</id>
+					<name>SWTBot repository</name>
+					<layout>p2</layout>
+					<url>${p2.swtbot}</url>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
+
 	<properties>
 		<tycho.version>0.15.0</tycho.version>
 		<scala.version>2.10.0-RC2</scala.version>
+
+		<!-- repositories -->
+		<p2.guava>http://guava-osgi.googlecode.com/svn/trunk/repository/</p2.guava>
+		<p2.scala-ide>http://download.scala-ide.org/sdk/e37/scala210/dev/site</p2.scala-ide>
+		<p2.eclipse>http://download.eclipse.org/releases/indigo/</p2.eclipse>
+		<!-- <p2.eclipse>http://mirrors.ibiblio.org/eclipse/releases/indigo/</p2.eclipse> -->
+		<p2.swtbot>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</p2.swtbot>
 	</properties>
 
 	<modules>
 		<module>../fr.unice.i3s.sigma.core</module>
 		<module>../fr.unice.i3s.sigma.delegates</module>
-		<module>../fr.unice.i3s.sigma.ui.ide</module>
-		<module>../fr.unice.i3s.sigma.feature</module>
-		<module>../fr.unice.i3s.sigma.tests.feature</module>
-
 		<module>../fr.unice.i3s.sigma.delegates.tests</module>
-		<module>../fr.unice.i3s.sigma.ui.ide.tests</module>
-
-		<module>../fr.unice.i3s.sigma.scala</module>
-		<module>../fr.unice.i3s.sigma.scala.tools</module>
-		<module>../fr.unice.i3s.sigma.scala.scalatest</module>
-		<module>../fr.unice.i3s.sigma.scala.feature</module>
-
-		<module>../fr.unice.i3s.sigma.scala.tests</module>
-
 		<module>../fr.unice.i3s.sigma.examples</module>
 		<module>../fr.unice.i3s.sigma.examples.library</module>
 		<module>../fr.unice.i3s.sigma.examples.feature</module>
+		<module>../fr.unice.i3s.sigma.ui.ide</module>
+		<module>../fr.unice.i3s.sigma.ui.ide.tests</module>
+		<module>../fr.unice.i3s.sigma.feature</module>
+		<module>../fr.unice.i3s.sigma.scala</module>
+		<module>../fr.unice.i3s.sigma.scala.tests</module>
+		<module>../fr.unice.i3s.sigma.scala.tools</module>
+		<module>../fr.unice.i3s.sigma.scala.scalatest</module>
+		<module>../fr.unice.i3s.sigma.scala.feature</module>
 		<module>../fr.unice.i3s.sigma.site</module>
 	</modules>
 
 	<repositories>
-		<repository>
-			<id>guava-osgi</id>
-			<name>Google Guava OSGi p2 repository</name>
-			<layout>p2</layout>
-			<url>http://guava-osgi.googlecode.com/svn/trunk/repository/</url>
-		</repository>
-		<repository>
-			<id>scala-ide</id>
-			<name>Scala IDE p2 repository</name>
-			<layout>p2</layout>
-			<url>http://download.scala-ide.org/sdk/e37/scala210/dev/site</url>
-		</repository>
-		<repository>
-			<id>eclipse-indigo</id>
-			<name>Eclipse Indigo p2 repository</name>
-			<layout>p2</layout>
-			<!-- <url>http://mirrors.ibiblio.org/eclipse/releases/indigo/</url> -->
-			<url>http://ftp.sh.cvut.cz/MIRRORS/eclipse/releases/indigo/</url>
-			<!-- <url>http://download.eclipse.org/releases/indigo/</url> -->
-		</repository>
-		<repository>
-			<id>swtbot</id>
-			<name>SWTBot repository</name>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</url>
-		</repository>
 		<repository>
 			<id>sigma-external</id>
 			<name>SIGMA External p2 repository</name>
