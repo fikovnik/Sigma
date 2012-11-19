@@ -261,7 +261,8 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 			 "B", "",
 			 "C", "",
 			 "D", "",
-			 "E", ""
+			 "E", "",
+			 "F", ""
 		   });			
 		addAnnotation
 		  (getTestClass__Method(), 

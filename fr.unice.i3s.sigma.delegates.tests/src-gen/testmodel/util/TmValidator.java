@@ -270,6 +270,14 @@ public class TmValidator extends SigmaEObjectValidator {
 	}
 
 	/**
+	 * The cached validation expression for the F constraint of '
+	 * <em>Test Class</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected static final String TEST_CLASS__F__EEXPRESSION = "";
+
+	/**
 	 * Validates the F constraint of '<em>Test Class</em>'. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
@@ -277,22 +285,10 @@ public class TmValidator extends SigmaEObjectValidator {
 	 */
 	public boolean validateTestClass_F(TestClass testClass,
 			DiagnosticChain diagnostics, Map<Object, Object> context) {
-		// TODO implement the constraint
-		// -> specify the condition that violates the constraint
-		// -> verify the diagnostic details, including severity, code, and
-		// message
-		// Ensure that you remove @generated or mark it @generated NOT
-		if (false) {
-			if (diagnostics != null) {
-				diagnostics.add(createDiagnostic(Diagnostic.ERROR,
-						DIAGNOSTIC_SOURCE, 0,
-						"_UI_GenericConstraint_diagnostic", new Object[] { "F",
-								getObjectLabel(testClass, context) },
-						new Object[] { testClass }, context));
-			}
-			return false;
-		}
-		return true;
+		return validate(TmPackage.Literals.TEST_CLASS, testClass, diagnostics,
+				context, "http://www.i3s.unice.fr/Sigma", "F",
+				TEST_CLASS__F__EEXPRESSION, Diagnostic.ERROR,
+				DIAGNOSTIC_SOURCE, 0);
 	}
 
 	/**
