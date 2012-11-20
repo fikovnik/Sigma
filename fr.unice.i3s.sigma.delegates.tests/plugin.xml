@@ -12,9 +12,9 @@
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.i3s.unice.fr/Sigma/Tests"
-            class="library.LibraryPackage"
-            genModel="model/Library.genmodel"/>
+            uri="http://www.i3s.unice.fr/Sigma/TestModel"
+            class="testmodel.TmPackage"
+            genModel="model/TestModel.genmodel"/>
    </extension>
 
 </plugin>
