@@ -26,7 +26,6 @@
       <import plugin="org.apache.commons.lang3" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.edit" version="2.7.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.common"/>
    </requires>
 
    <plugin

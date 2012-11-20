@@ -15,7 +15,7 @@ import fr.unice.i3s.sigma.core.ISigmaDiagnostic;
 import fr.unice.i3s.sigma.core.ISigmaQuickFix;
 import fr.unice.i3s.sigma.core.ValidationResult;
 
-class SigmaDiagnostic implements ISigmaDiagnostic {
+public class SigmaDiagnostic implements ISigmaDiagnostic {
 
 	public static ISigmaDiagnostic fromException(String constraint,
 			EObject eObject, String source, int code, String message,

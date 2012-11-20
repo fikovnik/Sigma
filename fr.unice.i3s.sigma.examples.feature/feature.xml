@@ -19,6 +19,9 @@
 
    <requires>
       <import feature="fr.unice.i3s.sigma.feature" version="1.0.0.qualifier"/>
+      <import feature="org.eclipse.pde" version="3.7.2.v20120120-1420-7b7rFUOFEx2Xnqafnpz0E--0"/>
+      <import feature="org.eclipse.emf" version="2.7.2.v20120130-0943"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin

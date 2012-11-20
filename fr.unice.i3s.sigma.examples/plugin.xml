@@ -25,7 +25,7 @@
          <projectDescriptor
                contentURI="examples/fr.unice.i3s.sigma.examples.library.zip"
                name="fr.unice.i3s.sigma.examples.library"
-               description="A sample project showing Sigma features in plain Java.">
+               description="A sample project showing Sigma Core features in plain Java.">
          </projectDescriptor>
       </example>
    </extension>
