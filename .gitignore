@@ -1,7 +1,6 @@
 target
 .cache
 
-/fabfile.pyc
 bin/
 /screenshots/
 /fr.unice.i3s.sigma.examples/examples/

@@ -42,9 +42,9 @@ object DelegateGenerator extends App {
   def delegateClazz(e: EModelElement) = {
     Option(e.getEAnnotation(SigmaScalaDelegateDomain.DELEGATE_URI)) map { a =>
       Option(e match {
-        case _: EAttribute => a.getDetails().get(SETTER_CONSTRAINT_KEY)
-        case _: EReference => a.getDetails().get(SETTER_CONSTRAINT_KEY)
-        case _: EOperation => a.getDetails().get(INVOCATION_CONSTRAINT_KEY)
+        case _: EAttribute => a.getDetails().get(DELEGATE_CONSTRAINT_KEY)
+        case _: EReference => a.getDetails().get(DELEGATE_CONSTRAINT_KEY)
+        case _: EOperation => a.getDetails().get(DELEGATE_CONSTRAINT_KEY)
       }).orElse(Option(a.getDetails.get(DELEGATE_CONSTRAINT_KEY)))
     }
   }
