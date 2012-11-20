@@ -168,8 +168,6 @@ package object utils {
         case Nil => a :: Nil
         case e => e.flatMap(_.flatten).toList
       }
-      //      println(a)
-      //      a :: a.getChildren.toList flatMap (_.flatten)
     }
 
     def prettyPrint = {

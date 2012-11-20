@@ -339,12 +339,12 @@ public class SigmaEObjectValidator extends EObjectValidator {
 
 		List<String> deps = delegate.getDependencies(eObject);
 
-		System.out.println("----");
-		System.out.println("EObject: " + eObject);
-		System.out.println("Evaluating constraint: " + constraint);
-		System.out.println("Partial results: " + partialResults);
-		System.out.println("Dependencies: " + deps);
-		System.out.println("----");
+		// System.out.println("----");
+		// System.out.println("EObject: " + eObject);
+		// System.out.println("Evaluating constraint: " + constraint);
+		// System.out.println("Partial results: " + partialResults);
+		// System.out.println("Dependencies: " + deps);
+		// System.out.println("----");
 
 		// 2. has this constraint dependencies that has not yet been executed on
 		// this object? This has to run in the loop and we need to do the checks
