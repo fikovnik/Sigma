@@ -61,6 +61,7 @@
 	<properties>
 		<tycho.version>0.15.0</tycho.version>
 		<scala.version>2.10.0-RC2</scala.version>
+		<scala-maven-plugin.version>3.1.0</scala-maven-plugin.version>
 
 		<!-- repositories -->
 		<p2.guava>http://guava-osgi.googlecode.com/svn/trunk/repository/</p2.guava>
@@ -182,7 +183,7 @@
 				<!-- configuration of the scala compiler -->
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>${scala-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<goals>
