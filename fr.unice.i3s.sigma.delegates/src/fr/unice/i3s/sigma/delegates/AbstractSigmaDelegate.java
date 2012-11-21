@@ -16,12 +16,12 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
-import static fr.unice.i3s.sigma.core.Utils.getAnnotationDetail;
 import static fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY;
 
 public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
@@ -67,7 +67,7 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 
 		// 2.1 try the feature annotation (structural
 		// feature/operation/constraint)
-		String delegateName = getAnnotationDetail(target, domain.getURI(),
+		String delegateName = EcoreUtil.getAnnotation(target, domain.getURI(),
 				annotationDetailKey);
 		if (!isNullOrEmpty(delegateName)) {
 			int methodSep = delegateName.lastIndexOf('.');
@@ -157,7 +157,7 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 
 	private String getClassDelegateName(EClass e) {
 		// 1. try the class itself
-		String delegateName = getAnnotationDetail(e, domain.getURI(),
+		String delegateName = EcoreUtil.getAnnotation(e, domain.getURI(),
 				DELEGATE_CONSTRAINT_KEY);
 
 		if (delegateName != null) {
@@ -166,8 +166,8 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 
 		// 2. try the package
 		// TODO: support multiple packages
-		delegateName = getAnnotationDetail(e.getEPackage(), domain.getURI(),
-				DELEGATE_CONSTRAINT_KEY);
+		delegateName = EcoreUtil.getAnnotation(e.getEPackage(),
+				domain.getURI(), DELEGATE_CONSTRAINT_KEY);
 
 		if (delegateName != null) {
 			delegateName = getClassDelegateNameBasedOnPackageDelegate(
