@@ -27,6 +27,14 @@
                name="fr.unice.i3s.sigma.examples.library"
                description="A sample project showing Sigma Core features in plain Java.">
          </projectDescriptor>
+         <projectDescriptor
+               contentURI="examples/fr.unice.i3s.sigma.examples.library.tests.zip"
+               description="A set of tests for the sample project."
+               name="fr.unice.i3s.sigma.examples.library.tests">
+         </projectDescriptor>
+         <fileToOpen
+               location="fr.unice.i3s.sigma.examples.library.tests/src/fr/unice/i3s/sigma/examples/library/LibraryTest.java">
+         </fileToOpen>
       </example>
    </extension>
 

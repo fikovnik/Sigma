@@ -13,6 +13,7 @@
 
 	<target name="zipAll">
 		<zipExample name="fr.unice.i3s.sigma.examples.library" />
+		<zipExample name="fr.unice.i3s.sigma.examples.library.tests" />
 	</target>
 
 </project>

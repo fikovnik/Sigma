@@ -4,7 +4,7 @@
     xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:library="http://www.i3s.unice.fr/sigma/examples/Library"
-    xsi:schemaLocation="http://www.i3s.unice.fr/sigma/examples/Library model/Library.ecore"
+    xsi:schemaLocation="http://www.i3s.unice.fr/sigma/examples/Library ../fr.unice.i3s.sigma.examples.library/model/Library.ecore"
     name="Library">
   <books name="Book1"/>
   <books name="Book2"

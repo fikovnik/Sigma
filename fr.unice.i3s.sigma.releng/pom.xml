@@ -76,8 +76,9 @@
 		<module>../fr.unice.i3s.sigma.core</module>
 		<module>../fr.unice.i3s.sigma.delegates</module>
 		<module>../fr.unice.i3s.sigma.delegates.tests</module>
-		<module>../fr.unice.i3s.sigma.examples</module>
 		<module>../fr.unice.i3s.sigma.examples.library</module>
+		<module>../fr.unice.i3s.sigma.examples.library.tests</module>
+		<module>../fr.unice.i3s.sigma.examples</module>
 		<module>../fr.unice.i3s.sigma.examples.feature</module>
 		<module>../fr.unice.i3s.sigma.ui.ide</module>
 		<module>../fr.unice.i3s.sigma.ui.ide.tests</module>

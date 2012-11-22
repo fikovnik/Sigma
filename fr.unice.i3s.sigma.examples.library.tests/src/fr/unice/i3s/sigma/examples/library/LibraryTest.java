@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Filip Krikava.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Filip Krikava - initial API and implementation
+ ******************************************************************************/
 package fr.unice.i3s.sigma.examples.library;
 
 import static org.junit.Assert.assertEquals;
@@ -34,11 +44,11 @@ import fr.unice.i3s.sigma.ui.ide.validation.ExecuteSigmaQuickFixCommand;
  * just fine in the Plug-in JUnit test configuration.
  * 
  * Since I'm not sure I asked in the <a
- * href=""http://www.eclipse.org/forums/index
+ * href="http://www.eclipse.org/forums/index
  * .php/m/986519/#msg_986519">forum</a>.
  * 
  */
-public class ExampleTest {
+public class LibraryTest {
 
 	/**
 	 * Proves that the delegates works.
