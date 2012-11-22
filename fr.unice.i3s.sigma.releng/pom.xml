@@ -59,9 +59,10 @@
 	</profiles>
 
 	<properties>
-		<tycho.version>0.15.0</tycho.version>
-		<scala.version>2.10.0-RC2</scala.version>
-		<scala-maven-plugin.version>3.1.0</scala-maven-plugin.version>
+		<tycho-version>0.16.0</tycho-version>
+		<tycho-extras-version>0.16.0</tycho-extras-version>
+		<scala-version>2.10.0-RC2</scala-version>
+		<scala-maven-plugin-version>3.1.0</scala-maven-plugin-version>
 
 		<!-- repositories -->
 		<p2.guava>http://guava-osgi.googlecode.com/svn/trunk/repository/</p2.guava>
@@ -109,17 +110,22 @@
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-repository-plugin</artifactId>
-					<version>${tycho.version}</version>
+					<version>${tycho-version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho.extras</groupId>
 					<artifactId>tycho-source-feature-plugin</artifactId>
-					<version>${tycho.version}</version>
+					<version>${tycho-extras-version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
-					<version>${tycho.version}</version>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-surefire-plugin</artifactId>
+					<version>${tycho-version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -127,13 +133,13 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho.version}</version>
+				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>${tycho.version}</version>
+				<version>${tycho-version}</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -145,7 +151,7 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho.version}</version>
+				<version>${tycho-version}</version>
 				<configuration>
 					<environments>
 						<environment>
@@ -169,7 +175,7 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
-				<version>${tycho.version}</version>
+				<version>${tycho-version}</version>
 				<executions>
 					<execution>
 						<id>plugin-source</id>
@@ -183,7 +189,7 @@
 				<!-- configuration of the scala compiler -->
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
-				<version>${scala-maven-plugin.version}</version>
+				<version>${scala-maven-plugin-version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -196,7 +202,7 @@
 						<jvmArg>-Xms512m</jvmArg>
 						<jvmArg>-Xmx1024m</jvmArg>
 					</jvmArgs>
-					<scalaVersion>${scala.version}</scalaVersion>
+					<scalaVersion>${scala-version}</scalaVersion>
 				</configuration>
 			</plugin>
 
