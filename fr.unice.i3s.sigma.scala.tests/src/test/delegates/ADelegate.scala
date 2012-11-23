@@ -4,6 +4,7 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable.Buffer
 import fr.unice.i3s.sigma.scala.utils._
 import test.A
+import test.B
 
 /**
  * Delegate helper object for EMF EClass {@code A}.
@@ -19,7 +20,8 @@ object ADelegate {
    * @returns a value that will subsequently returned by the original {@code op1} operation
    * @see A#op1()
    */
-  def invokeOp1(self: A): String = {
-    "A"
+  def invokeOp1(self: A): String = self match {
+    case b: B => BDelegate.invokeOp1(b)
+    case a: A => "A"
   }
 }

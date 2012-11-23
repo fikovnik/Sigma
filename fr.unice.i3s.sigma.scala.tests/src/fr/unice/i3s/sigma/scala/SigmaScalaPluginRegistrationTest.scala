@@ -15,9 +15,9 @@ final object SigmaScalaPluginRegistrationTest {
 }
 
 /**
-  * These tests checks whether the delegation has been correctly set up
-  * in the platform (plugin.xml).
-  */
+ * These tests checks whether the delegation has been correctly set up
+ * in the platform (plugin.xml).
+ */
 final class SigmaScalaPluginRegistrationTest {
 
   @Test
@@ -27,7 +27,7 @@ final class SigmaScalaPluginRegistrationTest {
 
   @Test
   def testSettingDelegates() {
-    new SigmaScalaSettingValidationDelegateTest().testGetter
+    new SigmaScalaSettingValidationDelegateTest().testSetter
   }
 
   @Test

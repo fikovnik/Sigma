@@ -23,7 +23,7 @@ import fr.unice.i3s.sigma.core.ValidationResult;
 
 public class SigmaDelegateDomain {
 
-	public static final String DELEGATE_URI = "http://www.i3s.unice.fr/Sigma";
+	protected static final String DELEGATE_URI = "http://www.i3s.unice.fr/Sigma";
 
 	public static final String DELEGATE_CONSTRAINT_KEY = "delegate"; //$NON-NLS-1$
 
@@ -221,6 +221,7 @@ public class SigmaDelegateDomain {
 		}
 	}
 
+	// FIXME: get rid of this with Guice!
 	private static final SigmaDelegateDomain instance = new SigmaDelegateDomain();
 
 	public static SigmaDelegateDomain getDefaultInstance() {

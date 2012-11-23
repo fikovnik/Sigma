@@ -4,28 +4,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EStructuralFeature.Internal.DynamicValueHolder;
 import org.eclipse.emf.ecore.EStructuralFeature.Internal.SettingDelegate;
 import org.eclipse.emf.ecore.EStructuralFeature.Setting;
-import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.BasicSettingDelegate;
-
-import fr.unice.i3s.sigma.core.Utils;
 
 public class SigmaSettingDelegate extends
 		AbstractSigmaDelegate<EStructuralFeature> implements SettingDelegate {
 
 	private final BasicSettingDelegate.Stateless settingDelegate;
 
-	public SigmaSettingDelegate(EStructuralFeature eStructuralFeature,
+	public SigmaSettingDelegate(Method delegate, EStructuralFeature target,
 			SigmaDelegateDomain domain) {
-		super(eStructuralFeature, domain,
-				SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY);
+		super(delegate, target, domain);
 
-		settingDelegate = new BasicSettingDelegate.Stateless(eStructuralFeature) {
+		settingDelegate = new BasicSettingDelegate.Stateless(target) {
 
 			@Override
 			protected Object get(InternalEObject owner, boolean resolve,
@@ -44,8 +39,6 @@ public class SigmaSettingDelegate extends
 	protected Object get(InternalEObject owner, boolean resolve,
 			boolean coreType) {
 
-		Method delegate = getDelegateChecked(owner);
-
 		try {
 			Object value = delegate.invoke(null, owner);
 			return domain.processResult(target, value);
@@ -55,55 +48,6 @@ public class SigmaSettingDelegate extends
 			throw domain.handleIllegalAccessException(delegate, owner, e);
 		} catch (InvocationTargetException e) {
 			throw domain.handleInvocationTargetException(delegate, owner, e);
-		}
-	}
-
-	@Override
-	protected String getExpectedMethodSignature() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("public static ");
-		sb.append(domain.elementTypeName(target));
-		sb.append(" ");
-		sb.append(getDelegateMethodName());
-		sb.append("(");
-
-		// add self
-		sb.append(domain.classifierTypeName(target.getEContainingClass()));
-		sb.append(" self");
-
-		sb.append(");");
-
-		return sb.toString();
-	}
-
-	@Override
-	protected boolean checkDelegateMethod(Method input) {
-		// must have compatible return type
-		if (!domain.checkElementType(target, input.getGenericReturnType())) {
-			return false;
-		}
-
-		Class<?>[] delegateParams = input.getParameterTypes();
-
-		// must have first argument of type of the setter container
-		if (!(delegateParams.length == 1 && domain.checkClassifierType(
-				target.getEContainingClass(), delegateParams[0]))) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	protected String getDelegateMethodName() {
-		EClassifier retType = target.getEType();
-
-		if (retType == EcorePackage.eINSTANCE.getEBoolean()
-				|| retType == EcorePackage.eINSTANCE.getEBooleanObject()) {
-			return "is" + Utils.capitalize(target.getName());
-		} else {
-			return "get" + Utils.capitalize(target.getName());
 		}
 	}
 

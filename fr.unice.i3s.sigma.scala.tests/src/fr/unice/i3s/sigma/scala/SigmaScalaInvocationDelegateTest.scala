@@ -2,8 +2,9 @@ package fr.unice.i3s.sigma.scala
 
 import org.junit.Assert._
 import org.junit.Test
-
 import test.TestFactory
+import test.delegates.ADelegate
+import test.delegates.BDelegate
 
 final class SigmaScalaInvocationDelegateTest extends AbstractSigmaScalaStandaloneDelegateTest {
 
@@ -12,10 +13,10 @@ final class SigmaScalaInvocationDelegateTest extends AbstractSigmaScalaStandalon
     val a = TestFactory.eINSTANCE.createA
     val b = TestFactory.eINSTANCE.createB
     val c = TestFactory.eINSTANCE.createC
-    
-    assertEquals("A", a.op1)
-    assertEquals("B", b.op1)
-    assertEquals("A", c.op1)    
+
+    assertEquals(ADelegate.invokeOp1(a), a.op1)
+    assertEquals(BDelegate.invokeOp1(b), b.op1)
+    assertEquals(ADelegate.invokeOp1(c), c.op1)
   }
-  
+
 }

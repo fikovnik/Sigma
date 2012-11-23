@@ -8,10 +8,10 @@ import test.delegates.DDelegate
 final class SigmaScalaSettingValidationDelegateTest extends AbstractSigmaScalaStandaloneDelegateTest {
 
   @Test
-  def testGetter() {
+  def testSetter() {
     val d = TestFactory.eINSTANCE.createD
-    
+
     assertEquals(DDelegate.getAttr1(d), d.getAttr1)
   }
-  
+
 }

@@ -29,13 +29,13 @@ final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
   def installGlobally() {
     EOperation.Internal.InvocationDelegate.Factory.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaInvocationDelegateFactory());
+      (DELEGATE_URI -> new SigmaScalaInvocationDelegateFactory);
 
     EStructuralFeature.Internal.SettingDelegate.Factory.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaSettingDelegateFactory());
+      (DELEGATE_URI -> new SigmaScalaSettingDelegateFactory);
 
     EValidator.ValidationDelegate.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaValidationDelegateFactory());
+      (DELEGATE_URI -> new SigmaScalaValidationDelegateFactory);
   }
 
   val instance = new SigmaScalaDelegateDomain
@@ -56,7 +56,7 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
       // support for scala objects
       try {
         clazz = Class.forName(className + "$");
-      } catch { case _ => }
+      } catch { case _: Throwable => }
     }
 
     clazz
