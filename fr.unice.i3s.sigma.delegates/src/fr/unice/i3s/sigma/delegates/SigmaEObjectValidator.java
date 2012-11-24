@@ -135,12 +135,12 @@ public class SigmaEObjectValidator extends EObjectValidator {
 			try {
 				sigmaDelegate = delegateFactory.getDelegate(eClass, constraint);
 			} catch (SigmaDelegateNotFoundException e) {
-				String message = NLS.bind(
-						Messages.Sigma_NoValidationDelegate,
-						new Object[] {
-								getObjectLabel(eObject, context),
-								delegateFactory.getExpectedMethodSignature(
-										eClass, constraint), expression });
+				String message = NLS
+						.bind(Messages.Sigma_NoValidationDelegate,
+								new Object[] {
+										getObjectLabel(eObject, context),
+										sigmaDelegate.getMethodSignature(),
+										expression });
 
 				diagnostics.add(SigmaDiagnostic.fromException(constraint,
 						eObject, source, code, message, e));

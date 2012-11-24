@@ -76,4 +76,12 @@ public interface TestClass extends EObject {
 	 */
 	String method();
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model required="true"
+	 * @generated
+	 */
+	String methodWithArgs(String str, int number);
+
 } // TestClass

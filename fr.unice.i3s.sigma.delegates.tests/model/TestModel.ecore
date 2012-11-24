@@ -24,6 +24,14 @@
     <eOperations name="method" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
     </eOperations>
+    <eOperations name="methodWithArgs" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+      <eParameters name="str" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="methodNoReturn" lowerBound="1">
+      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" ordered="false"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="derivedAttribute" ordered="false"

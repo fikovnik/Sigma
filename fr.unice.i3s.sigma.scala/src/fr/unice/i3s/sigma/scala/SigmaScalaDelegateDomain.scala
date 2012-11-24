@@ -22,20 +22,18 @@ import java.lang.reflect.Method
 
 final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
-  val DELEGATE_URI = SigmaDelegateDomain.DELEGATE_URI + "/Scala"
-
   private val TYPE_MAPPING = Map("boolean" -> "Boolean")
   private val COLLECTION_TYPE = classOf[List[_]]
 
   def installGlobally() {
     EOperation.Internal.InvocationDelegate.Factory.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaInvocationDelegateFactory);
+      (getURI -> new SigmaScalaInvocationDelegateFactory);
 
     EStructuralFeature.Internal.SettingDelegate.Factory.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaSettingDelegateFactory);
+      (getURI -> new SigmaScalaSettingDelegateFactory);
 
     EValidator.ValidationDelegate.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaValidationDelegateFactory);
+      (getURI -> new SigmaScalaValidationDelegateFactory);
   }
 
   val instance = new SigmaScalaDelegateDomain
@@ -45,8 +43,8 @@ final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
   import SigmaScalaDelegateDomain._
 
-  override def getURI() = {
-    DELEGATE_URI
+  override def getURI = {
+    super.getURI + "/Scala"
   }
 
   override def loadDelegateClass(className: String) = {

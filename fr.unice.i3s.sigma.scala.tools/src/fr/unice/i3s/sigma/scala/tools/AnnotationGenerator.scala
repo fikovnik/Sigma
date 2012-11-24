@@ -16,6 +16,7 @@ import scala.collection.JavaConversions.mapAsScalaMap
 import fr.unice.i3s.sigma.scala.tools._
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
+import fr.unice.i3s.sigma.core.SigmaConstants
 
 object AnnotationGenerator extends App {
 
@@ -46,24 +47,24 @@ object AnnotationGenerator extends App {
     }
   }
 
-  val delegateURI = SigmaScalaDelegateDomain.DELEGATE_URI
-  val addSigmaAnnotationDetail = addEAnnotationDetail(_: EModelElement, delegateURI, _: Option[(String, String)])
+  val domain = SigmaScalaDelegateDomain.instance
+  val addSigmaAnnotationDetail = addEAnnotationDetail(_: EModelElement, domain.getURI, _: Option[(String, String)])
 
   def processEClass(clazz: EClass, pkgName: String) {
     val d = pkgName + "." + clazz.getName + "Delegate"
 
-    clazz.getEAnnotations --= clazz.getEAnnotations.filter(_.getSource == delegateURI)
-    addSigmaAnnotationDetail(clazz, Some(SigmaDelegateDomain.DELEGATE_CONSTRAINT_KEY, d))
+    clazz.getEAnnotations --= clazz.getEAnnotations.filter(_.getSource == domain.getURI)
+    addSigmaAnnotationDetail(clazz, Some(SigmaConstants.DELEGATE_CONSTRAINT_KEY, d))
 
     for (e <- clazz.getEStructuralFeatures) {
       if (e.isDerived) {
-        e.getEAnnotations --= e.getEAnnotations.filter(_.getSource == delegateURI)
+        e.getEAnnotations --= e.getEAnnotations.filter(_.getSource == domain.getURI)
         addSigmaAnnotationDetail(e, None)
       }
     }
 
     for (e <- clazz.getEOperations) {
-      e.getEAnnotations --= e.getEAnnotations.filter(_.getSource == delegateURI)
+      e.getEAnnotations --= e.getEAnnotations.filter(_.getSource == domain.getURI)
       addSigmaAnnotationDetail(e, None)
     }
 
@@ -87,13 +88,13 @@ object AnnotationGenerator extends App {
       val details = a.getDetails
 
       if (!details.containsKey("invocationDelegates")) {
-        details.put("invocationDelegates", delegateURI)
+        details.put("invocationDelegates", domain.getURI)
       }
       if (!details.containsKey("settingDelegates")) {
-        details.put("invocationDelegates", delegateURI)
+        details.put("invocationDelegates", domain.getURI)
       }
       if (!details.containsKey("validationDelegates")) {
-        details.put("invocationDelegates", delegateURI)
+        details.put("invocationDelegates", domain.getURI)
       }
     }
 

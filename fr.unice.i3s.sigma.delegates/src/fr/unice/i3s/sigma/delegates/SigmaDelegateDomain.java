@@ -15,21 +15,19 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.EValidator;
-
 import com.google.common.collect.ImmutableList;
 
+import fr.unice.i3s.sigma.core.SigmaConstants;
 import fr.unice.i3s.sigma.core.Utils;
 import fr.unice.i3s.sigma.core.ValidationResult;
 
-public class SigmaDelegateDomain {
+public class SigmaDelegateDomain implements SigmaConstants {
 
-	protected static final String DELEGATE_URI = "http://www.i3s.unice.fr/Sigma";
-
-	public static final String DELEGATE_CONSTRAINT_KEY = "delegate"; //$NON-NLS-1$
+	private static final String SIGMA_DELEGATE_URI = "http://www.i3s.unice.fr/Sigma";
 
 	/**
 	 * Registers globally Java version of the Sigma delegates for the
-	 * {@link #DELEGATE_URI} URI. This includes:
+	 * {@link SigmaConstants#SIGMA_DELEGATE_URI} URI. This includes:
 	 * <ul>
 	 * <li>Invocation delegate {@link SigmaInvocationDelegate}
 	 * <li>Setting delegate {@link SettingDelegate}
@@ -44,12 +42,12 @@ public class SigmaDelegateDomain {
 	 */
 	public static void installGlobally() {
 		EOperation.Internal.InvocationDelegate.Factory.Registry.INSTANCE.put(
-				DELEGATE_URI, new SigmaInvocationDelegateFactory());
+				SIGMA_DELEGATE_URI, new SigmaInvocationDelegateFactory());
 
 		EStructuralFeature.Internal.SettingDelegate.Factory.Registry.INSTANCE
-				.put(DELEGATE_URI, new SigmaSettingDelegateFactory());
+				.put(SIGMA_DELEGATE_URI, new SigmaSettingDelegateFactory());
 
-		EValidator.ValidationDelegate.Registry.INSTANCE.put(DELEGATE_URI,
+		EValidator.ValidationDelegate.Registry.INSTANCE.put(SIGMA_DELEGATE_URI,
 				new SigmaValidationDelegateFactory());
 
 	}
@@ -70,7 +68,7 @@ public class SigmaDelegateDomain {
 	}
 
 	public String getURI() {
-		return DELEGATE_URI;
+		return SIGMA_DELEGATE_URI;
 	}
 
 	protected String classifierName(EClassifier classifier) {
@@ -87,8 +85,7 @@ public class SigmaDelegateDomain {
 	}
 
 	protected String elementTypeName(ETypedElement element) {
-		String clazzName = element.getEType().getInstanceClass()
-				.getCanonicalName();
+		String clazzName = element.getEType().getName();
 		if (element.isMany()) {
 			return Collection.class.getCanonicalName() + "<" + clazzName + ">";
 		} else {
@@ -221,10 +218,14 @@ public class SigmaDelegateDomain {
 		}
 	}
 
-	// FIXME: get rid of this with Guice!
 	private static final SigmaDelegateDomain instance = new SigmaDelegateDomain();
 
 	public static SigmaDelegateDomain getDefaultInstance() {
 		return instance;
 	}
+
+	public String getDelegateConstraintKey() {
+		return DELEGATE_CONSTRAINT_KEY;
+	}
+
 }

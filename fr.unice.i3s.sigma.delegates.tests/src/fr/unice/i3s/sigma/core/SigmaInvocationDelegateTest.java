@@ -11,12 +11,18 @@ public class SigmaInvocationDelegateTest extends
 		AbstractSigmaStandaloneDelegateTest {
 
 	@Test
-	public void testNoParametersDelegation() {
+	public void testInvocationWithNoParametersDelegation() {
 		TestClass self = createTestClass("ABCDEF");
 
 		assertEquals(TestClassDelegate.invokeMethod(self), self.method());
 	}
 
-	// TODO: check invocation with arguments
+	@Test
+	public void testInvocationWithParametersDelegation() {
+		TestClass self = createTestClass("ABCDEF");
+
+		assertEquals(TestClassDelegate.invokeMethodWithArgs(self, "a", 1),
+				self.methodWithArgs("a", 1));
+	}
 
 }

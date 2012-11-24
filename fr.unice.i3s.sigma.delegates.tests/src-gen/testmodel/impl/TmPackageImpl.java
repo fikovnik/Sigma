@@ -153,6 +153,15 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EOperation getTestClass__MethodWithArgs__String_int() {
+		return testClassEClass.getEOperations().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getTestOverriding() {
 		return testOverridingEClass;
 	}
@@ -225,6 +234,7 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		createEAttribute(testClassEClass, TEST_CLASS__ATTRIBUTE);
 		createEAttribute(testClassEClass, TEST_CLASS__DERIVED_ATTRIBUTE);
 		createEOperation(testClassEClass, TEST_CLASS___METHOD);
+		createEOperation(testClassEClass, TEST_CLASS___METHOD_WITH_ARGS__STRING_INT);
 
 		testOverridingEClass = createEClass(TEST_OVERRIDING);
 		createEAttribute(testOverridingEClass, TEST_OVERRIDING__ATTRIBUTE);
@@ -269,6 +279,10 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 
 		initEOperation(getTestClass__Method(), ecorePackage.getEString(), "method", 1, 1, IS_UNIQUE, IS_ORDERED);
 
+		EOperation op = initEOperation(getTestClass__MethodWithArgs__String_int(), ecorePackage.getEString(), "methodWithArgs", 1, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "str", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "number", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(testOverridingEClass, TestOverriding.class, "TestOverriding", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTestOverriding_Attribute(), ecorePackage.getEString(), "attribute", null, 1, 1, TestOverriding.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getTestOverriding_NormalAttribute(), ecorePackage.getEString(), "normalAttribute", null, 1, 1, TestOverriding.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
@@ -308,7 +322,7 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		   source, 
 		   new String[] {
 			 "constraints", "A B C D E F"
-		   });					
+		   });						
 		addAnnotation
 		  (testOverridingEClass, 
 		   source, 
@@ -344,6 +358,11 @@ public class TmPackageImpl extends EPackageImpl implements TmPackage {
 		   });			
 		addAnnotation
 		  (getTestClass__Method(), 
+		   source, 
+		   new String[] {
+		   });		
+		addAnnotation
+		  (getTestClass__MethodWithArgs__String_int(), 
 		   source, 
 		   new String[] {
 		   });		

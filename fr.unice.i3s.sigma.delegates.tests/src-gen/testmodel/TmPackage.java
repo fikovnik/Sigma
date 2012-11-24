@@ -109,13 +109,22 @@ public interface TmPackage extends EPackage {
 	int TEST_CLASS___METHOD = 0;
 
 	/**
+	 * The operation id for the '<em>Method With Args</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TEST_CLASS___METHOD_WITH_ARGS__STRING_INT = 1;
+
+	/**
 	 * The number of operations of the '<em>Test Class</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TEST_CLASS_OPERATION_COUNT = 1;
+	int TEST_CLASS_OPERATION_COUNT = 2;
 
 
 	/**
@@ -226,6 +235,16 @@ public interface TmPackage extends EPackage {
 	EOperation getTestClass__Method();
 
 	/**
+	 * Returns the meta object for the '{@link testmodel.TestClass#methodWithArgs(java.lang.String, int) <em>Method With Args</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Method With Args</em>' operation.
+	 * @see testmodel.TestClass#methodWithArgs(java.lang.String, int)
+	 * @generated
+	 */
+	EOperation getTestClass__MethodWithArgs__String_int();
+
+	/**
 	 * Returns the meta object for class '{@link testmodel.TestOverriding <em>Test Overriding</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -333,6 +352,14 @@ public interface TmPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation TEST_CLASS___METHOD = eINSTANCE.getTestClass__Method();
+
+		/**
+		 * The meta object literal for the '<em><b>Method With Args</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation TEST_CLASS___METHOD_WITH_ARGS__STRING_INT = eINSTANCE.getTestClass__MethodWithArgs__String_int();
 
 		/**
 		 * The meta object literal for the '{@link testmodel.impl.TestOverridingImpl <em>Test Overriding</em>}' class.
