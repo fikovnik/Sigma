@@ -21,6 +21,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.junit.Test;
 
+import static fr.unice.i3s.sigma.delegates.SampleEcoreBuilder.*;
+
 public class AbstractSigmaDelegateTest {
 
 	SigmaDelegateDomain domain = SigmaDelegateDomain.getDefaultInstance();
@@ -242,57 +244,6 @@ public class AbstractSigmaDelegateTest {
 			fail();
 		} catch (ParseException e) {
 		}
-	}
-
-	private static EcoreFactory ecoreFactory = EcoreFactory.eINSTANCE;
-
-	private static <T> Map<T, T> hashMap(T... args) {
-		assert (args.length & 1) == 0;
-		HashMap<T, T> map = new HashMap<T, T>(args.length / 2);
-
-		for (int i = 0; i < args.length; i++) {
-			map.put(args[i], args[i + 1]);
-			i++;
-		}
-
-		return map;
-	}
-
-	private void createEAnnotation(EModelElement parent, String sourceURI,
-			Map<String, String> details) {
-		EAnnotation e = ecoreFactory.createEAnnotation();
-		parent.getEAnnotations().add(e);
-		e.setSource(sourceURI);
-		for (Entry<String, String> d : details.entrySet()) {
-			e.getDetails().put(d.getKey(), d.getValue());
-		}
-	}
-
-	private static EClass createsEClass(EPackage parent, String name) {
-		EClass e = ecoreFactory.createEClass();
-		parent.getEClassifiers().add(e);
-		e.setName(name);
-		return e;
-	}
-
-	private static EOperation createEOperation(EClass parent, String name) {
-		EOperation e = ecoreFactory.createEOperation();
-		parent.getEOperations().add(e);
-		e.setName(name);
-		return e;
-	}
-
-	private static EPackage createEPackge(String name) {
-		return createEPackge(null, name);
-	}
-
-	private static EPackage createEPackge(EPackage parent, String name) {
-		EPackage e = ecoreFactory.createEPackage();
-		e.setName(name);
-		if (parent != null) {
-			parent.getESubpackages().add(e);
-		}
-		return e;
 	}
 
 }

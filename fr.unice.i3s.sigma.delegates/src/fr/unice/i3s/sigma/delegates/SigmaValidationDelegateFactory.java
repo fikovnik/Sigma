@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
@@ -27,22 +26,32 @@ public class SigmaValidationDelegateFactory extends
 		return SigmaDelegateDomain.getDefaultInstance();
 	}
 
-	protected SigmaValidationDelegate getDelegate(EClassifier eClassifier,
+	/**
+	 * 
+	 * @param eClassifier
+	 * @param constraint
+	 * @return
+	 * @throws SigmaDelegateNotFoundException
+	 *             in case no such a delegate exists. This means that it has not
+	 *             been correctly specified in the model (missing the Sigma
+	 *             delegate annotation).
+	 */
+	protected SigmaValidationDelegate getDelegate(EClass clazz,
 			String constraint) {
-		String delegateId = eClassifier.getInstanceClass().getCanonicalName()
-				+ "#" + constraint;
+		String delegateId = clazz.getInstanceClass().getCanonicalName() + "#"
+				+ constraint;
 		SigmaValidationDelegate delegate = null;
 
 		synchronized (delegates) {
 			delegate = delegates.get(delegateId);
 			if (delegate == null) {
-				if (hasBeenDelegated(eClassifier, constraint)) {
-					delegate = doCreateValidationDelegate(eClassifier,
-							constraint);
-				} else {
+				// not in cache
+				delegate = createValidationDelegate(clazz, constraint);
+				if (delegate == null) {
+					// does not exist
 					throw new SigmaDelegateNotFoundException(
-							fmt("No Sigma delegate reistered for constraint `%s` in `%s`",
-									constraint, eClassifier.getName()));
+							fmt("No Sigma delegate registered for constraint `%s` in `%s`",
+									constraint, clazz.getName()));
 				}
 				delegates.put(delegateId, delegate);
 			}
@@ -51,12 +60,23 @@ public class SigmaValidationDelegateFactory extends
 		return delegate;
 	}
 
-	protected SigmaValidationDelegate doCreateValidationDelegate(
-			EClassifier target, String constraint) {
+	public SigmaValidationDelegate createValidationDelegate(EClass target,
+			String constraint) {
+		SigmaValidationDelegate delegate = null;
+
+		if (hasBeenDelegated(target, constraint)) {
+			delegate = doCreateValidationDelegate(target, constraint);
+		}
+
+		return delegate;
+	}
+
+	protected SigmaValidationDelegate doCreateValidationDelegate(EClass target,
+			String constraint) {
 		return new SigmaValidationDelegate(target, getDomain(), constraint);
 	}
 
-	protected boolean hasBeenDelegated(EClassifier target, String constraint) {
+	protected boolean hasBeenDelegated(EClass target, String constraint) {
 		return EcoreUtil
 				.getAnnotation(target, getDomain().getURI(), constraint) != null;
 	}
@@ -64,17 +84,18 @@ public class SigmaValidationDelegateFactory extends
 	// following methods are used from the plain EObjectValidator
 
 	/**
-	 * This method is consequently used by the {@link SigmaEObjectValidator} so
-	 * it has access to the full results.
+	 * This method is consequently used by the regular {@link EObjectValidator}
+	 * so it has access to the full results.
 	 */
-	private ValidationResult doValidate(EClassifier eClassifier, Object object,
-			Map<Object, Object> context, String constraint, String expression) {
+	private ValidationResult doValidate(EClass clazz, EObject object,
+			Map<Object, Object> context, String constraint) {
 
 		try {
-			SigmaValidationDelegate delegate = getDelegate(eClassifier,
-					constraint);
-			return delegate.validate(eClassifier, object, constraint,
-					expression);
+			ISigmaValidationDelegate delegate = getDelegate(clazz, constraint);
+			Object status = delegate.validate(object);
+
+			return getDomain()
+					.toSigmaValidationResult(status, delegate, object);
 		} catch (SigmaDelegateNotFoundException e) {
 			// TODO log
 			e.printStackTrace();
@@ -82,41 +103,30 @@ public class SigmaValidationDelegateFactory extends
 			String message = NLS.bind(
 					Messages.Sigma_NoSigmaRegisteredValidationDelegate,
 					new Object[] { constraint,
-							getLabel(eClassifier, object, context) });
+							EObjectValidator.getObjectLabel(clazz, context) });
 
 			return ValidationResult.error(message);
-		}
-	}
-
-	private static String getLabel(EClassifier eClassifier, Object value,
-			Map<Object, Object> context) {
-		if (value instanceof EObject) {
-			return EObjectValidator.getObjectLabel(eClassifier, context);
-		} else {
-			return EObjectValidator.getValueLabel((EDataType) eClassifier,
-					value, context);
 		}
 	}
 
 	@Override
 	public boolean validate(EClass eClass, EObject eObject,
 			Map<Object, Object> context, EOperation invariant, String expression) {
-		return doValidate(eClass, eObject, context, invariant.getName(),
-				expression).isValidOrCanceled();
+		return doValidate(eClass, eObject, context, invariant.getName())
+				.isValidOrCanceled();
 	}
 
 	@Override
 	public boolean validate(EClass eClass, EObject eObject,
 			Map<Object, Object> context, String constraint, String expression) {
-		return doValidate(eClass, eObject, context, constraint, expression)
+		return doValidate(eClass, eObject, context, constraint)
 				.isValidOrCanceled();
 	}
 
 	@Override
 	public boolean validate(EDataType eDataType, Object value,
 			Map<Object, Object> context, String constraint, String expression) {
-		return doValidate(eDataType, value, context, constraint, expression)
-				.isValidOrCanceled();
+		// TODO: better exeception
+		throw new RuntimeException();
 	}
-
 }

@@ -14,7 +14,6 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
 import com.google.common.base.Predicate;
 
 import fr.unice.i3s.sigma.core.Assert;
@@ -80,6 +79,10 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 		return delegate;
 	}
 
+	public T getTarget() {
+		return target;
+	}
+
 	protected abstract EClassifier getContainingEClass();
 
 	/**
@@ -95,7 +98,9 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 
 		Class<?> clazz = domain.loadDelegateClass(className);
 		if (clazz == null) {
-			return null;
+			throw new SigmaDelegateNotFoundException(
+					fmt("Unable to find a delegate method for %s. Could not find expected class: `%s`.",
+							getName(), className));
 		}
 
 		List<Method> methods = Arrays.asList(clazz.getMethods());
@@ -230,6 +235,15 @@ public abstract class AbstractSigmaDelegate<T extends ENamedElement> {
 
 	protected String getExpectedClassDelegateName() {
 		return getContainingEClass().getName() + "Delegate";
+	}
+
+	protected boolean exists() {
+		try {
+			getDelegate();
+			return true;
+		} catch (SigmaDelegateNotFoundException e) {
+			return false;
+		}
 	}
 
 	@Override

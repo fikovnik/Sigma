@@ -5,12 +5,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.eclipse.emf.common.util.DelegatingEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
@@ -42,14 +44,20 @@ public class SigmaDelegateDomain implements SigmaConstants {
 	 */
 	public static void installGlobally() {
 		EOperation.Internal.InvocationDelegate.Factory.Registry.INSTANCE.put(
-				SIGMA_DELEGATE_URI, new SigmaInvocationDelegateFactory());
+				SIGMA_DELEGATE_URI, instance.getInvocationDelegateFactory());
 
 		EStructuralFeature.Internal.SettingDelegate.Factory.Registry.INSTANCE
-				.put(SIGMA_DELEGATE_URI, new SigmaSettingDelegateFactory());
+				.put(SIGMA_DELEGATE_URI, instance.getSettingDelegateFactory());
 
 		EValidator.ValidationDelegate.Registry.INSTANCE.put(SIGMA_DELEGATE_URI,
-				new SigmaValidationDelegateFactory());
+				instance.getValidationDelegateFactory());
 
+	}
+
+	private static final SigmaDelegateDomain instance = new SigmaDelegateDomain();
+
+	public static SigmaDelegateDomain getDefaultInstance() {
+		return instance;
 	}
 
 	public static <E> EList<E> delegatingEList(final List<E> underlyingList) {
@@ -63,9 +71,9 @@ public class SigmaDelegateDomain implements SigmaConstants {
 		};
 	}
 
-	protected SigmaDelegateDomain() {
-
-	}
+	private SigmaValidationDelegateFactory validationFactory;
+	private SigmaInvocationDelegateFactory invocationFactory;
+	private SigmaSettingDelegateFactory settingFactory;
 
 	public String getURI() {
 		return SIGMA_DELEGATE_URI;
@@ -96,14 +104,6 @@ public class SigmaDelegateDomain implements SigmaConstants {
 	protected boolean checkClassifierType(EClassifier eType, Type type) {
 		// FIXME: this only work for simple cases without bounds and arrays
 		return TypeUtils.isAssignable(type, eType.getInstanceClass());
-		// if (type instanceof Class<?>) {
-		// return eType.getInstanceClass().isAssignableFrom((Class<?>) type);
-		// } else if (type instanceof ParameterizedType) {
-		// return checkClassifierType(eType,
-		// ((ParameterizedType) type).getRawType());
-		// } else {
-		// return false;
-		// }
 	}
 
 	protected boolean checkElementType(ETypedElement eType, Type type) {
@@ -188,27 +188,29 @@ public class SigmaDelegateDomain implements SigmaConstants {
 	}
 
 	public ValidationResult toSigmaValidationResult(Object status,
-			Method delegate, String constraint, Object object) {
+			ISigmaValidationDelegate delegate, EObject eObject) {
 		boolean result = false;
 		String message = null;
 
-		// the other types that are supported are
-		if (status instanceof Boolean) {
+		if (status instanceof ValidationResult) {
+			return (ValidationResult) status;
+		} else if (status instanceof Boolean) {
 			// booleans
 			result = ((Boolean) status).booleanValue();
 		} else if ((status instanceof String)
-				|| String.class.isAssignableFrom(delegate.getReturnType())) {
+				|| String.class.isAssignableFrom(delegate
+						.getDelegateReturnType())) {
 			// string
 			result = status == null ? true : false;
 			message = (String) status;
 		}
 
-		if (message == null) {
+		if (!result && message == null) {
 			// FIXME: if the problem is in implementation of the toString()
 			// method this will keep failing
 			message = Utils.bind(
 					Messages.Sigma_GenericConstraintViolatedNoMessage,
-					constraint, object.toString());
+					delegate.getConstraint(), eObject.toString());
 		}
 
 		if (result) {
@@ -218,14 +220,42 @@ public class SigmaDelegateDomain implements SigmaConstants {
 		}
 	}
 
-	private static final SigmaDelegateDomain instance = new SigmaDelegateDomain();
-
-	public static SigmaDelegateDomain getDefaultInstance() {
-		return instance;
-	}
-
 	public String getDelegateConstraintKey() {
 		return DELEGATE_CONSTRAINT_KEY;
 	}
 
+	public SigmaInvocationDelegateFactory getInvocationDelegateFactory() {
+		if (invocationFactory == null) {
+			invocationFactory = new SigmaInvocationDelegateFactory();
+		}
+		return invocationFactory;
+	}
+
+	public SigmaSettingDelegateFactory getSettingDelegateFactory() {
+		if (settingFactory == null) {
+			settingFactory = new SigmaSettingDelegateFactory();
+		}
+
+		return settingFactory;
+	}
+
+	public SigmaValidationDelegateFactory getValidationDelegateFactory() {
+		if (validationFactory == null) {
+			validationFactory = new SigmaValidationDelegateFactory();
+		}
+
+		return validationFactory;
+	}
+
+	public static <T> EList<T> asEList(Collection<T> input) {
+		return delegatingEList(ImmutableList.<T> copyOf(input));
+	}
+
+	public static <T> EList<T> asEList(Iterable<T> input) {
+		return delegatingEList(ImmutableList.<T> copyOf(input));
+	}
+
+	public static <T> EList<T> asEList(Iterator<T> input) {
+		return delegatingEList(ImmutableList.<T> copyOf(input));
+	}
 }

@@ -6,42 +6,33 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import fr.unice.i3s.sigma.core.Utils;
 import fr.unice.i3s.sigma.core.ValidationResult;
 import fr.unice.i3s.sigma.core.annotations.Satisfies;
 
-public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> {
+public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClass>
+		implements ISigmaValidationDelegate {
 
 	private final String constraint;
 
-	public SigmaValidationDelegate(EClassifier target,
-			SigmaDelegateDomain domain, String constraint) {
+	public SigmaValidationDelegate(EClass target, SigmaDelegateDomain domain,
+			String constraint) {
 		super(target, domain);
 		this.constraint = constraint;
 	}
 
-	public ValidationResult validate(EClassifier eClassifier, Object object,
-			String constraint, String expression) {
+	@Override
+	public Object validate(EObject object) {
+		Method delegate = getDelegateMethodChecked();
 
-		Method delegate = null;
+		Object status = null;
 		try {
-			delegate = getDelegate();
-		} catch (SigmaDelegateNotFoundException e) {
-			handleDelegateNotFoundException(e);
-		}
-
-		try {
-			Object status = delegate.invoke(null, object);
-
-			if (status instanceof ValidationResult) {
-				return (ValidationResult) status;
-			} else {
-				return domain.toSigmaValidationResult(status, delegate,
-						constraint, object);
-			}
+			status = delegate.invoke(null, object);
 		} catch (IllegalArgumentException e) {
 			throw domain.handleIllegalArgumentException(delegate, object, e);
 		} catch (IllegalAccessException e) {
@@ -49,19 +40,30 @@ public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> 
 		} catch (InvocationTargetException e) {
 			throw domain.handleInvocationTargetException(delegate, object, e);
 		}
+
+		return status;
 	}
 
-	public String getConstraint() {
-		return constraint;
-	}
-
-	public List<String> getDependencies(Object object) {
+	protected Method getDelegateMethodChecked() {
 		Method delegate = null;
+
 		try {
 			delegate = getDelegate();
 		} catch (SigmaDelegateNotFoundException e) {
 			handleDelegateNotFoundException(e);
 		}
+
+		return delegate;
+	}
+
+	@Override
+	public String getConstraint() {
+		return constraint;
+	}
+
+	@Override
+	public List<String> getDependencies() {
+		Method delegate = getDelegateMethodChecked();
 
 		Satisfies satisfies = delegate.getAnnotation(Satisfies.class);
 		if (satisfies == null) {
@@ -128,6 +130,22 @@ public class SigmaValidationDelegate extends AbstractSigmaDelegate<EClassifier> 
 
 	@Override
 	protected EClassifier getContainingEClass() {
+		return target;
+	}
+
+	@Override
+	public Class<?> getDelegateReturnType() {
+		Method delegate = getDelegateMethodChecked();
+		return delegate.getReturnType();
+	}
+
+	@Override
+	public SigmaDelegateDomain getDomain() {
+		return domain;
+	}
+
+	@Override
+	public EClass getEClass() {
 		return target;
 	}
 }

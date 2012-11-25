@@ -83,27 +83,6 @@ public class SigmaEObjectValidator extends EObjectValidator {
 
 	}
 
-	private ISigmaQuickFixManager resolutionManager;
-	private boolean isQuckFixManagerAvailable = false;
-
-	public SigmaEObjectValidator() {
-		super();
-
-		try {
-			resolutionManager = SigmaQuickFixManager.getInstance();
-			isQuckFixManagerAvailable = true;
-		} catch (NoClassDefFoundError e) {
-			isQuckFixManagerAvailable = false;
-		}
-	}
-
-	public SigmaEObjectValidator(ISigmaQuickFixManager resolutionManager) {
-		super();
-
-		this.resolutionManager = notNull(resolutionManager);
-		this.isQuckFixManagerAvailable = true;
-	}
-
 	/**
 	 * @param validationDelegate
 	 *            URI of the validation delegate defined in the EMF model in the
@@ -149,79 +128,37 @@ public class SigmaEObjectValidator extends EObjectValidator {
 			}
 
 			// @formatter:off
-			return validateUsingSigmaDelegate(
-					eClass, 
+			return validate(
 					eObject, 
 					diagnostics,
 					context, 
-					validationDelegate, 
-					constraint, 
-					expression,
-					severity, 
+					sigmaDelegate, 
 					source, 
-					code,
-					sigmaDelegate);
+					code);
 			// @formatter:on
-		} else if (delegate != null) {
-
-			return validateUsingDefaultDelegate(eClass, eObject, diagnostics,
-					context, validationDelegate, constraint, expression,
-					severity, source, code, delegate);
 		} else {
-
-			if (diagnostics != null) {
-				reportConstraintDelegateNotFound(eClass, eObject, diagnostics,
-						context, constraint, severity, source, code,
-						validationDelegate);
-			}
-
-			return true;
+			return super.validate(eClass, eObject, diagnostics, context,
+					validationDelegate, constraint, expression, severity,
+					source, code);
 		}
 	}
 
-	private boolean validateUsingDefaultDelegate(EClass eClass,
-			EObject eObject, DiagnosticChain diagnostics,
-			Map<Object, Object> context, String validationDelegate,
-			String constraint, String expression, int severity, String source,
-			int code, ValidationDelegate delegate) {
-
-		try {
-			if (!delegate.validate(eClass, eObject, context, constraint,
-					expression)) {
-				if (diagnostics != null) {
-					reportConstraintDelegateViolation(eClass, eObject,
-							diagnostics, context, constraint, severity, source,
-							code);
-				}
-				return false;
-			}
-		} catch (Throwable throwable) {
-			if (diagnostics != null) {
-				reportConstraintDelegateException(eClass, eObject, diagnostics,
-						context, constraint, severity, source, code, throwable);
-			}
+	@Override
+	public boolean validate(EClass eClass, EObject eObject,
+			DiagnosticChain diagnostics, Map<Object, Object> context) {
+		if (diagnostics != null) {
+			removeQuickFixes(eObject);
 		}
 
-		return true;
+		return super.validate(eClass, eObject, diagnostics, context);
 	}
 
-// @formatter:off
-	private boolean validateUsingSigmaDelegate(
-			EClass eClass, 
-			EObject eObject,
-			DiagnosticChain diagnostics, 
-			Map<Object, Object> context,
-			String validationDelegate, 
-			String constraint, 
-			String expression,
-			int severity, 
-			String source, 
-			int code,
-			SigmaValidationDelegate delegate) {
-// @formatter:on
+	public static boolean validate(EObject eObject,
+			DiagnosticChain diagnostics, Map<Object, Object> context,
+			ISigmaValidationDelegate delegate, String source, int code) {
 
-		notNull(eObject);
-
+		final EClass eClass = delegate.getEClass();
+		final String constraint = delegate.getConstraint();
 		// 0. try to get partial results
 		final Integer key = PartialValidationResults.key(eObject);
 		final PartialValidationResults partialResults = getParticalResults(
@@ -234,7 +171,7 @@ public class SigmaEObjectValidator extends EObjectValidator {
 			return partialResults.getResult(constraint).isValidOrCanceled();
 		}
 
-		List<String> deps = delegate.getDependencies(eObject);
+		List<String> deps = delegate.getDependencies();
 
 		// System.out.println("----");
 		// System.out.println("EObject: " + eObject);
@@ -283,35 +220,31 @@ public class SigmaEObjectValidator extends EObjectValidator {
 			if (nextUnchecked == null) {
 				break;
 			} else {
-// @formatter:off				
-				validate(
-						eClass, 
-						eObject, 
-						diagnostics, 
-						context,
-						validationDelegate, 
-						nextUnchecked,
-						expression, 
-						severity, 
-						source, 
+				ISigmaValidationDelegate nextDelegate = delegate.getDomain()
+						.getValidationDelegateFactory()
+						.getDelegate(eClass, nextUnchecked);
+
+				validate(eObject, diagnostics, context, nextDelegate, source,
 						code);
-// @formatter:on
 			}
 		}
 
 		// 3. execute - ok so far so good - all dependencies has been satisfied
+		Object status = null;
 		ValidationResult result = null;
 
 		try {
 			// here is the actual validation
-			result = delegate.validate(eClass, eObject, constraint, expression);
+			status = delegate.validate(eObject);
+			result = delegate.getDomain().toSigmaValidationResult(status,
+					delegate, eObject);
 		} catch (Throwable e) {
-
 			// an exception during the delegate validation
 			if (diagnostics != null) {
 				String message = Utils.bind(
 						Messages.Sigma_ValidationDelegateException, constraint,
-						getObjectLabel(eObject, context), delegate, e);
+						EObjectValidator.getObjectLabel(eObject, context),
+						delegate, e);
 
 				diagnostics.add(SigmaDiagnostic.fromException(constraint,
 						eObject, source, code, message, e));
@@ -321,7 +254,6 @@ public class SigmaEObjectValidator extends EObjectValidator {
 								+ e.getMessage());
 			}
 		} finally {
-
 			// regardless how it went, we did execute
 			partialResults.setResult(constraint, result);
 		}
@@ -349,7 +281,7 @@ public class SigmaEObjectValidator extends EObjectValidator {
 		return result.isValidOrCanceled();
 	}
 
-	private PartialValidationResults getParticalResults(
+	private static PartialValidationResults getParticalResults(
 			Map<Object, Object> context, Integer key) {
 		PartialValidationResults partialResults = (PartialValidationResults) context
 				.get(key);
@@ -360,36 +292,36 @@ public class SigmaEObjectValidator extends EObjectValidator {
 		return partialResults;
 	}
 
-	@Override
-	public boolean validate(EClass eClass, EObject eObject,
-			DiagnosticChain diagnostics, Map<Object, Object> context) {
-		if (diagnostics != null) {
-			removeQuickFixes(eObject);
-		}
-
-		return super.validate(eClass, eObject, diagnostics, context);
-	}
-
-	private void addToQuickFixes(EObject eObject, ValidationResult result) {
-		if (!isQuckFixManagerAvailable || result.getQuickFixes().isEmpty()) {
+	public static void addToQuickFixes(EObject eObject, ValidationResult result) {
+		ISigmaQuickFixManager manager = getResolutionManager();
+		if (manager == null || result.getQuickFixes().isEmpty()) {
 			return;
 		}
 
 		URI eObjectURI = getEObjectURI(eObject);
-		resolutionManager.addAll(eObjectURI, result.getMessage(),
-				result.getQuickFixes());
+		manager.addAll(eObjectURI, result.getMessage(), result.getQuickFixes());
 	}
 
-	private void removeQuickFixes(EObject eObject) {
-		if (!isQuckFixManagerAvailable) {
+	public static ISigmaQuickFixManager getResolutionManager() {
+		try {
+			return SigmaQuickFixManager.getInstance();
+		} catch (NoClassDefFoundError e) {
+			return null;
+		}
+	}
+
+	public static void removeQuickFixes(EObject eObject) {
+		ISigmaQuickFixManager manager = getResolutionManager();
+		if (manager == null) {
 			return;
 		}
 
 		URI eObjectURI = getEObjectURI(eObject);
-		resolutionManager.removeAll(eObjectURI);
+		manager.removeAll(eObjectURI);
 	}
 
-	private URI getEObjectURI(EObject eObject) {
+	public static URI getEObjectURI(EObject eObject) {
 		return EcoreUtil.getURI(eObject);
 	}
+
 }

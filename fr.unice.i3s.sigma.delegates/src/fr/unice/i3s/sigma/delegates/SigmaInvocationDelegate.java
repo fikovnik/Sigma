@@ -12,7 +12,6 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 

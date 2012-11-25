@@ -1,10 +1,10 @@
 package fr.unice.i3s.sigma.scala
 
 import org.eclipse.emf.ecore.EClassifier
-
 import fr.unice.i3s.sigma.delegates.SigmaValidationDelegate
+import org.eclipse.emf.ecore.EClass
 
-final class SigmaScalaValiationDelegate(target: EClassifier, domain: SigmaScalaDelegateDomain,
+final class SigmaScalaValiationDelegate(target: EClass, domain: SigmaScalaDelegateDomain,
   constraint: String) extends SigmaValidationDelegate(target, domain, constraint) {
 
   override def getMethodSignature: String = {

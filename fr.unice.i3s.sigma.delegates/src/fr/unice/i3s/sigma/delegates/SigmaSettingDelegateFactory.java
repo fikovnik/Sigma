@@ -28,7 +28,8 @@ public class SigmaSettingDelegateFactory extends AbstractSigmaDelegateFactory
 	}
 
 	protected boolean hasBeenDelegated(EStructuralFeature target) {
-		return target.getEAnnotation(getDomain().getURI()) != null;
+		return target.isDerived()
+				&& target.getEAnnotation(getDomain().getURI()) != null;
 	}
 
 }
