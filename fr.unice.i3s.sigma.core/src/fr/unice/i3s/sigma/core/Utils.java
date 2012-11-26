@@ -24,4 +24,8 @@ public final class Utils {
 		return NLS.bind(messageId, values);
 	}
 
+	public static String fmt(String format, Object... args) {
+		return String.format(format, args);
+	}
+
 }

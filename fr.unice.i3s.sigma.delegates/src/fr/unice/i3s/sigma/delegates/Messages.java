@@ -8,6 +8,7 @@ public class Messages extends NLS {
 	public static String Sigma_GenericConstraintViolatedNoMessage;
 	public static String Sigma_NoValidationDelegate;
 	public static String Sigma_ValidationDelegateException;
+	public static String Sigma_NoSigmaRegisteredValidationDelegate;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

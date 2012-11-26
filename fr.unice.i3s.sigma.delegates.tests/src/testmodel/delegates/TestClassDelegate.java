@@ -75,6 +75,11 @@ public final class TestClassDelegate {
 		return ">>" + self.getAttribute() + "<<";
 	}
 
+	public static String invokeMethodWithArgs(TestClass self, String str,
+			int number) {
+		return ">>" + str + number + "<<";
+	}
+
 	public static boolean checkNonEmpty(TestClass self) {
 		return !isNullOrEmpty(self.getAttribute());
 	}

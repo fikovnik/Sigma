@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.WrappedException;
 
@@ -142,6 +143,30 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 	}
 
 	/**
+	 * The cached invocation delegate for the '{@link #methodWithArgs(java.lang.String, int) <em>Method With Args</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #methodWithArgs(java.lang.String, int)
+	 * @generated
+	 * @ordered
+	 */
+	protected static final EOperation.Internal.InvocationDelegate METHOD_WITH_ARGS_STRING_INT__EINVOCATION_DELEGATE = ((EOperation.Internal)TmPackage.Literals.TEST_CLASS___METHOD_WITH_ARGS__STRING_INT).getInvocationDelegate();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String methodWithArgs(String str, int number) {
+		try {
+			return (String)METHOD_WITH_ARGS_STRING_INT__EINVOCATION_DELEGATE.dynamicInvoke(this, new BasicEList.UnmodifiableEList<Object>(2, new Object[]{str, number}));
+		}
+		catch (InvocationTargetException ite) {
+			throw new WrappedException(ite);
+		}
+	}
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -213,6 +238,8 @@ public class TestClassImpl extends EObjectImpl implements TestClass {
 		switch (operationID) {
 			case TmPackage.TEST_CLASS___METHOD:
 				return method();
+			case TmPackage.TEST_CLASS___METHOD_WITH_ARGS__STRING_INT:
+				return methodWithArgs((String)arguments.get(0), (Integer)arguments.get(1));
 		}
 		return super.eInvoke(operationID, arguments);
 	}

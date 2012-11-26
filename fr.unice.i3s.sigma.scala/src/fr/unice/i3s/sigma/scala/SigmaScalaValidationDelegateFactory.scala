@@ -1,18 +1,14 @@
 package fr.unice.i3s.sigma.scala
 
-import org.eclipse.emf.ecore.EClassifier
+import org.eclipse.emf.ecore.EClass
 
 import fr.unice.i3s.sigma.delegates.SigmaValidationDelegateFactory
-import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain.{ instance => domain }
 
-final class SigmaScalaValidationDelegateFactory extends SigmaValidationDelegateFactory(domain) {
+final class SigmaScalaValidationDelegateFactory extends SigmaValidationDelegateFactory {
 
-  override def getExpectedMethodSignature(target: EClassifier, constraint: String): String = {
-    val selfType = domain.classifierTypeName(target)
-    val name = getExpectedMethodName(constraint)
-    val typeParams = domain.classifierTypeParameters(target)
+  override def getDomain = SigmaScalaDelegateDomain.instance
 
-    s"def $name$typeParams(self: $selfType): Boolean"
-  }
+  override def doCreateValidationDelegate(target: EClass, constraint: String) =
+    new SigmaScalaValiationDelegate(target, getDomain, constraint)
 
 }

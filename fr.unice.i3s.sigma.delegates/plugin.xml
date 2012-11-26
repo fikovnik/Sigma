@@ -22,4 +22,10 @@
             uri="http://www.i3s.unice.fr/Sigma">
       </delegate>
    </extension>
+   <extension
+         point="org.eclipse.emf.codegen.ecore.generatorAdapters">
+      <adapterFactory
+            class="fr.unice.i3s.sigma.delegates.codegen.SigmaGeneratorAdapterFactory">
+      </adapterFactory>
+   </extension>
 </plugin>

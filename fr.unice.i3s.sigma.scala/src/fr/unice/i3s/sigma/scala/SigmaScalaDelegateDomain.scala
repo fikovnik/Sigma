@@ -19,23 +19,23 @@ import fr.unice.i3s.sigma.core.ISigmaQuickFix
 import fr.unice.i3s.sigma.delegates.SigmaQuickFix
 import org.eclipse.emf.ecore.EObject
 import java.lang.reflect.Method
+import fr.unice.i3s.sigma.delegates.ISigmaValidationDelegate
+import scala.beans.BeanProperty
 
 final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
-
-  val DELEGATE_URI = SigmaDelegateDomain.DELEGATE_URI + "/Scala"
 
   private val TYPE_MAPPING = Map("boolean" -> "Boolean")
   private val COLLECTION_TYPE = classOf[List[_]]
 
   def installGlobally() {
     EOperation.Internal.InvocationDelegate.Factory.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaInvocationDelegateFactory);
+      (getURI -> new SigmaScalaInvocationDelegateFactory);
 
     EStructuralFeature.Internal.SettingDelegate.Factory.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaSettingDelegateFactory);
+      (getURI -> new SigmaScalaSettingDelegateFactory);
 
     EValidator.ValidationDelegate.Registry.INSTANCE +=
-      (DELEGATE_URI -> new SigmaScalaValidationDelegateFactory);
+      (getURI -> new SigmaScalaValidationDelegateFactory);
   }
 
   val instance = new SigmaScalaDelegateDomain
@@ -45,8 +45,8 @@ final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
   import SigmaScalaDelegateDomain._
 
-  override def getURI() = {
-    DELEGATE_URI
+  override def getURI = {
+    super.getURI + "/Scala"
   }
 
   override def loadDelegateClass(className: String) = {
@@ -159,8 +159,7 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
     }
   }
 
-  override def toSigmaValidationResult(status: Object, delegate: Method, constraint: String, `object`: Object) = {
-
+  override def toSigmaValidationResult(status: Any, delegate: ISigmaValidationDelegate, eObject: EObject): JValidationResult = {
     status match {
       //      case Option[String] => super.toSigmaValidationResult(s.get, delegate, constraint, `object`)
       case vr: ValidationResult => vr match {
@@ -170,8 +169,21 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
         case Error(message) => JValidationResult.error(message)
         case _: Cancel => JValidationResult.cancel()
       }
-      case _ => super.toSigmaValidationResult(status, delegate, constraint, `object`)
+
+      case _ => super.toSigmaValidationResult(status, delegate, eObject)
     }
   }
+
+  private val invocationFactory = new SigmaScalaInvocationDelegateFactory
+  override def getInvocationDelegateFactory = invocationFactory;
+
+  private val settingFactory = new SigmaScalaSettingDelegateFactory
+  override def getSettingDelegateFactory = settingFactory;
+
+  private val validationFactory = new SigmaScalaValidationDelegateFactory
+  override def getValidationDelegateFactory = validationFactory;
+
+  // BeanProperty
+  //  override def getValidationDelegateFactory: SigmaScalaValidationDelegateFactory = 
 
 }
