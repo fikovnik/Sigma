@@ -13,5 +13,6 @@ Require-Bundle: fr.unice.i3s.sigma.core;bundle-version="1.0.0";visibility:=reexp
  org.apache.commons.lang3;bundle-version="3.1.0",
  fr.unice.i3s.sigma.ui.ide;bundle-version="1.0.0";resolution:=optional,
  org.eclipse.emf.codegen.ecore;bundle-version="2.8.1";resolution:=optional
-Export-Package: fr.unice.i3s.sigma.delegates
+Export-Package: fr.unice.i3s.sigma.delegates,
+ fr.unice.i3s.sigma.delegates.codegen
 Eclipse-BuddyPolicy: dependent

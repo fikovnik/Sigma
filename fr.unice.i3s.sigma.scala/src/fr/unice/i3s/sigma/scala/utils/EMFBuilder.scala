@@ -89,6 +89,10 @@ trait InitializableEcore {
 object InitializableEcore extends InitializableEcore
 
 // TODO: make EMFBuilder to use more than one package
+object EMFBuilder {
+  def apply(pkg: EPackage) = new EMFBuilder(pkg)
+}
+
 final class EMFBuilder(val pkg: EPackage) {
 
   val factory = pkg.getEFactoryInstance

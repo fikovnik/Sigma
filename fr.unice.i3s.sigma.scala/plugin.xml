@@ -22,4 +22,10 @@
             uri="http://www.i3s.unice.fr/Sigma/Scala">
       </delegate>
    </extension>
+   <extension
+         point="org.eclipse.emf.codegen.ecore.generatorAdapters">
+      <adapterFactory
+            class="fr.unice.i3s.sigma.scala.codegen.ScalaEcoreExtensionsGeneratorAdapterFactory">
+      </adapterFactory>
+   </extension>
 </plugin>
