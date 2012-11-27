@@ -34,7 +34,7 @@ final class EMFBuilderTest extends InitializableEcore {
       fail("Multiple initialization is not supported")
     } catch {
       case e: IllegalStateException =>
-      case _ => fail("Invalid exception thrown")
+      case _: Throwable => fail("Invalid exception thrown")
     }
 
   }
