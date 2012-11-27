@@ -17,12 +17,9 @@ final class NotificationTest extends InitializableEcore {
   @Test
   def testNotification2() {
 
-    
-
     class MyAdapter extends EContentAdapter {
       override def notifyChanged(notification: Notification) {
         super.notifyChanged(notification)
-        println(notification)
       }
     }
 
@@ -49,7 +46,6 @@ final class NotificationTest extends InitializableEcore {
 
     class MyAdapter extends AdapterImpl {
       override def notifyChanged(notification: Notification) {
-        println(notification)
       }
     }
 

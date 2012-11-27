@@ -11,12 +11,10 @@ object DDelegate {
   }
 
   def validateAlwaysTrueInvariant(self: D): Boolean = {
-    println("D")
     true
   }
 
   def validateAlwaysFalseInvariant(self: D): Boolean = {
-    println("D")
     false
   }
 
