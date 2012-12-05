@@ -21,9 +21,10 @@ Require-Bundle: org.junit4;bundle-version="4.8.1",
  org.eclipse.emf.edit.ui;bundle-version="2.7.0",
  org.eclipse.emf.ecore.edit;bundle-version="2.7.1",
  org.eclipse.emf.ecore.editor;bundle-version="2.7.0",
- org.eclipse.pde;bundle-version="3.7.0",
+ org.eclipse.pde;bundle-version="3.7.2",
  org.eclipse.pde.ui;bundle-version="3.6.100",
  org.eclipse.sdk;bundle-version="3.7.2",
  fr.unice.i3s.sigma.examples.library;bundle-version="1.0.0",
  fr.unice.i3s.sigma.ui.ide;bundle-version="1.0.0"
 Eclipse-RegisterBuddy: org.apache.log4j
+
