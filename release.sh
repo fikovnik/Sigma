@@ -10,6 +10,10 @@ if [ $# != 1 ]; then
 	echo "  latest for a nightly build"
 	echo "  milestones/<name> for a milestone"
 	echo "  releases/<name> for a release"
+	echo `
+	echo "Existing:"
+	ssh $HOST "ls -1 $BASEDIR/{milestones,releases}" 
+
 	exit 1
 fi
 
