@@ -55,12 +55,12 @@
 					<url>${p2.eclipse}</url>
 				</repository>
 				<repository>
-				<repository>
 					<id>eclipse-emf</id>
 					<name>EMF releases</name>
 					<layout>p2</layout>
 					<url>${p2.emf}</url>
 				</repository>
+				<repository>
 					<id>swtbot</id>
 					<name>SWTBot repository</name>
 					<layout>p2</layout>
