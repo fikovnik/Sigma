@@ -6,10 +6,7 @@
  */
 package fr.unice.i3s.sigma.examples.library;
 
-import java.lang.CharSequence;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -24,12 +21,11 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getBooks <em>Books</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getLoans <em>Loans</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getMembers <em>Members</em>}</li>
- *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getDescription <em>Description</em>}</li>
  * </ul>
  * </p>
  *
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getLibrary()
- * @model annotation="http://www.i3s.unice.fr/Sigma delegate='fr.unice.i3s.sigma.examples.library.delegate.LibraryDelegate'"
+ * @model
  * @generated
  */
 public interface Library extends EObject {
@@ -62,6 +58,7 @@ public interface Library extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Books</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.unice.i3s.sigma.examples.library.Book}.
+	 * It is bidirectional and its opposite is '{@link fr.unice.i3s.sigma.examples.library.Book#getLibrary <em>Library</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Books</em>' containment reference list isn't clear,
@@ -70,7 +67,8 @@ public interface Library extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Books</em>' containment reference list.
 	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getLibrary_Books()
-	 * @model containment="true" ordered="false"
+	 * @see fr.unice.i3s.sigma.examples.library.Book#getLibrary
+	 * @model opposite="library" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<Book> getBooks();
@@ -94,6 +92,7 @@ public interface Library extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Members</b></em>' containment reference list.
 	 * The list contents are of type {@link fr.unice.i3s.sigma.examples.library.Member}.
+	 * It is bidirectional and its opposite is '{@link fr.unice.i3s.sigma.examples.library.Member#getLibrary <em>Library</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Members</em>' containment reference list isn't clear,
@@ -102,32 +101,26 @@ public interface Library extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Members</em>' containment reference list.
 	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getLibrary_Members()
-	 * @model containment="true" ordered="false"
+	 * @see fr.unice.i3s.sigma.examples.library.Member#getLibrary
+	 * @model opposite="library" containment="true" ordered="false"
 	 * @generated
 	 */
 	EList<Member> getMembers();
 
 	/**
-	 * Returns the value of the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Description</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Description</em>' attribute.
-	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getLibrary_Description()
-	 * @model required="true" transient="true" changeable="false" volatile="true" derived="true"
+	 * @model
 	 * @generated
 	 */
-	String getDescription();
+	Book getBookByName(String name);
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @model nameDataType="fr.unice.i3s.sigma.examples.library.ECharSequence"
+	 * @model required="true"
 	 * @generated
 	 */
-	Book getBookByName(CharSequence name);
+	String toString();
 
 } // Library

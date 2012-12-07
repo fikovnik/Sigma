@@ -6,26 +6,21 @@
  */
 package fr.unice.i3s.sigma.examples.library.impl;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EValidator;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.LibraryFactory;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
 import fr.unice.i3s.sigma.examples.library.Member;
-
 import fr.unice.i3s.sigma.examples.library.util.LibraryValidator;
-
-import java.lang.CharSequence;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EValidator;
-
-import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -61,13 +56,6 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * @generated
 	 */
 	private EClass loanEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EDataType eCharSequenceEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -189,8 +177,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getLibrary_Description() {
-		return (EAttribute)libraryEClass.getEStructuralFeatures().get(4);
+	public EOperation getLibrary__GetBookByName__String() {
+		return libraryEClass.getEOperations().get(0);
 	}
 
 	/**
@@ -198,8 +186,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getLibrary__GetBookByName__CharSequence() {
-		return libraryEClass.getEOperations().get(0);
+	public EOperation getLibrary__ToString() {
+		return libraryEClass.getEOperations().get(1);
 	}
 
 	/**
@@ -342,15 +330,6 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EDataType getECharSequence() {
-		return eCharSequenceEDataType;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public LibraryFactory getLibraryFactory() {
 		return (LibraryFactory)getEFactoryInstance();
 	}
@@ -379,8 +358,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		createEReference(libraryEClass, LIBRARY__BOOKS);
 		createEReference(libraryEClass, LIBRARY__LOANS);
 		createEReference(libraryEClass, LIBRARY__MEMBERS);
-		createEAttribute(libraryEClass, LIBRARY__DESCRIPTION);
-		createEOperation(libraryEClass, LIBRARY___GET_BOOK_BY_NAME__CHARSEQUENCE);
+		createEOperation(libraryEClass, LIBRARY___GET_BOOK_BY_NAME__STRING);
+		createEOperation(libraryEClass, LIBRARY___TO_STRING);
 
 		bookEClass = createEClass(BOOK);
 		createEAttribute(bookEClass, BOOK__NAME);
@@ -399,9 +378,6 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		createEReference(loanEClass, LOAN__BOOK);
 		createEReference(loanEClass, LOAN__MEMBER);
 		createEAttribute(loanEClass, LOAN__DATE);
-
-		// Create data types
-		eCharSequenceEDataType = createEDataType(ECHAR_SEQUENCE);
 	}
 
 	/**
@@ -436,35 +412,33 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		// Initialize classes, features, and operations; add parameters
 		initEClass(libraryEClass, Library.class, "Library", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLibrary_Name(), ecorePackage.getEString(), "name", null, 1, 1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getLibrary_Books(), this.getBook(), null, "books", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getLibrary_Books(), this.getBook(), this.getBook_Library(), "books", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getLibrary_Loans(), this.getLoan(), null, "loans", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getLibrary_Members(), this.getMember(), null, "members", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getLibrary_Description(), ecorePackage.getEString(), "description", null, 1, 1, Library.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getLibrary_Members(), this.getMember(), this.getMember_Library(), "members", null, 0, -1, Library.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
-		EOperation op = initEOperation(getLibrary__GetBookByName__CharSequence(), this.getBook(), "getBookByName", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getECharSequence(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
+		EOperation op = initEOperation(getLibrary__GetBookByName__String(), this.getBook(), "getBookByName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getLibrary__ToString(), ecorePackage.getEString(), "toString", 1, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(bookEClass, Book.class, "Book", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getBook_Name(), ecorePackage.getEString(), "name", null, 1, 1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getBook_Copies(), ecorePackage.getEInt(), "copies", null, 1, 1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getBook_Library(), this.getLibrary(), null, "library", null, 1, 1, Book.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
-		initEReference(getBook_Loans(), this.getLoan(), null, "loans", null, 0, -1, Book.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEReference(getBook_Library(), this.getLibrary(), this.getLibrary_Books(), "library", null, 1, 1, Book.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getBook_Loans(), this.getLoan(), null, "loans", null, 0, -1, Book.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
 
 		initEOperation(getBook__IsAvailable(), ecorePackage.getEBoolean(), "isAvailable", 0, 1, IS_UNIQUE, !IS_ORDERED);
 
 		initEClass(memberEClass, Member.class, "Member", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMember_Name(), ecorePackage.getEString(), "name", null, 1, 1, Member.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getMember_Library(), this.getLibrary(), null, "library", null, 1, 1, Member.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
-		initEReference(getMember_Loans(), this.getLoan(), null, "loans", null, 0, -1, Member.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEReference(getMember_Books(), this.getBook(), null, "books", null, 0, -1, Member.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEReference(getMember_Library(), this.getLibrary(), this.getLibrary_Members(), "library", null, 1, 1, Member.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEReference(getMember_Loans(), this.getLoan(), null, "loans", null, 0, -1, Member.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEReference(getMember_Books(), this.getBook(), null, "books", null, 0, -1, Member.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
 
 		initEClass(loanEClass, Loan.class, "Loan", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLoan_Book(), this.getBook(), null, "book", null, 1, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getLoan_Member(), this.getMember(), null, "member", null, 1, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEAttribute(getLoan_Date(), ecorePackage.getEDate(), "date", null, 0, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-
-		// Initialize data types
-		initEDataType(eCharSequenceEDataType, CharSequence.class, "ECharSequence", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -497,13 +471,13 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		   source, 
 		   new String[] {
 			 "constraints", "SufficientCopies AtLeastOneCopy"
-		   });						
+		   });					
 		addAnnotation
 		  (memberEClass, 
 		   source, 
 		   new String[] {
 			 "constraints", "AtMostTwoLoans UniqueLoans"
-		   });				
+		   });			
 	}
 
 	/**
@@ -515,18 +489,18 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	protected void createSigmaAnnotations() {
 		String source = "http://www.i3s.unice.fr/Sigma";			
 		addAnnotation
-		  (libraryEClass, 
+		  (this, 
 		   source, 
 		   new String[] {
-			 "delegate", "fr.unice.i3s.sigma.examples.library.delegate.LibraryDelegate"
+			 "delegate", "fr.unice.i3s.sigma.examples.library.delegate"
 		   });		
 		addAnnotation
-		  (getLibrary__GetBookByName__CharSequence(), 
+		  (getLibrary__GetBookByName__String(), 
 		   source, 
 		   new String[] {
 		   });		
 		addAnnotation
-		  (getLibrary_Description(), 
+		  (getLibrary__ToString(), 
 		   source, 
 		   new String[] {
 		   });			
@@ -535,16 +509,10 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		   source, 
 		   new String[] {
 			 "SufficientCopies", "",
-			 "AtLeastOneCopy", "",
-			 "delegate", "fr.unice.i3s.sigma.examples.library.delegate.BookDelegate"
+			 "AtLeastOneCopy", ""
 		   });		
 		addAnnotation
 		  (getBook__IsAvailable(), 
-		   source, 
-		   new String[] {
-		   });		
-		addAnnotation
-		  (getBook_Library(), 
 		   source, 
 		   new String[] {
 		   });		
@@ -558,13 +526,7 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		   source, 
 		   new String[] {
 			 "AtMostTwoLoans", "",
-			 "UniqueLoans", "",
-			 "delegate", "fr.unice.i3s.sigma.examples.library.delegate.MemberDelegate"
-		   });		
-		addAnnotation
-		  (getMember_Library(), 
-		   source, 
-		   new String[] {
+			 "UniqueLoans", ""
 		   });		
 		addAnnotation
 		  (getMember_Loans(), 

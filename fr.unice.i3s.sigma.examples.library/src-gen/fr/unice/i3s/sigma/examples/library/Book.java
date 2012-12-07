@@ -7,7 +7,6 @@
 package fr.unice.i3s.sigma.examples.library;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -27,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getBook()
  * @model annotation="http://www.eclipse.org/emf/2002/Ecore constraints='SufficientCopies AtLeastOneCopy'"
- *        annotation="http://www.i3s.unice.fr/Sigma SufficientCopies='' AtLeastOneCopy='' delegate='fr.unice.i3s.sigma.examples.library.delegate.BookDelegate'"
+ *        annotation="http://www.i3s.unice.fr/Sigma SufficientCopies='' AtLeastOneCopy=''"
  * @generated
  */
 public interface Book extends EObject {
@@ -84,19 +83,32 @@ public interface Book extends EObject {
 	void setCopies(int value);
 
 	/**
-	 * Returns the value of the '<em><b>Library</b></em>' reference.
+	 * Returns the value of the '<em><b>Library</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link fr.unice.i3s.sigma.examples.library.Library#getBooks <em>Books</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Library</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Library</em>' reference.
+	 * @return the value of the '<em>Library</em>' container reference.
+	 * @see #setLibrary(Library)
 	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getBook_Library()
-	 * @model required="true" transient="true" changeable="false" volatile="true" derived="true" ordered="false"
+	 * @see fr.unice.i3s.sigma.examples.library.Library#getBooks
+	 * @model opposite="books" required="true" transient="false" ordered="false"
 	 * @generated
 	 */
 	Library getLibrary();
+
+	/**
+	 * Sets the value of the '{@link fr.unice.i3s.sigma.examples.library.Book#getLibrary <em>Library</em>}' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Library</em>' container reference.
+	 * @see #getLibrary()
+	 * @generated
+	 */
+	void setLibrary(Library value);
 
 	/**
 	 * Returns the value of the '<em><b>Loans</b></em>' reference list.
@@ -109,7 +121,7 @@ public interface Book extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Loans</em>' reference list.
 	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getBook_Loans()
-	 * @model volatile="true" derived="true" ordered="false"
+	 * @model transient="true" changeable="false" volatile="true" derived="true" ordered="false"
 	 * @generated
 	 */
 	EList<Loan> getLoans();

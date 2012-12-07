@@ -6,17 +6,19 @@
  */
 package fr.unice.i3s.sigma.examples.library.util;
 
-import fr.unice.i3s.sigma.delegates.SigmaEObjectValidator;
-import fr.unice.i3s.sigma.examples.library.*;
-import java.lang.CharSequence;
-
 import java.util.Map;
 
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EPackage;
+
+import fr.unice.i3s.sigma.delegates.SigmaEObjectValidator;
+import fr.unice.i3s.sigma.examples.library.Book;
+import fr.unice.i3s.sigma.examples.library.Library;
+import fr.unice.i3s.sigma.examples.library.LibraryPackage;
+import fr.unice.i3s.sigma.examples.library.Loan;
+import fr.unice.i3s.sigma.examples.library.Member;
 
 /**
  * <!-- begin-user-doc --> The <b>Validator</b> for the model. <!-- end-user-doc
@@ -102,9 +104,6 @@ public class LibraryValidator extends SigmaEObjectValidator {
 			return validateMember((Member) value, diagnostics, context);
 		case LibraryPackage.LOAN:
 			return validateLoan((Loan) value, diagnostics, context);
-		case LibraryPackage.ECHAR_SEQUENCE:
-			return validateECharSequence((CharSequence) value, diagnostics,
-					context);
 		default:
 			return true;
 		}
@@ -307,16 +306,6 @@ public class LibraryValidator extends SigmaEObjectValidator {
 	public boolean validateLoan(Loan loan, DiagnosticChain diagnostics,
 			Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(loan, diagnostics, context);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public boolean validateECharSequence(CharSequence eCharSequence,
-			DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return true;
 	}
 
 	/**

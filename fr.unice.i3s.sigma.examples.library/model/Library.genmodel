@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<genmodel:GenModel xmi:version="2.0"
-    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.unice.i3s.sigma.examples.library/src-gen"
-    modelPluginID="fr.unice.i3s.sigma.examples.library" modelName="Library" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="6.0" copyrightFields="false" operationReflection="true">
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.unice.i3s.sigma.examples.library/src-gen" modelPluginID="fr.unice.i3s.sigma.examples.library"
+    modelName="Library" importerID="org.eclipse.emf.importer.ecore" complianceLevel="6.0"
+    copyrightFields="false" operationReflection="true">
   <foreignModel>Library.ecore</foreignModel>
   <genPackages prefix="Library" basePackage="fr.unice.i3s.sigma.examples" disposableProviderFactory="true"
       ecorePackage="Library.ecore#/">
-    <genDataTypes ecoreDataType="Library.ecore#//ECharSequence"/>
     <genClasses ecoreClass="Library.ecore#//Library">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Library.ecore#//Library/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Library.ecore#//Library/books"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Library.ecore#//Library/loans"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Library.ecore#//Library/members"/>
-      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Library.ecore#//Library/description"/>
       <genOperations ecoreOperation="Library.ecore#//Library/getBookByName">
         <genParameters ecoreParameter="Library.ecore#//Library/getBookByName/name"/>
       </genOperations>
+      <genOperations ecoreOperation="Library.ecore#//Library/toString"/>
     </genClasses>
     <genClasses ecoreClass="Library.ecore#//Book">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Library.ecore#//Book/name"/>

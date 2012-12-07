@@ -2,17 +2,18 @@ package fr.unice.i3s.sigma.examples.library.delegate;
 
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
+import static fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.asEList;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.eclipse.emf.common.util.EList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
 import fr.unice.i3s.sigma.core.ValidationResult;
 import fr.unice.i3s.sigma.examples.library.Book;
-import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.Loan;
 import fr.unice.i3s.sigma.examples.library.Member;
 
@@ -49,26 +50,22 @@ public final class MemberDelegate {
 		}
 	}
 
-	public static Library getLibrary(Member self) {
-		return Library.class.cast(self.eContainer());
-	}
-
-	public static Collection<Loan> getLoans(final Member self) {
-		return filter(self.getLibrary().getLoans(), new Predicate<Loan>() {
+	public static EList<Loan> getLoans(final Member self) {
+		return asEList(filter(self.getLibrary().getLoans(), new Predicate<Loan>() {
 			@Override
 			public boolean apply(Loan input) {
 				return input.getMember().equals(self);
 			}
-		});
+		}));
 	}
 
-	public static Collection<Book> getBooks(final Member self) {
-		return transform(self.getLoans(), new Function<Loan, Book>() {
+	public static EList<Book> getBooks(final Member self) {
+		return asEList(transform(self.getLoans(), new Function<Loan, Book>() {
 			@Override
 			public Book apply(Loan input) {
 				return input.getBook();
 			}
-		});
+		}));
 	}
 
 }

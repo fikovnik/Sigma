@@ -1,15 +1,16 @@
 package fr.unice.i3s.sigma.examples.library.delegate;
 
 import static com.google.common.collect.Collections2.filter;
+import static fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.asEList;
 
-import java.util.Collection;
+import org.eclipse.emf.common.util.EList;
 
 import com.google.common.base.Predicate;
+
 import fr.unice.i3s.sigma.core.ValidationResult;
 import fr.unice.i3s.sigma.delegates.SigmaQuickFix;
 import fr.unice.i3s.sigma.delegates.SigmaQuickFix.IFix;
 import fr.unice.i3s.sigma.examples.library.Book;
-import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.Loan;
 
 public class BookDelegate {
@@ -50,17 +51,13 @@ public class BookDelegate {
 		}
 	}
 
-	public static Library getLibrary(Book self) {
-		return Library.class.cast(self.eContainer());
-	}
-
-	public static Collection<Loan> getLoans(final Book self) {
-		return filter(self.getLibrary().getLoans(), new Predicate<Loan>() {
+	public static EList<Loan> getLoans(final Book self) {
+		return asEList(filter(self.getLibrary().getLoans(), new Predicate<Loan>() {
 			@Override
 			public boolean apply(Loan input) {
 				return input.getBook() == self;
 			}
-		});
+		}));
 	}
 
 	public static boolean invokeIsAvailable(Book self) {

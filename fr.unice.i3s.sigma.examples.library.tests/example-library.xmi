@@ -9,4 +9,12 @@
   <books name="Book1"/>
   <books name="Book2"
       copies="1"/>
+  <books name="Book3"
+      copies="2"/>
+  <loans book="//@books.2"
+      member="//@members.0"/>
+  <loans book="//@books.2"
+      member="//@members.1"/>
+  <members name="Member1"/>
+  <members name="Member2"/>
 </library:Library>

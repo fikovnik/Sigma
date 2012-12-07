@@ -76,6 +76,28 @@ public class LibraryTest {
 		assertTrue(book2.isAvailable());
 
 		assertNull(library.getBookByName("Book that does not exist"));
+
+		Book book3 = library.getBookByName("Book3");
+		assertNotNull(book3);
+		assertEquals("Book3", book3.getName());
+		assertEquals(library, book3.getLibrary());
+		assertEquals(2, book3.getCopies());
+		assertFalse(book3.isAvailable());
+		assertEquals(2, book3.getLoans().size());
+		assertEquals("Member1", book3.getLoans().get(0).getMember().getName());
+		assertEquals("Member2", book3.getLoans().get(1).getMember().getName());
+
+		Member member1 = library.getMembers().get(0);
+		assertEquals("Member1", member1.getName());
+		assertEquals(1, member1.getLoans().size());
+		assertEquals(1, member1.getBooks().size());
+		assertEquals("Book3", member1.getBooks().get(0).getName());
+
+		Member member2 = library.getMembers().get(1);
+		assertEquals("Member2", member2.getName());
+		assertEquals(1, member2.getLoans().size());
+		assertEquals(1, member2.getBooks().size());
+		assertEquals("Book3", member2.getBooks().get(0).getName());
 	}
 
 	/**

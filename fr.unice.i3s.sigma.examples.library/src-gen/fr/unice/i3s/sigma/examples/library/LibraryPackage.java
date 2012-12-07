@@ -8,7 +8,6 @@ package fr.unice.i3s.sigma.examples.library;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -28,6 +27,7 @@ import org.eclipse.emf.ecore.EReference;
  * @see fr.unice.i3s.sigma.examples.library.LibraryFactory
  * @model kind="package"
  *        annotation="http://www.eclipse.org/emf/2002/Ecore invocationDelegates='http://www.i3s.unice.fr/Sigma' settingDelegates='http://www.i3s.unice.fr/Sigma' validationDelegates='http://www.i3s.unice.fr/Sigma'"
+ *        annotation="http://www.i3s.unice.fr/Sigma delegate='fr.unice.i3s.sigma.examples.library.delegate'"
  * @generated
  */
 public interface LibraryPackage extends EPackage {
@@ -110,22 +110,13 @@ public interface LibraryPackage extends EPackage {
 	int LIBRARY__MEMBERS = 3;
 
 	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LIBRARY__DESCRIPTION = 4;
-
-	/**
 	 * The number of structural features of the '<em>Library</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LIBRARY_FEATURE_COUNT = 5;
+	int LIBRARY_FEATURE_COUNT = 4;
 
 	/**
 	 * The operation id for the '<em>Get Book By Name</em>' operation.
@@ -134,7 +125,16 @@ public interface LibraryPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LIBRARY___GET_BOOK_BY_NAME__CHARSEQUENCE = 0;
+	int LIBRARY___GET_BOOK_BY_NAME__STRING = 0;
+
+	/**
+	 * The operation id for the '<em>To String</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIBRARY___TO_STRING = 1;
 
 	/**
 	 * The number of operations of the '<em>Library</em>' class.
@@ -143,7 +143,7 @@ public interface LibraryPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LIBRARY_OPERATION_COUNT = 1;
+	int LIBRARY_OPERATION_COUNT = 2;
 
 	/**
 	 * The meta object id for the '{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl <em>Book</em>}' class.
@@ -174,7 +174,7 @@ public interface LibraryPackage extends EPackage {
 	int BOOK__COPIES = 1;
 
 	/**
-	 * The feature id for the '<em><b>Library</b></em>' reference.
+	 * The feature id for the '<em><b>Library</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -238,7 +238,7 @@ public interface LibraryPackage extends EPackage {
 	int MEMBER__NAME = 0;
 
 	/**
-	 * The feature id for the '<em><b>Library</b></em>' reference.
+	 * The feature id for the '<em><b>Library</b></em>' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -338,17 +338,6 @@ public interface LibraryPackage extends EPackage {
 	int LOAN_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '<em>EChar Sequence</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see java.lang.CharSequence
-	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getECharSequence()
-	 * @generated
-	 */
-	int ECHAR_SEQUENCE = 4;
-
-
-	/**
 	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.library.Library <em>Library</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -403,25 +392,24 @@ public interface LibraryPackage extends EPackage {
 	EReference getLibrary_Members();
 
 	/**
-	 * Returns the meta object for the attribute '{@link fr.unice.i3s.sigma.examples.library.Library#getDescription <em>Description</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Description</em>'.
-	 * @see fr.unice.i3s.sigma.examples.library.Library#getDescription()
-	 * @see #getLibrary()
-	 * @generated
-	 */
-	EAttribute getLibrary_Description();
-
-	/**
-	 * Returns the meta object for the '{@link fr.unice.i3s.sigma.examples.library.Library#getBookByName(java.lang.CharSequence) <em>Get Book By Name</em>}' operation.
+	 * Returns the meta object for the '{@link fr.unice.i3s.sigma.examples.library.Library#getBookByName(java.lang.String) <em>Get Book By Name</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the '<em>Get Book By Name</em>' operation.
-	 * @see fr.unice.i3s.sigma.examples.library.Library#getBookByName(java.lang.CharSequence)
+	 * @see fr.unice.i3s.sigma.examples.library.Library#getBookByName(java.lang.String)
 	 * @generated
 	 */
-	EOperation getLibrary__GetBookByName__CharSequence();
+	EOperation getLibrary__GetBookByName__String();
+
+	/**
+	 * Returns the meta object for the '{@link fr.unice.i3s.sigma.examples.library.Library#toString() <em>To String</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>To String</em>' operation.
+	 * @see fr.unice.i3s.sigma.examples.library.Library#toString()
+	 * @generated
+	 */
+	EOperation getLibrary__ToString();
 
 	/**
 	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.library.Book <em>Book</em>}'.
@@ -456,10 +444,10 @@ public interface LibraryPackage extends EPackage {
 	EAttribute getBook_Copies();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.unice.i3s.sigma.examples.library.Book#getLibrary <em>Library</em>}'.
+	 * Returns the meta object for the container reference '{@link fr.unice.i3s.sigma.examples.library.Book#getLibrary <em>Library</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Library</em>'.
+	 * @return the meta object for the container reference '<em>Library</em>'.
 	 * @see fr.unice.i3s.sigma.examples.library.Book#getLibrary()
 	 * @see #getBook()
 	 * @generated
@@ -509,10 +497,10 @@ public interface LibraryPackage extends EPackage {
 	EAttribute getMember_Name();
 
 	/**
-	 * Returns the meta object for the reference '{@link fr.unice.i3s.sigma.examples.library.Member#getLibrary <em>Library</em>}'.
+	 * Returns the meta object for the container reference '{@link fr.unice.i3s.sigma.examples.library.Member#getLibrary <em>Library</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Library</em>'.
+	 * @return the meta object for the container reference '<em>Library</em>'.
 	 * @see fr.unice.i3s.sigma.examples.library.Member#getLibrary()
 	 * @see #getMember()
 	 * @generated
@@ -585,17 +573,6 @@ public interface LibraryPackage extends EPackage {
 	EAttribute getLoan_Date();
 
 	/**
-	 * Returns the meta object for data type '{@link java.lang.CharSequence <em>EChar Sequence</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>EChar Sequence</em>'.
-	 * @see java.lang.CharSequence
-	 * @model instanceClass="java.lang.CharSequence"
-	 * @generated
-	 */
-	EDataType getECharSequence();
-
-	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -661,20 +638,20 @@ public interface LibraryPackage extends EPackage {
 		EReference LIBRARY__MEMBERS = eINSTANCE.getLibrary_Members();
 
 		/**
-		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute LIBRARY__DESCRIPTION = eINSTANCE.getLibrary_Description();
-
-		/**
 		 * The meta object literal for the '<em><b>Get Book By Name</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation LIBRARY___GET_BOOK_BY_NAME__CHARSEQUENCE = eINSTANCE.getLibrary__GetBookByName__CharSequence();
+		EOperation LIBRARY___GET_BOOK_BY_NAME__STRING = eINSTANCE.getLibrary__GetBookByName__String();
+
+		/**
+		 * The meta object literal for the '<em><b>To String</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation LIBRARY___TO_STRING = eINSTANCE.getLibrary__ToString();
 
 		/**
 		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl <em>Book</em>}' class.
@@ -703,7 +680,7 @@ public interface LibraryPackage extends EPackage {
 		EAttribute BOOK__COPIES = eINSTANCE.getBook_Copies();
 
 		/**
-		 * The meta object literal for the '<em><b>Library</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Library</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -745,7 +722,7 @@ public interface LibraryPackage extends EPackage {
 		EAttribute MEMBER__NAME = eINSTANCE.getMember_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Library</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Library</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -801,16 +778,6 @@ public interface LibraryPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute LOAN__DATE = eINSTANCE.getLoan_Date();
-
-		/**
-		 * The meta object literal for the '<em>EChar Sequence</em>' data type.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see java.lang.CharSequence
-		 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getECharSequence()
-		 * @generated
-		 */
-		EDataType ECHAR_SEQUENCE = eINSTANCE.getECharSequence();
 
 	}
 
