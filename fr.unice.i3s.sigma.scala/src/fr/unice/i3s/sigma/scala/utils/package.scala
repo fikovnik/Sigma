@@ -9,11 +9,6 @@ import scala.collection.JavaConversions.seqAsJavaList
 import scala.collection.JavaConversions.mapAsScalaMap
 import org.eclipse.emf.common.notify.Notifier
 import org.eclipse.emf.common.util.Diagnostic
-import org.eclipse.emf.common.util.Diagnostic.CANCEL
-import org.eclipse.emf.common.util.Diagnostic.ERROR
-import org.eclipse.emf.common.util.Diagnostic.INFO
-import org.eclipse.emf.common.util.Diagnostic.OK
-import org.eclipse.emf.common.util.Diagnostic.WARNING
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
@@ -157,11 +152,11 @@ package object utils {
   // EMF Validation helpers
   class RichSigmaDiagnostic(a: Diagnostic) {
     private val SEVERITIES = Map(
-      OK -> "OK",
-      INFO -> "INFO",
-      WARNING -> "WARNING",
-      ERROR -> "ERROR",
-      CANCEL -> "CANCEL")
+      Diagnostic.OK -> "OK",
+      Diagnostic.INFO -> "INFO",
+      Diagnostic.WARNING -> "WARNING",
+      Diagnostic.ERROR -> "ERROR",
+      Diagnostic.CANCEL -> "CANCEL")
 
     def flatten: List[Diagnostic] = {
       a.getChildren toList match {
@@ -177,7 +172,7 @@ package object utils {
         .mkString("\n")
     }
 
-    def findConstraint(name: String, obj: Option[EObject], severity: Int = ERROR): Option[Diagnostic] = {
+    def findConstraint(name: String, obj: Option[EObject], severity: Int = Diagnostic.ERROR): Option[Diagnostic] = {
       val msg = "The '%s' constraint is violated" format name
 
       flatten.find(e => e.getMessage.startsWith(msg) &&
@@ -188,7 +183,7 @@ package object utils {
         }))
     }
 
-    def containsConstraint(name: String, obj: Option[EObject], severity: Int = ERROR) =
+    def containsConstraint(name: String, obj: Option[EObject], severity: Int = Diagnostic.ERROR) =
       findConstraint(name, obj, severity).isDefined
   }
 
@@ -219,26 +214,26 @@ package object utils {
 
     def validate = Diagnostician.INSTANCE.validate(obj)
 
-    def violations(severity: Int = ERROR) = {
+    def violations(severity: Int = Diagnostic.ERROR) = {
       validate.flatten.filter(_.getSeverity() == severity)
     }
 
     /**
      * @returns true if object represented by this instance directly violates the given constrain
      */
-    def violatesConstraint(name: String, severity: Int = ERROR) = {
+    def violatesConstraint(name: String, severity: Int = Diagnostic.ERROR) = {
       validate.containsConstraint(name, Some(obj), severity)
     }
 
     /**
      * @returns true if object represented by this instance or any of its children violates the given constrain
      */
-    def violatesConstraintAny(name: String, severity: Int = ERROR) = {
+    def violatesConstraintAny(name: String, severity: Int = Diagnostic.ERROR) = {
       validate.containsConstraint(name, None, severity)
     }
 
     def isValid = {
-      validate.getSeverity == OK
+      validate.getSeverity == Diagnostic.OK
     }
 
     def copy = EcoreUtil.copy(obj)
