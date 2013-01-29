@@ -45,7 +45,7 @@
 									<source>true</source>
 								</artifact>
 								<artifact>
-									<id>org.scalatest:scalatest_2.10.0-RC2:2.0.M5</id>
+									<id>org.scalatest:scalatest_2.10:2.0.M5b</id>
 									<source>true</source>
 									<transitive>false</transitive>
 								</artifact>
