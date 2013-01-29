@@ -1,3 +1,5 @@
+# SIGMA [![Build Status](https://travis-ci.org/fikovnik/Sigma.png?branch=develop)](https://travis-ci.org/fikovnik/Sigma) #
+
 <script type="text/javascript" src="http://latex.codecogs.com/latexit.js"></script>
 <script type="text/javascript">
 LatexIT.add('p',true);
