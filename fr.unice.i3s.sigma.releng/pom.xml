@@ -9,79 +9,18 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<profiles>
-		<profile>
-			<id>nyx-mirror</id>
-			<repositories>
-				<repository>
-					<id>nyx</id>
-					<name>NYX mirror</name>
-					<layout>p2</layout>
-					<url>http://nyx.unice.fr/p2/eclipse/</url>
-				</repository>
-				<repository>
-					<id>eclipse-emf</id>
-					<name>EMF releases</name>
-					<layout>p2</layout>
-					<url>http://download.eclipse.org/modeling/emf/emf/updates/releases/</url>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
-			<id>no-mirror</id>
-			<!-- IMPORTANT: This profile will be activated as long as there are no 
-				other profiles in this POM that will be activated. This is kind of all or 
-				nothing behavior. -->
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<repositories>
-				<repository>
-					<id>guava</id>
-					<name>Google Guava P2 repository</name>
-					<layout>p2</layout>
-					<url>${p2.guava}</url>
-				</repository>
-				<repository>
-					<id>scala-ide</id>
-					<name>Scala IDE P2 repository</name>
-					<layout>p2</layout>
-					<url>${p2.scala-ide}</url>
-				</repository>
-				<repository>
-					<id>eclipse</id>
-					<name>Eclipse P2 repository</name>
-					<layout>p2</layout>
-					<url>${p2.eclipse}</url>
-				</repository>
-				<repository>
-					<id>eclipse-emf</id>
-					<name>EMF releases</name>
-					<layout>p2</layout>
-					<url>${p2.emf}</url>
-				</repository>
-				<repository>
-					<id>swtbot</id>
-					<name>SWTBot repository</name>
-					<layout>p2</layout>
-					<url>${p2.swtbot}</url>
-				</repository>
-			</repositories>
-		</profile>
-	</profiles>
-
 	<properties>
 		<tycho-version>0.16.0</tycho-version>
 		<tycho-extras-version>0.16.0</tycho-extras-version>
-		<scala-version>2.10.0-RC2</scala-version>
+		<scala-version>2.10.0</scala-version>
 		<scala-maven-plugin-version>3.1.0</scala-maven-plugin-version>
 
 		<!-- repositories -->
-		<p2.guava>http://guava-osgi.googlecode.com/svn/trunk/repository/</p2.guava>
+		<p2.google-guava>http://guava-osgi.googlecode.com/svn/trunk/repository/</p2.google-guava>
 		<p2.scala-ide>http://download.scala-ide.org/sdk/e37/scala210/dev/site</p2.scala-ide>
-		<p2.eclipse>http://download.eclipse.org/releases/indigo/</p2.eclipse>
-		<p2.emf>http://download.eclipse.org/modeling/emf/emf/updates/releases/</p2.emf>
-		<p2.swtbot>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</p2.swtbot>
+		<p2.eclipse-indigo>http://download.eclipse.org/releases/indigo/</p2.eclipse-indigo>
+		<p2.eclipse-emf>http://download.eclipse.org/modeling/emf/emf/updates/releases/</p2.eclipse-emf>
+		<p2.eclipse-swtbot>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</p2.eclipse-swtbot>
 	</properties>
 
 	<modules>
@@ -109,6 +48,36 @@
 			<name>SIGMA External p2 repository</name>
 			<layout>p2</layout>
 			<url>file://${basedir}/../fr.unice.i3s.sigma.releng.p2/target/repository/</url>
+		</repository>
+		<repository>
+			<id>google-guava</id>
+			<name>Google Guava repository</name>
+			<layout>p2</layout>
+			<url>${p2.google-guava}</url>
+		</repository>
+		<repository>
+			<id>scala-ide</id>
+			<name>Scala IDE repository</name>
+			<layout>p2</layout>
+			<url>${p2.scala-ide}</url>
+		</repository>
+		<repository>
+			<id>eclipse-indigo</id>
+			<name>Eclipse Indigo repository</name>
+			<layout>p2</layout>
+			<url>${p2.eclipse-indigo}</url>
+		</repository>
+		<repository>
+			<id>eclipse-emf</id>
+			<name>Eclipse EMF repository</name>
+			<layout>p2</layout>
+			<url>${p2.eclipse-emf}</url>
+		</repository>
+		<repository>
+			<id>eclipse-swtbot</id>
+			<name>Eclipse SWTBot repository</name>
+			<layout>p2</layout>
+			<url>${p2.eclipse-swtbot}</url>
 		</repository>
 	</repositories>
 
@@ -167,14 +136,10 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<dependency-resolution>
-<!-- 						<extraRequirements>
-							<requirement>
-								<type>p2-installable-unit</type>
-								<id>org.eclipse.jdt.feature.group</id>
-								<versionRange>3.7.3</versionRange>
-							</requirement>
-						</extraRequirements>
- -->					</dependency-resolution>
+						<!-- <extraRequirements> <requirement> <type>p2-installable-unit</type> 
+							<id>org.eclipse.jdt.feature.group</id> <versionRange>3.7.3</versionRange> 
+							</requirement> </extraRequirements> -->
+					</dependency-resolution>
 					<environments>
 						<environment>
 							<os>win32</os>

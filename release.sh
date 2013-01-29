@@ -3,14 +3,14 @@
 HOST="nyx.unice.fr"
 BASEDIR="/nasrainbow/www/www-nossl/p2/sigma"
 
-if [ $# != 1 ]; then
+if [ $# -ne 1 ]; then
 	echo "Usage: $0 <dir>"
 	echo 
 	echo "The dir should be either:"
 	echo "  latest for a nightly build"
 	echo "  milestones/<name> for a milestone"
 	echo "  releases/<name> for a release"
-	echo `
+	echo 
 	echo "Existing:"
 	ssh $HOST "ls -1 $BASEDIR/{milestones,releases}" 
 

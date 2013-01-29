@@ -32,9 +32,6 @@
 								<artifact>
 									<id>org.mockito:mockito-all:1.9.0</id>
 									<source>true</source>
-									<instructions>
-										<_nouses>true</_nouses>
-									</instructions>
 								</artifact>
 								<artifact>
 									<id>org.antlr:stringtemplate:4.0.2</id>
@@ -46,17 +43,11 @@
 								<artifact>
 									<id>org.apache.commons:commons-lang3:3.1</id>
 									<source>true</source>
-									<instructions>
-										<_nouses>true</_nouses>
-									</instructions>
 								</artifact>
 								<artifact>
 									<id>org.scalatest:scalatest_2.10.0-RC2:2.0.M5</id>
 									<source>true</source>
 									<transitive>false</transitive>
-									<instructions>
-										<_nouses>true</_nouses>
-									</instructions>
 								</artifact>
 							</artifacts>
 						</configuration>
