@@ -1,0 +1,14 @@
+title: "Sigma Documentation"
+description: "Documentation for the Sigma Project"
+
+pygments: true
+
+docs:
+  - 
+    title: Delegates
+    url: delegates.html
+    desc: The core part of the Sigma framework is in the ability to enrich EMF models by delegating the computation of derived features, operation bodies and validation of structural constraints.
+  - 
+    title: Model to Text Transformation
+    url: mtt.html
+    desc: Model to Text Transformation support in Sigma.
