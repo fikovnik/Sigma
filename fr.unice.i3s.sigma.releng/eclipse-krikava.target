@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target includeMode="feature" name="e37-nyx" sequenceNumber="27">
+<target name="e37-krikava" sequenceNumber="27">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="com.google.guava.runtime.feature.feature.group" version="11.0.1"/>
