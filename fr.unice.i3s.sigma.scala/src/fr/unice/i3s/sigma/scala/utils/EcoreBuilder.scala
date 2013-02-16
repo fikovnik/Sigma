@@ -32,9 +32,9 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     nsPrefix: String = null): EPackage = {
     val obj = create[EPackage]
 
-    obj.setName(name)
-    obj.setNsURI(nsURI)
-    obj.setNsPrefix(nsPrefix)
+    setNotDefault(obj.setName, name, null)
+    setNotDefault(obj.setNsURI, nsURI, null)
+    setNotDefault(obj.setNsPrefix, nsPrefix, null)
 
     obj
   }
@@ -75,8 +75,8 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     unique: Boolean = true,
     lowerBound: Int = 0,
     upperBound: Int = 1,
-    eType: EClassifier = null): EAttribute = {
-    //    eGenericType: EGenericType = null): EAttribute = {
+    eType: EClassifier = null,
+    eGenericType: EGenericType = null): EAttribute = {
 
     val obj = create[EAttribute]
 
@@ -84,20 +84,20 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     referenceList[EStructuralFeature] += obj
 
     // set values
-    obj.setName(name)
-    obj.setID(iD)
-    obj.setTransient(transient)
-    obj.setVolatile(volatile)
-    obj.setChangeable(changeable)
-    obj.setDefaultValueLiteral(defaultValueLiteral)
-    obj.setUnsettable(unsettable)
-    obj.setDerived(derived)
-    obj.setOrdered(ordered)
-    obj.setUnique(unique)
-    obj.setLowerBound(lowerBound)
-    obj.setUpperBound(upperBound)
-    obj.setEType(eType)
-    //    obj.setEGenericType(eGenericType)
+    setNotDefault(obj.setName, name, null)
+    setNotDefault(obj.setID, iD, false)
+    setNotDefault(obj.setTransient, transient, false)
+    setNotDefault(obj.setVolatile, volatile, false)
+    setNotDefault(obj.setChangeable, changeable, false)
+    setNotDefault(obj.setDefaultValueLiteral, defaultValueLiteral, null)
+    setNotDefault(obj.setUnsettable, unsettable, false)
+    setNotDefault(obj.setDerived, derived, false)
+    setNotDefault(obj.setOrdered, ordered, true)
+    setNotDefault(obj.setUnique, unique, true)
+    setNotDefault(obj.setLowerBound, lowerBound, 0)
+    setNotDefault(obj.setUpperBound, upperBound, 1)
+    setNotDefault(obj.setEType, eType, null)
+    setNotDefault(obj.setEGenericType, eGenericType, null)
 
     obj
   }

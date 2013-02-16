@@ -130,4 +130,7 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
     instance.asInstanceOf[T]
   }
 
+  protected def setNotDefault[T](setter: (T) ⇒ Unit, value: T, default: T) {
+    if (value != null) setter(value)
+  }
 }
