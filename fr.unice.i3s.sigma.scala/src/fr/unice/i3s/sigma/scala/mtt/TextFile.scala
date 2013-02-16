@@ -3,13 +3,13 @@ package fr.unice.i3s.sigma.scala.mtt
 import scala.annotation.tailrec
 import scala.collection.mutable.Buffer
 import scala.util.DynamicVariable
-
 import TextSection._
 import java.io.Writer
+import java.io.File
 
 object TextSection {
   def indentText(num: Int) =
-    (text: String) => {
+    (text: String) ⇒ {
       val str =
         if (text.last == '\n') text.substring(0, text.length - 1)
         else text
@@ -18,7 +18,7 @@ object TextSection {
     }
 
   def surroundText(str: String) =
-    (text: String) => s"$str$text$str"
+    (text: String) ⇒ s"$str$text$str"
 
   val endl = System.getProperty("line.separator")
 
@@ -42,8 +42,8 @@ object TextSection {
  * </ul>
  */
 abstract class TextSection[T <: TextSection[T]](
-  private[this] val decorators: List[String => String] = List(),
-  private[this] val blockDecorators: List[String => String] = List()) {
+  private[this] val decorators: List[String ⇒ String] = List(),
+  private[this] val blockDecorators: List[String ⇒ String] = List()) {
 
   private[this] var leftOpt: Option[T] = None
   private[this] var rightOpt: Option[T] = None
@@ -52,8 +52,8 @@ abstract class TextSection[T <: TextSection[T]](
 
   def append(text: String): this.type = {
     rightOpt match {
-      case None => buffer += text
-      case Some(right) => right append text
+      case None ⇒ buffer += text
+      case Some(right) ⇒ right append text
     }
 
     this
@@ -61,7 +61,7 @@ abstract class TextSection[T <: TextSection[T]](
 
   def section: T = {
     rightOpt match {
-      case None =>
+      case None ⇒
         // subsection do not inherit any blockDecorators
         // otherwise they will be applied multiple times
         leftOpt = Some(createSection(decorators, Nil))
@@ -69,14 +69,14 @@ abstract class TextSection[T <: TextSection[T]](
 
         leftOpt.get
 
-      case Some(right) =>
+      case Some(right) ⇒
         right section
     }
   }
 
-  def withDecorator(decorator: String => String)(block: => Any): this.type = {
+  def withDecorator(decorator: String ⇒ String)(block: ⇒ Any): this.type = {
     rightOpt match {
-      case None =>
+      case None ⇒
         rightOpt = Some(createSection(decorator :: decorators,
           blockDecorators))
 
@@ -85,16 +85,16 @@ abstract class TextSection[T <: TextSection[T]](
         leftOpt = rightOpt
         rightOpt = Some(createSection(decorators, blockDecorators))
 
-      case Some(right) =>
+      case Some(right) ⇒
         right.withDecorator(decorator)(block)
     }
 
     this
   }
 
-  def withBlockDecorator(decorator: String => String)(block: => Any): this.type = {
+  def withBlockDecorator(decorator: String ⇒ String)(block: ⇒ Any): this.type = {
     rightOpt match {
-      case None =>
+      case None ⇒
         rightOpt = Some(createSection(decorators,
           blockDecorators = decorator :: Nil))
 
@@ -103,7 +103,7 @@ abstract class TextSection[T <: TextSection[T]](
         leftOpt = rightOpt
         rightOpt = Some(createSection(decorators, blockDecorators))
 
-      case Some(right) =>
+      case Some(right) ⇒
         right.withBlockDecorator(decorator)(block)
     }
 
@@ -111,15 +111,15 @@ abstract class TextSection[T <: TextSection[T]](
   }
 
   protected[this] def createSection(
-    decorators: List[String => String],
-    blockDecorators: List[String => String]): T
+    decorators: List[String ⇒ String],
+    blockDecorators: List[String ⇒ String]): T
 
   override def toString = {
     val sb = new StringBuilder
 
     // process decorators
-    sb append buffer.map { str =>
-      (decorators foldLeft str) { (a, b) => b(a) }
+    sb append buffer.map { str ⇒
+      (decorators foldLeft str) { (a, b) ⇒ b(a) }
     }.mkString
 
     // left part
@@ -130,13 +130,17 @@ abstract class TextSection[T <: TextSection[T]](
 
     // process block decorators
     if (!sb.isEmpty)
-      (blockDecorators foldLeft sb.toString) { (a, b) => b(a) }
+      (blockDecorators foldLeft sb.toString) { (a, b) ⇒ b(a) }
     else
       ""
   }
 }
 
-trait RichTextSection { this: TextSection[_] =>
+trait TextSectionAdditions { this: TextSection[_] ⇒
+
+  implicit class SringOutput(that: String) {
+    def unary_! = append(that) append (endl)
+  }
 
   private[this] var _defaultIndent: Int = 2
 
@@ -156,7 +160,7 @@ trait RichTextSection { this: TextSection[_] =>
     this
   }
 
-  def indentBy(num: Int)(block: => Any): this.type = {
+  def indentBy(num: Int)(block: ⇒ Any): this.type = {
     withBlockDecorator(indentText(num)) {
       append(endl)
       block
@@ -165,7 +169,7 @@ trait RichTextSection { this: TextSection[_] =>
     this
   }
 
-  def indent(block: => Any): this.type = {
+  def indent(block: ⇒ Any): this.type = {
     withBlockDecorator(indentText(defaultIndent)) {
       append(endl)
       block
@@ -177,13 +181,13 @@ trait RichTextSection { this: TextSection[_] =>
 }
 
 class Text(
-  decorators: List[String => String] = List(),
-  blockDecorators: List[String => String] = List())
-  extends TextSection[Text](decorators, blockDecorators) with RichTextSection {
+  decorators: List[String ⇒ String] = List(),
+  blockDecorators: List[String ⇒ String] = List())
+  extends TextSection[Text](decorators, blockDecorators) with TextSectionAdditions {
 
   protected[this] override def createSection(
-    decorators: List[String => String],
-    blockDecorators: List[String => String]): Text =
+    decorators: List[String ⇒ String],
+    blockDecorators: List[String ⇒ String]): Text =
 
     new Text(decorators, blockDecorators)
 }

@@ -19,17 +19,28 @@ import org.eclipse.emf.ecore.util.Diagnostician
 import org.eclipse.emf.ecore.util.EcoreUtil
 import com.google.common.base.Charsets
 import com.google.common.io.Files
-
-import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.delegatingEList;
-
+import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.delegatingEList
 import org.eclipse.emf.common.util.EMap
 import org.eclipse.emf.ecore.xmi.XMIResource
 import org.eclipse.emf.ecore.xmi.XMLResource
+import java.io.FileWriter
+import java.io.Closeable
+import java.io.Writer
 
 /**
  * A utility package that extends some Scala types with OCL-like operations.
  */
 package object utils {
+
+  object io {
+    implicit def fileToFileWriter(a: File) = new FileWriter(a)
+
+    def using[B](file: File)(f: Writer ⇒ B): B = using(new FileWriter(file))(f)
+
+    def using[A <: Closeable, B](input: A)(f: A ⇒ B): B = {
+      try { f(input) } finally { input.close() }
+    }
+  }
 
   // Loading and saving Resources
 
@@ -99,11 +110,11 @@ package object utils {
     options: Map[_, _] = null) = {
     val resourceSet = new ResourceSetImpl();
     Option(options) match {
-      case Some(o) =>
+      case Some(o) ⇒
         val loadOpts = resourceSet.getLoadOptions()
-        for ((k, v) <- o)
+        for ((k, v) ← o)
           loadOpts.put(k.asInstanceOf[AnyRef], v.asInstanceOf[AnyRef])
-      case None =>
+      case None ⇒
     }
 
     resourceSet.getResource(uri, true)
@@ -122,7 +133,7 @@ package object utils {
     } else {
 
       val sb = new StringBuilder();
-      for (d <- errors) {
+      for (d ← errors) {
         sb ++= (d.toString() + "\n");
       }
 
@@ -160,14 +171,14 @@ package object utils {
 
     def flatten: List[Diagnostic] = {
       a.getChildren toList match {
-        case Nil => a :: Nil
-        case e => e.flatMap(_.flatten).toList
+        case Nil ⇒ a :: Nil
+        case e ⇒ e.flatMap(_.flatten).toList
       }
     }
 
     def prettyPrint = {
       flatten
-        .map(d => "%s %s (%s)\n"
+        .map(d ⇒ "%s %s (%s)\n"
           format (SEVERITIES(d.getSeverity), d.getMessage, d.getData.get(0)))
         .mkString("\n")
     }
@@ -175,11 +186,11 @@ package object utils {
     def findConstraint(name: String, obj: Option[EObject], severity: Int = Diagnostic.ERROR): Option[Diagnostic] = {
       val msg = "The '%s' constraint is violated" format name
 
-      flatten.find(e => e.getMessage.startsWith(msg) &&
+      flatten.find(e ⇒ e.getMessage.startsWith(msg) &&
         e.getSeverity == severity &&
         (obj match {
-          case Some(x) => e.getData.get(0) == x
-          case None => true
+          case Some(x) ⇒ e.getData.get(0) == x
+          case None ⇒ true
         }))
     }
 
@@ -269,29 +280,29 @@ package object utils {
   class RichSigmaOption[A](a: Option[A]) {
     def getOrThrow(e: Throwable) = {
       a match {
-        case Some(x) => x
-        case None => throw e
+        case Some(x) ⇒ x
+        case None ⇒ throw e
       }
     }
 
     def getOrThrow(msg: String) = {
       a match {
-        case Some(x) => x
-        case None => throw new RuntimeException(msg)
+        case Some(x) ⇒ x
+        case None ⇒ throw new RuntimeException(msg)
       }
     }
   }
 
   class RichSigmaBoolean(a: Boolean) {
-    def implies(b: => Boolean) = {
+    def implies(b: ⇒ Boolean) = {
       !a || b
     }
   }
 
   class RichSigmaString(a: String) {
     def splitFirst(p: String) = a.indexOf(p) match {
-      case -1 => (a, "")
-      case i => (a.take(i), a.drop(i + 1))
+      case -1 ⇒ (a, "")
+      case i ⇒ (a.take(i), a.drop(i + 1))
     }
   }
 
@@ -314,5 +325,15 @@ package object utils {
 
   implicit def eMapAsScalaMap[A, B](a: EMap[A, B]): scala.collection.mutable.Map[A, B] =
     mapAsScalaMap(a.map())
+
+  object EMF {
+
+    import org.eclipse.emf.ecore._
+
+    implicit class ScalaEClass(that: EClass) {
+
+    }
+
+  }
 
 }

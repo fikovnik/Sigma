@@ -11,7 +11,7 @@ import org.junit.Before
 import org.junit.Test
 import org.eclipse.emf.ecore.EAttribute
 
-final class EMFBuilderTest extends InitializableEcore {
+final class EMFBuilderTest {
 
   @Before
   def setUp() {
@@ -23,18 +23,18 @@ final class EMFBuilderTest extends InitializableEcore {
     val builder = new EMFBuilder(EcorePackage.eINSTANCE)
     import builder._
 
-    val eclazz = create[EClass] initLater { clz =>
+    val eclazz = create[EClass] initLater { clz ⇒
       clz.setName("MyClass")
     }
 
     try {
-      eclazz initLater { clz =>
+      eclazz initLater { clz ⇒
         clz.setName("MyClass2")
       }
       fail("Multiple initialization is not supported")
     } catch {
-      case e: IllegalStateException =>
-      case _: Throwable => fail("Invalid exception thrown")
+      case e: IllegalStateException ⇒
+      case _: Throwable ⇒ fail("Invalid exception thrown")
     }
 
   }
@@ -48,10 +48,15 @@ final class EMFBuilderTest extends InitializableEcore {
     val builder = new EMFBuilder(EcorePackage.eINSTANCE)
     import builder._
 
-    val eclazz = create[EClass] initLater { clz =>
+    // FIXME: try a different scenario
+    // class1 initLater (add an attribute)
+    // class2 initLater (add an attribute)
+    // check where do these attributes end up
+
+    val eclazz = create[EClass] initLater { clz ⇒
       clz.setName("MyClass")
       clz.setAbstract(false)
-      clz.getEStructuralFeatures ++= List("A", "B") map (name => create[EAttribute] init { _.setName(name) })
+      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ create[EAttribute] init { _.setName(name) })
     }
 
     assertNull(eclazz.getName)
@@ -69,10 +74,10 @@ final class EMFBuilderTest extends InitializableEcore {
     val builder = new EMFBuilder(EcorePackage.eINSTANCE)
     import builder._
 
-    val eclazz = create[EClass] initLater { clz =>
+    val eclazz = create[EClass] initLater { clz ⇒
       clz.setName("MyClass")
       clz.setAbstract(false)
-      clz.getEStructuralFeatures ++= List("A", "B") map (name => create[EAttribute] init { _.setName(name) })
+      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ create[EAttribute] init { _.setName(name) })
     }
 
     assertNull(eclazz.getName)
@@ -96,10 +101,10 @@ final class EMFBuilderTest extends InitializableEcore {
     val builder = new EMFBuilder(EcorePackage.eINSTANCE)
     import builder._
 
-    val eclazz = create[EClass] init { clz =>
+    val eclazz = create[EClass] init { clz ⇒
       clz.setName("MyClass")
       clz.setAbstract(false)
-      clz.getEStructuralFeatures ++= List("A", "B") map (name => create[EAttribute] init { _.setName(name) })
+      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ create[EAttribute] init { _.setName(name) })
     }
 
     assertEquals("MyClass", eclazz.getName)
@@ -110,11 +115,12 @@ final class EMFBuilderTest extends InitializableEcore {
   @Test
   def testBasicCreate() {
     val builder = new EMFBuilder(EcorePackage.eINSTANCE)
+    import builder._
 
-    val eclazz = builder.create[EClass] init { clz: EClass =>
+    val eclazz = create[EClass] init { clz: EClass ⇒
       clz.setName("MyClass")
       clz.setAbstract(false)
-      clz.getEStructuralFeatures ++= List("A", "B") map (name => builder.create[EAttribute] init { _.setName(name) })
+      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ builder.create[EAttribute] init { _.setName(name) })
     }
 
     assertEquals("MyClass", eclazz.getName)

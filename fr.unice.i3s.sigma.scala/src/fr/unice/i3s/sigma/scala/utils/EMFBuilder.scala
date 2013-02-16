@@ -11,6 +11,12 @@ import org.eclipse.emf.common.notify.Notification
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.common.util.EList
+import fr.unice.i3s.sigma.scala.utils._
+import org.eclipse.emf.ecore.ENamedElement
+import org.eclipse.emf.ecore.impl.EObjectImpl
+import scala.reflect.runtime.universe.{ typeOf, TypeTag }
+
+import reflect.{ ClassTag, classTag }
 
 final class PostponeContentInitializerAdapter extends EContentAdapter {
   val codes = {
@@ -24,14 +30,14 @@ final class PostponeContentInitializerAdapter extends EContentAdapter {
 
     if (codes contains notification.getEventType) {
       notification.getNotifier match {
-        case resource: Resource =>
+        case resource: Resource ⇒
           initializeObject(notification.getNewValue)
-        case _ => Option(notification.getFeature).collect {
-          case r: EReference if r.isContainment => r
+        case _ ⇒ Option(notification.getFeature).collect {
+          case r: EReference if r.isContainment ⇒ r
         } match {
-          case Some(ref) =>
+          case Some(ref) ⇒
             initializeObject(notification.getNewValue)
-          case None =>
+          case None ⇒
         }
       }
     }
@@ -39,16 +45,16 @@ final class PostponeContentInitializerAdapter extends EContentAdapter {
 
   private def initializeObject(obj: Object) {
     obj match {
-      case eobj: EObject => eobj.adapter[PostponedInitizationAdapter[_]] match {
-        case Some(adapter) => adapter.initialize()
-        case None =>
+      case eobj: EObject ⇒ eobj.adapter[PostponedInitizationAdapter[_]] match {
+        case Some(adapter) ⇒ adapter.initialize()
+        case None ⇒
       }
-      case _ =>
+      case _ ⇒
     }
   }
 }
 
-final class PostponedInitizationAdapter[T <: EObject](val initializer: T => Unit) extends AdapterImpl {
+final class PostponedInitizationAdapter[T <: EObject](val initializer: T ⇒ Unit) extends AdapterImpl {
   def initialize() {
     initializer(getTarget().asInstanceOf[T])
     getTarget().eAdapters.remove(this)
@@ -60,55 +66,68 @@ final class PostponedInitizationAdapter[T <: EObject](val initializer: T => Unit
 
 }
 
-trait InitializableEcore {
+trait EMFDynamicContext {
+  protected val context = new TypedDynamicVariable[EObject](null)
+  protected val referenceContext = new TypedDynamicVariable[EList[_ <: EObject]](null)
 
-  class InitializableEObject[T <: EObject](val obj: T) {
-
-    def apply(fun: T => Unit): T = init(fun)
-
-    def init(fun: T => Unit): T = {
-      fun(obj)
-      obj
-    }
-
-    def initLater(initializer: T => Unit): T = {
-      obj.adapter[PostponedInitizationAdapter[_]] match {
-        case None => obj.eAdapters += new PostponedInitizationAdapter(initializer)
-        case Some(o) => throw new IllegalStateException("Multiple initialization is not supported. Object: " + obj)
-      }
-      obj
-    }
-
+  def self[T <: EObject: TypeTag]: T = Option(context.value) match {
+    case Some(c) ⇒ c
+    case None ⇒ throw new IllegalStateException("The current container is empty.")
   }
 
-  implicit def initializableEObject[T <: EObject](obj: T) =
-    new InitializableEObject(obj)
+  def referenceList[T <: EObject: TypeTag]: EList[T] = Option(referenceContext.value[EList[T]]) match {
+    case Some(c) ⇒ c
+    case None ⇒ throw new IllegalStateException("The current container list is empty.")
+  }
 
+  def isContainerTypeOf[T <: EObject: TypeTag] = context.valueType =:= typeOf[T]
+
+  def isContainerListSet = referenceContext.value[EList[_ <: EObject]] != null
 }
 
-object InitializableEcore extends InitializableEcore
+class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
 
-// TODO: make EMFBuilder to use more than one package
-object EMFBuilder {
-  def apply(pkg: EPackage) = new EMFBuilder(pkg)
-}
+  implicit class InitializableEObject[T <: EObject: TypeTag](val obj: T) {
+    def apply(fun: ⇒ Unit): T = {
+      context.withValue(obj) { fun; obj }
+    }
 
-final class EMFBuilder(val pkg: EPackage) {
+    def init(fun: T ⇒ Unit): T = {
+      context.withValue(obj) { fun(obj); obj }
+    }
 
-  val factory = pkg.getEFactoryInstance
-
-  def create[T <: EObject](implicit m: Manifest[T]): T = {
-    val eclazz = Option(pkg.getEClassifier(m.erasure.getSimpleName))
-
-    val instance = (eclazz match {
-      case Some(o) => o match {
-        case c: EClass => factory.create(c)
-        case _ => throw new RuntimeException("Only EClass types are supported")
+    // FIXME: this is likely broken
+    def initLater(initializer: T ⇒ Unit): T = {
+      context.withValue(obj) {
+        obj.adapter[PostponedInitizationAdapter[_]] match {
+          case None ⇒
+            obj.eAdapters += new PostponedInitizationAdapter(initializer)
+          case Some(o) ⇒
+            throw new IllegalStateException("Multiple initialization is not supported. Object: " + obj)
+        }
+        obj
       }
-      case None => throw new RuntimeException("Unable to find EClass %s in package %s" format (m.erasure.getSimpleName, pkg.getNsURI))
-    }).asInstanceOf[T]
+    }
+  }
 
-    instance
+  protected val factory = pkg.getEFactoryInstance
+
+  def create[T <: EObject: ClassTag]: T = {
+    val clazz = classTag[T].runtimeClass.getSimpleName
+    val classifier = pkg.getEClassifier(clazz)
+
+    require(classifier != null,
+      s"Unable to find EClass $clazz in package ${pkg.getNsURI}")
+
+    val instance = classifier match {
+      case c: EClass ⇒ factory.create(c)
+      case _ ⇒ throw new IllegalArgumentException(
+        s"EClassifier $clazz is not an EClass")
+    }
+
+    // this is necessary as we will never be able to do static type safety
+    // as along as EMF will not provide generic version of EFactory.create()
+    instance.asInstanceOf[T]
   }
 
 }

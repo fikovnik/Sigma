@@ -12,7 +12,7 @@ import org.junit.Test
 import library.LibraryPackage
 import library.LibraryFactory
 
-final class NotificationTest extends InitializableEcore {
+final class NotificationTest {
 
   @Test
   def testNotification2() {
