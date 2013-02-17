@@ -3,23 +3,25 @@ package fr.unice.i3s.sigma.scala.mtt
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import org.junit.runner.RunWith
-import TextSection._
 import org.scalatest.junit.JUnitRunner
 import java.io.StringWriter
 
 @RunWith(classOf[JUnitRunner])
-class TextFileSpec extends FlatSpec with MustMatchers {
+class TextTemplateSpec extends FlatSpec with MustMatchers {
+
+  // TODO: where to put this so it can be accessed everywhere?
+  val endl = System.getProperty("line.separator")
 
   "Text" must "append simple text" in {
 
-    val text = new Text
+    val text = new TextTemplate
     text append "hello world"
     text.toString must be === "hello world"
   }
 
   it must "support section" in {
 
-    val text = new Text
+    val text = new TextTemplate
     text append "a"
     val sub1 = text.section
     sub1 append "b"
@@ -34,7 +36,7 @@ class TextFileSpec extends FlatSpec with MustMatchers {
 
   it must "support many section" in {
 
-    val text = new Text
+    val text = new TextTemplate
     text.section append "a"
     text.section append "b"
     text.section append "c"
@@ -46,10 +48,10 @@ class TextFileSpec extends FlatSpec with MustMatchers {
   }
 
   it must "support decorators" in {
-    val text = new Text
-    val d1 = (s: String) => s"($s)"
-    val d2 = (s: String) => s"[$s]"
-    val d3 = (s: String) => s"{$s}"
+    val text = new TextTemplate
+    val d1 = (s: String) ⇒ s"($s)"
+    val d2 = (s: String) ⇒ s"[$s]"
+    val d3 = (s: String) ⇒ s"{$s}"
 
     (text withDecorator d1) {
       text append "a"
@@ -73,10 +75,10 @@ class TextFileSpec extends FlatSpec with MustMatchers {
   }
 
   it must "support block decorators" in {
-    val text = new Text
-    val d1 = (s: String) => s"($s)"
-    val d2 = (s: String) => s"[$s]"
-    val d3 = (s: String) => s"{$s}"
+    val text = new TextTemplate
+    val d1 = (s: String) ⇒ s"($s)"
+    val d2 = (s: String) ⇒ s"[$s]"
+    val d3 = (s: String) ⇒ s"{$s}"
 
     text.withBlockDecorator(d1) {
       text append "a"
@@ -101,7 +103,7 @@ class TextFileSpec extends FlatSpec with MustMatchers {
   }
 
   it must "support indent" in {
-    val text = new Text
+    val text = new TextTemplate
     text << "Text"
     text indent {
       text << "indent"
@@ -128,8 +130,8 @@ class TextFileSpec extends FlatSpec with MustMatchers {
   }
 
   it must "support indented sections" in {
-    val text = new Text
-    var sec: Text = null
+    val text = new TextTemplate
+    var sec: TextTemplate = null
     text << "Text"
     text indent {
       text << "indent"
@@ -170,7 +172,7 @@ class TextFileSpec extends FlatSpec with MustMatchers {
   }
 
   it must "output to writer" in {
-    val text = new Text
+    val text = new TextTemplate
     val out = new StringWriter
     text << "a" >> out
 
