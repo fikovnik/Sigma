@@ -1,0 +1,155 @@
+package fr.unice.i3s.sigma.scala.tools
+
+import fr.unice.i3s.sigma.scala.utils._
+import fr.unice.i3s.sigma.scala.tools._
+import fr.unice.i3s.sigma.scala.utils.io._
+import org.eclipse.emf.ecore.EPackage
+import java.io.File
+import fr.unice.i3s.sigma.scala.mtt.TextTemplate
+import org.eclipse.emf.codegen.ecore.genmodel.GenFeature
+import org.eclipse.emf.codegen.ecore.genmodel.GenClass
+import org.eclipse.emf.codegen.ecore.genmodel.GenClassifier
+import org.eclipse.emf.codegen.ecore.genmodel.GenModel
+import org.eclipse.emf.codegen.util.ImportManager
+import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
+
+class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUnitName: String) extends TextTemplate {
+
+  val delegateName = "obj"
+  val keywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
+
+  override def generate {
+
+    val importManager = new ImportManager(scalaPkgName, scalaUnitName)
+    clazz.getGenModel.setImportManager(importManager)
+
+    !s"package $scalaPkgName" << endl
+    // mark imports
+    val imports = section
+    // the trait
+    !s"trait $scalaUnitName" cIndent {
+      !s"implicit class $scalaUnitName($delegateName: ${clazz.getImportedInterfaceName})" cIndent {
+        clazz.getGenFeatures foreach renderFeatureSupport
+      }
+    }
+    // the companion object
+    !endl
+    !endl
+    !s"object $scalaUnitName extends $scalaUnitName" << endl
+
+    imports << importManager.computeSortedImports() << endl << endl
+  }
+
+  protected def renderFeatureSupport(feature: GenFeature) {
+    val featureName = feature.getName
+
+    val featureType = mapTypeName(feature.getImportedType(feature.getGenClass()))
+      .replace('<', '[')
+      .replace('>', ']')
+      .replace('?', '_')
+
+    // getter
+    !s"def ${checkName(featureName)}: $featureType = $delegateName.${feature.getGetAccessor}" << endl
+    if (feature.isSet()) {
+      // setter
+      !s"def ${featureName}_=(value: $featureType): Unit = $delegateName.set${feature.getAccessorName}(value)" << endl
+    }
+  }
+
+  protected def checkName(name: String) =
+    if (keywords contains name) s"`$name`"
+    else name
+
+  protected def mapTypeName(name: String) = name match {
+    case "boolean" ⇒ "Boolean"
+    case "byte" ⇒ "Byte"
+    case "short" ⇒ "Short"
+    case "int" ⇒ "Int"
+    case "char" ⇒ "Char"
+    case "float" ⇒ "Float"
+    case "double" ⇒ "Double"
+    case _ ⇒ name
+  }
+}
+
+class EPackageScalaSupportTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String) extends TextTemplate {
+
+  require(!pkg.getGenClasses.isEmpty)
+
+  override def generate {
+    !s"package $scalaPkgName" << endl << endl
+
+    val x :: xs = pkg.getGenClasses.toList
+
+    // the trait
+    !s"trait $scalaUnitName" indent {
+      !s"extends ${x.getName}ScalaSupport" << endl
+      for (c ← xs) {
+        !s"with ${c.getName}ScalaSupport" << endl
+      }
+    }
+    // the companion object
+    !endl
+    !endl
+    !s"object $scalaUnitName extends $scalaUnitName" << endl
+
+  }
+
+}
+
+class EMFScalaSupportGenerator {
+
+  def generate(baseDir: File, model: GenModel, pkgNameOpt: Option[String] = None) {
+    for (pkg ← model.getGenPackages) {
+
+      val scalaPkgName = pkgNameOpt match {
+        case Some(name) ⇒ name
+        case None ⇒ pkg.getBasePackage + "." + pkg.getPackageName
+      }
+
+      val dir = (baseDir /: scalaPkgName.split('.'))(new File(_, _))
+      checkDir(dir)
+
+      for (clazz ← pkg.getGenClasses) {
+        val scalaUnitName = clazz.getName + "ScalaSupport"
+        val scalaClazz = new EClassScalaSupportTemplate(clazz, scalaPkgName, scalaUnitName)
+
+        using(new File(dir, scalaUnitName + ".scala")) { f ⇒
+          println("Generated: " + scalaUnitName)
+          scalaClazz >> f
+        }
+      }
+
+      val scalaUnitName = pkg.getPackageName.capitalize + "ScalaSupport"
+      val scalaClazz = new EPackageScalaSupportTemplate(pkg, scalaPkgName, scalaUnitName)
+
+      using(new File(dir, scalaUnitName + ".scala")) { f ⇒
+        println("Generated: " + scalaUnitName)
+        scalaClazz >> f
+      }
+    }
+  }
+
+  def checkDir(dir: File) {
+    if (!dir.exists()) {
+      assert(dir.mkdirs(), "Unable to create directory: " + dir)
+    } else {
+      require(dir.isDirectory())
+    }
+  }
+}
+
+object EMFScalaSupportGenerator extends App {
+
+  if (args.length != 3) {
+    println("Usage: %s <model.genmodel> <target_dir> <base_package>" format getClass.getName)
+    scala.sys.exit(1)
+  }
+
+  val (genModel, rs) = load[GenModel](args(0))
+
+  val generator = new EMFScalaSupportGenerator
+  generator.generate(new File(args(1)), genModel, Some(args(2)))
+
+}
+
