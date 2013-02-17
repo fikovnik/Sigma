@@ -11,7 +11,7 @@ class TypedDynamicVariable[T: TypeTag](init: T) {
 
   /** Retrieve the current value */
   def value[U <: T: TypeTag]: U = typeOf[U] match {
-    case t if t =:= valueType ⇒ tl.get.value.asInstanceOf[U]
+    case t if valueType <:< t ⇒ tl.get.value.asInstanceOf[U]
     case _ ⇒ throw new IllegalArgumentException(s"Current variable has type of: $valueType not ${typeOf[U]}")
   }
 

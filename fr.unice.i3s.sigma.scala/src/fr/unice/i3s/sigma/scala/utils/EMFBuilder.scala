@@ -68,32 +68,25 @@ final class PostponedInitizationAdapter[T <: EObject](val initializer: T ⇒ Uni
 
 trait EMFDynamicContext {
   protected val context = new TypedDynamicVariable[EObject](null)
-  protected val referenceContext = new TypedDynamicVariable[EList[_ <: EObject]](null)
+  protected val containerContext = new TypedDynamicVariable[EList[_ <: EObject]](null)
 
-  def self[T <: EObject: TypeTag]: T = Option(context.value) match {
-    case Some(c) ⇒ c
-    case None ⇒ throw new IllegalStateException("The current container is empty.")
-  }
+  def self[T <: EObject: TypeTag]: Option[T] = Option(context.value)
+  def container[T <: EObject: TypeTag]: Option[EList[T]] = Option(containerContext.value[EList[T]])
 
-  def referenceList[T <: EObject: TypeTag]: EList[T] = Option(referenceContext.value[EList[T]]) match {
-    case Some(c) ⇒ c
-    case None ⇒ throw new IllegalStateException("The current container list is empty.")
-  }
-
-  def isContainerTypeOf[T <: EObject: TypeTag] = context.valueType =:= typeOf[T]
-
-  def isContainerListSet = referenceContext.value[EList[_ <: EObject]] != null
+  //  def isContainerTypeOf[T <: EObject: TypeTag] = context.valueType =:= typeOf[T]
 }
 
 class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
 
   implicit class InitializableEObject[T <: EObject: TypeTag](val obj: T) {
     def apply(fun: ⇒ Unit): T = {
-      context.withValue(obj) { fun; obj }
+      context.withValue(obj) { fun }
+      obj
     }
 
     def init(fun: T ⇒ Unit): T = {
-      context.withValue(obj) { fun(obj); obj }
+      context.withValue(obj) { fun(obj) }
+      obj
     }
 
     // FIXME: this is likely broken
@@ -107,6 +100,13 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
         }
         obj
       }
+    }
+  }
+
+  implicit class InitializableEList[T <: EObject: TypeTag](val that: EList[T]) {
+    def apply(fun: ⇒ Unit): EList[T] = {
+      containerContext.withValue(that) { fun }
+      that
     }
   }
 

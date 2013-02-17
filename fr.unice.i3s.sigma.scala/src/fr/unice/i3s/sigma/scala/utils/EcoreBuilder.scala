@@ -1,17 +1,17 @@
 package fr.unice.i3s.sigma.scala.utils
 
 import scala.collection.JavaConversions._
-import scala.util.DynamicVariable
 import fr.unice.i3s.sigma.scala.utils._
 import org.eclipse.emf.ecore._
+import reflect.{ ClassTag, classTag }
 
-trait EcoreAssignments extends EMFDynamicContext {
-  type HasSetName = EObject { def setName(name: String) }
-
-  def name(implicit ev: Nothing) = ???
-  def name_=(name: String) =
-    self[HasSetName].setName(name)
-}
+//trait EcoreAssignments extends EMFDynamicContext {
+//  type HasSetName = EObject { def setName(name: String) }
+//
+//  def name(implicit ev: Nothing) = ???
+//  def name_=(name: String) =
+//    self[HasSetName].setName(name)
+//}
 
 //trait EcoreScalaSetters {
 //  implicit class EClassSetters(val obj: EClass) {
@@ -39,26 +39,27 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     obj
   }
 
+  def eClassifiers = self[EPackage] match {
+    case Some(e) ⇒ e.getEClassifiers
+    case None ⇒ throw new IllegalStateException("No EPackage context found")
+  }
+
   def eClass(name: String): EClass = {
-    val ctx = self[EPackage]
     val obj = create[EClass]
 
-    ctx.getEClassifiers += obj
+    container[EClassifier] match {
+      case Some(list) ⇒ list += obj
+      case None ⇒
+    }
 
-    obj.setName(name)
+    setNotDefault(obj.setName, name, null)
 
     obj
   }
 
-  def eStructuralFeatures(fun: ⇒ Unit) {
-    // make sure the current container is an EClass
-    val ctx = self[EClass]
-
-    // make sure that the current container reference is empty
-    require(!isContainerListSet)
-
-    // execute with the current container reference to EStructuralFeatures
-    referenceContext.withValue(ctx.getEStructuralFeatures) { fun }
+  def eStructuralFeatures = self[EClass] match {
+    case Some(e) ⇒ e.getEStructuralFeatures
+    case None ⇒ throw new IllegalStateException("No EClass context found")
   }
 
   // FIXME: fix the problem with eGenericType
@@ -81,7 +82,10 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     val obj = create[EAttribute]
 
     // set containment    
-    referenceList[EStructuralFeature] += obj
+    container[EStructuralFeature] match {
+      case Some(list) ⇒ list += obj
+      case None ⇒
+    }
 
     // set values
     setNotDefault(obj.setName, name, null)
@@ -102,17 +106,71 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     obj
   }
 
-  def eReference(name: String): EReference = {
+  def eReference(
+    name: String,
+    transient: Boolean = false,
+    volatile: Boolean = false,
+    changeable: Boolean = false,
+    defaultValueLiteral: String = null,
+    unsettable: Boolean = false,
+    derived: Boolean = false,
+    ordered: Boolean = true,
+    unique: Boolean = true,
+    lowerBound: Int = 0,
+    upperBound: Int = 1,
+    eType: EClassifier = null,
+    eGenericType: EGenericType = null,
+    containment: Boolean = false,
+    resolveProxies: Boolean = true,
+    eOpposite: EReference = null): EReference = {
+
     val obj = create[EReference]
 
     // set containment
-    referenceList[EStructuralFeature] += obj
+    container[EStructuralFeature] match {
+      case Some(list) ⇒ list += obj
+      case None ⇒
+    }
 
-    // set attributes
-    obj.setName(name)
+    // set values
+    setNotDefault(obj.setName, name, null)
+    setNotDefault(obj.setTransient, transient, false)
+    setNotDefault(obj.setVolatile, volatile, false)
+    setNotDefault(obj.setChangeable, changeable, false)
+    setNotDefault(obj.setDefaultValueLiteral, defaultValueLiteral, null)
+    setNotDefault(obj.setUnsettable, unsettable, false)
+    setNotDefault(obj.setDerived, derived, false)
+    setNotDefault(obj.setOrdered, ordered, true)
+    setNotDefault(obj.setUnique, unique, true)
+    setNotDefault(obj.setLowerBound, lowerBound, 0)
+    setNotDefault(obj.setUpperBound, upperBound, 1)
+    setNotDefault(obj.setEType, eType, null)
+    setNotDefault(obj.setEGenericType, eGenericType, null)
+    setNotDefault(obj.setContainment, containment, false)
+    setNotDefault(obj.setResolveProxies, resolveProxies, true)
+    setNotDefault(obj.setEOpposite, eOpposite, null)
 
     obj
   }
+
+  //  def refClassifier(path: String): EClassifier = {
+  //    val ctx = self[EObject] match {
+  //      case Some(e) ⇒ e
+  //      case None ⇒ throw new IllegalStateException("No EObject context found")
+  //    }
+  //
+  //    val pkg = find[EPackage](ctx)
+  //    pkg.getEClassifiers find (_.getName == path) match {
+  //      case Some(c) ⇒ c
+  //      case None ⇒ throw new IllegalArgumentException("Unable to find classifier: " + path)
+  //    }
+  //  }
+  //
+  //  private def find[T <: EObject: ClassTag](start: EObject): T = classTag[T] match {
+  //    case t if t.runtimeClass.isAssignableFrom(start.getClass) ⇒ start.asInstanceOf[T]
+  //    case t if start.eContainer != null ⇒ find[T](start.eContainer)
+  //    case t ⇒ throw new IllegalArgumentException("Unable to find container of type: " + t.runtimeClass)
+  //  }
 
 }
 
