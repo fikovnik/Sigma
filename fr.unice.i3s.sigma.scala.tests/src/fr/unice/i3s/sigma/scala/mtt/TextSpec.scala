@@ -7,25 +7,25 @@ import org.scalatest.junit.JUnitRunner
 import java.io.StringWriter
 
 @RunWith(classOf[JUnitRunner])
-class TextTemplateSpec extends FlatSpec with MustMatchers {
+class TextSpec extends FlatSpec with MustMatchers {
 
   // TODO: where to put this so it can be accessed everywhere?
   val endl = System.getProperty("line.separator")
 
   "Text" must "append simple text" in {
 
-    val text = new TextTemplate
+    val text = Text()
     text append "hello world"
     text.toString must be === "hello world"
   }
 
-  it must "support section" in {
+  it must "support.startSection" in {
 
-    val text = new TextTemplate
+    val text = Text()
     text append "a"
-    val sub1 = text.section
+    val sub1 = text.startSection
     sub1 append "b"
-    val sub2 = sub1.section
+    val sub2 = sub1.startSection
     sub2 append "c"
     text append "f"
     sub1 append "e"
@@ -34,21 +34,21 @@ class TextTemplateSpec extends FlatSpec with MustMatchers {
     text.toString must be === "abcdef"
   }
 
-  it must "support many section" in {
+  it must "support many.startSection" in {
 
-    val text = new TextTemplate
-    text.section append "a"
-    text.section append "b"
-    text.section append "c"
-    text.section append "d"
-    text.section append "e"
-    text.section append "f"
+    val text = Text()
+    text.startSection append "a"
+    text.startSection append "b"
+    text.startSection append "c"
+    text.startSection append "d"
+    text.startSection append "e"
+    text.startSection append "f"
 
     text.toString must be === "abcdef"
   }
 
   it must "support decorators" in {
-    val text = new TextTemplate
+    val text = Text()
     val d1 = (s: String) ⇒ s"($s)"
     val d2 = (s: String) ⇒ s"[$s]"
     val d3 = (s: String) ⇒ s"{$s}"
@@ -58,7 +58,7 @@ class TextTemplateSpec extends FlatSpec with MustMatchers {
       text append "b"
 
       (text withDecorator d2) {
-        val sub1 = text.section
+        val sub1 = text.startSection
 
         (sub1 withDecorator d3) {
           sub1 append "c"
@@ -75,7 +75,7 @@ class TextTemplateSpec extends FlatSpec with MustMatchers {
   }
 
   it must "support block decorators" in {
-    val text = new TextTemplate
+    val text = Text()
     val d1 = (s: String) ⇒ s"($s)"
     val d2 = (s: String) ⇒ s"[$s]"
     val d3 = (s: String) ⇒ s"{$s}"
@@ -85,7 +85,7 @@ class TextTemplateSpec extends FlatSpec with MustMatchers {
       text append "b"
 
       text.withBlockDecorator(d2) {
-        val sub1 = text.section
+        val sub1 = text.startSection
 
         text append "d"
 
@@ -103,7 +103,7 @@ class TextTemplateSpec extends FlatSpec with MustMatchers {
   }
 
   it must "support indent" in {
-    val text = new TextTemplate
+    val text = Text()
     text << "Text"
     text indent {
       text << "indent"
@@ -129,15 +129,15 @@ class TextTemplateSpec extends FlatSpec with MustMatchers {
          |Text""".stripMargin
   }
 
-  it must "support indented sections" in {
-    val text = new TextTemplate
-    var sec: TextTemplate = null
+  it must "support indented.startSections" in {
+    val text = Text()
+    var sec: Text = null
     text << "Text"
     text indent {
       text << "indent"
       text << "indent2" << endl << "indent3"
       text indent {
-        sec = text.section
+        sec = text.startSection
         text << "indent4" << endl << "indent5"
         text.indentBy(1) {
           text << "indent6"
@@ -172,10 +172,21 @@ class TextTemplateSpec extends FlatSpec with MustMatchers {
   }
 
   it must "output to writer" in {
-    val text = new TextTemplate
+    val text = Text()
     val out = new StringWriter
     text << "a" >> out
 
     out.toString must be === "a"
   }
+
+  "Smart Whitespace decorator" must "strip spaces" in {
+    val t = """
+      some text
+        some text
+          some text
+      some text
+      """
+
+  }
+
 }

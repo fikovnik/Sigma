@@ -15,20 +15,18 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 
 class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUnitName: String) extends TextTemplate {
 
-  val delegateName = "obj"
   val keywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
 
-  override def generate {
-
+  override def render {
     val importManager = new ImportManager(scalaPkgName, scalaUnitName)
     clazz.getGenModel.setImportManager(importManager)
 
     !s"package $scalaPkgName" << endl
     // mark imports
-    val imports = section
+    val imports = startSection
     // the trait
-    !s"trait $scalaUnitName" cIndent {
-      !s"implicit class $scalaUnitName($delegateName: ${clazz.getImportedInterfaceName})" cIndent {
+    !s"trait $scalaUnitName" curlyIndent {
+      !s"implicit class $scalaUnitName(that: ${clazz.getImportedInterfaceName})" curlyIndent {
         clazz.getGenFeatures foreach renderFeatureSupport
       }
     }
@@ -49,10 +47,10 @@ class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUni
       .replace('?', '_')
 
     // getter
-    !s"def ${checkName(featureName)}: $featureType = $delegateName.${feature.getGetAccessor}" << endl
+    !s"def ${checkName(featureName)}: $featureType = that.${feature.getGetAccessor}" << endl
     if (feature.isSet()) {
       // setter
-      !s"def ${featureName}_=(value: $featureType): Unit = $delegateName.set${feature.getAccessorName}(value)" << endl
+      !s"def ${featureName}_=(value: $featureType): Unit = that.set${feature.getAccessorName}(value)" << endl
     }
   }
 
@@ -76,7 +74,7 @@ class EPackageScalaSupportTemplate(pkg: GenPackage, scalaPkgName: String, scalaU
 
   require(!pkg.getGenClasses.isEmpty)
 
-  override def generate {
+  override def render {
     !s"package $scalaPkgName" << endl << endl
 
     val x :: xs = pkg.getGenClasses.toList
