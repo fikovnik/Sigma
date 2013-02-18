@@ -23,94 +23,81 @@ import com.google.common.base.Charsets
  * </ul>
  */
 
-abstract class TextSection[T <: TextSection[T]](
-  private[this] val decorator: Decorator = identity,
-  private[this] val blockDecorator: Decorator = identity) {
-
-  private[this] var leftOpt: Option[T] = None
-  private[this] var rightOpt: Option[T] = None
+abstract class TextSection[T <: TextSection[T]] {
 
   val endl = System.getProperty("line.separator")
 
-  protected val buffer = new StringBuilder
+  private[this] trait TextBuffer {
+    def append(s: String): TextBuffer
+    def insert(index: Int, s: String): TextBuffer
+    def length: Int
+    def toString: String
+  }
+
+  private[this] class StandardBuffer extends TextBuffer {
+    val sb = new StringBuilder
+
+    def append(s: String) = { sb.append(s); this }
+    def insert(index: Int, s: String) = { sb.insert(index, s); this }
+    def length = sb.length
+    override def toString = sb.toString
+  }
+
+  private[this] class DecoratedBuffer(decorator: Decorator) extends StandardBuffer {
+    override def append(s: String) = { sb.append(decorator(s)); this }
+  }
+
+  /** The buffer to which the append with add text */
+  private[this] var buffer: TextBuffer = new StandardBuffer
+  private[this] var marks: Buffer[(Int, TextSection[T])] = Buffer()
+
+  private[this] def withBuffer(newbuffer: TextBuffer)(block: ⇒ Unit) = {
+    val oldbuffer = buffer
+
+    buffer = newbuffer
+    try block
+    finally buffer = oldbuffer
+
+    newbuffer
+  }
+
+  protected def createSection: T
 
   def append(text: String): this.type = {
-    rightOpt match {
-      case None ⇒ buffer append decorator(text)
-      case Some(right) ⇒ right append text
-    }
+    buffer append text
+    this
+  }
 
+  def withDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
+    val sb = withBuffer(new DecoratedBuffer(decorator))(block)
+    append(sb.toString)
+    this
+  }
+
+  def withBlockDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
+    val sb = withBuffer(new StandardBuffer)(block)
+    append(decorator(sb.toString))
     this
   }
 
   def startSection: T = {
-    rightOpt match {
-      case None ⇒
-        // subsection do not inherit any blockDecorators
-        // otherwise they will be applied multiple times
-        leftOpt = Some(createSection(decorator, identity))
-        rightOpt = Some(createSection(decorator, identity))
-
-        leftOpt.get
-
-      case Some(right) ⇒
-        right startSection
-    }
+    val section = createSection
+    marks += ((buffer.length, section))
+    section
   }
-
-  def withDecorator(newDecorator: Decorator)(block: ⇒ Unit): this.type = {
-    rightOpt match {
-      case None ⇒
-        rightOpt = Some(createSection(newDecorator andThen decorator, blockDecorator))
-
-        block
-
-        leftOpt = rightOpt
-        rightOpt = Some(createSection(decorator, blockDecorator))
-
-      case Some(right) ⇒
-        right.withDecorator(newDecorator)(block)
-    }
-
-    this
-  }
-
-  def withBlockDecorator(newDecorator: Decorator)(block: ⇒ Unit): this.type = {
-    rightOpt match {
-      case None ⇒
-        rightOpt = Some(createSection(decorator, newDecorator))
-
-        block
-
-        leftOpt = rightOpt
-        rightOpt = Some(createSection(decorator, blockDecorator))
-
-      case Some(right) ⇒
-        right.withBlockDecorator(newDecorator)(block)
-    }
-
-    this
-  }
-
-  protected def createSection(decorator: Decorator, blockDecorator: Decorator): T
 
   override def toString = {
-    val sb = new StringBuilder
+    var offset = 0
 
-    // the actual content
-    sb append buffer
+    for ((index, section) ← marks) {
+      val text = section.toString
 
-    // left part
-    sb append leftOpt.map(_.toString).getOrElse("")
+      buffer.insert(index + offset, text)
+      offset += text.length
+    }
 
-    // right part
-    sb append rightOpt.map(_.toString).getOrElse("")
+    buffer.toString
 
-    // process block decorators
-    if (!sb.isEmpty)
-      blockDecorator(sb.toString)
-    else
-      ""
   }
 }
 
@@ -119,11 +106,8 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
   object decorators {
 
     def indentText(num: Int) = (text: String) ⇒ {
-      val str =
-        if (text.last == '\n') text.substring(0, text.length - 1)
-        else text
-
-      str.replace("\n", "\n" + " " * num) + "\n"
+      val prefix = " " * num
+      text.split(endl).map(prefix + _).mkString(endl)
     }
 
     def surroundText(str: String): Decorator =
@@ -221,12 +205,6 @@ object Text {
   def apply() = new Text
 }
 
-class Text(decorator: Decorator, blockDecorator: Decorator)
-  extends TextSection[Text](decorator, blockDecorator)
-  with TextSectionAdditions {
-
-  def this() = this(identity, identity)
-
-  override def createSection(decorator: Decorator, blockDecorator: Decorator): Text =
-    new Text(decorator, blockDecorator)
+class Text extends TextSection[Text] with TextSectionAdditions {
+  override def createSection: Text = new Text
 }

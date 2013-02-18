@@ -49,57 +49,49 @@ class TextSpec extends FlatSpec with MustMatchers {
 
   it must "support decorators" in {
     val text = Text()
-    val d1 = (s: String) ⇒ s"($s)"
-    val d2 = (s: String) ⇒ s"[$s]"
-    val d3 = (s: String) ⇒ s"{$s}"
+    val d1: Decorator = s ⇒ s"($s)"
+    val d2: Decorator = s ⇒ s"[$s]"
+    val d3: Decorator = s ⇒ s"{$s}"
 
     (text withDecorator d1) {
       text append "a"
       text append "b"
 
       (text withDecorator d2) {
-        val sub1 = text.startSection
 
-        (sub1 withDecorator d3) {
-          sub1 append "c"
-        }
-
-        text append "d"
+        text append "c"
 
         (text withDecorator d3) {
-          text append "e"
+          text append "d"
         }
       }
     }
-    text.toString must be === "(a)(b)([{c}])([d])([{e}])"
+
+    text >> System.out
+
+    text.toString must be === "(a)(b)([c])([{d}])"
   }
 
   it must "support block decorators" in {
     val text = Text()
-    val d1 = (s: String) ⇒ s"($s)"
-    val d2 = (s: String) ⇒ s"[$s]"
-    val d3 = (s: String) ⇒ s"{$s}"
+    val d1: Decorator = s ⇒ s"($s)"
+    val d2: Decorator = s ⇒ s"[$s]"
+    val d3: Decorator = s ⇒ s"{$s}"
 
     text.withBlockDecorator(d1) {
       text append "a"
       text append "b"
 
       text.withBlockDecorator(d2) {
-        val sub1 = text.startSection
-
-        text append "d"
-
-        sub1.withBlockDecorator(d3) {
-          sub1 append "c"
-        }
+        text append "c"
 
         text.withBlockDecorator(d3) {
-          text append "e"
+          text append "d"
         }
       }
     }
 
-    text.toString must be === "(ab[{c}d{e}])"
+    text.toString must be === "(ab[c{d}])"
   }
 
   it must "support indent" in {
@@ -120,13 +112,13 @@ class TextSpec extends FlatSpec with MustMatchers {
 
     text.toString must be ===
       """|Text
-         |  indentindent2
-         |  indent3
-         |    indent4
-         |    indent5
-         |     indent6
-         |  indent7
-         |Text""".stripMargin
+           |  indentindent2
+           |  indent3
+           |    indent4
+           |    indent5
+           |     indent6
+           |  indent7
+           |Text""".stripMargin
   }
 
   it must "support indented.startSections" in {
@@ -149,26 +141,26 @@ class TextSpec extends FlatSpec with MustMatchers {
 
     text.toString must be ===
       """|Text
-         |  indentindent2
-         |  indent3
-         |    indent4
-         |    indent5
-         |     indent6
-         |  indent7
-         |Text""".stripMargin
+           |  indentindent2
+           |  indent3
+           |    indent4
+           |    indent5
+           |     indent6
+           |  indent7
+           |Text""".stripMargin
 
     sec << "indent8" << endl
 
     text.toString must be ===
       """|Text
-         |  indentindent2
-         |  indent3
-         |    indent8
-         |    indent4
-         |    indent5
-         |     indent6
-         |  indent7
-         |Text""".stripMargin
+           |  indentindent2
+           |  indent3
+           |    indent8
+           |    indent4
+           |    indent5
+           |     indent6
+           |  indent7
+           |Text""".stripMargin
   }
 
   it must "output to writer" in {
@@ -177,6 +169,38 @@ class TextSpec extends FlatSpec with MustMatchers {
     text << "a" >> out
 
     out.toString must be === "a"
+  }
+
+  it must "indent with brackets" in {
+    val text = Text()
+
+    text << "test" curlyIndent {
+      text << "indent1" curlyIndent {
+        text << "indent2" squareIndent {
+          text << "indent3"
+        }
+        text angleIndent {
+          text << "indent4"
+        }
+      }
+      text parenIndent {
+        text << "indent5"
+      }
+    }
+    text << "test"
+
+    text.toString must be ===
+      """|test {
+ 		 |  indent1 {
+		 |    indent2 [
+		 |      indent3
+		 |    ] <
+		 |      indent4
+		 |    >
+		 |  } (
+		 |    indent5
+		 |  )
+		 |}test""".stripMargin
   }
 
   "Smart Whitespace decorator" must "strip spaces" in {
