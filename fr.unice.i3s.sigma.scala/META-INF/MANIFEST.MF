@@ -20,3 +20,4 @@ Export-Package: fr.unice.i3s.sigma.scala,
  fr.unice.i3s.sigma.scala.utils
 Bundle-ClassPath: .
 Eclipse-BuddyPolicy: dependent
+Bundle-Activator: fr.unice.i3s.sigma.scala.SigmaScalaPlugin
