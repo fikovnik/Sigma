@@ -9,10 +9,9 @@ import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.common.util.EList
 import fr.unice.i3s.sigma.scala.utils.ecore.EcoreScalaSupport
+import fr.unice.i3s.sigma.scala.mtt.Text
 
-class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
-
-  stripWhitespace = true
+class ClassDiagram(pkg: EPackage) extends TextTemplate(stripWhitespace = true) with EcoreScalaSupport {
 
   override def render {
     !"digraph G" curlyIndent {
@@ -61,7 +60,7 @@ class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
     }
   }
 
-  protected def renderClass(clazz: EClass, bgColor: String) {
+  protected[internal] def renderClass(clazz: EClass, bgColor: String) {
     val name =
       if (clazz.isAbstract) s"<I>${clazz.name}</I>" else clazz.name
 
@@ -79,6 +78,7 @@ class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
         </TD></TR>
         """
 
+        !endl
         // generate attributes
         if (attrs.isEmpty) {
           !"<!-- No attributes -->" << endl
@@ -104,7 +104,7 @@ class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
     }
   }
 
-  protected def renderGeneralization(subType: EClass, superType: EClass) {
+  protected[internal] def renderGeneralization(subType: EClass, superType: EClass) {
     !s"${fqn(superType)}:port -> ${fqn(subType)}:port" squareIndent {
       !"""
       arrowhead = "none"
@@ -115,7 +115,7 @@ class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
     }
   }
 
-  protected def renderReference(clazz: EClass, ref: EReference) {
+  protected[internal] def renderReference(clazz: EClass, ref: EReference) {
     !s"${fqn(clazz)}:port -> ${fqn(ref.eReferenceType)}:port" squareIndent {
       !s"""
       arrowhead = "${if (ref.eOpposite == null) "vee" else "none"}" 
@@ -130,7 +130,7 @@ class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
     }
   }
 
-  protected def multiplicity(feature: EStructuralFeature): String = {
+  protected[internal] def multiplicity(feature: EStructuralFeature): String = {
     val multi = (feature.lowerBound, feature.upperBound) match {
       case (-1, -1) ⇒ "*"
       case (1, -1) ⇒ "1..*"
@@ -141,18 +141,18 @@ class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
     s"[$multi]"
   }
 
-  protected def featureLabel(feature: EStructuralFeature): String = {
+  protected[internal] def featureLabel(feature: EStructuralFeature): String = {
     s"- ${feature.name} ${multiplicity(feature)}"
   }
 
-  protected def featureLabelWithType(feature: EStructuralFeature) = {
+  protected[internal] def featureLabelWithType(feature: EStructuralFeature) = {
     feature match {
       case e: EAttribute ⇒ s"- ${e.name} : ${e.eType.name} ${multiplicity(e)}"
       case e: EReference ⇒ s"- ${e.name} : ${e.eReferenceType.name} ${multiplicity(e)}"
     }
   }
 
-  protected def fqn(pkg: EPackage): String = {
+  protected[internal] def fqn(pkg: EPackage): String = {
     require(pkg != null)
 
     def superPackages(p: EPackage): List[EPackage] = Option(p.eSuperPackage) match {
@@ -162,10 +162,10 @@ class ClassDiagram(pkg: EPackage) extends TextTemplate with EcoreScalaSupport {
     superPackages(pkg) map (_.name) mkString ("__")
   }
 
-  protected def fqn(clazz: EClass): String = {
+  protected[internal] def fqn(clazz: EClass): String = {
     require(clazz != null)
 
-    Option(clazz.ePackage).map(fqn(_)).getOrElse("") + clazz.name
+    Option(clazz.ePackage).map(fqn(_)).getOrElse("") + "__" + clazz.name
   }
 
 }

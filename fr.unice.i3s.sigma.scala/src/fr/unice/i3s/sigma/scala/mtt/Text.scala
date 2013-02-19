@@ -24,9 +24,14 @@ import scala.collection.mutable.Stack
  * </ul>
  */
 
-abstract class TextSection[T <: TextSection[T]] {
-
+object TextSection {
   val endl = System.getProperty("line.separator")
+
+}
+
+import TextSection._
+
+abstract class TextSection[T <: TextSection[T]] {
 
   /** The buffer to which the append with add text */
   private[this] var buffer = new StringBuilder
@@ -88,79 +93,7 @@ abstract class TextSection[T <: TextSection[T]] {
   }
 }
 
-trait TextSectionAdditions { this: TextSection[_] ⇒
-
-  object Decorators {
-
-    def indentText(num: Int) = (text: String) ⇒ {
-      val prefix = " " * num
-      text.split(endl).map(prefix + _).mkString(endl)
-    }
-
-    def surroundText(str: String): Decorator =
-      surroundText(str, str)
-
-    def surroundText(begin: String, end: String): Decorator = {
-      text ⇒ begin + text + end
-    }
-
-    def stripWhitespace(tabSize: Int): Decorator = { text ⇒
-      // don't eat new lines
-      if (text == endl) {
-        text
-      } else {
-        // expand tabs
-        val expandedText = text replace ("\t", " " * tabSize)
-        // split
-        var lines = (expandedText split endl).toList
-
-        if (!lines.isEmpty) {
-          // longest whitespace prefix of non-empty lines
-          val prefix = lines
-            .filter(!_.trim.isEmpty)
-            .map(_.segmentLength(_.isWhitespace, 0))
-            .min
-
-          // is the input from the following like scala block:
-          // """
-          // bla bla bla
-          // """
-          if (lines.size >= 3
-            && lines.head == ""
-            && lines.last.segmentLength(_.isWhitespace, 0) == prefix) {
-            lines = lines drop (1)
-            lines = lines dropRight (1)
-          }
-
-          // drop empty lines (either empty or full of whitespace chars)
-          lines = lines collect {
-            case line if line.trim.isEmpty ⇒ ""
-            case line ⇒ line
-          }
-
-          // drop prefix it and concatenate
-          lines map { _.drop(prefix) } mkString (endl)
-        } else {
-          ""
-        }
-      }
-    }
-  }
-
-  implicit class TextTemplateString(that: String) {
-    def unary_! = append(that)
-    def quoted = Decorators.surroundText("\"")(that)
-    def singleQuoted = Decorators.surroundText("'")(that)
-  }
-
-  private[this] var _defaultIndent: Int = 2
-
-  def defaultIndent = _defaultIndent
-  def defaultIndent_=(value: Int) = {
-    require(value > 0)
-    _defaultIndent = value
-  }
-
+trait TextOutput {
   def output(out: Writer): this.type = {
     out append (toString)
     out.flush
@@ -170,9 +103,21 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
   def output(out: OutputStream): this.type =
     output(new OutputStreamWriter(out, Charsets.UTF_8))
 
-  def <<(text: String): this.type = append(text)
   def >>(out: Writer): this.type = output(out)
   def >>(out: OutputStream): this.type = output(out)
+}
+
+trait TextSectionAdditions { this: TextSection[_] ⇒
+
+  private[this] var _defaultIndent: Int = 2
+
+  def defaultIndent = _defaultIndent
+  def defaultIndent_=(value: Int) = {
+    require(value > 0)
+    _defaultIndent = value
+  }
+
+  def <<(text: String): this.type = append(text)
 
   def indentBy(num: Int)(block: ⇒ Unit): this.type = {
     append(endl)
@@ -218,13 +163,12 @@ object Text {
   def apply() = new Text
 }
 
-class Text extends TextSection[Text] with TextSectionAdditions {
-  var _stripWhitespace: Boolean = false;
+class Text(val stripWhitespace: Boolean = false) extends TextSection[Text]
+  with TextSectionAdditions
+  with TextOutput {
 
-  def stripWhitespace: Boolean = _stripWhitespace
-  def stripWhitespace_=(strip: Boolean) = {
+  if (stripWhitespace) {
     decorators push Decorators.stripWhitespace(defaultIndent)
-    _stripWhitespace = strip
   }
 
   override def createSection: Text = new Text

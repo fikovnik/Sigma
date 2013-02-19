@@ -162,8 +162,7 @@ class TextSpec extends FlatSpec with MustMatchers {
   }
 
   it must "strip spaces" in {
-    val text = Text()
-    text.stripWhitespace = true
+    val text = new Text(stripWhitespace = true)
 
     text << """
     some text
@@ -196,9 +195,8 @@ class TextSpec extends FlatSpec with MustMatchers {
   }
 
   it must "strip spaces not considering empty lines" in {
-    val text = Text()
+    val text = new Text(stripWhitespace = true)
     text.defaultIndent = 4
-    text.stripWhitespace = true
 
     text << """
 	   text1
