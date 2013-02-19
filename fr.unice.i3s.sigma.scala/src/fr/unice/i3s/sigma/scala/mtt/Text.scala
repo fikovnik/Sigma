@@ -79,7 +79,7 @@ abstract class TextSection[T <: TextSection[T]] {
     for ((index, section) ← marks) {
       val text = section.toString
 
-      buffer.insert(index + offset, text)
+      buffer insert (index + offset, text)
       offset += text.length
     }
 
@@ -110,7 +110,7 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
         text
       } else {
         // expand tabs
-        val expandedText = text.replace("\t", " " * tabSize)
+        val expandedText = text replace ("\t", " " * tabSize)
         // split
         var lines = (expandedText split endl).toList
 
@@ -128,8 +128,8 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
           if (lines.size >= 3
             && lines.head == ""
             && lines.last.segmentLength(_.isWhitespace, 0) == prefix) {
-            lines = lines.drop(1)
-            lines = lines.dropRight(1)
+            lines = lines drop (1)
+            lines = lines dropRight (1)
           }
 
           // drop empty lines (either empty or full of whitespace chars)
@@ -139,7 +139,7 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
           }
 
           // drop prefix it and concatenate
-          lines map (_.drop(prefix)) mkString (endl)
+          lines map { _.drop(prefix) } mkString (endl)
         } else {
           ""
         }
@@ -162,7 +162,7 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
   }
 
   def output(out: Writer): this.type = {
-    out.append(toString)
+    out append (toString)
     out.flush
     this
   }
