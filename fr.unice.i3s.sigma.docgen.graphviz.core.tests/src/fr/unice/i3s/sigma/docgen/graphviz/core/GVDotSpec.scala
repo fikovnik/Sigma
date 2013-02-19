@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.docgen.grapviz.core
+package fr.unice.i3s.sigma.docgen.graphviz.core
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
