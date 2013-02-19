@@ -33,8 +33,6 @@ import java.io.Writer
 package object utils {
 
   object io {
-    implicit def fileToFileWriter(a: File) = new FileWriter(a)
-
     def using[B](file: File)(f: Writer ⇒ B): B = using(new FileWriter(file))(f)
 
     def using[A <: Closeable, B](input: A)(f: A ⇒ B): B = {
