@@ -71,9 +71,14 @@ trait EMFDynamicContext {
   protected val containerContext = new TypedDynamicVariable[EList[_ <: EObject]](null)
 
   def self[T <: EObject: TypeTag]: Option[T] = Option(context.value)
-  def container[T <: EObject: TypeTag]: Option[EList[T]] = Option(containerContext.value[EList[T]])
+  def container[T <: EObject: TypeTag]: Option[EList[T]] = {
+    if (context.valueType =:= typeOf[T])
+      Option(containerContext.value[EList[T]])
+    else
+      None
+  }
 
-  //  def isContainerTypeOf[T <: EObject: TypeTag] = context.valueType =:= typeOf[T]
+  //  def isContainerTypeOf[T <: EObject: TypeTag] = 
 }
 
 class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {

@@ -44,7 +44,9 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
   //    case None ⇒ throw new IllegalStateException("No EPackage context found")
   //  }
 
-  def eClass(name: String): EClass = {
+  def eClass(
+    name: String,
+    eSuperTypes: List[EClass] = Nil): EClass = {
     val obj = create[EClass]
 
     container[EClassifier] match {
@@ -53,6 +55,7 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     }
 
     setNotDefault(obj.setName, name, null)
+    obj.getESuperTypes() ++= eSuperTypes
 
     obj
   }
