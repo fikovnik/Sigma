@@ -39,10 +39,10 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     obj
   }
 
-  def eClassifiers = self[EPackage] match {
-    case Some(e) ⇒ e.getEClassifiers
-    case None ⇒ throw new IllegalStateException("No EPackage context found")
-  }
+  //  def eClassifiers = self[EPackage] match {
+  //    case Some(e) ⇒ e.getEClassifiers
+  //    case None ⇒ throw new IllegalStateException("No EPackage context found")
+  //  }
 
   def eClass(name: String): EClass = {
     val obj = create[EClass]
@@ -57,10 +57,10 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     obj
   }
 
-  def eStructuralFeatures = self[EClass] match {
-    case Some(e) ⇒ e.getEStructuralFeatures
-    case None ⇒ throw new IllegalStateException("No EClass context found")
-  }
+  //  def eStructuralFeatures = self[EClass] match {
+  //    case Some(e) ⇒ e.getEStructuralFeatures
+  //    case None ⇒ throw new IllegalStateException("No EClass context found")
+  //  }
 
   // FIXME: fix the problem with eGenericType
   def eAttribute(

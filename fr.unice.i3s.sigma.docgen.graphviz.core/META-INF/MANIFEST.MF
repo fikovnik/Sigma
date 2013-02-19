@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Graphviz Core
+Bundle-SymbolicName: fr.unice.i3s.sigma.docgen.graphviz.core;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: fr.unice.i3s.sigma.docgen.graphviz.core.GraphvizCorePlugin
+Bundle-Vendor: SIGMA Project
+Require-Bundle: org.eclipse.core.runtime,
+ org.scala-ide.scala.library,
+ org.eclipse.emf.ecore;bundle-version="2.8.1",
+ fr.unice.i3s.sigma.scala;bundle-version="1.0.0";visibility:=reexport
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: fr.unice.i3s.sigma.docgen.graphviz.core
