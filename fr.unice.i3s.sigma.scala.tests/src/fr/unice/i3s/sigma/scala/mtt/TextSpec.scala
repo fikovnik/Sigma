@@ -19,7 +19,7 @@ class TextSpec extends FlatSpec with MustMatchers {
     text.toString must be === "hello world"
   }
 
-  it must "support.startSection" in {
+  it must "support sections" in {
 
     val text = Text()
     text append "a"
@@ -34,7 +34,7 @@ class TextSpec extends FlatSpec with MustMatchers {
     text.toString must be === "abcdef"
   }
 
-  it must "support many.startSection" in {
+  it must "support many section" in {
 
     val text = Text()
     text.startSection append "a"
@@ -67,8 +67,6 @@ class TextSpec extends FlatSpec with MustMatchers {
       }
     }
 
-    text >> System.out
-
     text.toString must be === "(a)(b)([c])([{d}])"
   }
 
@@ -96,7 +94,7 @@ class TextSpec extends FlatSpec with MustMatchers {
 
   it must "support indent" in {
     val text = Text()
-    text << "Text"
+    text << "test"
     text indent {
       text << "indent"
       text << "indent2" << endl << "indent3"
@@ -106,61 +104,21 @@ class TextSpec extends FlatSpec with MustMatchers {
           text << "indent6"
         }
       }
+      text << endl
       text << "indent7"
     }
-    text << "Text"
+    text << endl
+    text << "test"
 
     text.toString must be ===
-      """|Text
+      """|test
            |  indentindent2
            |  indent3
            |    indent4
            |    indent5
            |     indent6
            |  indent7
-           |Text""".stripMargin
-  }
-
-  it must "support indented.startSections" in {
-    val text = Text()
-    var sec: Text = null
-    text << "Text"
-    text indent {
-      text << "indent"
-      text << "indent2" << endl << "indent3"
-      text indent {
-        sec = text.startSection
-        text << "indent4" << endl << "indent5"
-        text.indentBy(1) {
-          text << "indent6"
-        }
-      }
-      text << "indent7"
-    }
-    text << "Text"
-
-    text.toString must be ===
-      """|Text
-           |  indentindent2
-           |  indent3
-           |    indent4
-           |    indent5
-           |     indent6
-           |  indent7
-           |Text""".stripMargin
-
-    sec << "indent8" << endl
-
-    text.toString must be ===
-      """|Text
-           |  indentindent2
-           |  indent3
-           |    indent8
-           |    indent4
-           |    indent5
-           |     indent6
-           |  indent7
-           |Text""".stripMargin
+           |test""".stripMargin
   }
 
   it must "output to writer" in {
@@ -203,13 +161,69 @@ class TextSpec extends FlatSpec with MustMatchers {
 		 |}test""".stripMargin
   }
 
-  "Smart Whitespace decorator" must "strip spaces" in {
-    val t = """
+  it must "strip spaces" in {
+    val text = Text()
+    text.stripWhitespace = true
+
+    text << """
+    some text
+    some text
       some text
         some text
-          some text
-      some text
+    some text
+    """
+
+    text indent {
+      text << """
+      indent text
+        indent text
+          indent text
+      indent text
       """
+    }
+
+    text.toString must be ===
+      """|some text
+ 		 |some text
+		 |  some text
+		 |    some text
+		 |some text
+         |  indent text
+         |    indent text
+         |      indent text
+         |  indent text""".stripMargin
+
+  }
+
+  it must "strip spaces not considering empty lines" in {
+    val text = Text()
+    text.defaultIndent = 4
+    text.stripWhitespace = true
+
+    text << """
+	   text1
+	   text2
+	
+	   text3
+		 text4
+    
+		 text5
+	   text6
+               
+	   text7
+	   """
+
+    text.toString must be ===
+      """|text1
+ 		 |text2
+		 |
+		 |text3
+		 |  text4
+         |
+         |  text5
+         |text6
+         |
+         |text7""".stripMargin
 
   }
 

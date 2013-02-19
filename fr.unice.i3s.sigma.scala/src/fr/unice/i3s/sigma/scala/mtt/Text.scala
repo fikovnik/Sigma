@@ -8,6 +8,7 @@ import java.io.File
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import com.google.common.base.Charsets
+import scala.collection.mutable.Stack
 
 /**
  * This class is not thread safe.
@@ -27,56 +28,42 @@ abstract class TextSection[T <: TextSection[T]] {
 
   val endl = System.getProperty("line.separator")
 
-  private[this] trait TextBuffer {
-    def append(s: String): TextBuffer
-    def insert(index: Int, s: String): TextBuffer
-    def length: Int
-    def toString: String
-  }
-
-  private[this] class StandardBuffer extends TextBuffer {
-    val sb = new StringBuilder
-
-    def append(s: String) = { sb.append(s); this }
-    def insert(index: Int, s: String) = { sb.insert(index, s); this }
-    def length = sb.length
-    override def toString = sb.toString
-  }
-
-  private[this] class DecoratedBuffer(decorator: Decorator) extends StandardBuffer {
-    override def append(s: String) = { sb.append(decorator(s)); this }
-  }
-
   /** The buffer to which the append with add text */
-  private[this] var buffer: TextBuffer = new StandardBuffer
-  private[this] var marks: Buffer[(Int, TextSection[T])] = Buffer()
-
-  private[this] def withBuffer(newbuffer: TextBuffer)(block: ⇒ Unit) = {
-    val oldbuffer = buffer
-
-    buffer = newbuffer
-    try block
-    finally buffer = oldbuffer
-
-    newbuffer
-  }
+  private[this] var buffer = new StringBuilder
+  private[this] val marks = Buffer[(Int, TextSection[T])]()
+  protected[this] val decorators = new Stack[Decorator]
 
   protected def createSection: T
 
   def append(text: String): this.type = {
-    buffer append text
+    val decorator: Decorator = decorators match {
+      case Stack() ⇒ identity
+      case _ ⇒ decorators reduceLeft (_ andThen _)
+    }
+
+    buffer append decorator(text)
     this
   }
 
   def withDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    val sb = withBuffer(new DecoratedBuffer(decorator))(block)
-    append(sb.toString)
+    decorators push decorator
+
+    try block
+    finally decorators.pop
+
     this
   }
 
   def withBlockDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    val sb = withBuffer(new StandardBuffer)(block)
-    append(decorator(sb.toString))
+    val newBuffer = new StringBuilder
+    val oldBuffer = buffer
+
+    buffer = newBuffer
+    try block
+    finally buffer = oldBuffer
+
+    buffer append decorator(newBuffer.toString)
+
     this
   }
 
@@ -103,7 +90,7 @@ abstract class TextSection[T <: TextSection[T]] {
 
 trait TextSectionAdditions { this: TextSection[_] ⇒
 
-  object decorators {
+  object Decorators {
 
     def indentText(num: Int) = (text: String) ⇒ {
       val prefix = " " * num
@@ -118,26 +105,52 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
     }
 
     def stripWhitespace(tabSize: Int): Decorator = { text ⇒
-      // expand tabs
-      val expandedText = text.replace("\t", " " * tabSize)
-      // split and drop empty lines
-      val lines = (expandedText split endl) filter (!_.isEmpty)
-
-      if (!lines.isEmpty) {
-        // longest whitespace prefix
-        val prefix = lines.map(_.segmentLength(_.isWhitespace, 0)).min
-        // drop it and concatenate
-        lines map (_.drop(prefix)) mkString (endl)
+      // don't eat new lines
+      if (text == endl) {
+        text
       } else {
-        ""
+        // expand tabs
+        val expandedText = text.replace("\t", " " * tabSize)
+        // split
+        var lines = (expandedText split endl).toList
+
+        if (!lines.isEmpty) {
+          // longest whitespace prefix of non-empty lines
+          val prefix = lines
+            .filter(!_.trim.isEmpty)
+            .map(_.segmentLength(_.isWhitespace, 0))
+            .min
+
+          // is the input from the following like scala block:
+          // """
+          // bla bla bla
+          // """
+          if (lines.size >= 3
+            && lines.head == ""
+            && lines.last.segmentLength(_.isWhitespace, 0) == prefix) {
+            lines = lines.drop(1)
+            lines = lines.dropRight(1)
+          }
+
+          // drop empty lines (either empty or full of whitespace chars)
+          lines = lines collect {
+            case line if line.trim.isEmpty ⇒ ""
+            case line ⇒ line
+          }
+
+          // drop prefix it and concatenate
+          lines map (_.drop(prefix)) mkString (endl)
+        } else {
+          ""
+        }
       }
     }
   }
 
   implicit class TextTemplateString(that: String) {
     def unary_! = append(that)
-    def quoted = decorators.surroundText("\"")(that)
-    def singleQuoted = decorators.surroundText("'")(that)
+    def quoted = Decorators.surroundText("\"")(that)
+    def singleQuoted = Decorators.surroundText("'")(that)
   }
 
   private[this] var _defaultIndent: Int = 2
@@ -163,13 +176,13 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
 
   def indentBy(num: Int)(block: ⇒ Unit): this.type = {
     append(endl)
-    withBlockDecorator(decorators.indentText(num))(block)
+    withBlockDecorator(Decorators.indentText(num))(block)
   }
 
   def indent(block: ⇒ Unit): this.type = indentBy(defaultIndent)(block)
 
   def surroundWith(begin: String, end: String)(block: ⇒ Unit): this.type = {
-    withBlockDecorator(decorators.surroundText(begin, end))(block)
+    withBlockDecorator(Decorators.surroundText(begin, end))(block)
   }
 
   def curlyIndent(block: ⇒ Unit): this.type = {
@@ -197,7 +210,7 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
   }
 
   def stripWhitespace(block: ⇒ Unit): this.type = {
-    withDecorator(decorators.stripWhitespace(defaultIndent))(block)
+    withDecorator(Decorators.stripWhitespace(defaultIndent))(block)
   }
 }
 
@@ -206,5 +219,13 @@ object Text {
 }
 
 class Text extends TextSection[Text] with TextSectionAdditions {
+  var _stripWhitespace: Boolean = false;
+
+  def stripWhitespace: Boolean = _stripWhitespace
+  def stripWhitespace_=(strip: Boolean) = {
+    decorators push Decorators.stripWhitespace(defaultIndent)
+    _stripWhitespace = strip
+  }
+
   override def createSection: Text = new Text
 }
