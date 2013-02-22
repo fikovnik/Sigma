@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.equinox.preferences.preferences">
       <initializer
-            class="fr.unice.i3s.sigma.docgen.graphviz.core.internal.GraphvizCorePreferenceInitializer">
+            class="fr.unice.i3s.sigma.docgen.core.internal.DocgenPreferenceInitializer">
       </initializer>
    </extension>
    <extension
@@ -29,11 +29,11 @@
          <menu
                label="Sigma">
             <command
-                  commandId="fr.unice.i3s.sigma.docgen.graphviz.ui.command.exportClassDiagramAsImage"
+                  commandId="fr.unice.i3s.sigma.docgen.graphviz.ui.commands.exportClassDiagram"
                   icon="icons/elcl16/export-file.png"
-                  label="Export Class Diagram as Image"
+                  label="Export Class Diagram"
                   style="push"
-                  tooltip="Exports selected elements as class diagram Image">
+                  tooltip="Exports selected elements as class diagram">
                <visibleWhen
                      checkEnabled="false">
                   <reference
@@ -52,8 +52,8 @@
       </category>
       <command
             categoryId="fr.unice.i3s.sigma.docgen.graphviz.ui.commands"
-            defaultHandler="fr.unice.i3s.sigma.docgen.graphviz.ui.internal.handlers.ExportClassDiagramAsImageHandler"
-            id="fr.unice.i3s.sigma.docgen.graphviz.ui.command.exportClassDiagramAsImage"
+            defaultHandler="fr.unice.i3s.sigma.docgen.graphviz.ui.internal.handlers.ExportClassDiagramHandler"
+            id="fr.unice.i3s.sigma.docgen.graphviz.ui.commands.exportClassDiagram"
             name="Export Class Diagram">
       </command>
    </extension>

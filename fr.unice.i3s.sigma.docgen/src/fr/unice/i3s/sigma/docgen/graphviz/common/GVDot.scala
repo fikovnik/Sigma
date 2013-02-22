@@ -4,14 +4,16 @@ import java.io.File
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
+import com.google.common.io.Files
 
 abstract sealed class GVOutputType(val name: String, val ext: String, val description: String)
 
 object GVOutputType {
   case object PNG extends GVOutputType("PNG", "png", "PNG (Portable Network Graphics)")
   case object PDF extends GVOutputType("PDF", "pdf", "PDF (Portable Document Format)")
+  case object DOT extends GVOutputType("Graphviz DOT", "dot", "Graphviz Graph File")
 
-  val values = PDF :: PNG :: Nil
+  val values = PDF :: PNG :: DOT :: Nil
 }
 
 object GVDot {
@@ -34,12 +36,13 @@ trait Executor {
 
 private class SystemExecutor extends Executor {
 
-  def execute(args: Seq[String]): Try[String] = {
+  def execute(command: Seq[String]): Try[String] = {
     import sys.process._
 
     try {
-      val res = args.!!
-      Success(res)
+      val stderr = new StringBuilder
+      command !! ProcessLogger(line ⇒ stderr append line)
+      Success(stderr.toString)
     } catch {
       case e: Throwable ⇒ Failure(e)
     }
@@ -62,7 +65,7 @@ class GVDot(path: String) {
   import GVDot._
 
   def version: Try[DotVersion] = {
-    executor.execute(List(path, "--version")) match {
+    executor.execute(List(path, "-V")) match {
       case Success(output) ⇒ {
         val lines = output split ("\n")
         lines(0) match {
@@ -81,6 +84,11 @@ class GVDot(path: String) {
   }
 
   def generate(in: File, out: File, outputType: GVOutputType): Try[File] = {
+    if (outputType == GVOutputType.DOT) {
+      Files.copy(in, out)
+      return Success(out)
+    }
+
     validate match {
       case Success(_) ⇒
       case Failure(e) ⇒ Failure(e)

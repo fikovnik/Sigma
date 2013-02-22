@@ -18,25 +18,20 @@ import org.eclipse.swt.program.Program
 import org.eclipse.swt.widgets.FileDialog
 import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.handlers.HandlerUtil
+
+import fr.unice.i3s.sigma.docgen.core.DocgenPlugin;
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVDot
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVOutputType
 import fr.unice.i3s.sigma.docgen.graphviz.core.GenerateClassDiagramJob
-import fr.unice.i3s.sigma.docgen.graphviz.core.GraphvizCorePlugin
 import fr.unice.i3s.sigma.scala.utils.EMFBuilder
 import fr.unice.i3s.sigma.scala.utils.SWTUtils
 import fr.unice.i3s.sigma.scala.utils.ecore.EcoreScalaSupport
 import fr.unice.i3s.sigma.docgen.graphviz.ui.GraphvizDiagnostics
 import org.eclipse.swt.widgets.Shell
 
-object ExportClassDiagramAsImageHandler {
-  val PREF_REVEAL_RESULT_TOGGLE = "ExportClassDiagramAsImage.revealResult"
-}
+class ExportClassDiagramHandler extends AbstractHandler with EcoreScalaSupport {
 
-class ExportClassDiagramAsImageHandler extends AbstractHandler with EcoreScalaSupport {
-
-  import ExportClassDiagramAsImageHandler._
-
-  protected def dot: GVDot = GraphvizCorePlugin.plugin.gvDot
+  protected def dot: GVDot = DocgenPlugin.plugin.gvDot
 
   override def execute(event: ExecutionEvent): Object = {
     val selection = HandlerUtil.getActiveMenuSelection(event).asInstanceOf[IStructuredSelection]
@@ -63,7 +58,7 @@ class ExportClassDiagramAsImageHandler extends AbstractHandler with EcoreScalaSu
 
       case _ ⇒ {
         val copier = new Copier(true, true)
-        val pkg = new EMFBuilder(EcorePackage.eINSTANCE).create[EPackage]
+        val pkg = (new EMFBuilder(EcorePackage.eINSTANCE)).create[EPackage]
 
         pkg.eClassifiers ++= items.collect {
           case e: EClass ⇒
@@ -100,15 +95,29 @@ class ExportClassDiagramAsImageHandler extends AbstractHandler with EcoreScalaSu
 
         SWTUtils.asyncExec {
           val shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()
+          val prefs = DocgenPlugin.plugin.getPreferenceStore
+          val revealOpt = {
+            if (prefs.contains(DocgenPlugin.PREF_AUTO_REVEAL_RESULT_TOGGLE)) {
+              prefs.getString(DocgenPlugin.PREF_AUTO_REVEAL_RESULT_TOGGLE) match {
+                case MessageDialogWithToggle.ALWAYS ⇒ Some(true)
+                case MessageDialogWithToggle.NEVER ⇒ Some(false)
+                case MessageDialogWithToggle.PROMPT ⇒ None
+              }
+            } else None
+          }
 
-          val dialog = MessageDialogWithToggle.openYesNoQuestion(
-            shell,
-            "Class Diagram Generated",
-            "Class Diagram has been generated. Do you want to see it?",
-            null, false, GraphvizCorePlugin.plugin.getPreferenceStore(),
-            PREF_REVEAL_RESULT_TOGGLE)
+          val reveal = revealOpt match {
+            case None ⇒
+              val dialog = MessageDialogWithToggle.openYesNoCancelQuestion(
+                shell,
+                "Class Diagram Generated",
+                "Class Diagram has been generated. Do you want to see it?",
+                null, false, prefs, DocgenPlugin.PREF_AUTO_REVEAL_RESULT_TOGGLE)
+              dialog.getReturnCode() == IDialogConstants.YES_ID
+            case Some(v) ⇒ v
+          }
 
-          if (dialog.getReturnCode() == IDialogConstants.YES_ID) {
+          if (reveal) {
             Program.launch(job.output.getAbsolutePath())
           }
         }

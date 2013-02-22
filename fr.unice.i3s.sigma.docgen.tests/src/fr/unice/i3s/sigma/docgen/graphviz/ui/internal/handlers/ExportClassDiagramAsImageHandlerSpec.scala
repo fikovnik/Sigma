@@ -24,7 +24,7 @@ class ExportClassDiagramAsImageHandlerSpec extends FlatSpec with MustMatchers wi
     when(ctxMock.getVariable(ISources.ACTIVE_MENU_SELECTION_NAME)) thenReturn (selectionMock, Nil: _*)
     when(selectionMock.isEmpty()) thenReturn true
 
-    val handler = new ExportClassDiagramAsImageHandler {
+    val handler = new ExportClassDiagramHandler {
       override def dot = dotMock
     }
 
