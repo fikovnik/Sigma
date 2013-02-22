@@ -15,9 +15,12 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 
 // we do not have to worry much about this class since it will
 // get replaced by a Type macro later
+object EClassScalaSupportTemplate {
+  val keywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
+}
 class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUnitName: String) extends TextTemplate {
 
-  val keywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
+  import EClassScalaSupportTemplate._
 
   override def render {
     val importManager = new ImportManager(scalaPkgName, scalaUnitName)
@@ -60,9 +63,10 @@ class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUni
     }
   }
 
-  protected def checkName(name: String) =
+  protected def checkName(name: String) = {
     if (keywords contains name) s"`$name`"
     else name
+  }
 
   protected def mapTypeName(name: String) = name match {
     case "boolean" ⇒ "Boolean"
@@ -108,7 +112,7 @@ class EMFScalaSupportGenerator {
 
       val scalaPkgName = pkgNameOpt match {
         case Some(name) ⇒ name
-        case None ⇒ pkg.getBasePackage + "." + pkg.getPackageName
+        case None ⇒ pkg.getBasePackage + "." + pkg.getPackageName + ".scala"
       }
 
       val dir = (baseDir /: scalaPkgName.split('.'))(new File(_, _))
@@ -124,7 +128,7 @@ class EMFScalaSupportGenerator {
         }
       }
 
-      val scalaUnitName = pkg.getPackageName.capitalize + "ScalaSupport"
+      val scalaUnitName = pkg.getPackageName.capitalize + "PackageScalaSupport"
       val scalaClazz = new EPackageScalaSupportTemplate(pkg, scalaPkgName, scalaUnitName)
 
       using(new File(dir, scalaUnitName + ".scala")) { f ⇒
@@ -145,15 +149,17 @@ class EMFScalaSupportGenerator {
 
 object EMFScalaSupportGenerator extends App {
 
-  if (args.length != 3) {
-    println("Usage: %s <model.genmodel> <target_dir> <base_package>" format getClass.getName)
+  if (args.length < 2 && args.length > 3) {
+    println("Usage: %s <model.genmodel> <target_dir> [<base_package>]" format getClass.getName)
     scala.sys.exit(1)
   }
 
   val (genModel, rs) = load[GenModel](args(0))
+  val output = new File(args(1))
+  val pkgNameOpt = if (args.length != 3) None else Some(args(2))
 
   val generator = new EMFScalaSupportGenerator
-  generator.generate(new File(args(1)), genModel, Some(args(2)))
+  generator.generate(output, genModel, pkgNameOpt)
 
 }
 
