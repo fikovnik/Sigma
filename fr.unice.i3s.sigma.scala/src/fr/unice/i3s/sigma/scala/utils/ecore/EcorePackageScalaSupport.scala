@@ -1,6 +1,6 @@
 package fr.unice.i3s.sigma.scala.utils.ecore
 
-trait EcoreScalaSupport
+trait EcorePackageScalaSupport
   extends EAttributeScalaSupport
   with EAnnotationScalaSupport
   with EClassScalaSupport
@@ -21,4 +21,4 @@ trait EcoreScalaSupport
   with EGenericTypeScalaSupport
   with ETypeParameterScalaSupport
 
-object EcoreScalaSupport extends EcoreScalaSupport
+object EcorePackageScalaSupport extends EcorePackageScalaSupport

@@ -6,11 +6,11 @@ import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.MustMatchers
 import fr.unice.i3s.sigma.scala.utils.EcoreBuilder
-import fr.unice.i3s.sigma.scala.utils.ecore.EcoreScalaSupport
+import fr.unice.i3s.sigma.scala.utils.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.scala.mtt.TextTemplateTest
 
 @RunWith(classOf[JUnitRunner])
-class ClassDiagramSpec extends FlatSpec with MustMatchers with EcoreScalaSupport {
+class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
 
   "ClassDiagram" must "must render a generalization" in {
 

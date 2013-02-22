@@ -7,9 +7,11 @@ import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
-import fr.unice.i3s.sigma.scala.utils.ecore.EcoreScalaSupport
+import fr.unice.i3s.sigma.scala.utils.ecore.EcorePackageScalaSupport
+import org.eclipse.emf.ecore.EDataType
+import org.eclipse.emf.ecore.EClassifier
 
-class ClassDiagram(pkg: EPackage) extends TextTemplate(stripWhitespace = true) with EcoreScalaSupport {
+class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = true) with EcorePackageScalaSupport {
 
   override def render {
     !"digraph G" curlyIndent {
