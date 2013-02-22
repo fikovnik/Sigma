@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EDataType
 import org.eclipse.emf.ecore.EClassifier
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import org.eclipse.emf.ecore.EEnum
 
 class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = true) with EcorePackageScalaSupport {
 
@@ -37,25 +38,106 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = tru
 	   """
       !endl << endl
 
-      // select call classes
-      val classes = pkg.eClassifiers collect { case e: EClass ⇒ e }
+      renderPackage(rootPkg)
+    }
+  }
 
-      for (clazz ← classes) {
-        // render class
-        renderClass(clazz, "white")
+  protected[common] def renderPackage(pkg: EPackage) {
+    // render sub packages
+    for (spkg ← pkg.getESubpackages) {
+      renderSubPackage(spkg)
+      !endl << endl
+    }
+
+    // render data types
+    val dataTypes = pkg.eClassifiers collect { case e: EDataType ⇒ e }
+    for (dataType ← dataTypes) {
+      renderDataType(dataType)
+      !endl << endl
+    }
+
+    // render enums
+    val enums = pkg.eClassifiers collect { case e: EEnum ⇒ e }
+    for (enum ← enums) {
+      renderEnum(enum)
+      !endl << endl
+    }
+
+    // render call classes
+    val classes = pkg.eClassifiers collect { case e: EClass ⇒ e }
+    for (clazz ← classes) {
+      // render class
+      renderClass(clazz, "white")
+      !endl << endl
+
+      // render generalization
+      for (superType ← clazz.eSuperTypes intersect (classes)) {
+        renderGeneralization(clazz, superType)
         !endl << endl
+      }
 
-        // render generalization
-        for (superType ← clazz.eSuperTypes intersect (classes)) {
-          renderGeneralization(clazz, superType)
-          !endl << endl
+      // render references
+      for (ref ← clazz.eReferences if classes.contains(ref.eReferenceType)) {
+        renderReference(clazz, ref)
+        !endl << endl
+      }
+    }
+  }
+
+  protected[common] def renderSubPackage(pkg: EPackage) {
+    !s"subgraph ${fqn(pkg)}" curlyIndent {
+      !s"label = ${pkg.name.quoted}" << endl
+      renderPackage(pkg)
+    }
+  }
+
+  protected[common] def renderDataType(dataType: EDataType) {
+    !s"${fqn(dataType)}" squareIndent {
+      !"label = " angleIndent {
+        !s"""
+			  <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
+			  <TR><TD>
+			  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+			  <TR><TD>«datatype»</TD></TR>
+			  <TR><TD>${dataType.name}</TD></TR>
+			  </TABLE>
+			  </TD></TR>
+			  <TR><TD>
+			  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+			  <TR><TD align="left">«javaclass» ${dataType.instanceClassName}</TD></TR>
+			  </TABLE>
+			  </TD></TR>
+			  </TABLE>
+			  """
+      }
+    }
+  }
+
+  protected[common] def renderEnum(enum: EEnum) {
+    !s"${fqn(enum)}" squareIndent {
+      !"label = " angleIndent {
+        !s"""
+    	  <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
+    	  <TR><TD>
+    	  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+    	  <TR><TD>«enumeration»</TD></TR>
+    	  <TR><TD>${enum.name}</TD></TR>
+    	  </TABLE>
+    	  </TD></TR>
+    	  <TR><TD>
+    	  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+        """
+        !endl
+
+        for (e ← enum.eLiterals) {
+          !s"""<TR><TD align="left">- ${e.literal}</TD></TR>""" << endl
         }
 
-        // render references
-        for (ref ← clazz.eReferences if classes.contains(ref.eReferenceType)) {
-          renderReference(clazz, ref)
-          !endl << endl
-        }
+        !"""
+    	  </TABLE>
+    	  </TD></TR>
+    	  </TABLE>
+    	  """
       }
     }
   }
@@ -88,6 +170,7 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = tru
           <TR><TD>
           <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
           """
+          !endl
 
           for (e ← attrs) {
             !s"""<TR><TD align="left">${featureLabelWithType(e)}</TD></TR>""" << endl
@@ -98,6 +181,8 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = tru
           </TD></TR>
           <!-- End attributes -->
           """
+
+          !endl
         }
         !"</TABLE>"
       }
@@ -162,10 +247,10 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = tru
     superPackages(pkg) map (_.name) mkString ("__")
   }
 
-  protected[common] def fqn(clazz: EClass): String = {
-    require(clazz != null)
+  protected[common] def fqn(classifier: EClassifier): String = {
+    require(classifier != null)
 
-    Option(clazz.ePackage).map(fqn(_)).getOrElse("") + "__" + clazz.name
+    Option(classifier.ePackage).map(fqn(_)).getOrElse("") + "__" + classifier.name
   }
 
 }

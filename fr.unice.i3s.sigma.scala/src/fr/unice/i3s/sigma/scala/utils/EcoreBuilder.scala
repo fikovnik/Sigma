@@ -44,6 +44,40 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
   //    case None ⇒ throw new IllegalStateException("No EPackage context found")
   //  }
 
+  def eDataType(
+    name: String = null,
+    instanceClassName: String = null): EDataType = {
+    val obj = create[EDataType]
+
+    container[EClassifier] match {
+      case Some(list) ⇒ list += obj
+      case None ⇒
+    }
+
+    setNotDefault(obj.setName, name, null)
+    setNotDefault(obj.setInstanceClassName, instanceClassName, null)
+
+    obj
+  }
+
+  def eEnum(name: String = null, eLiterals: List[EEnumLiteral] = Nil): EEnum = {
+    val obj = create[EEnum]
+
+    setNotDefault(obj.setName, name, null)
+    obj.getELiterals ++= eLiterals
+
+    obj
+  }
+
+  def eEnumLiteral(name: String = null, value: Int = 0): EEnumLiteral = {
+    val obj = create[EEnumLiteral]
+
+    setNotDefault(obj.setName, name, null)
+    setNotDefault(obj.setValue, value, 0)
+
+    obj
+  }
+
   def eClass(
     name: String,
     eSuperTypes: List[EClass] = Nil): EClass = {
