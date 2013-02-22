@@ -6,8 +6,8 @@ import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.MustMatchers
 import fr.unice.i3s.sigma.scala.utils.EcoreBuilder
-import fr.unice.i3s.sigma.scala.utils.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.scala.mtt.TextTemplateTest
+import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 
 @RunWith(classOf[JUnitRunner])
 class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {

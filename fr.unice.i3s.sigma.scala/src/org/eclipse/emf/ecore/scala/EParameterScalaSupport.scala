@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.utils.ecore
+package org.eclipse.emf.ecore.scala
 
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;

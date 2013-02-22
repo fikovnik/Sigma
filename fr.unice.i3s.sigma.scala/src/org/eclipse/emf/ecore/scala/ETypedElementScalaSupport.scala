@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.utils.ecore
+package org.eclipse.emf.ecore.scala
 
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EGenericType;
