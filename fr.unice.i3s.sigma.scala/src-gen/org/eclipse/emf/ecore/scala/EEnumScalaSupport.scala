@@ -6,8 +6,8 @@ import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EEnumLiteral;
 
 trait EEnumScalaSupport {
-  implicit class EEnumScalaSupport(obj: EEnum) {
-    def eLiterals: EList[EEnumLiteral] = obj.getELiterals
+  implicit class EEnumScalaSupport(that: EEnum) {
+    def eLiterals: EList[EEnumLiteral] = that.getELiterals
   }
 }
 

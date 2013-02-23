@@ -6,8 +6,8 @@ import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.ETypeParameter;
 
 trait ETypeParameterScalaSupport {
-  implicit class ETypeParameterScalaSupport(obj: ETypeParameter) {
-    def eBounds: EList[EGenericType] = obj.getEBounds
+  implicit class ETypeParameterScalaSupport(that: ETypeParameter) {
+    def eBounds: EList[EGenericType] = that.getEBounds
   }
 }
 

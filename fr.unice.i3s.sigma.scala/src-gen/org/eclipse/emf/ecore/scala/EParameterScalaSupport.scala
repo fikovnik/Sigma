@@ -4,8 +4,8 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 
 trait EParameterScalaSupport {
-  implicit class EParameterScalaSupport(obj: EParameter) {
-    def eOperation: EOperation = obj.getEOperation
+  implicit class EParameterScalaSupport(that: EParameter) {
+    def eOperation: EOperation = that.getEOperation
   }
 }
 

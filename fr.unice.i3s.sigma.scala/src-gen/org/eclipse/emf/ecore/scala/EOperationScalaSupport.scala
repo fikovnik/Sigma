@@ -10,12 +10,12 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.ETypeParameter;
 
 trait EOperationScalaSupport {
-  implicit class EOperationScalaSupport(obj: EOperation) {
-    def eContainingClass: EClass = obj.getEContainingClass
-    def eTypeParameters: EList[ETypeParameter] = obj.getETypeParameters
-    def eParameters: EList[EParameter] = obj.getEParameters
-    def eExceptions: EList[EClassifier] = obj.getEExceptions
-    def eGenericExceptions: EList[EGenericType] = obj.getEGenericExceptions
+  implicit class EOperationScalaSupport(that: EOperation) {
+    def eContainingClass: EClass = that.getEContainingClass
+    def eTypeParameters: EList[ETypeParameter] = that.getETypeParameters
+    def eParameters: EList[EParameter] = that.getEParameters
+    def eExceptions: EList[EClassifier] = that.getEExceptions
+    def eGenericExceptions: EList[EGenericType] = that.getEGenericExceptions
   }
 }
 

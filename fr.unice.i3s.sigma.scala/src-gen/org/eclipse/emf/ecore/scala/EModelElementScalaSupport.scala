@@ -6,8 +6,8 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EModelElement;
 
 trait EModelElementScalaSupport {
-  implicit class EModelElementScalaSupport(obj: EModelElement) {
-    def eAnnotations: EList[EAnnotation] = obj.getEAnnotations
+  implicit class EModelElementScalaSupport(that: EModelElement) {
+    def eAnnotations: EList[EAnnotation] = that.getEAnnotations
   }
 }
 
