@@ -85,22 +85,36 @@ class EPackageScalaSupportTemplate(pkg: GenPackage, scalaPkgName: String, scalaU
   require(!pkg.getGenClasses.isEmpty)
 
   override def render {
-    !s"package $scalaPkgName" << endl << endl
+    val importManager = new ImportManager(scalaPkgName, scalaUnitName)
+    pkg.getGenModel.setImportManager(importManager)
 
     val x :: xs = pkg.getGenClasses.toList
 
+    // start
+    !s"package $scalaPkgName" << endl << endl
+
+    // mark imports
+    val imports = out.startSection
+
     // the trait
     !s"trait $scalaUnitName" indent {
-      !s"extends ${x.getName}ScalaSupport" << endl
-      for (c ← xs) {
-        !s"with ${c.getName}ScalaSupport" << endl
-      }
+      !pkg.getGenClasses.map(_.getName + "ScalaSupport").mkString("extends ", " with" + endl, "")
     }
-    // the companion object
-    !endl
-    !endl
-    !s"object $scalaUnitName extends $scalaUnitName" << endl
 
+    !endl
+    !endl
+
+    // the companion object
+    !s"object $scalaUnitName extends $scalaUnitName" curlyIndent {
+      !endl
+      // get the package  
+      !s"private[this] val pkg = ${pkg.getImportedPackageInterfaceName}.eINSTANCE" << endl << endl
+      // constants for all data types
+      for (e ← pkg.getGenDataTypes())
+        !s"val ${e.getName} = pkg.get${e.getClassifierAccessorName}" << endl
+    }
+
+    imports << importManager.computeSortedImports() << endl << endl
   }
 
 }
