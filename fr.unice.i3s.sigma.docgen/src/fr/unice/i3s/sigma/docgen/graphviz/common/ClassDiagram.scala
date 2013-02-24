@@ -95,20 +95,20 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = tru
     !s"${fqn(dataType)}" squareIndent {
       !"label = " angleIndent {
         !s"""
-			  <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
-			  <TR><TD>
-			  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
-			  <TR><TD>«datatype»</TD></TR>
-			  <TR><TD>${dataType.name}</TD></TR>
-			  </TABLE>
-			  </TD></TR>
-			  <TR><TD>
-			  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
-			  <TR><TD align="left">«javaclass» ${dataType.instanceClassName}</TD></TR>
-			  </TABLE>
-			  </TD></TR>
-			  </TABLE>
-			  """
+		  <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
+		  <TR><TD>
+		  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+		  <TR><TD>«datatype»</TD></TR>
+		  <TR><TD>${dataType.name}</TD></TR>
+		  </TABLE>
+		  </TD></TR>
+		  <TR><TD>
+		  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+		  <TR><TD align="left">«javaclass» ${dataType.instanceClassName}</TD></TR>
+		  </TABLE>
+		  </TD></TR>
+		  </TABLE>
+		  """
       }
     }
   }
