@@ -8,6 +8,7 @@ trait EcorePackageScalaSupport
 object EcorePackageScalaSupport extends EcorePackageScalaSupport {
 
   private[this] val pkg = EcorePackage.eINSTANCE
+
   val EBigDecimal = pkg.getEBigDecimal
   val EBigInteger = pkg.getEBigInteger
   val EBoolean = pkg.getEBoolean
