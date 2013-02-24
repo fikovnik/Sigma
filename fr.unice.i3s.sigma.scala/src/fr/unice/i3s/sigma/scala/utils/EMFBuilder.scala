@@ -26,54 +26,6 @@ import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 import org.eclipse.emf.ecore.EStructuralFeature
 
-final class PostponeContentInitializerAdapter extends EContentAdapter {
-  val codes = {
-    import Notification._
-
-    ADD :: ADD_MANY :: SET :: Nil
-  }
-
-  override def notifyChanged(notification: Notification) {
-    super.notifyChanged(notification)
-
-    if (codes contains notification.getEventType) {
-      notification.getNotifier match {
-        case resource: Resource ⇒
-          initializeObject(notification.getNewValue)
-        case _ ⇒ Option(notification.getFeature).collect {
-          case r: EReference if r.isContainment ⇒ r
-        } match {
-          case Some(ref) ⇒
-            initializeObject(notification.getNewValue)
-          case None ⇒
-        }
-      }
-    }
-  }
-
-  private def initializeObject(obj: Object) {
-    obj match {
-      case eobj: EObject ⇒ eobj.adapter[PostponedInitizationAdapter[_]] match {
-        case Some(adapter) ⇒ adapter.initialize()
-        case None ⇒
-      }
-      case _ ⇒
-    }
-  }
-}
-
-final class PostponedInitizationAdapter[T <: EObject](val initializer: T ⇒ Unit) extends AdapterImpl {
-  def initialize() {
-    initializer(getTarget().asInstanceOf[T])
-    getTarget().eAdapters.remove(this)
-  }
-
-  override def isAdapterForType(`type`: Object): Boolean = {
-    `type` == classOf[PostponedInitizationAdapter[_]]
-  }
-
-}
-
 trait EMFDynamicContext {
   protected val context = new TypedDynamicVariable[EObject](null)
   protected val containerContext = new TypedDynamicVariable[EList[_ <: EObject]](null)
@@ -102,19 +54,6 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
       context.withValue(obj) { fun(obj) }
       obj
     }
-
-    // FIXME: this is likely broken
-    def initLater(initializer: T ⇒ Unit): T = {
-      context.withValue(obj) {
-        obj.adapter[PostponedInitizationAdapter[_]] match {
-          case None ⇒
-            obj.eAdapters += new PostponedInitizationAdapter(initializer)
-          case Some(o) ⇒
-            throw new IllegalStateException("Multiple initialization is not supported. Object: " + obj)
-        }
-        obj
-      }
-    }
   }
 
   implicit class InitializableEList[T <: EObject: TypeTag](val that: EList[T]) {
@@ -128,59 +67,70 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
 
   protected val proxies = Buffer[InternalProxy]()
 
+  /**
+   * This is a holder of the recorded getter in the proxy.
+   */
   protected class InternalProxyAdapter(val getter: Unit ⇒ Option[EObject]) extends AdapterImpl {
     override def isAdapterForType(`type`: Object): Boolean = `type` == classOf[InternalProxyAdapter]
   }
-  
+
+  /**
+   * Responsible for recording and resolving proxies.
+   */
   protected object ResolveProxyAdapter extends AdapterImpl {
-      override def notifyChanged(msg: Notification) {
-        import Notification._
+    override def notifyChanged(msg: Notification) {
+      import Notification._
 
-        msg.getEventType match {
-          case ADD | ADD_MANY | SET ⇒
+      msg.getEventType match {
+        case ADD | ADD_MANY | SET ⇒
 
-            val owner = msg.getNotifier.asInstanceOf[EObject]
-            val feature = msg.getFeature.asInstanceOf[EStructuralFeature]
+          val owner = msg.getNotifier.asInstanceOf[EObject]
+          val feature = msg.getFeature.asInstanceOf[EStructuralFeature]
 
-            msg.getNewValue match {
-              case obj: EObject ⇒
-                obj.adapter[InternalProxyAdapter] match {
-                  case Some(adapter) ⇒
-                    val setter = { value: EObject ⇒
-                      if (feature.isMany())
-                        owner.eGet(feature).asInstanceOf[EList[EObject]] += value
-                      else
-                        owner.eSet(feature, value)
-                    }
-                  
-                    val proxy = InternalProxy(obj, adapter.getter, setter)
-                    proxies += proxy
-                  case None ⇒
-                    val clazz = obj.getClass
+          msg.getNewValue match {
+            case obj: EObject ⇒
+              // check if the newly set/added value is a proxy
+              obj.adapter[InternalProxyAdapter] match {
+                case Some(adapter) ⇒
+                  // it is a proxy so create a setter (we are setting a feature `feature` in `owner`)
+                  val setter = { value: EObject ⇒
+                    if (feature.isMany()) {
+                      val list = owner.eGet(feature).asInstanceOf[EList[EObject]]
+                      val idx = list indexOf obj
+                      list update(idx, value)
+                    } else
+                      owner.eSet(feature, value)
+                  }
 
-                    for (proxy ← proxies.filter(_.proxy.getClass == clazz)) {
-                      proxy.getter() match {
-                        case Some(r) ⇒ {
-                          proxies -= proxy
-                          proxy.setter(r)
-                        }
-                        case None ⇒
+                  // store the proxy
+                  proxies += InternalProxy(obj, adapter.getter, setter)
+                case None ⇒
+                  // it is not a proxy so by adding this new value into the tree some proxies might get resolved
+                  val clazz = obj.getClass
+
+                  for (proxy ← proxies.filter(_.proxy.getClass == clazz)) {
+                    proxy.getter() match {
+                      case Some(r) ⇒ {
+                        proxies -= proxy
+                        proxy.setter(r)
                       }
+                      case None ⇒
                     }
-                }
-              case _ ⇒
-            }
-          case _ ⇒
-        }
+                  }
+              }
+            case _ ⇒
+          }
+        case _ ⇒
       }
     }
+  }
 
   def ref[T <: EObject: ClassTag](expr: ⇒ Option[T]): T = {
-    val getter = () => expr
-    
+    val getter = () ⇒ expr
+
     getter() match {
-      case Some(e) => e
-      case None =>
+      case Some(e) ⇒ e
+      case None ⇒
         // create a proxy
         val proxy = create[T]
         proxy.asInstanceOf[InternalEObject].eSetProxyURI(URI.createURI(s"EMFBuilder internal proxy"))
