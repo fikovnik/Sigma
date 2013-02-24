@@ -1,7 +1,6 @@
 package fr.unice.i3s.sigma.scala.utils
 
 import scala.reflect.runtime.universe
-
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport.EBoolean
@@ -11,9 +10,7 @@ import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport.EString
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
-
-import fr.unice.i3s.sigma.scala.utils.eListAsScalaImmutableList
-import fr.unice.i3s.sigma.scala.utils.richEObject
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {

@@ -65,8 +65,6 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
 
   protected case class InternalProxy(val proxy: EObject, val getter: Unit ⇒ Option[EObject], val setter: EObject ⇒ Any)
 
-  protected val proxies = Buffer[InternalProxy]()
-
   /**
    * This is a holder of the recorded getter in the proxy.
    */
@@ -91,32 +89,38 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
             case obj: EObject ⇒
               // check if the newly set/added value is a proxy
               obj.adapter[InternalProxyAdapter] match {
-                case Some(adapter) ⇒
+                case Some(adapter) ⇒ {
                   // it is a proxy so create a setter (we are setting a feature `feature` in `owner`)
                   val setter = { value: EObject ⇒
                     if (feature.isMany()) {
+                      // we need to replace the proxy in the list
                       val list = owner.eGet(feature).asInstanceOf[EList[EObject]]
                       val idx = list indexOf obj
-                      list update(idx, value)
+                      list update (idx, value)
                     } else
                       owner.eSet(feature, value)
                   }
 
                   // store the proxy
                   proxies += InternalProxy(obj, adapter.getter, setter)
-                case None ⇒
+                }
+
+                case None ⇒ {
                   // it is not a proxy so by adding this new value into the tree some proxies might get resolved
                   val clazz = obj.getClass
 
                   for (proxy ← proxies.filter(_.proxy.getClass == clazz)) {
                     proxy.getter() match {
-                      case Some(r) ⇒ {
+                      case Some(value) ⇒ {
+                        // remove the proxy first otherwise it will be infinite recursion
                         proxies -= proxy
-                        proxy.setter(r)
+                        // set it
+                        proxy.setter(value)
                       }
                       case None ⇒
                     }
                   }
+                }
               }
             case _ ⇒
           }
@@ -124,6 +128,9 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
       }
     }
   }
+
+  protected val proxies = Buffer[InternalProxy]()
+  protected val factory = pkg.getEFactoryInstance
 
   def ref[T <: EObject: ClassTag](expr: ⇒ Option[T]): T = {
     val getter = () ⇒ expr
@@ -138,8 +145,6 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
         proxy
     }
   }
-
-  protected val factory = pkg.getEFactoryInstance
 
   def create[T <: EObject: ClassTag]: T = {
     val clazz = classTag[T].runtimeClass.getSimpleName
