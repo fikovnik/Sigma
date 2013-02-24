@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.xmi.XMLResource
 import java.io.FileWriter
 import java.io.Closeable
 import java.io.Writer
+import scala.reflect.{ ClassTag, classTag }
 
 /**
  * A utility package that extends some Scala types with OCL-like operations.
