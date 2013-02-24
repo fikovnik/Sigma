@@ -11,12 +11,15 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import java.io.File
 import org.eclipse.emf.codegen.ecore.genmodel.GenFeature
 import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
+import scala.collection.mutable.Buffer
 
 class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate {
   override val stripWhitespace = true
 
   val importManager = new ImportManager(scalaPkgName, scalaUnitName)
   pkg.getGenModel.setImportManager(importManager)
+
+  val renderedFeatures = collection.mutable.Map[String, Int]()
 
   override def render {
     val emfBuilder = importManager.getImportedName(classOf[EMFBuilder[_]].getName, true)
@@ -27,12 +30,11 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     // mark imports
     val imports = out.startSection
 
+    val clazzes = pkg.getGenClasses filter (c ⇒ !skipTypes.contains(c.getName) && !c.isAbstract)
     !s"class $scalaUnitName extends $emfBuilder(${pkg.getImportedPackageInterfaceName()}.eINSTANCE)" curlyIndent {
 
       // for each class generate a construct method
-      for (
-        clazz ← pkg.getGenClasses if !(skipTypes contains clazz.getName) && !clazz.isAbstract()
-      ) {
+      for (clazz ← clazzes) {
         renderEClassConstructMethod(clazz)
         !endl << endl
       }
@@ -40,65 +42,73 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
       !endl
     }
 
-    //    trait OverloadHack {
-    //  class Overloaded1
-    //
-    //  implicit val overload3 = new Overloaded3
-    //}
+    !endl
+    !endl
+
+    !s"trait ${pkg.getPackageName.capitalize}Assignments extends OverloadHack" curlyIndent {
+      !"""private def nothing: Nothing = sys.error("this method is not meant to be called")"""
+      !endl
+
+      val nameConflicts = clazzes map (c ⇒ decapitalize(c.getName))
+      for {
+        clazz ← pkg.getGenClasses if !(skipTypes contains clazz.getName)
+        feature ← clazz.getGenFeatures if !feature.isDerived && feature.isChangeable && !nameConflicts.contains(feature.getName)
+      } {
+        renderFeatureMethod(feature)
+        !endl << endl
+      }
+    }
+
+    !endl
+    !endl
+
+    val max = renderedFeatures.values.max
+    !"private trait OverloadHack" curlyIndent {
+      for (i ← 1 until max - 1) {
+        !s"class Overloaded$i" << endl
+        !s"implicit val overload$i = new Overloaded$i" << endl
+        !endl
+      }
+    }
+    !endl
 
     imports << importManager.computeSortedImports() << endl << endl
   }
 
+  protected def renderFeatureMethod(feature: GenFeature) {
+    val featureName = feature.getName
+    val clazzName = feature.getGenClass.getImportedInterfaceName
+
+    val rendered = renderedFeatures.get(featureName).map(_ + 1).getOrElse(0)
+
+    if (rendered == 0)
+      !s"def ${safeName(featureName)}(implicit ev: Nothing) = nothing" << endl
+
+    !s"def ${featureName}_=[T <: $clazzName](value: ${typeName(feature)})${overloadHack(feature)} =" indent {
+      if (feature.isListType)
+        !s"(target: T) ⇒ target.${feature.getGetAccessor}.addAll(value)" << endl
+      else
+        !s"(target: T) ⇒ target.set${feature.getAccessorName}(value)" << endl
+    }
+
+    renderedFeatures(featureName) = rendered + 1
+  }
+
+  protected def overloadHack(feature: GenFeature) = {
+    renderedFeatures
+      .get(feature.getName)
+      .filter(_ > 0)
+      .map(c ⇒ s"(implicit o: Overloaded$c)")
+      .getOrElse("")
+  }
+
   protected def renderEClassConstructMethod(clazz: GenClass) {
     val clazzName = clazz.getImportedInterfaceName
-    val features = clazz.getAllGenFeatures filter (f ⇒ !f.isDerived && f.isChangeable)
 
-    val params = features.map { feature ⇒
-      s"${safeName(feature.getName)}: ${typeName(feature)} = ${defaultValue(feature)}"
-    }
-
-    !s"def ${safeName(decapitalize(clazz.getName))}" parenIndent {
-      !params.mkString("," + endl)
-    }
-    !s": $clazzName =" curlyIndent {
-      !endl
-      !s"val obj = create[$clazzName]" << endl
-      !endl
-
-      !"// set properties" << endl
-      for (feature ← features) {
-        val featureName = safeName(feature.getName)
-        if (feature.isListType()) {
-          !s"setNotEmpty(obj.${feature.getGetAccessor}, $featureName)"
-        } else {
-          !s"setNotDefault(obj.set${feature.getAccessorName}, $featureName, ${defaultValue(feature)})"
-        }
-        !endl
-      }
-      !endl
-
-      !"obj"
-    }
+    !s"def ${safeName(decapitalize(clazz.getName))}(config: ($clazzName => Any)*): $clazzName = build[$clazzName](config: _*)"
   }
 
   protected def decapitalize(s: String) = s(0).toLower + s.drop(1)
-
-  protected def defaultValue(e: GenFeature): String = {
-    Option(e.getDefaultValue) match {
-      case Some(value) ⇒ value.drop(1).dropRight(1) // remove quotes
-      case None ⇒ e.getEcoreFeature.getEType.getName match {
-        case "EBoolean" ⇒ "false"
-        case "EByte" ⇒ "0"
-        case "EShort" ⇒ "0"
-        case "EInt" ⇒ "0"
-        case "EChar" ⇒ "0"
-        case "ELong" ⇒ "0L"
-        case "EFloat" ⇒ "0F" // TODO: should be a better constant
-        case "EDouble" ⇒ "0D" // TODO: should be a better constant
-        case _ ⇒ "null"
-      }
-    }
-  }
 
   protected def mapPrimitiveType(e: GenTypedElement) = e.getRawImportedType match {
     case "boolean" ⇒ "Boolean"

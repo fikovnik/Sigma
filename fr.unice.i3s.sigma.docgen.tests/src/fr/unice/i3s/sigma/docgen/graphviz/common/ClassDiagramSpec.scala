@@ -9,11 +9,12 @@ import org.scalatest.matchers.MustMatchers
 import fr.unice.i3s.sigma.scala.mtt.TextTemplateTest
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.scala.EcoreBuilder
+import org.eclipse.emf.ecore.scala.EcoreAssignments
 
 @RunWith(classOf[JUnitRunner])
 class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
 
-  val builder = new EcoreBuilder
+  val builder = new EcoreBuilder with EcoreAssignments
   import builder._
 
   val pkg = ePackage(name = "MyPackage", nsURI = "http://mypkg", nsPrefix = "my")

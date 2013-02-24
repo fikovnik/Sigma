@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EEnumLiteral;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EModelElement;
+import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
@@ -23,342 +24,246 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypeParameter;
+import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.EcorePackage;
 
 class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
-  def eAttribute(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    ordered: Boolean = true,
-    unique: Boolean = true,
-    lowerBound: Int = 0,
-    upperBound: Int = 1,
-    eType: EClassifier = null,
-    eGenericType: EGenericType = null,
-    changeable: Boolean = true,
-    volatile: Boolean = false,
-    transient: Boolean = false,
-    defaultValueLiteral: String = null,
-    unsettable: Boolean = false,
-    derived: Boolean = false,
-    iD: Boolean = false): EAttribute = {
+  def eAttribute(config: (EAttribute ⇒ Any)*): EAttribute = build[EAttribute](config: _*)
 
-    val obj = create[EAttribute]
+  def eAnnotation(config: (EAnnotation ⇒ Any)*): EAnnotation = build[EAnnotation](config: _*)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setOrdered, ordered, true)
-    setNotDefault(obj.setUnique, unique, true)
-    setNotDefault(obj.setLowerBound, lowerBound, 0)
-    setNotDefault(obj.setUpperBound, upperBound, 1)
-    setNotDefault(obj.setEType, eType, null)
-    setNotDefault(obj.setEGenericType, eGenericType, null)
-    setNotDefault(obj.setChangeable, changeable, true)
-    setNotDefault(obj.setVolatile, volatile, false)
-    setNotDefault(obj.setTransient, transient, false)
-    setNotDefault(obj.setDefaultValueLiteral, defaultValueLiteral, null)
-    setNotDefault(obj.setUnsettable, unsettable, false)
-    setNotDefault(obj.setDerived, derived, false)
-    setNotDefault(obj.setID, iD, false)
+  def eClass(config: (EClass ⇒ Any)*): EClass = build[EClass](config: _*)
 
-    obj
-  }
+  def eDataType(config: (EDataType ⇒ Any)*): EDataType = build[EDataType](config: _*)
 
-  def eAnnotation(
-    eAnnotations: EList[EAnnotation] = null,
-    source: String = null,
-    details: EMap[String, String] = null,
-    eModelElement: EModelElement = null,
-    contents: EList[EObject] = null,
-    references: EList[EObject] = null): EAnnotation = {
+  def eEnum(config: (EEnum ⇒ Any)*): EEnum = build[EEnum](config: _*)
 
-    val obj = create[EAnnotation]
+  def eEnumLiteral(config: (EEnumLiteral ⇒ Any)*): EEnumLiteral = build[EEnumLiteral](config: _*)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setSource, source, null)
-    setNotEmpty(obj.getDetails, details)
-    setNotDefault(obj.setEModelElement, eModelElement, null)
-    setNotEmpty(obj.getContents, contents)
-    setNotEmpty(obj.getReferences, references)
+  def eFactory(config: (EFactory ⇒ Any)*): EFactory = build[EFactory](config: _*)
 
-    obj
-  }
+  def eObject(config: (EObject ⇒ Any)*): EObject = build[EObject](config: _*)
 
-  def eClass(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    instanceClassName: String = null,
-    instanceTypeName: String = null,
-    eTypeParameters: EList[ETypeParameter] = null,
-    `abstract`: Boolean = false,
-    interface: Boolean = false,
-    eSuperTypes: EList[EClass] = null,
-    eOperations: EList[EOperation] = null,
-    eStructuralFeatures: EList[EStructuralFeature] = null,
-    eGenericSuperTypes: EList[EGenericType] = null): EClass = {
+  def eOperation(config: (EOperation ⇒ Any)*): EOperation = build[EOperation](config: _*)
 
-    val obj = create[EClass]
+  def ePackage(config: (EPackage ⇒ Any)*): EPackage = build[EPackage](config: _*)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setInstanceClassName, instanceClassName, null)
-    setNotDefault(obj.setInstanceTypeName, instanceTypeName, null)
-    setNotEmpty(obj.getETypeParameters, eTypeParameters)
-    setNotDefault(obj.setAbstract, `abstract`, false)
-    setNotDefault(obj.setInterface, interface, false)
-    setNotEmpty(obj.getESuperTypes, eSuperTypes)
-    setNotEmpty(obj.getEOperations, eOperations)
-    setNotEmpty(obj.getEStructuralFeatures, eStructuralFeatures)
-    setNotEmpty(obj.getEGenericSuperTypes, eGenericSuperTypes)
+  def eParameter(config: (EParameter ⇒ Any)*): EParameter = build[EParameter](config: _*)
 
-    obj
-  }
+  def eReference(config: (EReference ⇒ Any)*): EReference = build[EReference](config: _*)
 
-  def eDataType(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    instanceClassName: String = null,
-    instanceTypeName: String = null,
-    eTypeParameters: EList[ETypeParameter] = null,
-    serializable: Boolean = true): EDataType = {
+  def eGenericType(config: (EGenericType ⇒ Any)*): EGenericType = build[EGenericType](config: _*)
 
-    val obj = create[EDataType]
+  def eTypeParameter(config: (ETypeParameter ⇒ Any)*): ETypeParameter = build[ETypeParameter](config: _*)
+}
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setInstanceClassName, instanceClassName, null)
-    setNotDefault(obj.setInstanceTypeName, instanceTypeName, null)
-    setNotEmpty(obj.getETypeParameters, eTypeParameters)
-    setNotDefault(obj.setSerializable, serializable, true)
+trait EcoreAssignments extends OverloadHack {
+  private def nothing: Nothing = sys.error("this method is not meant to be called")
+  def iD(implicit ev: Nothing) = nothing
+  def iD_=[T <: EAttribute](value: Boolean) =
+    (target: T) ⇒ target.setID(value)
 
-    obj
-  }
+  def source(implicit ev: Nothing) = nothing
+  def source_=[T <: EAnnotation](value: String) =
+    (target: T) ⇒ target.setSource(value)
 
-  def eEnum(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    instanceClassName: String = null,
-    instanceTypeName: String = null,
-    eTypeParameters: EList[ETypeParameter] = null,
-    serializable: Boolean = true,
-    eLiterals: EList[EEnumLiteral] = null): EEnum = {
+  def details(implicit ev: Nothing) = nothing
+  def details_=[T <: EAnnotation](value: EMap[String, String]) =
+    (target: T) ⇒ target.getDetails.addAll(value)
 
-    val obj = create[EEnum]
+  def eModelElement(implicit ev: Nothing) = nothing
+  def eModelElement_=[T <: EAnnotation](value: EModelElement) =
+    (target: T) ⇒ target.setEModelElement(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setInstanceClassName, instanceClassName, null)
-    setNotDefault(obj.setInstanceTypeName, instanceTypeName, null)
-    setNotEmpty(obj.getETypeParameters, eTypeParameters)
-    setNotDefault(obj.setSerializable, serializable, true)
-    setNotEmpty(obj.getELiterals, eLiterals)
+  def contents(implicit ev: Nothing) = nothing
+  def contents_=[T <: EAnnotation](value: EList[EObject]) =
+    (target: T) ⇒ target.getContents.addAll(value)
 
-    obj
-  }
+  def references(implicit ev: Nothing) = nothing
+  def references_=[T <: EAnnotation](value: EList[EObject]) =
+    (target: T) ⇒ target.getReferences.addAll(value)
 
-  def eEnumLiteral(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    value: Int = 0,
-    instance: Enumerator = null,
-    literal: String = null): EEnumLiteral = {
+  def `abstract`(implicit ev: Nothing) = nothing
+  def abstract_=[T <: EClass](value: Boolean) =
+    (target: T) ⇒ target.setAbstract(value)
 
-    val obj = create[EEnumLiteral]
+  def interface(implicit ev: Nothing) = nothing
+  def interface_=[T <: EClass](value: Boolean) =
+    (target: T) ⇒ target.setInterface(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setValue, value, 0)
-    setNotDefault(obj.setInstance, instance, null)
-    setNotDefault(obj.setLiteral, literal, null)
+  def eSuperTypes(implicit ev: Nothing) = nothing
+  def eSuperTypes_=[T <: EClass](value: EList[EClass]) =
+    (target: T) ⇒ target.getESuperTypes.addAll(value)
 
-    obj
-  }
+  def eOperations(implicit ev: Nothing) = nothing
+  def eOperations_=[T <: EClass](value: EList[EOperation]) =
+    (target: T) ⇒ target.getEOperations.addAll(value)
 
-  def eFactory(
-    eAnnotations: EList[EAnnotation] = null,
-    ePackage: EPackage = null): EFactory = {
+  def eStructuralFeatures(implicit ev: Nothing) = nothing
+  def eStructuralFeatures_=[T <: EClass](value: EList[EStructuralFeature]) =
+    (target: T) ⇒ target.getEStructuralFeatures.addAll(value)
 
-    val obj = create[EFactory]
+  def eGenericSuperTypes(implicit ev: Nothing) = nothing
+  def eGenericSuperTypes_=[T <: EClass](value: EList[EGenericType]) =
+    (target: T) ⇒ target.getEGenericSuperTypes.addAll(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setEPackage, ePackage, null)
+  def instanceClassName(implicit ev: Nothing) = nothing
+  def instanceClassName_=[T <: EClassifier](value: String) =
+    (target: T) ⇒ target.setInstanceClassName(value)
 
-    obj
-  }
+  def instanceTypeName(implicit ev: Nothing) = nothing
+  def instanceTypeName_=[T <: EClassifier](value: String) =
+    (target: T) ⇒ target.setInstanceTypeName(value)
 
-  def eObject(): EObject = {
+  def eTypeParameters(implicit ev: Nothing) = nothing
+  def eTypeParameters_=[T <: EClassifier](value: EList[ETypeParameter]) =
+    (target: T) ⇒ target.getETypeParameters.addAll(value)
 
-    val obj = create[EObject]
+  def serializable(implicit ev: Nothing) = nothing
+  def serializable_=[T <: EDataType](value: Boolean) =
+    (target: T) ⇒ target.setSerializable(value)
 
-    // set properties
+  def eLiterals(implicit ev: Nothing) = nothing
+  def eLiterals_=[T <: EEnum](value: EList[EEnumLiteral]) =
+    (target: T) ⇒ target.getELiterals.addAll(value)
 
-    obj
-  }
+  def value(implicit ev: Nothing) = nothing
+  def value_=[T <: EEnumLiteral](value: Int) =
+    (target: T) ⇒ target.setValue(value)
 
-  def eOperation(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    ordered: Boolean = true,
-    unique: Boolean = true,
-    lowerBound: Int = 0,
-    upperBound: Int = 1,
-    eType: EClassifier = null,
-    eGenericType: EGenericType = null,
-    eTypeParameters: EList[ETypeParameter] = null,
-    eParameters: EList[EParameter] = null,
-    eExceptions: EList[EClassifier] = null,
-    eGenericExceptions: EList[EGenericType] = null): EOperation = {
+  def instance(implicit ev: Nothing) = nothing
+  def instance_=[T <: EEnumLiteral](value: Enumerator) =
+    (target: T) ⇒ target.setInstance(value)
 
-    val obj = create[EOperation]
+  def literal(implicit ev: Nothing) = nothing
+  def literal_=[T <: EEnumLiteral](value: String) =
+    (target: T) ⇒ target.setLiteral(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setOrdered, ordered, true)
-    setNotDefault(obj.setUnique, unique, true)
-    setNotDefault(obj.setLowerBound, lowerBound, 0)
-    setNotDefault(obj.setUpperBound, upperBound, 1)
-    setNotDefault(obj.setEType, eType, null)
-    setNotDefault(obj.setEGenericType, eGenericType, null)
-    setNotEmpty(obj.getETypeParameters, eTypeParameters)
-    setNotEmpty(obj.getEParameters, eParameters)
-    setNotEmpty(obj.getEExceptions, eExceptions)
-    setNotEmpty(obj.getEGenericExceptions, eGenericExceptions)
+  def eAnnotations(implicit ev: Nothing) = nothing
+  def eAnnotations_=[T <: EModelElement](value: EList[EAnnotation]) =
+    (target: T) ⇒ target.getEAnnotations.addAll(value)
 
-    obj
-  }
+  def name(implicit ev: Nothing) = nothing
+  def name_=[T <: ENamedElement](value: String) =
+    (target: T) ⇒ target.setName(value)
 
-  def ePackage(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    nsURI: String = null,
-    nsPrefix: String = null,
-    eFactoryInstance: EFactory = null,
-    eClassifiers: EList[EClassifier] = null,
-    eSubpackages: EList[EPackage] = null): EPackage = {
+  def eTypeParameters_=[T <: EOperation](value: EList[ETypeParameter])(implicit o: Overloaded1) =
+    (target: T) ⇒ target.getETypeParameters.addAll(value)
 
-    val obj = create[EPackage]
+  def eParameters(implicit ev: Nothing) = nothing
+  def eParameters_=[T <: EOperation](value: EList[EParameter]) =
+    (target: T) ⇒ target.getEParameters.addAll(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setNsURI, nsURI, null)
-    setNotDefault(obj.setNsPrefix, nsPrefix, null)
-    setNotDefault(obj.setEFactoryInstance, eFactoryInstance, null)
-    setNotEmpty(obj.getEClassifiers, eClassifiers)
-    setNotEmpty(obj.getESubpackages, eSubpackages)
+  def eExceptions(implicit ev: Nothing) = nothing
+  def eExceptions_=[T <: EOperation](value: EList[EClassifier]) =
+    (target: T) ⇒ target.getEExceptions.addAll(value)
 
-    obj
-  }
+  def eGenericExceptions(implicit ev: Nothing) = nothing
+  def eGenericExceptions_=[T <: EOperation](value: EList[EGenericType]) =
+    (target: T) ⇒ target.getEGenericExceptions.addAll(value)
 
-  def eParameter(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    ordered: Boolean = true,
-    unique: Boolean = true,
-    lowerBound: Int = 0,
-    upperBound: Int = 1,
-    eType: EClassifier = null,
-    eGenericType: EGenericType = null): EParameter = {
+  def nsURI(implicit ev: Nothing) = nothing
+  def nsURI_=[T <: EPackage](value: String) =
+    (target: T) ⇒ target.setNsURI(value)
 
-    val obj = create[EParameter]
+  def nsPrefix(implicit ev: Nothing) = nothing
+  def nsPrefix_=[T <: EPackage](value: String) =
+    (target: T) ⇒ target.setNsPrefix(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setOrdered, ordered, true)
-    setNotDefault(obj.setUnique, unique, true)
-    setNotDefault(obj.setLowerBound, lowerBound, 0)
-    setNotDefault(obj.setUpperBound, upperBound, 1)
-    setNotDefault(obj.setEType, eType, null)
-    setNotDefault(obj.setEGenericType, eGenericType, null)
+  def eFactoryInstance(implicit ev: Nothing) = nothing
+  def eFactoryInstance_=[T <: EPackage](value: EFactory) =
+    (target: T) ⇒ target.setEFactoryInstance(value)
 
-    obj
-  }
+  def eClassifiers(implicit ev: Nothing) = nothing
+  def eClassifiers_=[T <: EPackage](value: EList[EClassifier]) =
+    (target: T) ⇒ target.getEClassifiers.addAll(value)
 
-  def eReference(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    ordered: Boolean = true,
-    unique: Boolean = true,
-    lowerBound: Int = 0,
-    upperBound: Int = 1,
-    eType: EClassifier = null,
-    eGenericType: EGenericType = null,
-    changeable: Boolean = true,
-    volatile: Boolean = false,
-    transient: Boolean = false,
-    defaultValueLiteral: String = null,
-    unsettable: Boolean = false,
-    derived: Boolean = false,
-    containment: Boolean = false,
-    resolveProxies: Boolean = true,
-    eOpposite: EReference = null,
-    eKeys: EList[EAttribute] = null): EReference = {
+  def eSubpackages(implicit ev: Nothing) = nothing
+  def eSubpackages_=[T <: EPackage](value: EList[EPackage]) =
+    (target: T) ⇒ target.getESubpackages.addAll(value)
 
-    val obj = create[EReference]
+  def containment(implicit ev: Nothing) = nothing
+  def containment_=[T <: EReference](value: Boolean) =
+    (target: T) ⇒ target.setContainment(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotDefault(obj.setOrdered, ordered, true)
-    setNotDefault(obj.setUnique, unique, true)
-    setNotDefault(obj.setLowerBound, lowerBound, 0)
-    setNotDefault(obj.setUpperBound, upperBound, 1)
-    setNotDefault(obj.setEType, eType, null)
-    setNotDefault(obj.setEGenericType, eGenericType, null)
-    setNotDefault(obj.setChangeable, changeable, true)
-    setNotDefault(obj.setVolatile, volatile, false)
-    setNotDefault(obj.setTransient, transient, false)
-    setNotDefault(obj.setDefaultValueLiteral, defaultValueLiteral, null)
-    setNotDefault(obj.setUnsettable, unsettable, false)
-    setNotDefault(obj.setDerived, derived, false)
-    setNotDefault(obj.setContainment, containment, false)
-    setNotDefault(obj.setResolveProxies, resolveProxies, true)
-    setNotDefault(obj.setEOpposite, eOpposite, null)
-    setNotEmpty(obj.getEKeys, eKeys)
+  def resolveProxies(implicit ev: Nothing) = nothing
+  def resolveProxies_=[T <: EReference](value: Boolean) =
+    (target: T) ⇒ target.setResolveProxies(value)
 
-    obj
-  }
+  def eOpposite(implicit ev: Nothing) = nothing
+  def eOpposite_=[T <: EReference](value: EReference) =
+    (target: T) ⇒ target.setEOpposite(value)
 
-  def eGenericType(
-    eUpperBound: EGenericType = null,
-    eTypeArguments: EList[EGenericType] = null,
-    eLowerBound: EGenericType = null,
-    eTypeParameter: ETypeParameter = null,
-    eClassifier: EClassifier = null): EGenericType = {
+  def eKeys(implicit ev: Nothing) = nothing
+  def eKeys_=[T <: EReference](value: EList[EAttribute]) =
+    (target: T) ⇒ target.getEKeys.addAll(value)
 
-    val obj = create[EGenericType]
+  def changeable(implicit ev: Nothing) = nothing
+  def changeable_=[T <: EStructuralFeature](value: Boolean) =
+    (target: T) ⇒ target.setChangeable(value)
 
-    // set properties
-    setNotDefault(obj.setEUpperBound, eUpperBound, null)
-    setNotEmpty(obj.getETypeArguments, eTypeArguments)
-    setNotDefault(obj.setELowerBound, eLowerBound, null)
-    setNotDefault(obj.setETypeParameter, eTypeParameter, null)
-    setNotDefault(obj.setEClassifier, eClassifier, null)
+  def volatile(implicit ev: Nothing) = nothing
+  def volatile_=[T <: EStructuralFeature](value: Boolean) =
+    (target: T) ⇒ target.setVolatile(value)
 
-    obj
-  }
+  def transient(implicit ev: Nothing) = nothing
+  def transient_=[T <: EStructuralFeature](value: Boolean) =
+    (target: T) ⇒ target.setTransient(value)
 
-  def eTypeParameter(
-    eAnnotations: EList[EAnnotation] = null,
-    name: String = null,
-    eBounds: EList[EGenericType] = null): ETypeParameter = {
+  def defaultValueLiteral(implicit ev: Nothing) = nothing
+  def defaultValueLiteral_=[T <: EStructuralFeature](value: String) =
+    (target: T) ⇒ target.setDefaultValueLiteral(value)
 
-    val obj = create[ETypeParameter]
+  def unsettable(implicit ev: Nothing) = nothing
+  def unsettable_=[T <: EStructuralFeature](value: Boolean) =
+    (target: T) ⇒ target.setUnsettable(value)
 
-    // set properties
-    setNotEmpty(obj.getEAnnotations, eAnnotations)
-    setNotDefault(obj.setName, name, null)
-    setNotEmpty(obj.getEBounds, eBounds)
+  def derived(implicit ev: Nothing) = nothing
+  def derived_=[T <: EStructuralFeature](value: Boolean) =
+    (target: T) ⇒ target.setDerived(value)
 
-    obj
-  }
+  def ordered(implicit ev: Nothing) = nothing
+  def ordered_=[T <: ETypedElement](value: Boolean) =
+    (target: T) ⇒ target.setOrdered(value)
+
+  def unique(implicit ev: Nothing) = nothing
+  def unique_=[T <: ETypedElement](value: Boolean) =
+    (target: T) ⇒ target.setUnique(value)
+
+  def lowerBound(implicit ev: Nothing) = nothing
+  def lowerBound_=[T <: ETypedElement](value: Int) =
+    (target: T) ⇒ target.setLowerBound(value)
+
+  def upperBound(implicit ev: Nothing) = nothing
+  def upperBound_=[T <: ETypedElement](value: Int) =
+    (target: T) ⇒ target.setUpperBound(value)
+
+  def eType(implicit ev: Nothing) = nothing
+  def eType_=[T <: ETypedElement](value: EClassifier) =
+    (target: T) ⇒ target.setEType(value)
+
+  def eUpperBound(implicit ev: Nothing) = nothing
+  def eUpperBound_=[T <: EGenericType](value: EGenericType) =
+    (target: T) ⇒ target.setEUpperBound(value)
+
+  def eTypeArguments(implicit ev: Nothing) = nothing
+  def eTypeArguments_=[T <: EGenericType](value: EList[EGenericType]) =
+    (target: T) ⇒ target.getETypeArguments.addAll(value)
+
+  def eLowerBound(implicit ev: Nothing) = nothing
+  def eLowerBound_=[T <: EGenericType](value: EGenericType) =
+    (target: T) ⇒ target.setELowerBound(value)
+
+  def eClassifier(implicit ev: Nothing) = nothing
+  def eClassifier_=[T <: EGenericType](value: EClassifier) =
+    (target: T) ⇒ target.setEClassifier(value)
+
+  def eBounds(implicit ev: Nothing) = nothing
+  def eBounds_=[T <: ETypeParameter](value: EList[EGenericType]) =
+    (target: T) ⇒ target.getEBounds.addAll(value)
+}
+
+trait OverloadHack {
+  class Overloaded1
+  implicit val overload1 = new Overloaded1
 }

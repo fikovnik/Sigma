@@ -24,15 +24,15 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
   import EcorePackageScalaSupport._
 
-  def derived[T <: EStructuralFeature](feature: T): T = {
-    feature.derived = true
-    feature.transient = true
-    feature.volatile = true
-    feature
-  }
+  def setDerived[T <: EStructuralFeature] =
+    (feature: T) ⇒ {
+      feature.derived = true
+      feature.transient = true
+      feature.volatile = true
+    }
 
   "EcoreBuilder" must "conveniently create the library example" in {
-    val builder = new EcoreBuilder with AutoContainment
+    val builder = new EcoreBuilder with EcoreAssignments with AutoContainment
     import builder._
 
     val pkg = ePackage(name = "library", nsPrefix = "library", nsURI = "http://library.me")
@@ -69,7 +69,7 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
           eReference(name = "library", eType = library, lowerBound = 1,
             eOpposite = ref(library.eReferences find (_.name == "books")))
-          derived(eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1))
+          eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1, setDerived)
         }
         c eOperations {
           eOperation(name = "isAvailable", eType = EBoolean)
@@ -83,8 +83,8 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
           eReference(name = "library", eType = library, lowerBound = 1,
             eOpposite = ref(library.eReferences find (_.name == "members")))
-          derived(eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1))
-          derived(eReference(name = "books", eType = book, lowerBound = 1, upperBound = -1))
+          eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1, setDerived)
+          eReference(name = "books", eType = book, lowerBound = 1, upperBound = -1, setDerived)
         }
       }
 
