@@ -1,47 +1,24 @@
 package fr.unice.i3s.sigma.scala.utils
 
-import collection.JavaConversions._
-import fr.unice.i3s.sigma.scala.utils._
-import org.junit.runner.RunWith
-import org.scalatest.matchers.MustMatchers
-import org.scalatest.FlatSpec
-import org.scalatest.junit.JUnitRunner
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
-import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.EPackage
+import scala.reflect.runtime.universe
+
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.eclipse.emf.ecore.EOperation
+import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport.EBoolean
+import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport.EDate
+import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport.EInt
+import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport.EString
+import org.junit.runner.RunWith
+import org.scalatest.FlatSpec
+import org.scalatest.matchers.MustMatchers
+
+import fr.unice.i3s.sigma.scala.utils.eListAsScalaImmutableList
+import fr.unice.i3s.sigma.scala.utils.richEObject
 
 @RunWith(classOf[JUnitRunner])
 class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
 
   import EcorePackageScalaSupport._
-
-  "EMF Builder" must "correctly set the refernces" in {
-    val builder = new EcoreBuilder
-    import builder._
-
-    val clazzA = eClass(name = "A")
-    val clazzB = eClass(name = "B")
-    clazzA.eStructuralFeatures += eReference(name = "b", eType = clazzB)
-    clazzB.eStructuralFeatures += eReference(name = "a", eType = clazzA)
-
-    val pkg = ePackage(name = "pkg", nsPrefix = "p", nsURI = "http://p.net")
-    pkg.eClassifiers ++= clazzA :: clazzB :: Nil
-
-    //    EPackage.Registry.INSTANCE.put(pkg.nsURI, pkg);
-    //    println(pkg.getEFactoryInstance())
-
-    //    println(EcoreUtil.ProxyCrossReferencer.find(pkg))
-    println(pkg.validate prettyPrint)
-
-    //    for (e ← pkg.eAllContents) {
-    //      println(e)
-    //    }
-  }
 
   def derived[T <: EStructuralFeature](feature: T): T = {
     feature.derived = true
@@ -66,10 +43,10 @@ class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSu
           eAttribute(name = "name", eType = EString, lowerBound = 1)
 
           eReference(name = "books", eType = Book, lowerBound = 0, upperBound = -1, containment = true,
-            //          "//Book/eReferences/name='library'"
             eOpposite = ref(Book.eReferences find (_.name == "library")))
           eReference(name = "loans", eType = Loan, lowerBound = 0, upperBound = -1, containment = true)
-          //          eReference(name = "members", eType = Member, lowerBound = 0, upperBound = -1, containment = true, eOpposite = Member.eReferences.byName("library"))
+          eReference(name = "members", eType = Member, lowerBound = 0, upperBound = -1, containment = true,
+            eOpposite = ref(Member.eReferences find (_.name == "library")))
         }
         eOperations {
           eOperation(name = "toString", eType = EBoolean)
@@ -83,7 +60,8 @@ class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSu
           eAttribute(name = "name", eType = EString, lowerBound = 1)
           eAttribute(name = "copies", eType = EInt, lowerBound = 1)
 
-          eReference(name = "library", eType = Library, lowerBound = 1, eOpposite = Library.eReferences.byName("books"))
+          eReference(name = "library", eType = Library, lowerBound = 1,
+            eOpposite = ref(Library.eReferences find (_.name == "books")))
           derived(eReference(name = "loans", eType = Loan, lowerBound = 1, upperBound = -1))
         }
         eOperations {
@@ -96,7 +74,8 @@ class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSu
           eAttribute(name = "name", eType = EString, lowerBound = 1)
           eAttribute(name = "copies", eType = EInt, lowerBound = 1)
 
-          //          eReference(name = "library", eType = Library, lowerBound = 1, eOpposite = Library.eReferences.byName("members"))
+          eReference(name = "library", eType = Library, lowerBound = 1,
+            eOpposite = ref(Library.eReferences find (_.name == "members")))
           derived(eReference(name = "loans", eType = Loan, lowerBound = 1, upperBound = -1))
           derived(eReference(name = "books", eType = Book, lowerBound = 1, upperBound = -1))
         }
@@ -112,7 +91,8 @@ class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSu
       }
     }
 
-    println(pkg.validate prettyPrint)
+    pkg.isValid must be === true
+    //    println(pkg.validate prettyPrint)
   }
 
 }

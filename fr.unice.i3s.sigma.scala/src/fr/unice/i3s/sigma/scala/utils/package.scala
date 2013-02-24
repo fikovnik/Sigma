@@ -199,8 +199,8 @@ package object utils {
   implicit def richSigmaDiagnostic(a: Diagnostic): RichSigmaDiagnostic = new RichSigmaDiagnostic(a)
 
   class RichSigmaNotifier(n: Notifier) {
-    def adapter[A](implicit m: Manifest[A]) = {
-      Option(EcoreUtil.getAdapter(n.eAdapters, m.erasure).asInstanceOf[A])
+    def adapter[A: ClassTag] = {
+      Option(EcoreUtil.getAdapter(n.eAdapters, classTag[A].runtimeClass).asInstanceOf[A])
     }
   }
 

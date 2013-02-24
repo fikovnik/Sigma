@@ -24,6 +24,7 @@ import scala.collection.mutable.Buffer
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
+import org.eclipse.emf.ecore.EStructuralFeature
 
 final class PostponeContentInitializerAdapter extends EContentAdapter {
   val codes = {
@@ -123,53 +124,69 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
     }
   }
 
-  implicit class ReferenceableEList[T <: ENamedElement: ClassTag](val that: EList[T]) {
-    def byName(name: String): T = {
-      that.find(_.getName == name) match {
-        case Some(e) ⇒ e
-        case None ⇒
-          val x = create[T]
-          // set an URI that will contain the name
-          x.asInstanceOf[InternalEObject].eSetProxyURI(URI.createURI(s"name='$name'"))
-          // add a notification listener
-          x.eAdapters += new AdapterImpl {
-            override def notifyChanged(msg: Notification) {
-              println(s"From proxy $name: $msg")
+  protected case class InternalProxy(val proxy: EObject, val getter: Unit ⇒ Option[EObject], val setter: EObject ⇒ Any)
+
+  protected val proxies = Buffer[InternalProxy]()
+
+  protected class InternalProxyAdapter(val getter: Unit ⇒ Option[EObject]) extends AdapterImpl {
+    override def isAdapterForType(`type`: Object): Boolean = `type` == classOf[InternalProxyAdapter]
+  }
+  
+  protected object ResolveProxyAdapter extends AdapterImpl {
+      override def notifyChanged(msg: Notification) {
+        import Notification._
+
+        msg.getEventType match {
+          case ADD | ADD_MANY | SET ⇒
+
+            val owner = msg.getNotifier.asInstanceOf[EObject]
+            val feature = msg.getFeature.asInstanceOf[EStructuralFeature]
+
+            msg.getNewValue match {
+              case obj: EObject ⇒
+                obj.adapter[InternalProxyAdapter] match {
+                  case Some(adapter) ⇒
+                    val setter = { value: EObject ⇒
+                      if (feature.isMany())
+                        owner.eGet(feature).asInstanceOf[EList[EObject]] += value
+                      else
+                        owner.eSet(feature, value)
+                    }
+                  
+                    val proxy = InternalProxy(obj, adapter.getter, setter)
+                    proxies += proxy
+                  case None ⇒
+                    val clazz = obj.getClass
+
+                    for (proxy ← proxies.filter(_.proxy.getClass == clazz)) {
+                      proxy.getter() match {
+                        case Some(r) ⇒ {
+                          proxies -= proxy
+                          proxy.setter(r)
+                        }
+                        case None ⇒
+                      }
+                    }
+                }
+              case _ ⇒
             }
-          }
-          x
-        //throw new NoSuchElementException(s"`$name` is not in $that")
-      }
-    }
-  }
-
-  class EObjectProxyHandler[T <: EObject](var target: T, expr: Unit ⇒ Option[T]) extends InvocationHandler {
-    def invoke(proxy: Object, method: Method, args: Array[Object]): Object = {
-      if (method.getName == "eIsProxy") {
-        expr() match {
-          case Some(o) ⇒
-            target = o; false: java.lang.Boolean
-          case None ⇒ true: java.lang.Boolean
+          case _ ⇒
         }
-      } else {
-        //        println(target + ": " + method.getName + ": " + args)
-        method.invoke(target, args: _*)
       }
     }
-  }
-
-  //  case class EObjectProxy[T <: EObject](val proxy: T, val expr: Unit ⇒ Option[T])
-  //
-  //  protected val proxies = Buffer[EObjectProxy[_ <: EObject]]()
 
   def ref[T <: EObject: ClassTag](expr: ⇒ Option[T]): T = {
-    val proxy = create[T]
-    proxy.asInstanceOf[InternalEObject].eSetProxyURI(URI.createURI(s"internal emf builder proxy"))
-
-    //    proxies += EObjectProxy(proxy, (Unit ⇒ expr))
-    proxy
-    val clazz = classTag[T].runtimeClass
-    Proxy.newProxyInstance(clazz.getClassLoader, Array(clazz), new EObjectProxyHandler(proxy, (Unit ⇒ expr))).asInstanceOf[T]
+    val getter = () => expr
+    
+    getter() match {
+      case Some(e) => e
+      case None =>
+        // create a proxy
+        val proxy = create[T]
+        proxy.asInstanceOf[InternalEObject].eSetProxyURI(URI.createURI(s"EMFBuilder internal proxy"))
+        proxy.eAdapters += new InternalProxyAdapter((Unit ⇒ expr))
+        proxy
+    }
   }
 
   protected val factory = pkg.getEFactoryInstance
@@ -187,18 +204,8 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
         s"EClassifier $clazz is not an EClass")
     }
 
-    //    // attach a listener to resolve proxies
-    //    instance.eAdapters += new AdapterImpl {
-    //      override def notifyChanged(msg: Notification) {
-    //        import Notification._
-    //        msg.getEventType match {
-    //          case ADD | ADD_MANY =>
-    //            val objType = msg.getNewValue.getClass
-    //            proxies.filter(_.proxy.getClass == objType) 
-    //          case _ =>
-    //        }
-    //      }
-    //    }
+    // attach a listener to resolve proxies
+    instance.eAdapters += ResolveProxyAdapter
 
     // this is necessary as we will never be able to do static type safety
     // as along as EMF will not provide generic version of EFactory.create()
@@ -206,6 +213,6 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
   }
 
   protected def setNotDefault[T](setter: (T) ⇒ Unit, value: T, default: T) {
-    if (value != null) setter(value)
+    if (value != default) setter(value)
   }
 }
