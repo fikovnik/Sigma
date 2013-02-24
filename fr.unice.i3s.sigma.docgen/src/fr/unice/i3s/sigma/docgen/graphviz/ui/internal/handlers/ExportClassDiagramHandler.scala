@@ -22,8 +22,8 @@ import fr.unice.i3s.sigma.docgen.core.DocgenPlugin
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVDot
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVOutputType
 import fr.unice.i3s.sigma.docgen.graphviz.core.GenerateClassDiagramJob
-import fr.unice.i3s.sigma.scala.utils.EMFBuilder
-import fr.unice.i3s.sigma.scala.utils.SWTUtils
+import fr.unice.i3s.sigma.scala.construct.EMFBuilder
+import fr.unice.i3s.sigma.scala.ui.utils.SWTUtils
 import fr.unice.i3s.sigma.docgen.graphviz.ui.GraphvizDiagnostics
 import org.eclipse.swt.widgets.Shell
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport

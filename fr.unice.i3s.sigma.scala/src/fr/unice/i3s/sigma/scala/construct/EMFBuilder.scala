@@ -1,30 +1,22 @@
-package fr.unice.i3s.sigma.scala.utils
+package fr.unice.i3s.sigma.scala.construct
 
 import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.EDataType
 import org.eclipse.emf.common.notify.impl.AdapterImpl
-import org.eclipse.emf.ecore.util.EContentAdapter
 import org.eclipse.emf.common.notify.Notification
-import org.eclipse.emf.ecore.EReference
-import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.common.util.EList
 import fr.unice.i3s.sigma.scala.utils._
-import org.eclipse.emf.ecore.ENamedElement
-import org.eclipse.emf.ecore.impl.EObjectImpl
-import scala.reflect.runtime.universe.{ typeOf, TypeTag }
 import reflect.{ ClassTag, classTag }
 import org.eclipse.emf.ecore.InternalEObject
 import org.eclipse.emf.common.util.URI
-import scala.collection.mutable.MultiMap
-import scala.collection.mutable.Set
 import scala.collection.mutable.Buffer
-import java.lang.reflect.InvocationHandler
-import java.lang.reflect.Method
-import java.lang.reflect.Proxy
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.emf.common.notify.Notification.ADD
+import org.eclipse.emf.common.notify.Notification.ADD_MANY
+import org.eclipse.emf.common.notify.Notification.SET
+import scala.reflect.runtime.universe.{ typeOf, TypeTag }
 
 trait EMFDynamicContext {
   protected val context = new TypedDynamicVariable[EObject](null)
@@ -38,8 +30,6 @@ trait EMFDynamicContext {
     else
       None
   }
-
-  //  def isContainerTypeOf[T <: EObject: TypeTag] = 
 }
 
 class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
@@ -69,7 +59,7 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
    * This is a holder of the recorded getter in the proxy.
    */
   protected class InternalProxyAdapter(val getter: Unit ⇒ Option[EObject]) extends AdapterImpl {
-    override def isAdapterForType(`type`: Object): Boolean = `type` == classOf[InternalProxyAdapter]
+    override def isAdapterForType(`type`: Object): Boolean = `type` == classOf[EMFBuilder.this.InternalProxyAdapter]
   }
 
   /**
@@ -169,5 +159,10 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
 
   protected def setNotDefault[T](setter: (T) ⇒ Unit, value: T, default: T) {
     if (value != default) setter(value)
+  }
+  
+  protected def configure[T](target : T, configs:(T => Any)*) : T = {
+    configs.foreach(cfg => cfg(target))
+    target
   }
 }

@@ -1,15 +1,7 @@
-package fr.unice.i3s.sigma.scala.utils
+package fr.unice.i3s.sigma.scala.construct
 
 import scala.collection.JavaConversions._
 import org.junit.Assert._
-import org.junit.Test
-import org.eclipse.emf.ecore.EcorePackage
-import org.junit.Before
-import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl
-import org.junit.Before
-import org.junit.Test
-import org.eclipse.emf.ecore.EAttribute
 import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner

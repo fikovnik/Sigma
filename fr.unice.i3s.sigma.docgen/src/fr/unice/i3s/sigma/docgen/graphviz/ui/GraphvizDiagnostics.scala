@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Shell
 import org.eclipse.ui.dialogs.PreferencesUtil
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVDot
 import fr.unice.i3s.sigma.docgen.core.DocgenPlugin
-import fr.unice.i3s.sigma.scala.utils.SWTUtils.asyncExec
+import fr.unice.i3s.sigma.scala.ui.utils.SWTUtils.asyncExec
 import org.eclipse.jface.dialogs.MessageDialog
 
 object GraphvizDiagnostics {

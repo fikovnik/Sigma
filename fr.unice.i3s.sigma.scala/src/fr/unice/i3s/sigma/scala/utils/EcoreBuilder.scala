@@ -2,6 +2,7 @@ package fr.unice.i3s.sigma.scala.utils
 
 import scala.collection.JavaConversions._
 import fr.unice.i3s.sigma.scala.utils._
+import fr.unice.i3s.sigma.scala.construct.EMFBuilder
 import org.eclipse.emf.ecore._
 import org.eclipse.emf.common.util.URI
 import reflect.{ ClassTag, classTag }
