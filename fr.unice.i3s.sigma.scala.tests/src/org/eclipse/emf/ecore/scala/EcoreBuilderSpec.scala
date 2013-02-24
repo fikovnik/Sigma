@@ -18,6 +18,8 @@ import fr.unice.i3s.sigma.scala.utils.richEObject
 import org.scalatest.junit.JUnitRunner
 import fr.unice.i3s.sigma.scala.utils._
 import fr.unice.i3s.sigma.scala.construct.AutoContainment
+import org.eclipse.emf.ecore.EClassifier
+import org.eclipse.emf.ecore.ETypedElement
 
 @RunWith(classOf[JUnitRunner])
 class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
@@ -30,6 +32,19 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
       feature.transient = true
       feature.volatile = true
     }
+
+  implicit def typeName[T <: ETypedElement](that: (String, EClassifier)) =
+    (target: T) ⇒ {
+      target.name = that._1
+      target.eType = that._2
+    }
+
+  def required[T <: ETypedElement] = (target: T) ⇒ target.lowerBound = 1
+  def many[T <: ETypedElement] = (target: T) ⇒ target.upperBound = -1
+  def oneToMany[T <: ETypedElement] = (target: T) ⇒ {
+    target.lowerBound = 1
+    target.upperBound = -1
+  }
 
   "EcoreBuilder" must "conveniently create the library example" in {
     val builder = new EcoreBuilder with EcoreAssignments with AutoContainment
@@ -44,19 +59,17 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
       library init { c ⇒
         c eStructuralFeatures {
-          eAttribute(name = "name", eType = EString, lowerBound = 1)
+          eAttribute("name" -> EString, required)
 
-          eReference(name = "books", eType = book, lowerBound = 0, upperBound = -1, containment = true,
-            eOpposite = ref(book.eReferences find (_.name == "library")))
-          eReference(name = "loans", eType = loan, lowerBound = 0, upperBound = -1, containment = true)
-          eReference(name = "members", eType = member, lowerBound = 0, upperBound = -1, containment = true,
-            eOpposite = ref(member.eReferences find (_.name == "library")))
+          eReference("books" -> book, many, containment = true, eOpposite = ref(book.eReferences find (_.name == "library")))
+          eReference("loans" -> loan, many, containment = true)
+          eReference("members" -> member, many, containment = true, eOpposite = ref(member.eReferences find (_.name == "library")))
         }
         c eOperations {
-          eOperation(name = "toString", eType = EBoolean)
-          eOperation(name = "getBookByName", eType = EBoolean) init { c ⇒
+          eOperation("toString" -> EBoolean)
+          eOperation("getBookByName" -> EBoolean) init { c ⇒
             c eParameters {
-              eParameter(name = "name", eType = EString)
+              eParameter("name" -> EString)
             }
           }
         }
@@ -64,36 +77,34 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
       book init { c ⇒
         c eStructuralFeatures {
-          eAttribute(name = "name", eType = EString, lowerBound = 1)
-          eAttribute(name = "copies", eType = EInt, lowerBound = 1)
+          eAttribute("name" -> EString, required)
+          eAttribute("copies" -> EInt, required)
 
-          eReference(name = "library", eType = library, lowerBound = 1,
-            eOpposite = ref(library.eReferences find (_.name == "books")))
-          eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1, setDerived)
+          eReference("library" -> library, required, eOpposite = ref(library.eReferences find (_.name == "books")))
+          eReference("loans" -> loan, many, setDerived)
         }
         c eOperations {
-          eOperation(name = "isAvailable", eType = EBoolean)
+          eOperation("isAvailable" -> EBoolean)
         }
       }
 
       member init { c ⇒
         c eStructuralFeatures {
-          eAttribute(name = "name", eType = EString, lowerBound = 1)
-          eAttribute(name = "copies", eType = EInt, lowerBound = 1)
+          eAttribute("name" -> EString, many)
+          eAttribute("copies" -> EInt, many)
 
-          eReference(name = "library", eType = library, lowerBound = 1,
-            eOpposite = ref(library.eReferences find (_.name == "members")))
-          eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1, setDerived)
-          eReference(name = "books", eType = book, lowerBound = 1, upperBound = -1, setDerived)
+          eReference("library" -> library, required, eOpposite = ref(library.eReferences find (_.name == "members")))
+          eReference("loans" -> loan, oneToMany, setDerived)
+          eReference("books" -> book, oneToMany, setDerived)
         }
       }
 
       loan init { c ⇒
         c eStructuralFeatures {
-          eAttribute(name = "date", eType = EDate)
+          eAttribute("date" -> EDate)
 
-          eReference(name = "book", eType = loan, lowerBound = 1)
-          eReference(name = "member", eType = member, lowerBound = 1)
+          eReference("book" -> loan, required)
+          eReference("member" -> member, required)
         }
       }
     }
