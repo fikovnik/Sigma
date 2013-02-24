@@ -3,6 +3,7 @@ package fr.unice.i3s.sigma.scala.utils
 import scala.collection.JavaConversions._
 import fr.unice.i3s.sigma.scala.utils._
 import org.eclipse.emf.ecore._
+import org.eclipse.emf.common.util.URI
 import reflect.{ ClassTag, classTag }
 
 //trait EcoreAssignments extends EMFDynamicContext {
@@ -94,10 +95,59 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     obj
   }
 
-  //  def eStructuralFeatures = self[EClass] match {
-  //    case Some(e) ⇒ e.getEStructuralFeatures
-  //    case None ⇒ throw new IllegalStateException("No EClass context found")
-  //  }
+  def eStructuralFeatures = self[EClass] match {
+    case Some(e) ⇒ e.getEStructuralFeatures
+    case None ⇒ throw new IllegalStateException("No EClass context found")
+  }
+
+  def eOperations = self[EClass] match {
+    case Some(e) ⇒ e.getEOperations
+    case None ⇒ throw new IllegalStateException("No EClass context found")
+  }
+
+  def eOperation(
+    name: String = null,
+    eTypeParameters: List[ETypeParameter] = Nil,
+    eParameters: List[EParameter] = Nil,
+    eExcetions: List[EClassifier] = Nil,
+    eGenericExceptions: List[EGenericType] = Nil,
+    eType: EClassifier = null): EOperation = {
+
+    val obj = create[EOperation]
+
+    // set containment    
+    container[EOperation] match {
+      case Some(list) ⇒ list += obj
+      case None ⇒
+    }
+
+    // set values
+    setNotDefault(obj.setName, name, null)
+    setNotDefault(obj.setEType, eType, null)
+    obj.getETypeParameters ++= eTypeParameters
+    obj.getEParameters ++= eParameters
+    obj.getEExceptions ++= eExcetions
+    obj.getEGenericExceptions ++= eGenericExceptions
+
+    obj
+  }
+
+  def eParameter(
+    name: String = null,
+    eType: EClassifier = null): EParameter = {
+    val obj = create[EParameter]
+
+    // set containment    
+    container[EParameter] match {
+      case Some(list) ⇒ list += obj
+      case None ⇒
+    }
+
+    // set values
+    setNotDefault(obj.setName, name, null)
+    setNotDefault(obj.setEType, eType, null)
+    obj
+  }
 
   // FIXME: fix the problem with eGenericType
   def eAttribute(
@@ -163,6 +213,8 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
 
     val obj = create[EReference]
 
+    setNotDefault(obj.setName, name, null)
+
     // set containment
     container[EStructuralFeature] match {
       case Some(list) ⇒ list += obj
@@ -170,7 +222,6 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     }
 
     // set values
-    setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setTransient, transient, false)
     setNotDefault(obj.setVolatile, volatile, false)
     setNotDefault(obj.setChangeable, changeable, false)
