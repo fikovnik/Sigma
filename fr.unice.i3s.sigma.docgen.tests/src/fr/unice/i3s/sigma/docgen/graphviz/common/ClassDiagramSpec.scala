@@ -5,9 +5,9 @@ import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.MustMatchers
-import fr.unice.i3s.sigma.scala.utils.EcoreBuilder
 import fr.unice.i3s.sigma.scala.mtt.TextTemplateTest
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import org.eclipse.emf.ecore.scala.EcoreBuilder
 
 @RunWith(classOf[JUnitRunner])
 class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
@@ -19,8 +19,8 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
   "ClassDiagram" must "must render a generalization" in {
 
-    val classA = eClass("A")
-    val classB = eClass("B", eSuperTypes = List(classA))
+    val classA = eClass(name = "A")
+    val classB = eClass(name = "B", eSuperTypes = List(classA))
     pkg.eClassifiers += (classA, classB)
 
     val diag = new ClassDiagram(pkg) with TextTemplateTest

@@ -12,7 +12,9 @@ import org.eclipse.emf.ecore.EClassifier
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.EEnum
 
-class ClassDiagram(rootPkg: EPackage) extends TextTemplate(stripWhitespace = true) with EcorePackageScalaSupport {
+class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScalaSupport {
+
+  override val stripWhitespace = true
 
   override def render {
     !"digraph G" curlyIndent {

@@ -1,7 +1,5 @@
 package fr.unice.i3s.sigma.scala.construct
 
-import scala.collection.JavaConversions._
-import org.junit.Assert._
 import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner

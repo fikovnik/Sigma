@@ -15,12 +15,7 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 
 // we do not have to worry much about this class since it will
 // get replaced by a Type macro later
-object EClassScalaSupportTemplate {
-  val keywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
-}
 class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUnitName: String) extends TextTemplate {
-
-  import EClassScalaSupportTemplate._
 
   override def render {
     val importManager = new ImportManager(scalaPkgName, scalaUnitName)
@@ -64,7 +59,7 @@ class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUni
   }
 
   protected def checkName(name: String) = {
-    if (keywords contains name) s"`$name`"
+    if (scalaKeywords contains name) s"`$name`"
     else name
   }
 
