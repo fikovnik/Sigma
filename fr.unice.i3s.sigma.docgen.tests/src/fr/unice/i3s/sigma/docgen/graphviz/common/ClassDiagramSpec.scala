@@ -1,6 +1,7 @@
 package fr.unice.i3s.sigma.docgen.graphviz.common
 
 import scala.collection.JavaConversions._
+import fr.unice.i3s.sigma.scala.utils._
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner

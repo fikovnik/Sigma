@@ -34,4 +34,16 @@ class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSu
     clazz.eAttributes.map(_.name) must be === List("A", "B")
   }
 
+  it must "create and configure an EObject" in {
+    val builder = new EMFBuilder(EcorePackage.eINSTANCE)
+    import builder._
+
+    var x: EClass = null
+    val clazz = build[EClass](_.name = "A")
+
+    clazz.name must be === "MyClass"
+    clazz.eAttributes must have size (2)
+    clazz.eAttributes.map(_.name) must be === List("A", "B")
+  }
+
 }

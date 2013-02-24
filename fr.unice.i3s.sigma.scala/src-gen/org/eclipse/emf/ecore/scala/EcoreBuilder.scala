@@ -25,12 +25,9 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 
-import scala.collection.JavaConversions._
-import fr.unice.i3s.sigma.scala.utils._
-
 class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
   def eAttribute(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     ordered: Boolean = true,
     unique: Boolean = true,
@@ -48,14 +45,8 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
 
     val obj = create[EAttribute]
 
-    // set containment
-    container[EAttribute] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setOrdered, ordered, true)
     setNotDefault(obj.setUnique, unique, true)
@@ -75,127 +66,103 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
   }
 
   def eAnnotation(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     source: String = null,
-    details: Map[String, String] = Map.empty,
+    details: EMap[String, String] = null,
     eModelElement: EModelElement = null,
-    contents: List[EObject] = Nil,
-    references: List[EObject] = Nil): EAnnotation = {
+    contents: EList[EObject] = null,
+    references: EList[EObject] = null): EAnnotation = {
 
     val obj = create[EAnnotation]
 
-    // set containment
-    container[EAnnotation] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setSource, source, null)
-    obj.getDetails ++= details
+    setNotEmpty(obj.getDetails, details)
     setNotDefault(obj.setEModelElement, eModelElement, null)
-    obj.getContents ++= contents
-    obj.getReferences ++= references
+    setNotEmpty(obj.getContents, contents)
+    setNotEmpty(obj.getReferences, references)
 
     obj
   }
 
   def eClass(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     instanceClassName: String = null,
     instanceTypeName: String = null,
-    eTypeParameters: List[ETypeParameter] = Nil,
+    eTypeParameters: EList[ETypeParameter] = null,
     `abstract`: Boolean = false,
     interface: Boolean = false,
-    eSuperTypes: List[EClass] = Nil,
-    eOperations: List[EOperation] = Nil,
-    eStructuralFeatures: List[EStructuralFeature] = Nil,
-    eGenericSuperTypes: List[EGenericType] = Nil): EClass = {
+    eSuperTypes: EList[EClass] = null,
+    eOperations: EList[EOperation] = null,
+    eStructuralFeatures: EList[EStructuralFeature] = null,
+    eGenericSuperTypes: EList[EGenericType] = null): EClass = {
 
     val obj = create[EClass]
 
-    // set containment
-    container[EClass] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setInstanceClassName, instanceClassName, null)
     setNotDefault(obj.setInstanceTypeName, instanceTypeName, null)
-    obj.getETypeParameters ++= eTypeParameters
+    setNotEmpty(obj.getETypeParameters, eTypeParameters)
     setNotDefault(obj.setAbstract, `abstract`, false)
     setNotDefault(obj.setInterface, interface, false)
-    obj.getESuperTypes ++= eSuperTypes
-    obj.getEOperations ++= eOperations
-    obj.getEStructuralFeatures ++= eStructuralFeatures
-    obj.getEGenericSuperTypes ++= eGenericSuperTypes
+    setNotEmpty(obj.getESuperTypes, eSuperTypes)
+    setNotEmpty(obj.getEOperations, eOperations)
+    setNotEmpty(obj.getEStructuralFeatures, eStructuralFeatures)
+    setNotEmpty(obj.getEGenericSuperTypes, eGenericSuperTypes)
 
     obj
   }
 
   def eDataType(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     instanceClassName: String = null,
     instanceTypeName: String = null,
-    eTypeParameters: List[ETypeParameter] = Nil,
+    eTypeParameters: EList[ETypeParameter] = null,
     serializable: Boolean = true): EDataType = {
 
     val obj = create[EDataType]
 
-    // set containment
-    container[EDataType] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setInstanceClassName, instanceClassName, null)
     setNotDefault(obj.setInstanceTypeName, instanceTypeName, null)
-    obj.getETypeParameters ++= eTypeParameters
+    setNotEmpty(obj.getETypeParameters, eTypeParameters)
     setNotDefault(obj.setSerializable, serializable, true)
 
     obj
   }
 
   def eEnum(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     instanceClassName: String = null,
     instanceTypeName: String = null,
-    eTypeParameters: List[ETypeParameter] = Nil,
+    eTypeParameters: EList[ETypeParameter] = null,
     serializable: Boolean = true,
-    eLiterals: List[EEnumLiteral] = Nil): EEnum = {
+    eLiterals: EList[EEnumLiteral] = null): EEnum = {
 
     val obj = create[EEnum]
 
-    // set containment
-    container[EEnum] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setInstanceClassName, instanceClassName, null)
     setNotDefault(obj.setInstanceTypeName, instanceTypeName, null)
-    obj.getETypeParameters ++= eTypeParameters
+    setNotEmpty(obj.getETypeParameters, eTypeParameters)
     setNotDefault(obj.setSerializable, serializable, true)
-    obj.getELiterals ++= eLiterals
+    setNotEmpty(obj.getELiterals, eLiterals)
 
     obj
   }
 
   def eEnumLiteral(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     value: Int = 0,
     instance: Enumerator = null,
@@ -203,14 +170,8 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
 
     val obj = create[EEnumLiteral]
 
-    // set containment
-    container[EEnumLiteral] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setValue, value, 0)
     setNotDefault(obj.setInstance, instance, null)
@@ -220,19 +181,13 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
   }
 
   def eFactory(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     ePackage: EPackage = null): EFactory = {
 
     val obj = create[EFactory]
 
-    // set containment
-    container[EFactory] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setEPackage, ePackage, null)
 
     obj
@@ -242,19 +197,13 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
 
     val obj = create[EObject]
 
-    // set containment
-    container[EObject] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
 
     obj
   }
 
   def eOperation(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     ordered: Boolean = true,
     unique: Boolean = true,
@@ -262,21 +211,15 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     upperBound: Int = 1,
     eType: EClassifier = null,
     eGenericType: EGenericType = null,
-    eTypeParameters: List[ETypeParameter] = Nil,
-    eParameters: List[EParameter] = Nil,
-    eExceptions: List[EClassifier] = Nil,
-    eGenericExceptions: List[EGenericType] = Nil): EOperation = {
+    eTypeParameters: EList[ETypeParameter] = null,
+    eParameters: EList[EParameter] = null,
+    eExceptions: EList[EClassifier] = null,
+    eGenericExceptions: EList[EGenericType] = null): EOperation = {
 
     val obj = create[EOperation]
 
-    // set containment
-    container[EOperation] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setOrdered, ordered, true)
     setNotDefault(obj.setUnique, unique, true)
@@ -284,45 +227,39 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     setNotDefault(obj.setUpperBound, upperBound, 1)
     setNotDefault(obj.setEType, eType, null)
     setNotDefault(obj.setEGenericType, eGenericType, null)
-    obj.getETypeParameters ++= eTypeParameters
-    obj.getEParameters ++= eParameters
-    obj.getEExceptions ++= eExceptions
-    obj.getEGenericExceptions ++= eGenericExceptions
+    setNotEmpty(obj.getETypeParameters, eTypeParameters)
+    setNotEmpty(obj.getEParameters, eParameters)
+    setNotEmpty(obj.getEExceptions, eExceptions)
+    setNotEmpty(obj.getEGenericExceptions, eGenericExceptions)
 
     obj
   }
 
   def ePackage(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     nsURI: String = null,
     nsPrefix: String = null,
     eFactoryInstance: EFactory = null,
-    eClassifiers: List[EClassifier] = Nil,
-    eSubpackages: List[EPackage] = Nil): EPackage = {
+    eClassifiers: EList[EClassifier] = null,
+    eSubpackages: EList[EPackage] = null): EPackage = {
 
     val obj = create[EPackage]
 
-    // set containment
-    container[EPackage] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setNsURI, nsURI, null)
     setNotDefault(obj.setNsPrefix, nsPrefix, null)
     setNotDefault(obj.setEFactoryInstance, eFactoryInstance, null)
-    obj.getEClassifiers ++= eClassifiers
-    obj.getESubpackages ++= eSubpackages
+    setNotEmpty(obj.getEClassifiers, eClassifiers)
+    setNotEmpty(obj.getESubpackages, eSubpackages)
 
     obj
   }
 
   def eParameter(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     ordered: Boolean = true,
     unique: Boolean = true,
@@ -333,14 +270,8 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
 
     val obj = create[EParameter]
 
-    // set containment
-    container[EParameter] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setOrdered, ordered, true)
     setNotDefault(obj.setUnique, unique, true)
@@ -353,7 +284,7 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
   }
 
   def eReference(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
     ordered: Boolean = true,
     unique: Boolean = true,
@@ -370,18 +301,12 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     containment: Boolean = false,
     resolveProxies: Boolean = true,
     eOpposite: EReference = null,
-    eKeys: List[EAttribute] = Nil): EReference = {
+    eKeys: EList[EAttribute] = null): EReference = {
 
     val obj = create[EReference]
 
-    // set containment
-    container[EReference] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
     setNotDefault(obj.setOrdered, ordered, true)
     setNotDefault(obj.setUnique, unique, true)
@@ -398,29 +323,23 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
     setNotDefault(obj.setContainment, containment, false)
     setNotDefault(obj.setResolveProxies, resolveProxies, true)
     setNotDefault(obj.setEOpposite, eOpposite, null)
-    obj.getEKeys ++= eKeys
+    setNotEmpty(obj.getEKeys, eKeys)
 
     obj
   }
 
   def eGenericType(
     eUpperBound: EGenericType = null,
-    eTypeArguments: List[EGenericType] = Nil,
+    eTypeArguments: EList[EGenericType] = null,
     eLowerBound: EGenericType = null,
     eTypeParameter: ETypeParameter = null,
     eClassifier: EClassifier = null): EGenericType = {
 
     val obj = create[EGenericType]
 
-    // set containment
-    container[EGenericType] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
     setNotDefault(obj.setEUpperBound, eUpperBound, null)
-    obj.getETypeArguments ++= eTypeArguments
+    setNotEmpty(obj.getETypeArguments, eTypeArguments)
     setNotDefault(obj.setELowerBound, eLowerBound, null)
     setNotDefault(obj.setETypeParameter, eTypeParameter, null)
     setNotDefault(obj.setEClassifier, eClassifier, null)
@@ -429,128 +348,17 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
   }
 
   def eTypeParameter(
-    eAnnotations: List[EAnnotation] = Nil,
+    eAnnotations: EList[EAnnotation] = null,
     name: String = null,
-    eBounds: List[EGenericType] = Nil): ETypeParameter = {
+    eBounds: EList[EGenericType] = null): ETypeParameter = {
 
     val obj = create[ETypeParameter]
 
-    // set containment
-    container[ETypeParameter] match {
-      case Some(list) ⇒ list += obj
-      case None ⇒
-    }
-
     // set properties
-    obj.getEAnnotations ++= eAnnotations
+    setNotEmpty(obj.getEAnnotations, eAnnotations)
     setNotDefault(obj.setName, name, null)
-    obj.getEBounds ++= eBounds
+    setNotEmpty(obj.getEBounds, eBounds)
 
     obj
-  }
-
-  def details: EMap[String, String] = self[EAnnotation] match {
-
-    case Some(e) ⇒ e.getDetails
-    case None ⇒ throw new IllegalStateException("No EAnnotation context found")
-
-  }
-
-  def contents: EList[EObject] = self[EAnnotation] match {
-
-    case Some(e) ⇒ e.getContents
-    case None ⇒ throw new IllegalStateException("No EAnnotation context found")
-
-  }
-
-  def eOperations: EList[EOperation] = self[EClass] match {
-
-    case Some(e) ⇒ e.getEOperations
-    case None ⇒ throw new IllegalStateException("No EClass context found")
-
-  }
-
-  def eStructuralFeatures: EList[EStructuralFeature] = self[EClass] match {
-
-    case Some(e) ⇒ e.getEStructuralFeatures
-    case None ⇒ throw new IllegalStateException("No EClass context found")
-
-  }
-
-  def eGenericSuperTypes: EList[EGenericType] = self[EClass] match {
-
-    case Some(e) ⇒ e.getEGenericSuperTypes
-    case None ⇒ throw new IllegalStateException("No EClass context found")
-
-  }
-
-  def eLiterals: EList[EEnumLiteral] = self[EEnum] match {
-
-    case Some(e) ⇒ e.getELiterals
-    case None ⇒ throw new IllegalStateException("No EEnum context found")
-
-  }
-
-  def eTypeParameters: EList[ETypeParameter] = self[EOperation] match {
-
-    case Some(e) ⇒ e.getETypeParameters
-    case None ⇒ throw new IllegalStateException("No EOperation context found")
-
-  }
-
-  def eParameters: EList[EParameter] = self[EOperation] match {
-
-    case Some(e) ⇒ e.getEParameters
-    case None ⇒ throw new IllegalStateException("No EOperation context found")
-
-  }
-
-  def eGenericExceptions: EList[EGenericType] = self[EOperation] match {
-
-    case Some(e) ⇒ e.getEGenericExceptions
-    case None ⇒ throw new IllegalStateException("No EOperation context found")
-
-  }
-
-  def eClassifiers: EList[EClassifier] = self[EPackage] match {
-
-    case Some(e) ⇒ e.getEClassifiers
-    case None ⇒ throw new IllegalStateException("No EPackage context found")
-
-  }
-
-  def eSubpackages: EList[EPackage] = self[EPackage] match {
-
-    case Some(e) ⇒ e.getESubpackages
-    case None ⇒ throw new IllegalStateException("No EPackage context found")
-
-  }
-
-  def eUpperBound: EGenericType = self[EGenericType] match {
-
-    case Some(e) ⇒ e.getEUpperBound
-    case None ⇒ throw new IllegalStateException("No EGenericType context found")
-
-  }
-
-  def eTypeArguments: EList[EGenericType] = self[EGenericType] match {
-
-    case Some(e) ⇒ e.getETypeArguments
-    case None ⇒ throw new IllegalStateException("No EGenericType context found")
-
-  }
-
-  def eLowerBound: EGenericType = self[EGenericType] match {
-
-    case Some(e) ⇒ e.getELowerBound
-    case None ⇒ throw new IllegalStateException("No EGenericType context found")
-
-  }
-
-  def eBounds: EList[EGenericType] = self[ETypeParameter] match {
-
-    case Some(e) ⇒ e.getEBounds
-    case None ⇒ throw new IllegalStateException("No ETypeParameter context found")
-
   }
 }

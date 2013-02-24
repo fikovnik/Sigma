@@ -38,16 +38,6 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
       }
 
       !endl
-
-      // render all contained references methods
-      for {
-        clazz ← pkg.getGenClasses if !(skipTypes contains clazz.getName) && !clazz.isAbstract()
-        feature ← clazz.getGenFeatures if !feature.isDerived && feature.isContains && feature.isChangeable
-      } {
-        renderContainedReferenceMethod(feature)
-        !endl << endl
-      }
-
     }
 
     //    trait OverloadHack {
@@ -57,20 +47,6 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     //}
 
     imports << importManager.computeSortedImports() << endl << endl
-    imports << "import scala.collection.JavaConversions._" << endl
-    imports << "import fr.unice.i3s.sigma.scala.utils._" << endl
-    imports << endl
-  }
-
-  protected def renderContainedReferenceMethod(feature: GenFeature) {
-    val container = feature.getGenClass.getImportedInterfaceName
-
-    !s"def ${safeName(feature.getName)}: ${safeTypeName(feature.getImportedType(feature.getGenClass))} = self[$container] match" curlyIndent {
-      !s"""
-      case Some(e) ⇒ e.${feature.getGetAccessor}
-      case None ⇒ throw new IllegalStateException("No $container context found")
-      """
-    }
   }
 
   protected def renderEClassConstructMethod(clazz: GenClass) {
@@ -86,22 +62,14 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     }
     !s": $clazzName =" curlyIndent {
       !endl
-      !s"val obj = create[$clazzName]"
+      !s"val obj = create[$clazzName]" << endl
       !endl
-      !s"""
-      // set containment
-      container[$clazzName] match {
-        case Some(list) ⇒ list += obj
-        case None ⇒
-      }
-      """
-      !endl
-      !endl
+
       !"// set properties" << endl
       for (feature ← features) {
         val featureName = safeName(feature.getName)
         if (feature.isListType()) {
-          !s"obj.${feature.getGetAccessor} ++= $featureName"
+          !s"setNotEmpty(obj.${feature.getGetAccessor}, $featureName)"
         } else {
           !s"setNotDefault(obj.set${feature.getAccessorName}, $featureName, ${defaultValue(feature)})"
         }
@@ -116,22 +84,19 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
   protected def decapitalize(s: String) = s(0).toLower + s.drop(1)
 
   protected def defaultValue(e: GenFeature): String = {
-    //    println(e.getName() + "   " + e.isMapType() + "   " + e.getImportedMetaType())
     Option(e.getDefaultValue) match {
-      case Some(value) ⇒ value.drop(1).dropRight(1)
-      case None ⇒
-        if (e.isMapType()) "Map.empty"
-        else if (e.isListType()) "Nil"
-        else e.getEcoreFeature.getEType.getName match {
-          case "EBoolean" ⇒ "false"
-          case "EByte" ⇒ "0"
-          case "EShort" ⇒ "0"
-          case "EInt" ⇒ "0"
-          case "EChar" ⇒ "0"
-          case "EFloat" ⇒ "0"
-          case "EDouble" ⇒ "0"
-          case _ ⇒ "null"
-        }
+      case Some(value) ⇒ value.drop(1).dropRight(1) // remove quotes
+      case None ⇒ e.getEcoreFeature.getEType.getName match {
+        case "EBoolean" ⇒ "false"
+        case "EByte" ⇒ "0"
+        case "EShort" ⇒ "0"
+        case "EInt" ⇒ "0"
+        case "EChar" ⇒ "0"
+        case "ELong" ⇒ "0L"
+        case "EFloat" ⇒ "0F" // TODO: should be a better constant
+        case "EDouble" ⇒ "0D" // TODO: should be a better constant
+        case _ ⇒ "null"
+      }
     }
   }
 
@@ -150,8 +115,6 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     if (feature.isPrimitiveType()) mapPrimitiveType(feature)
     else {
       feature.getImportedType(feature.getGenClass)
-        .replace("EList", "List")
-        .replace("EMap", "Map")
         .replace('<', '[')
         .replace('>', ']')
         .replace('?', '_')
@@ -161,14 +124,6 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
   protected def safeName(name: String) = {
     if (scalaKeywords contains name) s"`$name`"
     else name
-  }
-
-  protected def safeTypeName(name: String) = {
-    name
-      .replace('<', '[')
-      .replace('>', ']')
-      .replace('?', '_')
-
   }
 }
 

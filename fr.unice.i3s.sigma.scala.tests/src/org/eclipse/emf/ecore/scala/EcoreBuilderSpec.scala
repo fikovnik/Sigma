@@ -16,6 +16,8 @@ import org.eclipse.emf.ecore.EAttribute
 import fr.unice.i3s.sigma.scala.utils.eListAsScalaImmutableList
 import fr.unice.i3s.sigma.scala.utils.richEObject
 import org.scalatest.junit.JUnitRunner
+import fr.unice.i3s.sigma.scala.utils._
+import fr.unice.i3s.sigma.scala.construct.AutoContainment
 
 @RunWith(classOf[JUnitRunner])
 class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
@@ -30,71 +32,74 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
   }
 
   "EcoreBuilder" must "conveniently create the library example" in {
-    val builder = new EcoreBuilder
+    val builder = new EcoreBuilder with AutoContainment
     import builder._
 
     val pkg = ePackage(name = "library", nsPrefix = "library", nsURI = "http://library.me")
     pkg eClassifiers {
-      val Library = eClass(name = "Library")
-      val Book = eClass(name = "Book")
-      val Loan = eClass(name = "Loan")
-      val Member = eClass(name = "Member")
+      val library = eClass(name = "Library")
+      val book = eClass(name = "Book")
+      val loan = eClass(name = "Loan")
+      val member = eClass(name = "Member")
 
-      Library {
-        eStructuralFeatures {
+      library init { c ⇒
+        c eStructuralFeatures {
           eAttribute(name = "name", eType = EString, lowerBound = 1)
 
-          eReference(name = "books", eType = Book, lowerBound = 0, upperBound = -1, containment = true,
-            eOpposite = ref(Book.eReferences find (_.name == "library")))
-          eReference(name = "loans", eType = Loan, lowerBound = 0, upperBound = -1, containment = true)
-          eReference(name = "members", eType = Member, lowerBound = 0, upperBound = -1, containment = true,
-            eOpposite = ref(Member.eReferences find (_.name == "library")))
+          eReference(name = "books", eType = book, lowerBound = 0, upperBound = -1, containment = true,
+            eOpposite = ref(book.eReferences find (_.name == "library")))
+          eReference(name = "loans", eType = loan, lowerBound = 0, upperBound = -1, containment = true)
+          eReference(name = "members", eType = member, lowerBound = 0, upperBound = -1, containment = true,
+            eOpposite = ref(member.eReferences find (_.name == "library")))
         }
-        eOperations {
+        c eOperations {
           eOperation(name = "toString", eType = EBoolean)
-          eOperation(name = "getBookByName", eType = EBoolean,
-            eParameters = List(eParameter(name = "name", eType = EString)))
+          eOperation(name = "getBookByName", eType = EBoolean) init { c ⇒
+            c eParameters {
+              eParameter(name = "name", eType = EString)
+            }
+          }
         }
       }
 
-      Book {
-        eStructuralFeatures {
+      book init { c ⇒
+        c eStructuralFeatures {
           eAttribute(name = "name", eType = EString, lowerBound = 1)
           eAttribute(name = "copies", eType = EInt, lowerBound = 1)
 
-          eReference(name = "library", eType = Library, lowerBound = 1,
-            eOpposite = ref(Library.eReferences find (_.name == "books")))
-          derived(eReference(name = "loans", eType = Loan, lowerBound = 1, upperBound = -1))
+          eReference(name = "library", eType = library, lowerBound = 1,
+            eOpposite = ref(library.eReferences find (_.name == "books")))
+          derived(eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1))
         }
-        eOperations {
+        c eOperations {
           eOperation(name = "isAvailable", eType = EBoolean)
         }
       }
 
-      Member {
-        eStructuralFeatures {
+      member init { c ⇒
+        c eStructuralFeatures {
           eAttribute(name = "name", eType = EString, lowerBound = 1)
           eAttribute(name = "copies", eType = EInt, lowerBound = 1)
 
-          eReference(name = "library", eType = Library, lowerBound = 1,
-            eOpposite = ref(Library.eReferences find (_.name == "members")))
-          derived(eReference(name = "loans", eType = Loan, lowerBound = 1, upperBound = -1))
-          derived(eReference(name = "books", eType = Book, lowerBound = 1, upperBound = -1))
+          eReference(name = "library", eType = library, lowerBound = 1,
+            eOpposite = ref(library.eReferences find (_.name == "members")))
+          derived(eReference(name = "loans", eType = loan, lowerBound = 1, upperBound = -1))
+          derived(eReference(name = "books", eType = book, lowerBound = 1, upperBound = -1))
         }
       }
 
-      Loan {
-        eStructuralFeatures {
+      loan init { c ⇒
+        c eStructuralFeatures {
           eAttribute(name = "date", eType = EDate)
 
-          eReference(name = "book", eType = Loan, lowerBound = 1)
-          eReference(name = "member", eType = Member, lowerBound = 1)
+          eReference(name = "book", eType = loan, lowerBound = 1)
+          eReference(name = "member", eType = member, lowerBound = 1)
         }
       }
     }
 
     pkg.isValid must be === true
-    //    println(pkg.validate prettyPrint)
+    pkg.eClassifiers must have size (4)
   }
 
 }

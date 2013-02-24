@@ -16,40 +16,41 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.common.notify.Notification.ADD
 import org.eclipse.emf.common.notify.Notification.ADD_MANY
 import org.eclipse.emf.common.notify.Notification.SET
-import scala.reflect.runtime.universe.{ typeOf, TypeTag }
+import scala.reflect.runtime.universe.{ typeOf, TypeTag, runtimeMirror }
 
-trait EMFDynamicContext {
-  protected val context = new TypedDynamicVariable[EObject](null)
-  protected val containerContext = new TypedDynamicVariable[EList[_ <: EObject]](null)
-
-  def self[T <: EObject: TypeTag]: Option[T] = Option(context.value)
-  def container[T <: EObject: TypeTag]: Option[EList[T]] = {
-    val x = containerContext.valueType
-    if (containerContext.valueType =:= typeOf[EList[T]])
-      Option(containerContext.value[EList[T]])
-    else
-      None
-  }
+abstract class AbstractEMFBuilder {
+  def create[T <: EObject: TypeTag]: T
 }
 
-class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
-
-  implicit class InitializableEObject[T <: EObject: TypeTag](val obj: T) {
-    def apply(fun: ⇒ Unit): T = {
-      context.withValue(obj) { fun }
-      obj
-    }
-
-    def init(fun: T ⇒ Unit): T = {
-      context.withValue(obj) { fun(obj) }
-      obj
-    }
-  }
+abstract trait AutoContainment extends AbstractEMFBuilder {
 
   implicit class InitializableEList[T <: EObject: TypeTag](val that: EList[T]) {
     def apply(fun: ⇒ Unit): EList[T] = {
-      containerContext.withValue(that) { fun }
+      container.withValue(that) { fun }
       that
+    }
+  }
+
+  private[this] val container = new DynamicContainer
+
+  abstract override def create[T <: EObject: TypeTag]: T = {
+    val instance = super.create[T]
+
+    // set the containment if supported
+    if (container.isCompatible[T]) {
+      container += instance
+    }
+
+    instance
+  }
+}
+
+class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
+
+  implicit class InitializableEObject[T <: EObject: TypeTag](val obj: T) {
+    def init(fun: T ⇒ Any): T = {
+      fun(obj)
+      obj
     }
   }
 
@@ -122,29 +123,39 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
   protected val proxies = Buffer[InternalProxy]()
   protected val factory = pkg.getEFactoryInstance
 
-  def ref[T <: EObject: ClassTag](expr: ⇒ Option[T]): T = {
+  def ref[T <: EObject: TypeTag](expr: ⇒ Option[T]): T = {
     val getter = () ⇒ expr
 
     getter() match {
       case Some(e) ⇒ e
       case None ⇒
         // create a proxy
-        val proxy = create[T]
+        val proxy = createInternal[T]
         proxy.asInstanceOf[InternalEObject].eSetProxyURI(URI.createURI(s"EMFBuilder internal proxy"))
         proxy.eAdapters += new InternalProxyAdapter((Unit ⇒ expr))
         proxy
     }
   }
 
-  def create[T <: EObject: ClassTag]: T = {
-    val clazz = classTag[T].runtimeClass.getSimpleName
-    val classifier = pkg.getEClassifier(clazz)
+  def build[T <: EObject: TypeTag](configs: (T ⇒ Any)*): T = {
+    configure(create[T], configs: _*)
+  }
+
+  override def create[T <: EObject: TypeTag]: T = createInternal[T]
+
+  protected def createInternal[T <: EObject: TypeTag]: T = {
+    val m = runtimeMirror(getClass.getClassLoader)
+    val clazz = m.runtimeClass(typeOf[T].typeSymbol.asClass)
+    val classifier = pkg.getEClassifier(clazz.getSimpleName)
 
     require(classifier != null,
       s"Unable to find EClass $clazz in package ${pkg.getNsURI}")
 
     val instance = classifier match {
-      case c: EClass ⇒ factory.create(c)
+      case c: EClass ⇒
+        // this is necessary as we will never be able to do static type safety
+        // as along as EMF will not provide generic version of EFactory.create()
+        factory.create(c).asInstanceOf[T]
       case _ ⇒ throw new IllegalArgumentException(
         s"EClassifier $clazz is not an EClass")
     }
@@ -152,17 +163,20 @@ class EMFBuilder[T <: EPackage](val pkg: T) extends EMFDynamicContext {
     // attach a listener to resolve proxies
     instance.eAdapters += ResolveProxyAdapter
 
-    // this is necessary as we will never be able to do static type safety
-    // as along as EMF will not provide generic version of EFactory.create()
-    instance.asInstanceOf[T]
+    instance
+
   }
 
   protected def setNotDefault[T](setter: (T) ⇒ Unit, value: T, default: T) {
     if (value != default) setter(value)
   }
-  
-  protected def configure[T](target : T, configs:(T => Any)*) : T = {
-    configs.foreach(cfg => cfg(target))
+
+  protected def setNotEmpty[T](target: EList[T], source: EList[T]) {
+    if (source != null && !source.isEmpty) target ++= source
+  }
+
+  protected def configure[T](target: T, configs: (T ⇒ Any)*): T = {
+    configs.foreach(cfg ⇒ cfg(target))
     target
   }
 }
