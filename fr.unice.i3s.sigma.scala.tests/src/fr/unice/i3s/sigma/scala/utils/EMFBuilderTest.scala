@@ -10,122 +10,63 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl
 import org.junit.Before
 import org.junit.Test
 import org.eclipse.emf.ecore.EAttribute
+import org.scalatest.FunSuite
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
-final class EMFBuilderTest {
+@RunWith(classOf[JUnitRunner])
+class EMFBuilderTest extends FunSuite {
 
-  @Before
-  def setUp() {
-    EcorePackage.eINSTANCE.eClass
-  }
+  test("Overload hack for the setters") {
 
-  //  @Test
-  //  def testMultiplInitializationIsNotSupported() {
-  //    val builder = new EMFBuilder(EcorePackage.eINSTANCE)
-  //    import builder._
-  //
-  //    val eclazz = create[EClass] initLater { clz ⇒
-  //      clz.setName("MyClass")
-  //    }
-  //
-  //    try {
-  //      eclazz initLater { clz ⇒
-  //        clz.setName("MyClass2")
-  //      }
-  //      fail("Multiple initialization is not supported")
-  //    } catch {
-  //      case e: IllegalStateException ⇒
-  //      case _: Throwable ⇒ fail("Invalid exception thrown")
-  //    }
-  //
-  //  }
-  //
-  //  @Test
-  //  def testPostponedContentInitializerAdapter() {
-  //    val res = new ResourceImpl
-  //
-  //    res.eAdapters.add(new PostponeContentInitializerAdapter)
-  //
-  //    val builder = new EMFBuilder(EcorePackage.eINSTANCE)
-  //    import builder._
-  //
-  //    // FIXME: try a different scenario
-  //    // class1 initLater (add an attribute)
-  //    // class2 initLater (add an attribute)
-  //    // check where do these attributes end up
-  //
-  //    val eclazz = create[EClass] initLater { clz ⇒
-  //      clz.setName("MyClass")
-  //      clz.setAbstract(false)
-  //      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ create[EAttribute] init { _.setName(name) })
-  //    }
-  //
-  //    assertNull(eclazz.getName)
-  //    assertEquals(0, eclazz.getEAttributes.size)
-  //
-  //    res.getContents += eclazz
-  //
-  //    assertEquals("MyClass", eclazz.getName)
-  //    assertEquals(2, eclazz.getEAttributes.size)
-  //    assertEquals(List("A", "B"), eclazz.getEAttributes map (_.getName))
-  //  }
-  //
-  //  @Test
-  //  def testPostponedInitialize() {
-  //    val builder = new EMFBuilder(EcorePackage.eINSTANCE)
-  //    import builder._
-  //
-  //    val eclazz = create[EClass] initLater { clz ⇒
-  //      clz.setName("MyClass")
-  //      clz.setAbstract(false)
-  //      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ create[EAttribute] init { _.setName(name) })
-  //    }
-  //
-  //    assertNull(eclazz.getName)
-  //    assertEquals(0, eclazz.getEAttributes.size)
-  //
-  //    val adapter = eclazz.adapter[PostponedInitizationAdapter[_]]
-  //    assertTrue(adapter.isDefined)
-  //
-  //    // actual initialization
-  //    adapter.get.initialize
-  //
-  //    assertEquals("MyClass", eclazz.getName)
-  //    assertEquals(2, eclazz.getEAttributes.size)
-  //    assertEquals(List("A", "B"), eclazz.getEAttributes map (_.getName))
-  //
-  //    assertFalse(eclazz.adapter[PostponedInitizationAdapter[_]].isDefined)
-  //  }
+    trait OverloadHack {
+      // one class per overloaded method
+      class Overloaded1
+      class Overloaded2
 
-  @Test
-  def testInitialize() {
-    val builder = new EMFBuilder(EcorePackage.eINSTANCE)
-    import builder._
-
-    val eclazz = create[EClass] init { clz ⇒
-      clz.setName("MyClass")
-      clz.setAbstract(false)
-      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ create[EAttribute] init { _.setName(name) })
+      // one implicit val per overloaded method
+      implicit val overload1 = new Overloaded1
+      implicit val overload2 = new Overloaded2
     }
 
-    assertEquals("MyClass", eclazz.getName)
-    assertEquals(2, eclazz.getEAttributes.size)
-    assertEquals(List("A", "B"), eclazz.getEAttributes map (_.getName))
-  }
-
-  @Test
-  def testBasicCreate() {
-    val builder = new EMFBuilder(EcorePackage.eINSTANCE)
-    import builder._
-
-    val eclazz = create[EClass] init { clz: EClass ⇒
-      clz.setName("MyClass")
-      clz.setAbstract(false)
-      clz.getEStructuralFeatures ++= List("A", "B") map (name ⇒ builder.create[EAttribute] init { _.setName(name) })
+    class A {
+      var name: String = _
+    }
+    class B {
+      var name: String = _
     }
 
-    assertEquals("MyClass", eclazz.getName)
-    assertEquals(2, eclazz.getEAttributes.size)
-    assertEquals(List("A", "B"), eclazz.getEAttributes map (_.getName))
+    class Test extends OverloadHack {
+      private def nothing: Nothing = sys.error("this method is not meant to be called")
+      def name(implicit ev: Nothing) = nothing
+
+      def name_=[T <: A](name: String)(implicit o: Overloaded1) =
+        (subject: T) ⇒ subject.name = name
+      def name_=[T <: B](name: String)(implicit o: Overloaded2) =
+        (subject: T) ⇒ subject.name = name
+
+      def a(configs: (A ⇒ Any)*) = {
+        configure(new A, configs: _*)
+      }
+      def b(configs: (B ⇒ Any)*) = {
+        configure(new B, configs: _*)
+      }
+
+      def configure[T](target: T, configs: (T ⇒ Any)*): T = {
+        configs.foreach(cfg ⇒ cfg(target))
+        target
+      }
+
+    }
+    val builder = new Test
+    import builder._
+
+    val ia = a(name = "a")
+    val ib = b(name = "b")
+
+    assert(ia.name === "a")
+    assert(ib.name === "b")
+
   }
 
 }

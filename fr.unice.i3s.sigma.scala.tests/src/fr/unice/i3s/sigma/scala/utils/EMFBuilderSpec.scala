@@ -11,11 +11,32 @@ import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import org.scalatest.junit.JUnitRunner
+import org.eclipse.emf.ecore.EcorePackage
+import org.eclipse.emf.ecore.EClass
+import collection.JavaConversions._
+import org.eclipse.emf.ecore.EAttribute
 
 @RunWith(classOf[JUnitRunner])
 class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
 
   import EcorePackageScalaSupport._
+
+  "EMFBuilder" must "create an EObject" in {
+    val builder = new EMFBuilder(EcorePackage.eINSTANCE)
+    import builder._
+
+    val clazz = create[EClass] init { clz ⇒
+      clz.name = "MyClass"
+      clz.`abstract` = false
+      clz.eStructuralFeatures ++= List("A", "B") map { name ⇒
+        create[EAttribute] init { _.name = name }
+      }
+    }
+
+    clazz.name must be === "MyClass"
+    clazz.eAttributes must have size (2)
+    clazz.eAttributes.map(_.name) must be === List("A", "B")
+  }
 
   def derived[T <: EStructuralFeature](feature: T): T = {
     feature.derived = true
