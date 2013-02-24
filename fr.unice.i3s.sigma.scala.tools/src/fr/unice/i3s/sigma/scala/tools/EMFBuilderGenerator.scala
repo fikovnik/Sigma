@@ -63,7 +63,7 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     !endl
 
     val max = renderedFeatures.values.max
-    !"private trait OverloadHack" curlyIndent {
+    !"trait OverloadHack" curlyIndent {
       for (i ← 1 until max - 1) {
         !s"class Overloaded$i" << endl
         !s"implicit val overload$i = new Overloaded$i" << endl
