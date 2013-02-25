@@ -1,25 +1,25 @@
 package fr.unice.i3s.sigma.scala.tools
 
-import collection.JavaConversions._
-import fr.unice.i3s.sigma.scala.utils.io._
-import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
-import fr.unice.i3s.sigma.scala.mtt.TextTemplate
-import org.eclipse.emf.codegen.util.ImportManager
-import fr.unice.i3s.sigma.scala.construct.EMFBuilder
-import org.eclipse.emf.codegen.ecore.genmodel.GenClass
-import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import java.io.File
+
+import scala.collection.JavaConversions.asScalaBuffer
+
+import org.eclipse.emf.codegen.ecore.genmodel.GenClass
 import org.eclipse.emf.codegen.ecore.genmodel.GenFeature
+import org.eclipse.emf.codegen.ecore.genmodel.GenModel
+import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
-import scala.collection.mutable.Buffer
+import org.eclipse.emf.codegen.util.ImportManager
+
+import fr.unice.i3s.sigma.scala.construct.EMFBuilder
+import fr.unice.i3s.sigma.scala.mtt.TextTemplate
+import fr.unice.i3s.sigma.scala.utils.io.using
 
 class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate {
   override val stripWhitespace = true
 
   val importManager = new ImportManager(scalaPkgName, scalaUnitName)
   pkg.getGenModel.setImportManager(importManager)
-
-  val renderedFeatures = collection.mutable.Map[String, Int]()
 
   override def render {
     val emfBuilder = importManager.getImportedName(classOf[EMFBuilder[_]].getName, true)
@@ -45,61 +45,66 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     !endl
     !endl
 
-    !s"trait ${pkg.getPackageName.capitalize}Assignments extends OverloadHack" curlyIndent {
+    // it is possible to have a class that has the same name as the feature
+    // in this case the class method has a priority
+    val nameConflicts = clazzes map (c ⇒ decapitalize(c.getName))
+    val featuresMap = pkg.getGenClasses
+      .filter(c ⇒ !(skipTypes contains c.getName))
+      .flatMap(_.getGenFeatures)
+      .filter(f ⇒ !f.isDerived && f.isChangeable && !(nameConflicts contains f.getName))
+      .groupBy(_.getName)
+
+    // are there any two or more methods that have the same names?  
+    val overloadHackMax = featuresMap.values.map(_.size).max
+
+    !s"trait ${pkg.getPackageName.capitalize}Assignments"
+    if (overloadHackMax > 1) {
+      !s" extends OverloadHack"
+    }
+    out curlyIndent {
       !"""private def nothing: Nothing = sys.error("this method is not meant to be called")"""
       !endl
 
-      val nameConflicts = clazzes map (c ⇒ decapitalize(c.getName))
-      for {
-        clazz ← pkg.getGenClasses if !(skipTypes contains clazz.getName)
-        feature ← clazz.getGenFeatures if !feature.isDerived && feature.isChangeable && !nameConflicts.contains(feature.getName)
-      } {
-        renderFeatureMethod(feature)
-        !endl << endl
-      }
-    }
-
-    !endl
-    !endl
-
-    val max = renderedFeatures.values.max
-    !"trait OverloadHack" curlyIndent {
-      for (i ← 1 until max - 1) {
-        !s"class Overloaded$i" << endl
-        !s"implicit val overload$i = new Overloaded$i" << endl
+      for ((featureName, features) ← featuresMap) {
+        renderFeatureMethods(featureName, features)
         !endl
       }
     }
-    !endl
+
+    if (overloadHackMax > 1) {
+      !endl
+      !endl
+
+      !"trait OverloadHack" curlyIndent {
+        for (i ← 1 until overloadHackMax) {
+          !s"class Overloaded$i" << endl
+          !s"implicit val overload$i = new Overloaded$i" << endl
+          !endl
+        }
+      }
+
+      !endl
+    }
 
     imports << importManager.computeSortedImports() << endl << endl
   }
 
-  protected def renderFeatureMethod(feature: GenFeature) {
-    val featureName = feature.getName
-    val clazzName = feature.getGenClass.getImportedInterfaceName
+  protected def renderFeatureMethods(featureName: String, features: Seq[GenFeature]) {
+    !s"def ${safeName(featureName)}(implicit ev: Nothing) = nothing" << endl
 
-    val rendered = renderedFeatures.get(featureName).map(_ + 1).getOrElse(0)
+    for ((feature, i) ← features.zipWithIndex) {
+      val clazzName = feature.getGenClass.getImportedInterfaceName
+      val overload = if (i > 0) s"(implicit o: Overloaded$i)" else ""
 
-    if (rendered == 0)
-      !s"def ${safeName(featureName)}(implicit ev: Nothing) = nothing" << endl
-
-    !s"def ${featureName}_=[T <: $clazzName](value: ${typeName(feature)})${overloadHack(feature)} =" indent {
-      if (feature.isListType)
-        !s"(target: T) ⇒ target.${feature.getGetAccessor}.addAll(value)" << endl
-      else
-        !s"(target: T) ⇒ target.set${feature.getAccessorName}(value)" << endl
+      !s"def ${featureName}_=[T <: $clazzName](value: ${typeName(feature)})$overload =" indent {
+        if (feature.isListType)
+          !s"(target: T) ⇒ target.${feature.getGetAccessor}.addAll(value)" << endl
+        else
+          !s"(target: T) ⇒ target.set${feature.getAccessorName}(value)" << endl
+      }
+      !endl
+      !endl
     }
-
-    renderedFeatures(featureName) = rendered + 1
-  }
-
-  protected def overloadHack(feature: GenFeature) = {
-    renderedFeatures
-      .get(feature.getName)
-      .filter(_ > 0)
-      .map(c ⇒ s"(implicit o: Overloaded$c)")
-      .getOrElse("")
   }
 
   protected def renderEClassConstructMethod(clazz: GenClass) {
