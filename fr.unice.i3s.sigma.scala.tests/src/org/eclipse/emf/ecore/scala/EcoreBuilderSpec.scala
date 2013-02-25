@@ -61,9 +61,9 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
         c eStructuralFeatures {
           eAttribute("name" -> EString, required)
 
-          eReference("books" -> book, many, containment = true, eOpposite = ref(book.eReferences find (_.name == "library")))
+          eReference("books" -> book, many, containment = true, eOpposite = book.eReferences find (_.name == "library"))
           eReference("loans" -> loan, many, containment = true)
-          eReference("members" -> member, many, containment = true, eOpposite = ref(member.eReferences find (_.name == "library")))
+          eReference("members" -> member, many, containment = true, eOpposite = member.eReferences find (_.name == "library"))
         }
         c eOperations {
           eOperation("toString" -> EBoolean)
@@ -80,7 +80,7 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
           eAttribute("name" -> EString, required)
           eAttribute("copies" -> EInt, required)
 
-          eReference("library" -> library, required, eOpposite = ref(library.eReferences find (_.name == "books")))
+          eReference("library" -> library, required, eOpposite = library.eReferences find (_.name == "books"))
           eReference("loans" -> loan, many, setDerived)
         }
         c eOperations {
@@ -93,7 +93,7 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
           eAttribute("name" -> EString, many)
           eAttribute("copies" -> EInt, many)
 
-          eReference("library" -> library, required, eOpposite = ref(library.eReferences find (_.name == "members")))
+          eReference("library" -> library, required, eOpposite = library.eReferences find (_.name == "members"))
           eReference("loans" -> loan, oneToMany, setDerived)
           eReference("books" -> book, oneToMany, setDerived)
         }
@@ -109,6 +109,7 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
       }
     }
 
+    //    println(pkg.validate prettyPrint)
     pkg.isValid must be === true
     pkg.eClassifiers must have size (4)
   }

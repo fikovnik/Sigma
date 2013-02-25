@@ -58,7 +58,10 @@ class EcoreBuilder extends EMFBuilder(EcorePackage.eINSTANCE) {
 }
 
 trait EcoreAssignments extends OverloadHack {
+  this: EcoreBuilder =>
+  
   private def nothing: Nothing = sys.error("this method is not meant to be called")
+  
   def eSuperTypes(implicit ev: Nothing) = nothing
   def eSuperTypes_=[T <: EClass](value: EList[EClass]) =
     (target: T) ⇒ target.getESuperTypes.addAll(value)
@@ -145,6 +148,8 @@ trait EcoreAssignments extends OverloadHack {
   def eFactoryInstance(implicit ev: Nothing) = nothing
   def eFactoryInstance_=[T <: EPackage](value: EFactory) =
     (target: T) ⇒ target.setEFactoryInstance(value)
+  def eFactoryInstance_=[T <: EPackage](value: ⇒ Option[EFactory]) =
+    (target: T) ⇒ target.setEFactoryInstance(ref(value))
   
   
   def eExceptions(implicit ev: Nothing) = nothing
@@ -160,6 +165,8 @@ trait EcoreAssignments extends OverloadHack {
   def eModelElement(implicit ev: Nothing) = nothing
   def eModelElement_=[T <: EAnnotation](value: EModelElement) =
     (target: T) ⇒ target.setEModelElement(value)
+  def eModelElement_=[T <: EAnnotation](value: ⇒ Option[EModelElement]) =
+    (target: T) ⇒ target.setEModelElement(ref(value))
   
   
   def eSubpackages(implicit ev: Nothing) = nothing
@@ -185,6 +192,8 @@ trait EcoreAssignments extends OverloadHack {
   def eClassifier(implicit ev: Nothing) = nothing
   def eClassifier_=[T <: EGenericType](value: EClassifier) =
     (target: T) ⇒ target.setEClassifier(value)
+  def eClassifier_=[T <: EGenericType](value: ⇒ Option[EClassifier]) =
+    (target: T) ⇒ target.setEClassifier(ref(value))
   
   
   def ordered(implicit ev: Nothing) = nothing
@@ -200,6 +209,8 @@ trait EcoreAssignments extends OverloadHack {
   def eOpposite(implicit ev: Nothing) = nothing
   def eOpposite_=[T <: EReference](value: EReference) =
     (target: T) ⇒ target.setEOpposite(value)
+  def eOpposite_=[T <: EReference](value: ⇒ Option[EReference]) =
+    (target: T) ⇒ target.setEOpposite(ref(value))
   
   
   def contents(implicit ev: Nothing) = nothing
@@ -270,6 +281,8 @@ trait EcoreAssignments extends OverloadHack {
   def eType(implicit ev: Nothing) = nothing
   def eType_=[T <: ETypedElement](value: EClassifier) =
     (target: T) ⇒ target.setEType(value)
+  def eType_=[T <: ETypedElement](value: ⇒ Option[EClassifier]) =
+    (target: T) ⇒ target.setEType(ref(value))
   
   
   def changeable(implicit ev: Nothing) = nothing

@@ -62,7 +62,9 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
       !s" extends OverloadHack"
     }
     out curlyIndent {
-      !"""private def nothing: Nothing = sys.error("this method is not meant to be called")"""
+      !s"this: $scalaUnitName =>" << endl
+      !endl
+      !"""private def nothing: Nothing = sys.error("this method is not meant to be called")""" << endl
       !endl
 
       for ((featureName, features) ← featuresMap) {
@@ -90,12 +92,15 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
   }
 
   protected def renderFeatureMethods(featureName: String, features: Seq[GenFeature]) {
+    // getter
     !s"def ${safeName(featureName)}(implicit ev: Nothing) = nothing" << endl
 
+    // setters
     for ((feature, i) ← features.zipWithIndex) {
       val clazzName = feature.getGenClass.getImportedInterfaceName
       val overload = if (i > 0) s"(implicit o: Overloaded$i)" else ""
 
+      // direct setter
       !s"def ${featureName}_=[T <: $clazzName](value: ${typeName(feature)})$overload =" indent {
         if (feature.isListType)
           !s"(target: T) ⇒ target.${feature.getGetAccessor}.addAll(value)" << endl
@@ -103,6 +108,17 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
           !s"(target: T) ⇒ target.set${feature.getAccessorName}(value)" << endl
       }
       !endl
+      // a proxy setter for all non-containable references
+      if (!feature.isContains && feature.isReferenceType && !feature.isListType()) {
+        !s"def ${featureName}_=[T <: $clazzName](value: ⇒ Option[${typeName(feature)}])$overload =" indent {
+          if (feature.isListType)
+            !s"(target: T) ⇒ target.${feature.getGetAccessor}.addAll(ref(value))" << endl
+          else
+            !s"(target: T) ⇒ target.set${feature.getAccessorName}(ref(value))" << endl
+        }
+        !endl
+      }
+
       !endl
     }
   }
