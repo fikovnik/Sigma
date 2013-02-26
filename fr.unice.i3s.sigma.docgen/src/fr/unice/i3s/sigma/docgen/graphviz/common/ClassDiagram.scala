@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EEnum
 
 class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScalaSupport {
 
-  override val stripWhitespace = true
+  override def stripWhitespace = true
 
   override def render {
     !"digraph G" curlyIndent {

@@ -16,7 +16,8 @@ import fr.unice.i3s.sigma.scala.mtt.TextTemplate
 import fr.unice.i3s.sigma.scala.utils.io.using
 
 class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate {
-  override val stripWhitespace = true
+
+  override def stripWhitespace = true
 
   val importManager = new ImportManager(scalaPkgName, scalaUnitName)
   pkg.getGenModel.setImportManager(importManager)

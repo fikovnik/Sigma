@@ -11,7 +11,6 @@ trait TextTemplate extends TextOutput with DelayedInit {
     def singleQuoted = Decorators.surroundText("'")(that)
   }
 
-  protected val stripWhitespace = false
   protected val endl = TextSection.endl
   protected val out: Text = new Text(stripWhitespace)
 
@@ -22,6 +21,7 @@ trait TextTemplate extends TextOutput with DelayedInit {
 
   protected def init = render
   protected def render: Unit
+  protected def stripWhitespace: Boolean = false
 
   override def toString = out.toString
 
