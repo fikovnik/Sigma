@@ -20,7 +20,7 @@ class GVDotSpec extends FlatSpec with MustMatchers with MockitoSugar {
   "GVDot" must "parse the version correctly" in {
 
     val executorMock = mock[Executor]
-    when(executorMock.execute(List("pathToDot", "--version"))).thenReturn(Success(
+    when(executorMock.execute(List("pathToDot", "-V"))).thenReturn(Success(
       """dot - graphviz version 2.28.0 (20130128.1032)
            |libdir = "/usr/local/Cellar/graphviz/2.28.0/lib/graphviz"
            |Activated plugin library: libgvplugin_quartz.6.dylib
@@ -50,7 +50,7 @@ class GVDotSpec extends FlatSpec with MustMatchers with MockitoSugar {
   it must "detect incompatible version" in {
 
     val executorMock = mock[Executor]
-    when(executorMock.execute(List("pathToDot", "--version"))).thenReturn(Success(
+    when(executorMock.execute(List("pathToDot", "-V"))).thenReturn(Success(
       "dot - graphviz version 1.28.0 (20130128.1032)"))
 
     val dot = new GVDot("pathToDot") {
