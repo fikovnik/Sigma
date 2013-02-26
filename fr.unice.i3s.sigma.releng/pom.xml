@@ -110,6 +110,14 @@
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-surefire-plugin</artifactId>
 					<version>${tycho-version}</version>
+					<configuration>
+						<includes>
+							<include>**/Test*.class</include>
+							<include>**/*Test.class</include>
+							<include>**/*TestCase.class</include>
+							<include>**/*Spec.class</include>
+						</includes>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
