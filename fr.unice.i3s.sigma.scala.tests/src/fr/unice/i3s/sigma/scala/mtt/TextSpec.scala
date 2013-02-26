@@ -165,38 +165,37 @@ class TextSpec extends FlatSpec with MustMatchers {
     val text = new Text(stripWhitespace = true)
 
     text << """
-    some text
-    some text
+      some text
       some text
         some text
-    some text
-    """
+          some text
+      some text
+      """
 
     text indent {
       text << """
-      indent text
         indent text
           indent text
-      indent text
-      """
+            indent text
+        indent text
+        """
     }
 
     text.toString must be ===
       """|some text
- 		 |some text
-		 |  some text
-		 |    some text
-		 |some text
-         |  indent text
-         |    indent text
-         |      indent text
-         |  indent text""".stripMargin
+   		 |some text
+  		 |  some text
+  		 |    some text
+  		 |some text
+           |  indent text
+           |    indent text
+           |      indent text
+           |  indent text""".stripMargin
 
   }
 
   it must "strip spaces not considering empty lines" in {
-    val text = new Text(stripWhitespace = true)
-    text.defaultIndent = 4
+    val text = new Text(stripWhitespace = true, indent = 4)
 
     text << """
 	   text1

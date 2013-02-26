@@ -163,9 +163,11 @@ object Text {
   def apply() = new Text
 }
 
-class Text(val stripWhitespace: Boolean = false) extends TextSection[Text]
+class Text(val stripWhitespace: Boolean = false, indent: Int = 2) extends TextSection[Text]
   with TextSectionAdditions
   with TextOutput {
+
+  this.defaultIndent = indent
 
   if (stripWhitespace) {
     decorators push Decorators.stripWhitespace(defaultIndent)
