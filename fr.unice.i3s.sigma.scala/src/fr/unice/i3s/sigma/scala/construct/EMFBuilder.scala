@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.common.notify.Notification.ADD
 import org.eclipse.emf.common.notify.Notification.ADD_MANY
 import org.eclipse.emf.common.notify.Notification.SET
-import scala.reflect.runtime.universe.{ typeOf, TypeTag }
+import scala.reflect.runtime.universe.{ typeOf, TypeTag, runtimeMirror }
 import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 import fr.unice.i3s.sigma.scala.core.internal.DynamicContainer
 
