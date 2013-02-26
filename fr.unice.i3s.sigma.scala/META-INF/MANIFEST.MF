@@ -19,7 +19,9 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  org.eclipse.ui;bundle-version="3.7.0"
 Export-Package: fr.unice.i3s.sigma.scala,
  fr.unice.i3s.sigma.scala.codegen,
+ fr.unice.i3s.sigma.scala.construct,
  fr.unice.i3s.sigma.scala.mtt,
+ fr.unice.i3s.sigma.scala.ui.utils,
  fr.unice.i3s.sigma.scala.utils,
  org.eclipse.emf.ecore.scala
 Bundle-ClassPath: .

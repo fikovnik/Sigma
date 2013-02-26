@@ -15,7 +15,18 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  com.google.guava;bundle-version="11.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: fr.unice.i3s.sigma.docgen.core,
- fr.unice.i3s.sigma.docgen.graphviz.common,
- fr.unice.i3s.sigma.docgen.graphviz.core,
- fr.unice.i3s.sigma.docgen.graphviz.ui
+Export-Package: fr.unice.i3s.sigma.docgen.core;uses:="org.eclipse.ui.plugin,org.osgi.framework,fr.unice.i3s.sigma.docgen.graphviz.common",
+ fr.unice.i3s.sigma.docgen.graphviz.common;
+  uses:="org.eclipse.emf.ecore,
+   scala.math,
+   scala.util,
+   fr.unice.i3s.sigma.scala.mtt,
+   org.eclipse.emf.ecore.scala,
+   scala",
+ fr.unice.i3s.sigma.docgen.graphviz.core;
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.emf.ecore,
+   org.eclipse.core.runtime.jobs,
+   fr.unice.i3s.sigma.docgen.graphviz.common",
+ fr.unice.i3s.sigma.docgen.graphviz.ui;uses:="org.eclipse.swt.widgets,fr.unice.i3s.sigma.docgen.graphviz.common",
+ fr.unice.i3s.sigma.docgen.graphviz.ui.internal.handlers;x-friends:="fr.unice.i3s.sigma.delegates.tests"
