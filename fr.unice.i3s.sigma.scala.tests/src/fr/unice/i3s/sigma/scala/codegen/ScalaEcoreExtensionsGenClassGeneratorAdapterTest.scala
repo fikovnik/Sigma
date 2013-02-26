@@ -6,8 +6,8 @@ import org.scalatest.matchers.MustMatchers
 import org.scalatest.mock.MockitoSugar
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass
 import org.mockito.Mockito._
-import org.mockito.Matchers.{ eq => eeq }
-import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain.{ instance => domain }
+import org.mockito.Matchers.{ eq ⇒ eeq }
+import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain.{ instance ⇒ domain }
 import org.mockito.Matchers
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage

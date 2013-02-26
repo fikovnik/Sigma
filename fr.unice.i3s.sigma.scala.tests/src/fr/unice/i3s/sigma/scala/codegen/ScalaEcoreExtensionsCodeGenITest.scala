@@ -33,12 +33,12 @@ import fr.unice.i3s.sigma.scala.utils.Util
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class ScalaEcoreExtensionsCodeGenTest extends FunSuite {
+class ScalaEcoreExtensionsCodeGenITest extends FunSuite {
 
   def copyDir(from: File, to: File) {
     if (!to.exists()) to.mkdirs()
 
-    for (f <- from.listFiles) yield {
+    for (f ← from.listFiles) yield {
       val dest = new File(to, f.getName())
 
       if (f.isDirectory) copyDir(f, dest)
@@ -49,7 +49,7 @@ class ScalaEcoreExtensionsCodeGenTest extends FunSuite {
   def getBundleByName(symbolicName: String, version: Version = null): Option[Bundle] = {
     val bundles = Activator.context.get.getBundles.filter(_.getSymbolicName == symbolicName)
 
-    Option(version).map(v => bundles.filter(_.getVersion.compareTo(v) >= 0).headOption).getOrElse(bundles.headOption)
+    Option(version).map(v ⇒ bundles.filter(_.getVersion.compareTo(v) >= 0).headOption).getOrElse(bundles.headOption)
   }
 
   def extractBundleEntry(bundle: Bundle, path: String): File = {
@@ -136,8 +136,8 @@ class ScalaEcoreExtensionsCodeGenTest extends FunSuite {
     val javaProject = JavaCore.create(project);
 
     val requiredPluginNames = List("org.eclipse.core.runtime", "org.eclipse.emf.common", "org.eclipse.emf.ecore")
-    val requiredPluginLocations = requiredPluginNames.map(p => FileLocator.getBundleFile(getBundleByName(p).get).getAbsolutePath)
-    val requiredplugin = requiredPluginLocations.map(p => JavaCore.newLibraryEntry(new Path(p), null, null, false))
+    val requiredPluginLocations = requiredPluginNames.map(p ⇒ FileLocator.getBundleFile(getBundleByName(p).get).getAbsolutePath)
+    val requiredplugin = requiredPluginLocations.map(p ⇒ JavaCore.newLibraryEntry(new Path(p), null, null, false))
 
     val scalaLibLocation = extractBundleEntry(getBundleByName("org.scala-ide.scala.library").get, "lib/scala-library.jar")
     val scalaLib = JavaCore.newLibraryEntry(new Path(scalaLibLocation.getAbsolutePath), null, null, false)
@@ -145,7 +145,7 @@ class ScalaEcoreExtensionsCodeGenTest extends FunSuite {
     val junitLocation = extractBundleEntry(getBundleByName("org.junit", new Version("4.8.0")).get, "junit.jar")
     val junit = JavaCore.newLibraryEntry(new Path(junitLocation.getAbsolutePath), null, null, false)
 
-    val jre = Util.getJavaClassLibs().map(p => JavaCore.newLibraryEntry(new Path(p), null, null, false))
+    val jre = Util.getJavaClassLibs().map(p ⇒ JavaCore.newLibraryEntry(new Path(p), null, null, false))
 
     val src = JavaCore.newSourceEntry(new Path(projectPath + "/src"))
     val src_gen = JavaCore.newSourceEntry(new Path(projectPath + "/src-gen"))
@@ -167,15 +167,15 @@ class ScalaEcoreExtensionsCodeGenTest extends FunSuite {
     //      }), null)
 
     println("Resolved classpath: ")
-    javaProject.getResolvedClasspath(false) foreach (p => println(p.getPath()))
+    javaProject.getResolvedClasspath(false) foreach (p ⇒ println(p.getPath()))
 
     project.findMarkers(IJavaModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ZERO) match {
-      case Array() => // nothing
-      case markers @ Array(_*) => {
+      case Array() ⇒ // nothing
+      case markers @ Array(_*) ⇒ {
         println("Build path problems: ")
 
-        markers.foreach { m =>
-          println("- " + m.getAttributes.map { case (k, v) => k + ": " + v }.mkString(", "))
+        markers.foreach { m ⇒
+          println("- " + m.getAttributes.map { case (k, v) ⇒ k + ": " + v }.mkString(", "))
         }
       }
     }
@@ -184,12 +184,12 @@ class ScalaEcoreExtensionsCodeGenTest extends FunSuite {
     project.build(IncrementalProjectBuilder.FULL_BUILD, null)
 
     project.findMarkers(null, false, IResource.DEPTH_INFINITE) match {
-      case Array() => // nothing
-      case markers @ Array(_*) => {
+      case Array() ⇒ // nothing
+      case markers @ Array(_*) ⇒ {
         println("Build problems: ")
 
-        markers.foreach { m =>
-          println("- " + m.getType() + " " + m.getAttributes.map { case (k, v) => k + ": " + v }.mkString(", "))
+        markers.foreach { m ⇒
+          println("- " + m.getType() + " " + m.getAttributes.map { case (k, v) ⇒ k + ": " + v }.mkString(", "))
         }
       }
     }
