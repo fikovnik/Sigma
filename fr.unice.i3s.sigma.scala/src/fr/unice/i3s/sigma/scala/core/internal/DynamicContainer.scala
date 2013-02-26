@@ -1,7 +1,7 @@
-package fr.unice.i3s.sigma.scala.utils
+package fr.unice.i3s.sigma.scala.core.internal
 
-import scala.reflect.runtime.universe._
 import scala.collection.mutable.Buffer
+import scala.reflect.runtime.universe.{ Type, TypeTag, typeOf }
 
 class DynamicContainer {
   private[this] var current: (Buffer[_], Type) = _

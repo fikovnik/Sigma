@@ -13,7 +13,7 @@ import org.eclipse.emf.codegen.util.ImportManager
 
 import fr.unice.i3s.sigma.scala.construct.EMFBuilder
 import fr.unice.i3s.sigma.scala.mtt.TextTemplate
-import fr.unice.i3s.sigma.scala.utils.io.using
+import fr.unice.i3s.sigma.scala.common.util.IOUtils.using
 
 class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate {
 

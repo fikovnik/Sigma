@@ -2,12 +2,12 @@ package fr.unice.i3s.sigma.scala.scalatest
 
 import org.scalatest.matchers.Matcher
 import org.eclipse.emf.ecore.EObject
-import fr.unice.i3s.sigma.scala.utils._
 import org.scalatest.matchers.MatchResult
 import org.scalatest.matchers.BePropertyMatcher
 import org.scalatest.matchers.BePropertyMatchResult
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
-trait EMFValidatorMatchers {
+trait EMFValidatorMatchers extends EMFScalaSupport {
 
   class ValidBePropertyMatcher extends BePropertyMatcher[EObject] {
     def apply(left: EObject) = BePropertyMatchResult(left.isValid, "valid")

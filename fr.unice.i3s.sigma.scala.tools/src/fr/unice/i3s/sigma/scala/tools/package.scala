@@ -11,6 +11,8 @@ import java.io.File
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl
 import org.eclipse.emf.ecore.resource.ResourceSet
+import fr.unice.i3s.sigma.scala.common.util.IOUtils
+import fr.unice.i3s.sigma.scala.common.util.EMFUtils
 
 package object tools {
 
@@ -24,7 +26,7 @@ package object tools {
     Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap() +=
       ("ecore" -> new XMIResourceFactoryImpl())
 
-    utils.load[A](fname)
+    EMFUtils.IO.loadFromFile[A](new File(fname))
   }
 
 }

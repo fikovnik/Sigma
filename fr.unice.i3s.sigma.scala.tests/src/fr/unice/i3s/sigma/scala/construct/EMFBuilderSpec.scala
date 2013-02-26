@@ -1,6 +1,6 @@
 package fr.unice.i3s.sigma.scala.construct
 
-import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.JavaConversions._
 import scala.reflect.runtime.universe
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EClass
@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
-import fr.unice.i3s.sigma.scala.utils.eListAsScalaImmutableList
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])

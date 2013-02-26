@@ -12,8 +12,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.eclipse.emf.ecore.EValidator
 import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
-import fr.unice.i3s.sigma.scala.utils._
-import fr.unice.i3s.sigma.core.{ ValidationResult => JValidationResult }
+import fr.unice.i3s.sigma.core.{ ValidationResult ⇒ JValidationResult }
 import org.eclipse.emf.common.util.EList
 import fr.unice.i3s.sigma.core.ISigmaQuickFix
 import fr.unice.i3s.sigma.delegates.SigmaQuickFix
@@ -21,6 +20,7 @@ import org.eclipse.emf.ecore.EObject
 import java.lang.reflect.Method
 import fr.unice.i3s.sigma.delegates.ISigmaValidationDelegate
 import scala.beans.BeanProperty
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
 final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
@@ -42,7 +42,7 @@ final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
 }
 
-final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
+final class SigmaScalaDelegateDomain extends SigmaDelegateDomain with EMFScalaSupport {
   import SigmaScalaDelegateDomain._
 
   override def getURI = {

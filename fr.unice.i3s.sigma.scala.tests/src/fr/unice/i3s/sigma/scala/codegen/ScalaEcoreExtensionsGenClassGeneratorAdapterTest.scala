@@ -15,9 +15,10 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
 @RunWith(classOf[JUnitRunner])
-class ScalaEcoreExtensionsGenClassGeneratorAdapterTest extends WordSpec with MustMatchers with MockitoSugar {
+class ScalaEcoreExtensionsGenClassGeneratorAdapterTest extends WordSpec with MustMatchers with MockitoSugar with EMFScalaSupport {
 
   "isScalaExtensionEnabled" must {
     "returns false when annotation is missing" in {

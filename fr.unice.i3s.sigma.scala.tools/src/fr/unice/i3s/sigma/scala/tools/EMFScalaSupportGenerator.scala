@@ -1,8 +1,8 @@
 package fr.unice.i3s.sigma.scala.tools
 
-import fr.unice.i3s.sigma.scala.utils._
+import scala.collection.JavaConversions._
 import fr.unice.i3s.sigma.scala.tools._
-import fr.unice.i3s.sigma.scala.utils.io._
+import fr.unice.i3s.sigma.scala.common.util.IOUtils.using
 import org.eclipse.emf.ecore.EPackage
 import java.io.File
 import fr.unice.i3s.sigma.scala.mtt.TextTemplate

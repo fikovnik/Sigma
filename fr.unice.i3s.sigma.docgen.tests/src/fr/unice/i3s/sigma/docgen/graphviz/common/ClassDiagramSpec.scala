@@ -1,7 +1,6 @@
 package fr.unice.i3s.sigma.docgen.graphviz.common
 
 import scala.collection.JavaConversions._
-import fr.unice.i3s.sigma.scala.utils._
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
@@ -10,9 +9,10 @@ import fr.unice.i3s.sigma.scala.mtt.TextTemplateTest
 import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.scala.EcoreBuilder
 import org.eclipse.emf.ecore.scala.EcoreAssignments
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
 @RunWith(classOf[JUnitRunner])
-class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
+class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
 
   val builder = new EcoreBuilder with EcoreAssignments
   import builder._

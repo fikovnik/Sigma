@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.common.notify.impl.AdapterImpl
 import org.eclipse.emf.common.notify.Notification
 import org.eclipse.emf.common.util.EList
-import fr.unice.i3s.sigma.scala.utils._
 import reflect.{ ClassTag, classTag }
 import org.eclipse.emf.ecore.InternalEObject
 import org.eclipse.emf.common.util.URI
@@ -16,7 +15,9 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.common.notify.Notification.ADD
 import org.eclipse.emf.common.notify.Notification.ADD_MANY
 import org.eclipse.emf.common.notify.Notification.SET
-import scala.reflect.runtime.universe.{ typeOf, TypeTag, runtimeMirror }
+import scala.reflect.runtime.universe.{ typeOf, TypeTag }
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
+import fr.unice.i3s.sigma.scala.core.internal.DynamicContainer
 
 abstract class AbstractEMFBuilder {
   def create[T <: EObject: TypeTag]: T
@@ -66,7 +67,7 @@ class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
   /**
    * Responsible for recording and resolving proxies.
    */
-  protected object ResolveProxyAdapter extends AdapterImpl {
+  protected object ResolveProxyAdapter extends AdapterImpl with EMFScalaSupport {
     override def notifyChanged(msg: Notification) {
       import Notification._
 

@@ -1,38 +1,43 @@
 package fr.unice.i3s.sigma.scala.codegen
 
-import fr.unice.i3s.sigma.scala.utils._
-import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter
-import org.eclipse.emf.codegen.ecore.genmodel.GenModel
-import org.eclipse.emf.codegen.ecore.genmodel.GenClass
-import org.eclipse.emf.ecore.EcoreFactory
-import org.eclipse.emf.ecore.EcorePackage
-import org.eclipse.emf.ecore.EStructuralFeature
-import org.eclipse.emf.ecore.ETypedElement
-import org.eclipse.emf.ecore.EClassifier
-import org.eclipse.emf.ecore.EAttribute
-import org.eclipse.emf.ecore.EReference
-import org.eclipse.emf.ecore.EPackage
-import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
+import scala.collection.JavaConversions.asScalaBuffer
+
 import org.eclipse.emf.codegen.ecore.genmodel.GenBase
-import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
+import org.eclipse.emf.codegen.ecore.genmodel.GenClass
+import org.eclipse.emf.codegen.ecore.genmodel.GenModel
+import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
+import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
+import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter
 import org.eclipse.emf.common.util.Diagnostic
+import org.eclipse.emf.ecore.EClassifier
 import org.eclipse.emf.ecore.EOperation
+import org.eclipse.emf.ecore.scala.EcoreBuilder
+import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import org.eclipse.emf.ecore.util.EcoreUtil
+
+import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain
 
 object ScalaEcoreExtensionsGenClassGeneratorAdapter {
   val ENABLE_SCALA_ECORE_EXTENSION = "EnableScalaEcoreExtension"
 }
 
-class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegateDomain, factory: ScalaEcoreExtensionsGeneratorAdapterFactory) extends GenBaseGeneratorAdapter(factory) {
+class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegateDomain, factory: ScalaEcoreExtensionsGeneratorAdapterFactory)
+  extends GenBaseGeneratorAdapter(factory) with EcorePackageScalaSupport {
 
   import ScalaEcoreExtensionsGenClassGeneratorAdapter._
+
+  val builder = new EcoreBuilder
 
   override def doPreGenerate(`object`: Any, projectType: Any): Diagnostic = {
     val genClazz = `object`.asInstanceOf[GenClass];
 
     if ((projectType == GenBaseGeneratorAdapter.MODEL_PROJECT_TYPE) && isScalaExtensionEnabled(genClazz)) {
-      processClass(genClazz)
+      try
+        processClass(genClazz)
+      catch {
+        case e: Throwable ⇒
+          e.printStackTrace
+      }
     }
 
     return super.doPreGenerate(`object`, projectType)
@@ -41,18 +46,18 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegat
   def processClass(genClazz: GenClass) {
     val im = genClazz.getGenModel.getImportManager;
 
-    for (genFeature <- genClazz.getGenFeatures) {
+    for (genFeature ← genClazz.getGenFeatures.toList) {
       val feature = genFeature.getEcoreFeature
-      val op = EcoreFactory.eINSTANCE.createEOperation()
-      genClazz.getEcoreClass().getEOperations.add(op)
 
-      val option = !feature.isRequired && !feature.isMany
+      val op = builder.eOperation()
 
-      op.setName(feature.getName)
-      op.setLowerBound(feature.getLowerBound())
-      op.setUpperBound(feature.getUpperBound())
-      op.setOrdered(feature.isOrdered())
-      op.setUnique(feature.isUnique())
+      op.name = feature.name
+      op.lowerBound = feature.lowerBound
+      op.upperBound = feature.upperBound
+      op.ordered = feature.ordered
+      op.unique = feature.unique
+
+      genClazz.getEcoreClass().eOperations += op
 
       val doc =
         s"""|Scala compatible getter method for {@code ${genFeature.getName}} property,
@@ -63,8 +68,10 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegat
             |""".stripMargin
       EcoreUtil.setDocumentation(op, doc)
 
+      val option = !feature.required && !feature.many
       if (option) {
-        op.setEGenericType(createOption(feature.getEType, genClazz.getGenPackage))
+        op.eGenericType = createOption(feature.eType, genClazz.getGenPackage)
+
         val body = "return %s.<%s>apply(%s());" format (
           im.getImportedName(classOf[Option[_]].getName, true),
           genFeature.getImportedType(genClazz),
@@ -72,7 +79,7 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegat
 
         installBody(op, body)
       } else {
-        op.setEType(feature.getEType())
+        op.eType = feature.eType
         val body = "return " + genFeature.getGetAccessor() + "();"
 
         installBody(op, body)
@@ -91,11 +98,11 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegat
 
     var option = pkg.getEClassifier("Option")
     if (option == null) {
-      option = EcoreFactory.eINSTANCE.createEDataType;
+      option = builder.eDataType()
       option.setName("Option")
       option.setInstanceTypeName("scala.Option")
       option.getETypeParameters().add {
-        val T = EcoreFactory.eINSTANCE.createETypeParameter
+        val T = builder.eTypeParameter()
         T.setName("T")
         T
       }
@@ -106,11 +113,11 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegat
       addDependencyToScalaLib(genPkg.getGenModel)
     }
 
-    val genericType = EcoreFactory.eINSTANCE.createEGenericType
-    genericType.setEClassifier(option)
-    val aT = EcoreFactory.eINSTANCE.createEGenericType
-    aT.setEClassifier(nested)
-    genericType.getETypeArguments().add(aT)
+    val genericType = builder.eGenericType()
+    genericType.eClassifier = option
+    val aT = builder.eGenericType()
+    aT.eClassifier = nested
+    genericType.eTypeArguments += aT
 
     genericType
   }
@@ -130,17 +137,17 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaScalaDelegat
 
       if (value != null) Some(value)
       else genBase match {
-        case clazz: GenClass => findAnnotation(clazz.getGenPackage, source, key)
-        case pkg: GenPackage if pkg.getSuperGenPackage != null => findAnnotation(pkg.getSuperGenPackage, source, key)
-        case pkg: GenPackage => findAnnotation(pkg.getGenModel, source, key)
-        case model: GenModel => None
+        case clazz: GenClass ⇒ findAnnotation(clazz.getGenPackage, source, key)
+        case pkg: GenPackage if pkg.getSuperGenPackage != null ⇒ findAnnotation(pkg.getSuperGenPackage, source, key)
+        case pkg: GenPackage ⇒ findAnnotation(pkg.getGenModel, source, key)
+        case model: GenModel ⇒ None
       }
     }
 
     val enabled = findAnnotation(genClazz, domain.getURI, ENABLE_SCALA_ECORE_EXTENSION)
     enabled match {
-      case Some(value) => value.toBoolean
-      case None => false
+      case Some(value) ⇒ value.toBoolean
+      case None ⇒ false
     }
 
   }

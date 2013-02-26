@@ -1,7 +1,7 @@
 package fr.unice.i3s.sigma.docgen.graphviz.common
 
 import org.eclipse.emf.ecore.EPackage
-import fr.unice.i3s.sigma.scala.utils._
+import scala.collection.JavaConversions._
 import fr.unice.i3s.sigma.scala.mtt.TextTemplate
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EStructuralFeature

@@ -13,16 +13,15 @@ import org.eclipse.emf.ecore.EcorePackage
 import org.eclipse.emf.ecore.EClass
 import collection.JavaConversions._
 import org.eclipse.emf.ecore.EAttribute
-import fr.unice.i3s.sigma.scala.utils.eListAsScalaImmutableList
-import fr.unice.i3s.sigma.scala.utils.richEObject
 import org.scalatest.junit.JUnitRunner
 import fr.unice.i3s.sigma.scala.utils._
 import fr.unice.i3s.sigma.scala.construct.AutoContainment
 import org.eclipse.emf.ecore.EClassifier
 import org.eclipse.emf.ecore.ETypedElement
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
 @RunWith(classOf[JUnitRunner])
-class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
+class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
 
   import EcorePackageScalaSupport._
 

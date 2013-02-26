@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.utils
+package fr.unice.i3s.sigma.scala.core.util
 
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Status
