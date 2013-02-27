@@ -17,14 +17,15 @@ object Decorators {
   }
 
   def stripWhitespace(tabSize: Int): Decorator = { text ⇒
-    // don't eat new lines
-    if (text == endl) {
+    val expandedText = text replace ("\t", " " * tabSize)
+    var lines = (expandedText split endl).toList
+
+    if (lines.size < 2) {
+      // do not eat a endls and single lines
       text
     } else {
       // expand tabs
-      val expandedText = text replace ("\t", " " * tabSize)
       // split
-      var lines = (expandedText split endl).toList
 
       if (!lines.isEmpty) {
         // longest whitespace prefix of non-empty lines
