@@ -1,21 +1,19 @@
 package fr.unice.i3s.sigma.scala.tools
 
 import java.io.File
-
 import scala.collection.JavaConversions.asScalaBuffer
-
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass
 import org.eclipse.emf.codegen.ecore.genmodel.GenFeature
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
 import org.eclipse.emf.codegen.util.ImportManager
-
 import fr.unice.i3s.sigma.scala.construct.EMFBuilder
 import fr.unice.i3s.sigma.scala.mtt.TextTemplate
 import fr.unice.i3s.sigma.scala.common.util.IOUtils.using
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
-class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate {
+class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate with EMFScalaSupport {
 
   override def stripWhitespace = true
 
@@ -52,7 +50,7 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     val featuresMap = pkg.getGenClasses
       .filter(c ⇒ !(skipTypes contains c.getName))
       .flatMap(_.getGenFeatures)
-      .filter(f ⇒ !f.isDerived && f.isChangeable && !(nameConflicts contains f.getName))
+      .filter(f ⇒ !f.isDerived && f.isChangeable && !(nameConflicts contains f.getName) && (f.isBidirectional implies !f.isContainer))
       .groupBy(_.getName)
 
     // are there any two or more methods that have the same names?  
