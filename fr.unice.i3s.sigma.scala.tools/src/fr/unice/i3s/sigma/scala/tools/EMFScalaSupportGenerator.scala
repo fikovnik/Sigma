@@ -17,6 +17,8 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 // get replaced by a Type macro later
 class EClassScalaSupportTemplate(clazz: GenClass, scalaPkgName: String, scalaUnitName: String) extends TextTemplate {
 
+  require(clazz != null)
+
   override def render {
     val importManager = new ImportManager(scalaPkgName, scalaUnitName)
     clazz.getGenModel.setImportManager(importManager)
