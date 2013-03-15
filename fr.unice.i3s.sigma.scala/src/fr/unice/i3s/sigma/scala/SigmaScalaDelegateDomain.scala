@@ -12,8 +12,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.eclipse.emf.ecore.EValidator
 import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
-import fr.unice.i3s.sigma.scala.utils._
-import fr.unice.i3s.sigma.core.{ ValidationResult => JValidationResult }
+import fr.unice.i3s.sigma.core.{ ValidationResult ⇒ JValidationResult }
 import org.eclipse.emf.common.util.EList
 import fr.unice.i3s.sigma.core.ISigmaQuickFix
 import fr.unice.i3s.sigma.delegates.SigmaQuickFix
@@ -21,6 +20,7 @@ import org.eclipse.emf.ecore.EObject
 import java.lang.reflect.Method
 import fr.unice.i3s.sigma.delegates.ISigmaValidationDelegate
 import scala.beans.BeanProperty
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
 final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
@@ -42,7 +42,7 @@ final object SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
 }
 
-final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
+final class SigmaScalaDelegateDomain extends SigmaDelegateDomain with EMFScalaSupport {
   import SigmaScalaDelegateDomain._
 
   override def getURI = {
@@ -56,7 +56,7 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
       // support for scala objects
       try {
         clazz = Class.forName(className + "$");
-      } catch { case _: Throwable => }
+      } catch { case _: Throwable ⇒ }
     }
 
     clazz
@@ -64,22 +64,22 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
   override def classifierName(c: EClassifier) = {
     c match {
-      case t: EDataType => TYPE_MAPPING.get(t.getInstanceClassName).getOrElse(t.getInstanceClass.getSimpleName)
-      case t: EClass => Option(c.getName).orElse(Option(c.getInstanceTypeName)).getOrElse("")
+      case t: EDataType ⇒ TYPE_MAPPING.get(t.getInstanceClassName).getOrElse(t.getInstanceClass.getSimpleName)
+      case t: EClass ⇒ Option(c.getName).orElse(Option(c.getInstanceTypeName)).getOrElse("")
     }
   }
 
   override def classifierTypeName(c: EClassifier) = {
     c.getName + (c.getETypeParameters match {
-      case p if p.isEmpty => ""
-      case p => p.map(_.getName).mkString("[", ",", "]")
+      case p if p.isEmpty ⇒ ""
+      case p ⇒ p.map(_.getName).mkString("[", ",", "]")
     })
   }
 
   def classifierTypeParameters(c: EClassifier) = {
     c.getETypeParameters match {
-      case p if p.isEmpty => ""
-      case p => p.map(t =>
+      case p if p.isEmpty ⇒ ""
+      case p ⇒ p.map(t ⇒
         t.getName + " <: " + t.getEBounds.map(genericType(_)).mkString("&")).mkString("[", ",", "]")
     }
   }
@@ -130,17 +130,17 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
 
   override def processResult(eType: ETypedElement, o: Object) = {
     super.processResult(eType, o match {
-      case c: Option[_] => c.getOrElse(null)
-      case c: List[_] => scalaListAsEList(c)
-      case _ => o
+      case c: Option[_] ⇒ c.getOrElse(null)
+      case c: List[_] ⇒ scalaListAsEList(c)
+      case _ ⇒ o
     })
   }
 
   override def processArgument(eType: ETypedElement, o: Object) = {
     if (eType.isMany) {
       o match {
-        case c: EList[_] => eListAsScalaImmutableList(c)
-        case _ => o
+        case c: EList[_] ⇒ eListAsScalaImmutableList(c)
+        case _ ⇒ o
       }
     } else {
       o
@@ -150,9 +150,9 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
   override def checkElementType(eType: ETypedElement, sType: Type): Boolean = {
     if (!eType.isRequired) {
       sType match {
-        case c: ParameterizedType if classOf[Option[_]].isAssignableFrom(c.getRawType.asInstanceOf[Class[_]]) =>
+        case c: ParameterizedType if classOf[Option[_]].isAssignableFrom(c.getRawType.asInstanceOf[Class[_]]) ⇒
           checkClassifierType(eType.getEType, c.getActualTypeArguments()(0))
-        case _ => super.checkElementType(eType, sType)
+        case _ ⇒ super.checkElementType(eType, sType)
       }
     } else {
       super.checkElementType(eType, sType)
@@ -162,15 +162,15 @@ final class SigmaScalaDelegateDomain extends SigmaDelegateDomain {
   override def toSigmaValidationResult(status: Any, delegate: ISigmaValidationDelegate, eObject: EObject): JValidationResult = {
     status match {
       //      case Option[String] => super.toSigmaValidationResult(s.get, delegate, constraint, `object`)
-      case vr: ValidationResult => vr match {
-        case _: OK => JValidationResult.ok()
-        case Info(message) => JValidationResult.info(message)
-        case Warning(message, quickFix) => JValidationResult.warning(message, new SigmaScalaQuickFix(quickFix))
-        case Error(message) => JValidationResult.error(message)
-        case _: Cancel => JValidationResult.cancel()
+      case vr: ValidationResult ⇒ vr match {
+        case _: OK ⇒ JValidationResult.ok()
+        case Info(message) ⇒ JValidationResult.info(message)
+        case Warning(message, quickFix) ⇒ JValidationResult.warning(message, new SigmaScalaQuickFix(quickFix))
+        case Error(message) ⇒ JValidationResult.error(message)
+        case _: Cancel ⇒ JValidationResult.cancel()
       }
 
-      case _ => super.toSigmaValidationResult(status, delegate, eObject)
+      case _ ⇒ super.toSigmaValidationResult(status, delegate, eObject)
     }
   }
 

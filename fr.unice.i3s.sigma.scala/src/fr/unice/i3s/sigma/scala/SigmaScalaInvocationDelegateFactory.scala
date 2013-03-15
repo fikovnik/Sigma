@@ -1,6 +1,5 @@
 package fr.unice.i3s.sigma.scala
 
-import fr.unice.i3s.sigma.scala.utils._
 import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EOperation.Internal.InvocationDelegate.Factory
 import fr.unice.i3s.sigma.delegates.SigmaInvocationDelegateFactory

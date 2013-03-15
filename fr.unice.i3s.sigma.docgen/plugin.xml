@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.equinox.preferences.preferences">
+      <initializer
+            class="fr.unice.i3s.sigma.docgen.core.internal.DocgenPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="fr.unice.i3s.sigma.docgen.ui.preferences.DefaultPreferences"
+            class="fr.unice.i3s.sigma.docgen.graphviz.ui.internal.preferences.DefaultPreferencePage"
+            id="fr.unice.i3s.sigma.docgen.graphviz.ui.preferences.DefaultPreferences"
+            name="Graphwiz Preferences">
+      </page>
+      <page
+            class="fr.unice.i3s.sigma.docgen.ui.internal.preferences.DefaultPreferencePage"
+            id="fr.unice.i3s.sigma.docgen.ui.preferences.DefaultPreferences"
+            name="Docgen Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               label="Sigma">
+            <command
+                  commandId="fr.unice.i3s.sigma.docgen.graphviz.ui.commands.exportClassDiagram"
+                  icon="icons/elcl16/export-file.png"
+                  label="Export Class Diagram"
+                  style="push"
+                  tooltip="Exports selected elements as class diagram">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="fr.unice.i3s.sigma.docgen.graphviz.ui.ecoreElementsSelected">
+                  </reference>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="fr.unice.i3s.sigma.docgen.graphviz.ui.commands"
+            name="Sigma Graphviz commands">
+      </category>
+      <command
+            categoryId="fr.unice.i3s.sigma.docgen.graphviz.ui.commands"
+            defaultHandler="fr.unice.i3s.sigma.docgen.graphviz.ui.internal.handlers.ExportClassDiagramHandler"
+            id="fr.unice.i3s.sigma.docgen.graphviz.ui.commands.exportClassDiagram"
+            name="Export Class Diagram">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="fr.unice.i3s.sigma.docgen.graphviz.ui.ecoreElementsSelected">
+         <or>
+            <with
+                  variable="activeMenuSelection">
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <instanceof
+                        value="org.eclipse.emf.ecore.EPackage">
+                  </instanceof>
+               </iterate>
+               <count
+                     value="1">
+               </count>
+            </with>
+            <with
+                  variable="activeMenuSelection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <instanceof
+                        value="org.eclipse.emf.ecore.EClass">
+                  </instanceof>
+               </iterate>
+            </with>
+         </or>
+      </definition>
+   </extension>
+
+</plugin>

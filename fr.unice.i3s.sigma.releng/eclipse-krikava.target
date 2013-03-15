@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="e37-krikava" sequenceNumber="27">
+<target name="e37-krikava" sequenceNumber="28">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="com.google.guava.runtime.feature.feature.group" version="11.0.1"/>
 <unit id="com.google.guava.sdk.feature.feature.group" version="11.0.1"/>
 <repository location="file:/Users/krikava/Development/p2-mirrors/repository/google-guava/"/>
 </location>
-<location path="${project_loc}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
 <unit id="org.eclipse.swtbot.eclipse.test.junit4.feature.group" version="2.0.5.20111003_1754-3676ac8-dev-e36"/>
@@ -30,5 +29,6 @@
 <unit id="org.scala-ide.sdt.feature.feature.group" version="2.1.0.m3-2_10-201301031729-eb61d7f"/>
 <repository location="file:/Users/krikava/Development/p2-mirrors/repository/scala-ide/"/>
 </location>
+<location path="${container_loc}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
 </locations>
 </target>

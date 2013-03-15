@@ -6,8 +6,8 @@ import org.scalatest.matchers.MustMatchers
 import org.scalatest.mock.MockitoSugar
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass
 import org.mockito.Mockito._
-import org.mockito.Matchers.{ eq => eeq }
-import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain.{ instance => domain }
+import org.mockito.Matchers.{ eq ⇒ eeq }
+import fr.unice.i3s.sigma.scala.SigmaScalaDelegateDomain.{ instance ⇒ domain }
 import org.mockito.Matchers
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
@@ -15,9 +15,10 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory
+import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
 
 @RunWith(classOf[JUnitRunner])
-class ScalaEcoreExtensionsGenClassGeneratorAdapterTest extends WordSpec with MustMatchers with MockitoSugar {
+class ScalaEcoreExtensionsGenClassGeneratorAdapterTest extends WordSpec with MustMatchers with MockitoSugar with EMFScalaSupport {
 
   "isScalaExtensionEnabled" must {
     "returns false when annotation is missing" in {

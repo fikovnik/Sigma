@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="fr.unice.i3s.sigma.scala.feature"
-      label="SIGMA Scala Support"
+      label="%featureName"
       version="1.0.0.qualifier"
-      provider-name="I3S Laboratory">
+      provider-name="%providerName">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="https://github.com/fikovnik/sigma
+feature.properties
+license.html">
+      %description
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+      %copyright
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="%licenseURL">
+      %license
    </license>
 
    <includes
@@ -37,6 +39,13 @@
 
    <plugin
          id="fr.unice.i3s.sigma.scala.scalatest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.unice.i3s.sigma.docgen"
          download-size="0"
          install-size="0"
          version="0.0.0"
