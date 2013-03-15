@@ -1,17 +1,19 @@
 package fr.unice.i3s.sigma.scala.tools
 
-import scala.collection.JavaConversions._
-import fr.unice.i3s.sigma.scala.tools._
-import fr.unice.i3s.sigma.scala.common.util.IOUtils.using
-import org.eclipse.emf.ecore.EPackage
 import java.io.File
-import fr.unice.i3s.sigma.scala.mtt.TextTemplate
-import org.eclipse.emf.codegen.ecore.genmodel.GenFeature
+
+import scala.collection.JavaConversions.asScalaBuffer
+
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass
-import org.eclipse.emf.codegen.ecore.genmodel.GenClassifier
+import org.eclipse.emf.codegen.ecore.genmodel.GenFeature
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
-import org.eclipse.emf.codegen.util.ImportManager
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
+import org.eclipse.emf.codegen.util.ImportManager
+import org.eclipse.emf.common.util.URI
+
+import fr.unice.i3s.sigma.scala.common.util.EMFUtils
+import fr.unice.i3s.sigma.scala.common.util.IOUtils.using
+import fr.unice.i3s.sigma.scala.mtt.TextTemplate
 
 // we do not have to worry much about this class since it will
 // get replaced by a Type macro later
@@ -118,7 +120,12 @@ class EPackageScalaSupportTemplate(pkg: GenPackage, scalaPkgName: String, scalaU
 
 class EMFScalaSupportGenerator {
 
-  def generate(baseDir: File, model: GenModel, pkgNameOpt: Option[String] = None) {
+  def generate(baseDir: File, genModelURI: URI, pkgName: String) {
+    val (genModel, rs) = EMFUtils.IO.load[GenModel](genModelURI)
+    generate(baseDir, genModel, Option(pkgName))
+  }
+
+  def generate(baseDir: File, model: GenModel, pkgNameOpt: Option[String]) {
     for (pkg ← model.getGenPackages) {
 
       val scalaPkgName = pkgNameOpt match {
@@ -133,18 +140,20 @@ class EMFScalaSupportGenerator {
         val scalaUnitName = clazz.getName + "ScalaSupport"
         val scalaClazz = new EClassScalaSupportTemplate(clazz, scalaPkgName, scalaUnitName)
 
-        using(new File(dir, scalaUnitName + ".scala")) { f ⇒
+        val f = new File(dir, scalaUnitName + ".scala")
+        using(f) { writer ⇒
           println("Generated: " + scalaUnitName)
-          scalaClazz >> f
+          scalaClazz >> writer
         }
       }
 
       val scalaUnitName = pkg.getPackageName.capitalize + "PackageScalaSupport"
       val scalaClazz = new EPackageScalaSupportTemplate(pkg, scalaPkgName, scalaUnitName)
 
-      using(new File(dir, scalaUnitName + ".scala")) { f ⇒
+      val f = new File(dir, scalaUnitName + ".scala")
+      using(f) { writer ⇒
         println("Generated: " + scalaUnitName)
-        scalaClazz >> f
+        scalaClazz >> writer
       }
     }
   }
@@ -165,12 +174,11 @@ object EMFScalaSupportGenerator extends App {
     scala.sys.exit(1)
   }
 
-  val (genModel, rs) = load[GenModel](args(0))
   val output = new File(args(1))
-  val pkgNameOpt = if (args.length != 3) None else Some(args(2))
+  val pkgName = if (args.length != 3) null else args(2)
 
   val generator = new EMFScalaSupportGenerator
-  generator.generate(output, genModel, pkgNameOpt)
+  generator.generate(output, URI.createFileURI(args(0)), pkgName)
 
 }
 
