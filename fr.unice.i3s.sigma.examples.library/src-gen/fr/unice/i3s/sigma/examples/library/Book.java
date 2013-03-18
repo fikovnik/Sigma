@@ -1,12 +1,9 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -87,7 +84,7 @@ public interface Book extends EObject {
 	 * It is bidirectional and its opposite is '{@link fr.unice.i3s.sigma.examples.library.Library#getBooks <em>Books</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Library</em>' reference isn't clear,
+	 * If the meaning of the '<em>Library</em>' container reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->

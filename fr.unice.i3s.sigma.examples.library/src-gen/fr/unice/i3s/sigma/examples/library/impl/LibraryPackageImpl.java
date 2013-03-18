@@ -1,18 +1,6 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library.impl;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EValidator;
-import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
@@ -20,7 +8,22 @@ import fr.unice.i3s.sigma.examples.library.LibraryFactory;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
 import fr.unice.i3s.sigma.examples.library.Member;
+import fr.unice.i3s.sigma.examples.library.MembershipType;
+
 import fr.unice.i3s.sigma.examples.library.util.LibraryValidator;
+
+import java.util.Date;
+
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EValidator;
+
+import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -56,6 +59,20 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * @generated
 	 */
 	private EClass loanEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum membershipTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType dateEDataType = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -294,6 +311,15 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getMember_MembershipType() {
+		return (EAttribute)memberEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getLoan() {
 		return loanEClass;
 	}
@@ -323,6 +349,24 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 */
 	public EAttribute getLoan_Date() {
 		return (EAttribute)loanEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getMembershipType() {
+		return membershipTypeEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getDate() {
+		return dateEDataType;
 	}
 
 	/**
@@ -373,11 +417,18 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		createEReference(memberEClass, MEMBER__LIBRARY);
 		createEReference(memberEClass, MEMBER__LOANS);
 		createEReference(memberEClass, MEMBER__BOOKS);
+		createEAttribute(memberEClass, MEMBER__MEMBERSHIP_TYPE);
 
 		loanEClass = createEClass(LOAN);
 		createEReference(loanEClass, LOAN__BOOK);
 		createEReference(loanEClass, LOAN__MEMBER);
 		createEAttribute(loanEClass, LOAN__DATE);
+
+		// Create enums
+		membershipTypeEEnum = createEEnum(MEMBERSHIP_TYPE);
+
+		// Create data types
+		dateEDataType = createEDataType(DATE);
 	}
 
 	/**
@@ -434,11 +485,20 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		initEReference(getMember_Library(), this.getLibrary(), this.getLibrary_Members(), "library", null, 1, 1, Member.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getMember_Loans(), this.getLoan(), null, "loans", null, 0, -1, Member.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
 		initEReference(getMember_Books(), this.getBook(), null, "books", null, 0, -1, Member.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getMember_MembershipType(), this.getMembershipType(), "membershipType", null, 1, 1, Member.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(loanEClass, Loan.class, "Loan", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLoan_Book(), this.getBook(), null, "book", null, 1, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getLoan_Member(), this.getMember(), null, "member", null, 1, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getLoan_Date(), ecorePackage.getEDate(), "date", null, 0, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getLoan_Date(), this.getDate(), "date", null, 0, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+		// Initialize enums and add enum literals
+		initEEnum(membershipTypeEEnum, MembershipType.class, "MembershipType");
+		addEEnumLiteral(membershipTypeEEnum, MembershipType.STANDARD);
+		addEEnumLiteral(membershipTypeEEnum, MembershipType.EXCLUSIVE);
+
+		// Initialize data types
+		initEDataType(dateEDataType, Date.class, "Date", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -462,9 +522,9 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		  (this, 
 		   source, 
 		   new String[] {
-			 "invocationDelegates", "http://www.i3s.unice.fr/Sigma",
-			 "settingDelegates", "http://www.i3s.unice.fr/Sigma",
-			 "validationDelegates", "http://www.i3s.unice.fr/Sigma"
+			 "invocationDelegates", "http://www.i3s.unice.fr/Sigma/Scala",
+			 "settingDelegates", "http://www.i3s.unice.fr/Sigma/Scala",
+			 "validationDelegates", "http://www.i3s.unice.fr/Sigma/Scala"
 		   });					
 		addAnnotation
 		  (bookEClass, 

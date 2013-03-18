@@ -1,33 +1,31 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library.impl;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.InternalEList;
 
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
 import fr.unice.i3s.sigma.examples.library.Member;
+
+import java.lang.reflect.InvocationTargetException;
+
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
+
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -173,38 +171,43 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	}
 
 	/**
-	 * The cached invocation delegate for the '{@link #getBookByName(java.lang.String) <em>Get Book By Name</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getBookByName(java.lang.String)
-	 * @generated
-	 * @ordered
-	 */
-	protected static final EOperation.Internal.InvocationDelegate GET_BOOK_BY_NAME_STRING__EINVOCATION_DELEGATE = ((EOperation.Internal)LibraryPackage.Literals.LIBRARY___GET_BOOK_BY_NAME__STRING).getInvocationDelegate();
-
-	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	public Book getBookByName(String name) {
-		try {
-			return (Book)GET_BOOK_BY_NAME_STRING__EINVOCATION_DELEGATE.dynamicInvoke(this, new BasicEList.UnmodifiableEList<Object>(1, new Object[]{name}));
-		}
-		catch (InvocationTargetException ite) {
-			throw new WrappedException(ite);
-		}
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * The cached invocation delegate for the '{@link #toString() <em>To String</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #toString()
 	 * @generated
-	 * @ordered
 	 */
-	protected static final EOperation.Internal.InvocationDelegate TO_STRING__EINVOCATION_DELEGATE = ((EOperation.Internal)LibraryPackage.Literals.LIBRARY___TO_STRING).getInvocationDelegate();
+	public String toString() {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case LibraryPackage.LIBRARY__BOOKS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getBooks()).basicAdd(otherEnd, msgs);
+			case LibraryPackage.LIBRARY__MEMBERS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getMembers()).basicAdd(otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -330,38 +333,6 @@ public class LibraryImpl extends EObjectImpl implements Library {
 				return toString();
 		}
 		return super.eInvoke(operationID, arguments);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		try {
-			return (String)TO_STRING__EINVOCATION_DELEGATE.dynamicInvoke(this, null);
-		}
-		catch (InvocationTargetException ite) {
-			throw new WrappedException(ite);
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case LibraryPackage.LIBRARY__BOOKS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getBooks()).basicAdd(otherEnd, msgs);
-			case LibraryPackage.LIBRARY__MEMBERS:
-				return ((InternalEList<InternalEObject>)(InternalEList<?>)getMembers()).basicAdd(otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 } //LibraryImpl

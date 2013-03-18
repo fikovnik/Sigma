@@ -1,29 +1,26 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library.impl;
-
-import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
+
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
+
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -81,16 +78,6 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @ordered
 	 */
 	protected int copies = COPIES_EDEFAULT;
-
-	/**
-	 * The cached setting delegate for the '{@link #getLoans() <em>Loans</em>}' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getLoans()
-	 * @generated
-	 * @ordered
-	 */
-	protected EStructuralFeature.Internal.SettingDelegate LOANS__ESETTING_DELEGATE = ((EStructuralFeature.Internal)LibraryPackage.Literals.BOOK__LOANS).getSettingDelegate();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -199,20 +186,13 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	public EList<Loan> getLoans() {
-		return (EList<Loan>)LOANS__ESETTING_DELEGATE.dynamicGet(this, null, 0, true, false);
+		// TODO: implement this method to return the 'Loans' reference list
+		// Ensure that you remove @generated or mark it @generated NOT
+		// The list is expected to implement org.eclipse.emf.ecore.util.InternalEList and org.eclipse.emf.ecore.EStructuralFeature.Setting
+		// so it's likely that an appropriate subclass of org.eclipse.emf.ecore.util.EcoreEList should be used.
+		throw new UnsupportedOperationException();
 	}
-
-	/**
-	 * The cached invocation delegate for the '{@link #isAvailable() <em>Is Available</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #isAvailable()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final EOperation.Internal.InvocationDelegate IS_AVAILABLE__EINVOCATION_DELEGATE = ((EOperation.Internal)LibraryPackage.Literals.BOOK___IS_AVAILABLE).getInvocationDelegate();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -220,12 +200,9 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	public boolean isAvailable() {
-		try {
-			return (Boolean)IS_AVAILABLE__EINVOCATION_DELEGATE.dynamicInvoke(this, null);
-		}
-		catch (InvocationTargetException ite) {
-			throw new WrappedException(ite);
-		}
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -297,7 +274,6 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -350,7 +326,7 @@ public class BookImpl extends EObjectImpl implements Book {
 			case LibraryPackage.BOOK__LIBRARY:
 				return getLibrary() != null;
 			case LibraryPackage.BOOK__LOANS:
-				return LOANS__ESETTING_DELEGATE.dynamicIsSet(this, null, 0);
+				return !getLoans().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

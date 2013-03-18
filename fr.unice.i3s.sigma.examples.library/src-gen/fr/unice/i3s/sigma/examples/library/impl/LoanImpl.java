@@ -1,23 +1,21 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library.impl;
-
-import java.util.Date;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
 import fr.unice.i3s.sigma.examples.library.Member;
+
+import java.util.Date;
+
+import org.eclipse.emf.common.notify.Notification;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
  * <!-- begin-user-doc -->

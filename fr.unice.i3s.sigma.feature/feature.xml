@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="fr.unice.i3s.sigma.feature"
+      id="fr.unice.i3s.sigma.scala.feature"
       label="%featureName"
       version="1.0.0.qualifier"
       provider-name="%providerName">
 
-   <description url="https://github.com/fikovnik/sigma">
+   <description url="https://github.com/fikovnik/sigma
+feature.properties
+license.html">
       %description
    </description>
 
@@ -17,33 +19,33 @@
       %license
    </license>
 
-   <requires>
-      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.ecore" version="2.7.0" match="greaterOrEqual"/>
-      <import plugin="com.google.guava" version="11.0.1" match="greaterOrEqual"/>
-      <import plugin="fr.unice.i3s.sigma.core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.lang3" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.edit" version="2.7.2" match="greaterOrEqual"/>
-   </requires>
+   <includes
+         id="fr.unice.i3s.sigma.feature"
+         version="0.0.0"/>
 
    <plugin
-         id="fr.unice.i3s.sigma.core"
+         id="fr.unice.i3s.sigma.scala"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="fr.unice.i3s.sigma.delegates"
+         id="fr.unice.i3s.sigma.scala.tools"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="fr.unice.i3s.sigma.ui.ide"
+         id="fr.unice.i3s.sigma.scala.scalatest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="fr.unice.i3s.sigma.docgen"
          download-size="0"
          install-size="0"
          version="0.0.0"

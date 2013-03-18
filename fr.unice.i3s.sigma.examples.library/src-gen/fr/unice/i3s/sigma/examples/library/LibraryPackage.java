@@ -1,13 +1,11 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
@@ -26,7 +24,7 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see fr.unice.i3s.sigma.examples.library.LibraryFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/Ecore invocationDelegates='http://www.i3s.unice.fr/Sigma' settingDelegates='http://www.i3s.unice.fr/Sigma' validationDelegates='http://www.i3s.unice.fr/Sigma'"
+ *        annotation="http://www.eclipse.org/emf/2002/Ecore invocationDelegates='http://www.i3s.unice.fr/Sigma/Scala' settingDelegates='http://www.i3s.unice.fr/Sigma/Scala' validationDelegates='http://www.i3s.unice.fr/Sigma/Scala'"
  *        annotation="http://www.i3s.unice.fr/Sigma delegate='fr.unice.i3s.sigma.examples.library.delegate'"
  * @generated
  */
@@ -265,13 +263,22 @@ public interface LibraryPackage extends EPackage {
 	int MEMBER__BOOKS = 3;
 
 	/**
+	 * The feature id for the '<em><b>Membership Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEMBER__MEMBERSHIP_TYPE = 4;
+
+	/**
 	 * The number of structural features of the '<em>Member</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MEMBER_FEATURE_COUNT = 4;
+	int MEMBER_FEATURE_COUNT = 5;
 
 	/**
 	 * The number of operations of the '<em>Member</em>' class.
@@ -336,6 +343,27 @@ public interface LibraryPackage extends EPackage {
 	 * @ordered
 	 */
 	int LOAN_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link fr.unice.i3s.sigma.examples.library.MembershipType <em>Membership Type</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.unice.i3s.sigma.examples.library.MembershipType
+	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getMembershipType()
+	 * @generated
+	 */
+	int MEMBERSHIP_TYPE = 4;
+
+	/**
+	 * The meta object id for the '<em>Date</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see java.util.Date
+	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getDate()
+	 * @generated
+	 */
+	int DATE = 5;
+
 
 	/**
 	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.library.Library <em>Library</em>}'.
@@ -530,6 +558,17 @@ public interface LibraryPackage extends EPackage {
 	EReference getMember_Books();
 
 	/**
+	 * Returns the meta object for the attribute '{@link fr.unice.i3s.sigma.examples.library.Member#getMembershipType <em>Membership Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Membership Type</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Member#getMembershipType()
+	 * @see #getMember()
+	 * @generated
+	 */
+	EAttribute getMember_MembershipType();
+
+	/**
 	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.library.Loan <em>Loan</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -571,6 +610,27 @@ public interface LibraryPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getLoan_Date();
+
+	/**
+	 * Returns the meta object for enum '{@link fr.unice.i3s.sigma.examples.library.MembershipType <em>Membership Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Membership Type</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.MembershipType
+	 * @generated
+	 */
+	EEnum getMembershipType();
+
+	/**
+	 * Returns the meta object for data type '{@link java.util.Date <em>Date</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>Date</em>'.
+	 * @see java.util.Date
+	 * @model instanceClass="java.util.Date"
+	 * @generated
+	 */
+	EDataType getDate();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -746,6 +806,14 @@ public interface LibraryPackage extends EPackage {
 		EReference MEMBER__BOOKS = eINSTANCE.getMember_Books();
 
 		/**
+		 * The meta object literal for the '<em><b>Membership Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MEMBER__MEMBERSHIP_TYPE = eINSTANCE.getMember_MembershipType();
+
+		/**
 		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.library.impl.LoanImpl <em>Loan</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -778,6 +846,26 @@ public interface LibraryPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute LOAN__DATE = eINSTANCE.getLoan_Date();
+
+		/**
+		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.library.MembershipType <em>Membership Type</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.unice.i3s.sigma.examples.library.MembershipType
+		 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getMembershipType()
+		 * @generated
+		 */
+		EEnum MEMBERSHIP_TYPE = eINSTANCE.getMembershipType();
+
+		/**
+		 * The meta object literal for the '<em>Date</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see java.util.Date
+		 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getDate()
+		 * @generated
+		 */
+		EDataType DATE = eINSTANCE.getDate();
 
 	}
 

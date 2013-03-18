@@ -9,7 +9,7 @@
 		<relativePath>../fr.unice.i3s.sigma.releng/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>fr.unice.i3s.sigma.feature</artifactId>
+	<artifactId>fr.unice.i3s.sigma.scala.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
 
 	<build>
@@ -23,6 +23,6 @@
 				<artifactId>tycho-p2-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>
+	</build>	
 </project>
 

@@ -1,26 +1,26 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library.impl;
-
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
 import fr.unice.i3s.sigma.examples.library.Member;
+import fr.unice.i3s.sigma.examples.library.MembershipType;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
+
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->
@@ -33,6 +33,7 @@ import fr.unice.i3s.sigma.examples.library.Member;
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.MemberImpl#getLibrary <em>Library</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.MemberImpl#getLoans <em>Loans</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.MemberImpl#getBooks <em>Books</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.MemberImpl#getMembershipType <em>Membership Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -60,24 +61,24 @@ public class MemberImpl extends EObjectImpl implements Member {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The cached setting delegate for the '{@link #getLoans() <em>Loans</em>}' reference list.
+	 * The default value of the '{@link #getMembershipType() <em>Membership Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getLoans()
+	 * @see #getMembershipType()
 	 * @generated
 	 * @ordered
 	 */
-	protected EStructuralFeature.Internal.SettingDelegate LOANS__ESETTING_DELEGATE = ((EStructuralFeature.Internal)LibraryPackage.Literals.MEMBER__LOANS).getSettingDelegate();
+	protected static final MembershipType MEMBERSHIP_TYPE_EDEFAULT = MembershipType.STANDARD;
 
 	/**
-	 * The cached setting delegate for the '{@link #getBooks() <em>Books</em>}' reference list.
+	 * The cached value of the '{@link #getMembershipType() <em>Membership Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getBooks()
+	 * @see #getMembershipType()
 	 * @generated
 	 * @ordered
 	 */
-	protected EStructuralFeature.Internal.SettingDelegate BOOKS__ESETTING_DELEGATE = ((EStructuralFeature.Internal)LibraryPackage.Literals.MEMBER__BOOKS).getSettingDelegate();
+	protected MembershipType membershipType = MEMBERSHIP_TYPE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -165,9 +166,12 @@ public class MemberImpl extends EObjectImpl implements Member {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	public EList<Loan> getLoans() {
-		return (EList<Loan>)LOANS__ESETTING_DELEGATE.dynamicGet(this, null, 0, true, false);
+		// TODO: implement this method to return the 'Loans' reference list
+		// Ensure that you remove @generated or mark it @generated NOT
+		// The list is expected to implement org.eclipse.emf.ecore.util.InternalEList and org.eclipse.emf.ecore.EStructuralFeature.Setting
+		// so it's likely that an appropriate subclass of org.eclipse.emf.ecore.util.EcoreEList should be used.
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -175,9 +179,33 @@ public class MemberImpl extends EObjectImpl implements Member {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	public EList<Book> getBooks() {
-		return (EList<Book>)BOOKS__ESETTING_DELEGATE.dynamicGet(this, null, 0, true, false);
+		// TODO: implement this method to return the 'Books' reference list
+		// Ensure that you remove @generated or mark it @generated NOT
+		// The list is expected to implement org.eclipse.emf.ecore.util.InternalEList and org.eclipse.emf.ecore.EStructuralFeature.Setting
+		// so it's likely that an appropriate subclass of org.eclipse.emf.ecore.util.EcoreEList should be used.
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MembershipType getMembershipType() {
+		return membershipType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setMembershipType(MembershipType newMembershipType) {
+		MembershipType oldMembershipType = membershipType;
+		membershipType = newMembershipType == null ? MEMBERSHIP_TYPE_EDEFAULT : newMembershipType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, LibraryPackage.MEMBER__MEMBERSHIP_TYPE, oldMembershipType, membershipType));
 	}
 
 	/**
@@ -240,6 +268,8 @@ public class MemberImpl extends EObjectImpl implements Member {
 				return getLoans();
 			case LibraryPackage.MEMBER__BOOKS:
 				return getBooks();
+			case LibraryPackage.MEMBER__MEMBERSHIP_TYPE:
+				return getMembershipType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -249,7 +279,6 @@ public class MemberImpl extends EObjectImpl implements Member {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -258,6 +287,9 @@ public class MemberImpl extends EObjectImpl implements Member {
 				return;
 			case LibraryPackage.MEMBER__LIBRARY:
 				setLibrary((Library)newValue);
+				return;
+			case LibraryPackage.MEMBER__MEMBERSHIP_TYPE:
+				setMembershipType((MembershipType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -277,6 +309,9 @@ public class MemberImpl extends EObjectImpl implements Member {
 			case LibraryPackage.MEMBER__LIBRARY:
 				setLibrary((Library)null);
 				return;
+			case LibraryPackage.MEMBER__MEMBERSHIP_TYPE:
+				setMembershipType(MEMBERSHIP_TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -294,9 +329,11 @@ public class MemberImpl extends EObjectImpl implements Member {
 			case LibraryPackage.MEMBER__LIBRARY:
 				return getLibrary() != null;
 			case LibraryPackage.MEMBER__LOANS:
-				return LOANS__ESETTING_DELEGATE.dynamicIsSet(this, null, 0);
+				return !getLoans().isEmpty();
 			case LibraryPackage.MEMBER__BOOKS:
-				return BOOKS__ESETTING_DELEGATE.dynamicIsSet(this, null, 0);
+				return !getBooks().isEmpty();
+			case LibraryPackage.MEMBER__MEMBERSHIP_TYPE:
+				return membershipType != MEMBERSHIP_TYPE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -313,6 +350,8 @@ public class MemberImpl extends EObjectImpl implements Member {
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
 		result.append(name);
+		result.append(", membershipType: ");
+		result.append(membershipType);
 		result.append(')');
 		return result.toString();
 	}
