@@ -11,8 +11,17 @@ object IOUtils {
 
   lazy val pathSep = System.getProperty("path.separator")
 
-  def rmdir(dir: File, deleteParentDir: Boolean = true, stopOnError: Boolean = false) = {
-    def remove(f: File) = if (!f.delete && stopOnError) Terminate else Continue
+  def rmdir(dir: File,
+    deleteParentDir: Boolean = true,
+    stopOnError: Boolean = false,
+    logger: (File, Boolean) ⇒ Unit = { (_, _) ⇒ }) = {
+
+    def remove(f: File) = {
+      val r = f.delete
+      logger(f, r)
+      if (!r && stopOnError) Terminate
+      else Continue
+    }
 
     walk(dir) { e ⇒
       e match {
