@@ -1,17 +1,15 @@
-package fr.unice.i3s.sigma.scala.construct
+package fr.unice.i3s.sigma.support
 
 import scala.collection.JavaConversions._
-import scala.reflect.runtime.universe
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EcorePackage
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
-import org.scalatest.junit.JUnitRunner
-
-import fr.unice.i3s.sigma.support.EMFBuilder;
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.EMFBuilder.InitializableEObject
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {

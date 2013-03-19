@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.construct
+package fr.unice.i3s.sigma.support
 
 import org.scalatest.FunSuite
 import org.junit.runner.RunWith
