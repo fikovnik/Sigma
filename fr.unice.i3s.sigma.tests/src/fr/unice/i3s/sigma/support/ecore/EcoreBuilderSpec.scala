@@ -12,7 +12,7 @@ import org.scalatest.junit.JUnitRunner
 import fr.unice.i3s.sigma.scala.utils._
 import org.eclipse.emf.ecore.EClassifier
 import org.eclipse.emf.ecore.ETypedElement
-import fr.unice.i3s.sigma.common.EMFScalaSupport
+import fr.unice.i3s.sigma.support.EMFScalaSupport
 
 @RunWith(classOf[JUnitRunner])
 class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {

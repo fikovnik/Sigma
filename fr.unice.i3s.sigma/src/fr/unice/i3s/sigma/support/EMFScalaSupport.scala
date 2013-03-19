@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.common
+package fr.unice.i3s.sigma.support
 
 import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.EObject
@@ -8,9 +8,7 @@ import scala.reflect.{ ClassTag, classTag }
 import org.eclipse.emf.common.notify.Notifier
 import org.eclipse.emf.ecore.util.Diagnostician
 import scala.collection.GenTraversableOnce
-import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.EMap
-import fr.unice.i3s.sigma.util.DelegatingEList
 
 trait EMFScalaSupport {
 

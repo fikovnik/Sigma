@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.construct
+package fr.unice.i3s.sigma.support
 
 import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.EObject
@@ -16,7 +16,7 @@ import org.eclipse.emf.common.notify.Notification.ADD
 import org.eclipse.emf.common.notify.Notification.ADD_MANY
 import org.eclipse.emf.common.notify.Notification.SET
 import scala.reflect.runtime.universe.{ typeOf, TypeTag, runtimeMirror }
-import fr.unice.i3s.sigma.common.EMFScalaSupport
+import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.scala.core.internal.DynamicContainer
 import scala.collection.mutable.SynchronizedBuffer
 import scala.collection.mutable.ArrayBuffer

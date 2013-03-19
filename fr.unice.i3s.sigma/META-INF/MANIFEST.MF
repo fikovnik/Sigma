@@ -21,13 +21,12 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  com.typesafe.scalalogging-log4j_2.10;bundle-version="1.0.1",
  org.apache.commons.log4j-api;bundle-version="2.0.0",
  org.apache.commons.log4j-core;bundle-version="2.0.0"
-Export-Package: fr.unice.i3s.sigma.common,
- fr.unice.i3s.sigma.delegates,
- fr.unice.i3s.sigma.scala.construct,
+Export-Package: fr.unice.i3s.sigma.delegates,
  fr.unice.i3s.sigma.scala.core.util,
  fr.unice.i3s.sigma.scala.delegates.codegen,
  fr.unice.i3s.sigma.scala.mtt,
  fr.unice.i3s.sigma.scala.ui.util,
+ fr.unice.i3s.sigma.support,
  fr.unice.i3s.sigma.util
 Bundle-ClassPath: .
 Eclipse-BuddyPolicy: dependent

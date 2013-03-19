@@ -15,8 +15,8 @@ import fr.unice.i3s.sigma.scala.workflow.WorkflowComponent
 import com.typesafe.scalalogging.log4j.Logging
 import org.eclipse.emf.ecore.EcorePackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
-import fr.unice.i3s.sigma.scala.construct.EMFBuilder
-import fr.unice.i3s.sigma.common.EMFScalaSupport
+import fr.unice.i3s.sigma.support.EMFBuilder
+import fr.unice.i3s.sigma.support.EMFScalaSupport
 import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
 
 trait Utils {

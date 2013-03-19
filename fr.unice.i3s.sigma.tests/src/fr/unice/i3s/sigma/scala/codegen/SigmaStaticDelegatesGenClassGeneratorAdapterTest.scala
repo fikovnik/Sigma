@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory
-import fr.unice.i3s.sigma.common.EMFScalaSupport
+import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.scala.delegates.codegen.ScalaEcoreExtensionsGenClassGeneratorAdapter;
 
 @RunWith(classOf[JUnitRunner])

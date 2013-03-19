@@ -9,6 +9,8 @@ import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import org.scalatest.junit.JUnitRunner
+
+import fr.unice.i3s.sigma.support.EMFBuilder;
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 
 @RunWith(classOf[JUnitRunner])
