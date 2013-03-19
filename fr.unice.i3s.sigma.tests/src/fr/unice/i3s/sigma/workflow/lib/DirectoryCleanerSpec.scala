@@ -4,7 +4,7 @@ import java.io.File
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
-import fr.unice.i3s.sigma.scala.workflow.lib.DirectoryCleaner
+import fr.unice.i3s.sigma.workflow.lib.DirectoryCleaner
 import fr.unice.i3s.sigma.util.IOUtils
 import org.scalatest.junit.JUnitRunner
 
@@ -21,6 +21,7 @@ class DirectoryCleanerSpec extends FlatSpec with MustMatchers {
 
     DirectoryCleaner(tmp.getCanonicalPath)
 
+    tmp.exists must be === false
   }
 
 }

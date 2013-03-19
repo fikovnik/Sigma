@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.workflow.lib
+package fr.unice.i3s.sigma.workflow.lib
 
 import org.eclipse.emf.ecore.EcorePackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.resource.URIConverter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenEnumGeneratorAdapter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenModelGeneratorAdapter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenPackageGeneratorAdapter
-import fr.unice.i3s.sigma.scala.workflow.WorkflowComponent
+import fr.unice.i3s.sigma.workflow.WorkflowComponent
 
 case class EcoreGenerator(
   val generateEdit: Boolean = false,

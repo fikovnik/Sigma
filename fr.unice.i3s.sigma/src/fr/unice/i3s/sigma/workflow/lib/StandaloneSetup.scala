@@ -1,8 +1,8 @@
-package fr.unice.i3s.sigma.scala.workflow
+package fr.unice.i3s.sigma.workflow.lib
 
+import scala.collection.JavaConversions._
 import java.io.File
 import java.util.jar.JarFile
-import scala.collection.JavaConversions.mapAsScalaMap
 import scala.xml.XML
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.common.util.URI
@@ -16,6 +16,8 @@ import fr.unice.i3s.sigma.util.IOUtils.VisitFile
 import fr.unice.i3s.sigma.util.IOUtils.pathSep
 import fr.unice.i3s.sigma.util.IOUtils.walk
 import fr.unice.i3s.sigma.util.IOUtils.PreVisitDir
+import fr.unice.i3s.sigma.workflow.ConfigurationException
+import fr.unice.i3s.sigma.workflow.WorkflowComponent
 
 object StandaloneSetup {
   EMFUtils.IO.registerDefaultFactories

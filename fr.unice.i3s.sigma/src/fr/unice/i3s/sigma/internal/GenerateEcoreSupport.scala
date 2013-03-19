@@ -1,10 +1,10 @@
 package fr.unice.i3s.sigma.internal
 
-import fr.unice.i3s.sigma.scala.workflow.lib.DirectoryCleaner
-import fr.unice.i3s.sigma.scala.workflow.StandaloneSetup
+import fr.unice.i3s.sigma.workflow.lib.DirectoryCleaner
+import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl
-import fr.unice.i3s.sigma.scala.workflow.lib.EMFScalaSupportGenerator
+import fr.unice.i3s.sigma.workflow.lib.EMFScalaSupportGenerator
 
 object GenerateEcoreSupport extends App {
 

@@ -1,3 +1,3 @@
-package fr.unice.i3s.sigma.scala.workflow
+package fr.unice.i3s.sigma.workflow
 
 class ConfigurationException(val message: String) extends Exception(message)

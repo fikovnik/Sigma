@@ -1,6 +1,6 @@
-package fr.unice.i3s.sigma.scala.workflow.lib
+package fr.unice.i3s.sigma.workflow.lib
 
-import fr.unice.i3s.sigma.scala.workflow.WorkflowComponent
+import fr.unice.i3s.sigma.workflow.WorkflowComponent
 import java.io.File
 import fr.unice.i3s.sigma.util.IOUtils
 import com.typesafe.scalalogging.log4j.Logging
