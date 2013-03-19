@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.codegen
+package fr.unice.i3s.sigma.delegate.codegen
 
 import fr.unice.i3s.sigma.scala.utils._
 import org.scalatest.WordSpec
@@ -7,7 +7,7 @@ import org.scalatest.mock.MockitoSugar
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass
 import org.mockito.Mockito._
 import org.mockito.Matchers.{ eq ⇒ eeq }
-import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain.{ instance ⇒ domain }
+import fr.unice.i3s.sigma.delegate.SigmaDelegateDomain.{ instance ⇒ domain }
 import org.mockito.Matchers
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
@@ -16,7 +16,6 @@ import org.scalatest.junit.JUnitRunner
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelFactory
 import fr.unice.i3s.sigma.support.EMFScalaSupport
-import fr.unice.i3s.sigma.scala.delegates.codegen.ScalaEcoreExtensionsGenClassGeneratorAdapter;
 
 @RunWith(classOf[JUnitRunner])
 class SigmaStaticDelegatesGenClassGeneratorAdapterTest extends WordSpec with MustMatchers with MockitoSugar with EMFScalaSupport {

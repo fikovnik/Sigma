@@ -1,8 +1,6 @@
-package fr.unice.i3s.sigma.scala
+package fr.unice.i3s.sigma.delegate
 
 import org.junit.BeforeClass
-
-import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain;
 
 object AbstractSigmaScalaStandaloneDelegateTest {
 

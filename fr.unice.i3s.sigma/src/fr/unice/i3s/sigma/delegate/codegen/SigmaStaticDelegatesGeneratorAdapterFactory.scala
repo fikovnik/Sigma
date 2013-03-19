@@ -1,9 +1,9 @@
-package fr.unice.i3s.sigma.scala.delegates.codegen
+package fr.unice.i3s.sigma.delegate.codegen
 
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenModelGeneratorAdapterFactory
 import org.eclipse.emf.codegen.ecore.generator.GeneratorAdapterFactory
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
-import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
+import fr.unice.i3s.sigma.delegate.SigmaDelegateDomain
 
 object ScalaEcoreExtensionsGeneratorAdapterFactory {
 

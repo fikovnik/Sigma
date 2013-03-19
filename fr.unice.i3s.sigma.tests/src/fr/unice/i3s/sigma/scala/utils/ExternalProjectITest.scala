@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala
+package fr.unice.i3s.sigma.scala.utils
 
 import scala.collection.JavaConversions._
 import java.io.File
@@ -25,6 +25,7 @@ import fr.unice.i3s.sigma.scala.utils.Util
 import fr.unice.i3s.sigma.util.EMFUtils
 import org.junit.runner.Result
 import scala.Array.canBuildFrom
+import fr.unice.i3s.sigma.Activator
 
 trait ExternalProjectITest {
 

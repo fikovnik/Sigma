@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala
+package fr.unice.i3s.sigma.delegate
 
 import org.eclipse.emf.ecore.util.Diagnostician
 import org.junit.Assert._

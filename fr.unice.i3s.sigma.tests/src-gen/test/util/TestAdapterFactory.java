@@ -13,7 +13,7 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 
-import fr.unice.i3s.sigma.delegates.*;
+import fr.unice.i3s.sigma.delegate.*;
 
 import test.A;
 import test.B;

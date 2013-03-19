@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala
+package fr.unice.i3s.sigma
 
 import org.osgi.framework.BundleActivator
 import org.osgi.framework.BundleContext

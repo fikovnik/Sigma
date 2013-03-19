@@ -4,28 +4,28 @@
    <extension
          point="org.eclipse.emf.ecore.invocation_delegate">
       <factory
-            class="fr.unice.i3s.sigma.delegates.SigmaScalaInvocationDelegateFactory"
+            class="fr.unice.i3s.sigma.delegate.SigmaInvocationDelegateFactory"
             uri="http://www.i3s.unice.fr/Sigma/Scala">
       </factory>
    </extension>
    <extension
          point="org.eclipse.emf.ecore.setting_delegate">
       <factory
-            class="fr.unice.i3s.sigma.delegates.SigmaScalaSettingDelegateFactory"
+            class="fr.unice.i3s.sigma.delegate.SigmaSettingDelegateFactory"
             uri="http://www.i3s.unice.fr/Sigma/Scala">
       </factory>
    </extension>
    <extension
          point="org.eclipse.emf.ecore.validation_delegate">
       <delegate
-            class="fr.unice.i3s.sigma.delegates.SigmaScalaValidationDelegateFactory"
+            class="fr.unice.i3s.sigma.delegate.SigmaValidationDelegateFactory"
             uri="http://www.i3s.unice.fr/Sigma/Scala">
       </delegate>
    </extension>
    <extension
          point="org.eclipse.emf.codegen.ecore.generatorAdapters">
       <adapterFactory
-            class="fr.unice.i3s.sigma.scala.delegates.codegen.SigmaStaticDelegatesGeneratorAdapterFactory">
+            class="fr.unice.i3s.sigma.delegate.codegen.SigmaStaticDelegatesGeneratorAdapterFactory">
       </adapterFactory>
    </extension>
 </plugin>

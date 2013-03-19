@@ -1,9 +1,11 @@
-package fr.unice.i3s.sigma.delegates
+package fr.unice.i3s.sigma.delegate
 
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.EStructuralFeature.Internal.SettingDelegate.Factory
 import java.lang.reflect.Method
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport.EBoolean
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport.EBooleanObject
 
 final class SigmaSettingDelegateFactory extends AbstractSigmaDelegateFactory[EStructuralFeature] with Factory with EcorePackageScalaSupport {
   import EcorePackageScalaSupport._

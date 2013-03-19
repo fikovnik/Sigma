@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.codegen
+package fr.unice.i3s.sigma.delegate.codegen
 
 import java.io.File
 import scala.Array.canBuildFrom
@@ -28,10 +28,10 @@ import org.scalatest.Finders
 import org.scalatest.FunSuite
 import com.google.common.io.Files.copy
 import com.google.common.io.Resources
-import fr.unice.i3s.sigma.scala.Activator
+import fr.unice.i3s.sigma.Activator
 import fr.unice.i3s.sigma.scala.utils.Util
 import org.scalatest.junit.JUnitRunner
-import fr.unice.i3s.sigma.scala.ExternalProjectITest
+import fr.unice.i3s.sigma.scala.utils.ExternalProjectITest
 
 @RunWith(classOf[JUnitRunner])
 class SigmaStaticDelegatesCodeGenITest extends FunSuite with ExternalProjectITest {

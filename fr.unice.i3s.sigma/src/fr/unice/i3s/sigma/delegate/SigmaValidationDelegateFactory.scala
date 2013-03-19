@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.delegates
+package fr.unice.i3s.sigma.delegate
 
 import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.EClass
@@ -11,8 +11,8 @@ import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.util.EcoreUtil
 import java.lang.reflect.Method
 import fr.unice.i3s.sigma.validation.Error
-import org.eclipse.emf.ecore.util.EObjectValidator
 import fr.unice.i3s.sigma.validation.ValidationResult
+import java.util.{ Map ⇒ JMap }
 
 final class SigmaValidationDelegateFactory extends AbstractSigmaDelegateFactory[(EClass, String)] with ValidationDelegate with EcorePackageScalaSupport {
 

@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.delegates
+package fr.unice.i3s.sigma.delegate
 
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.EStructuralFeature.Internal.SettingDelegate

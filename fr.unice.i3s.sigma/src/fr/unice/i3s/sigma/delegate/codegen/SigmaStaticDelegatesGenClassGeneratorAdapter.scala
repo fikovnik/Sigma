@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.delegates.codegen
+package fr.unice.i3s.sigma.delegate.codegen
 
 import scala.collection.JavaConversions.asScalaBuffer
 import org.eclipse.emf.codegen.ecore.genmodel.GenBase
@@ -9,7 +9,7 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.util.EcoreUtil
-import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
+import fr.unice.i3s.sigma.delegate.SigmaDelegateDomain
 import fr.unice.i3s.sigma.support.ecore.EcoreBuilder._
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.EClassifier

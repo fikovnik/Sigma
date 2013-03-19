@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.delegates
+package fr.unice.i3s.sigma.delegate
 
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -11,20 +11,18 @@ import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.eclipse.emf.ecore.EValidator
-import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import java.lang.reflect.Method
-import scala.beans.BeanProperty
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.util.DelegatingEList
 import scala.collection.Seq
 import java.lang.reflect.InvocationTargetException
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.apache.commons.lang3.reflect.TypeUtils
-import scala.collection.mutable.Buffer
 import fr.unice.i3s.sigma.validation.ValidationResult
 import fr.unice.i3s.sigma.validation.Passed
 import fr.unice.i3s.sigma.validation.Error
+import scala.collection.mutable.Buffer
 
 final object SigmaDelegateDomain {
 

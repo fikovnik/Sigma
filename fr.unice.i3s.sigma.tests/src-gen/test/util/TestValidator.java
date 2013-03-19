@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.EObjectValidator;
 
-import fr.unice.i3s.sigma.delegates.*;
+import fr.unice.i3s.sigma.delegate.*;
 
 import test.A;
 import test.B;

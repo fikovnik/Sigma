@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
-import fr.unice.i3s.sigma.delegates.*;
+import fr.unice.i3s.sigma.delegate.*;
 
 import test.A;
 import test.B;

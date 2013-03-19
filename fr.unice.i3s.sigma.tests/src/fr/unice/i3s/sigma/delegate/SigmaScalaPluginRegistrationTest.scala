@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala
+package fr.unice.i3s.sigma.delegate
 
 import org.eclipse.core.runtime.Platform
 import org.junit.Assert._
