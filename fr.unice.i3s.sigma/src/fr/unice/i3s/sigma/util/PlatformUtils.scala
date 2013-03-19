@@ -1,8 +1,7 @@
-package fr.unice.i3s.sigma.scala.core.util
+package fr.unice.i3s.sigma.util
 
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.Status
-
 import fr.unice.i3s.sigma.SigmaPlugin
 
 object PlatformUtils {
