@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.utils
+package fr.unice.i3s.sigma.tests.util
 
 import scala.collection.JavaConversions._
 import java.io.File
@@ -21,7 +21,6 @@ import org.osgi.framework.Bundle
 import org.osgi.framework.Version
 import com.google.common.io.Files.copy
 import com.google.common.io.Resources
-import fr.unice.i3s.sigma.scala.utils.Util
 import fr.unice.i3s.sigma.util.EMFUtils
 import org.junit.runner.Result
 import scala.Array.canBuildFrom

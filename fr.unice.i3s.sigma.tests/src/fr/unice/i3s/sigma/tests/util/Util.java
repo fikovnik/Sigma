@@ -10,7 +10,7 @@
  *     Nina Rinskaya
  *     		Fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=172820.
  *******************************************************************************/
-package fr.unice.i3s.sigma.scala.utils;
+package fr.unice.i3s.sigma.tests.util;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -29,9 +29,9 @@ import org.scalatest.FunSuite
 import com.google.common.io.Files.copy
 import com.google.common.io.Resources
 import fr.unice.i3s.sigma.Activator
-import fr.unice.i3s.sigma.scala.utils.Util
+import fr.unice.i3s.sigma.tests.util.Util
 import org.scalatest.junit.JUnitRunner
-import fr.unice.i3s.sigma.scala.utils.ExternalProjectITest
+import fr.unice.i3s.sigma.tests.util.ExternalProjectITest
 
 @RunWith(classOf[JUnitRunner])
 class SigmaStaticDelegatesCodeGenITest extends FunSuite with ExternalProjectITest {
