@@ -9,8 +9,6 @@ import org.eclipse.emf.ecore.InternalEObject
 import java.lang.reflect.Method
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.ETypedElement
-import fr.unice.i3s.sigma.delegate.SigmaDelegateDomain
-import fr.unice.i3s.sigma.delegate.AbstractSigmaDelegate
 
 class SigmaInvocationDelegate(
   val operation: EOperation,

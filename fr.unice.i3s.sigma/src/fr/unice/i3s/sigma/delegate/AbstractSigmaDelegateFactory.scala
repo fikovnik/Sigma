@@ -8,7 +8,6 @@ import org.eclipse.emf.ecore.EModelElement
 import java.text.ParseException
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import java.lang.reflect.Modifier
-import fr.unice.i3s.sigma.delegate.SigmaDelegateDomain
 
 abstract class AbstractSigmaDelegateFactory[T] extends EcorePackageScalaSupport {
 

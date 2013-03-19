@@ -10,7 +10,6 @@ import org.eclipse.emf.ecore.EClass
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.EPackage
 import java.text.ParseException
-import fr.unice.i3s.sigma.delegate.SigmaDelegateNotFoundException
 
 final class SigmaInvocationDelegateFactory extends AbstractSigmaDelegateFactory[EOperation] with Factory {
 
