@@ -25,7 +25,7 @@
    <extension
          point="org.eclipse.emf.codegen.ecore.generatorAdapters">
       <adapterFactory
-            class="fr.unice.i3s.sigma.delegate.codegen.SigmaStaticDelegatesGeneratorAdapterFactory">
+            class="fr.unice.i3s.sigma.delegate.codegen.ScalaEcoreExtensionsGeneratorAdapterFactory">
       </adapterFactory>
    </extension>
 </plugin>
