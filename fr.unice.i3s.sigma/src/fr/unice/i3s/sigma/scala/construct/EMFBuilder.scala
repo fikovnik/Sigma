@@ -18,6 +18,8 @@ import org.eclipse.emf.common.notify.Notification.SET
 import scala.reflect.runtime.universe.{ typeOf, TypeTag, runtimeMirror }
 import fr.unice.i3s.sigma.common.EMFScalaSupport
 import fr.unice.i3s.sigma.scala.core.internal.DynamicContainer
+import scala.collection.mutable.SynchronizedBuffer
+import scala.collection.mutable.ArrayBuffer
 
 abstract class AbstractEMFBuilder {
   def create[T <: EObject: TypeTag]: T
@@ -68,6 +70,8 @@ class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
    * Responsible for recording and resolving proxies.
    */
   protected object ResolveProxyAdapter extends AdapterImpl with EMFScalaSupport {
+    protected val proxies = new ArrayBuffer[InternalProxy] with SynchronizedBuffer[InternalProxy]
+
     override def notifyChanged(msg: Notification) {
       import Notification._
 
@@ -121,7 +125,6 @@ class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
     }
   }
 
-  protected val proxies = Buffer[InternalProxy]()
   protected val factory = pkg.getEFactoryInstance
 
   def ref[T <: EObject: TypeTag](expr: ⇒ Option[T]): T = {
