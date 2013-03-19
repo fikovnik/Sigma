@@ -22,6 +22,7 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
+import fr.unice.i3s.sigma.scala.workflow.lib.Utils._
 
 class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate with EMFScalaSupport {
 
@@ -40,7 +41,7 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     val imports = out.startSection
 
     val clazzes = pkg.getGenClasses filter (c ⇒ !skipTypes.contains(c.getName) && !c.isAbstract)
-    !s"class $scalaUnitName extends $emfBuilder(${pkg.getImportedPackageInterfaceName()}.eINSTANCE)" curlyIndent {
+    !s"object $scalaUnitName extends $emfBuilder(${pkg.getImportedPackageInterfaceName()}.eINSTANCE)" curlyIndent {
 
       // for each class generate a construct method
       for (clazz ← clazzes) {
@@ -54,25 +55,20 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
     !endl
     !endl
 
-    // it is possible to have a class that has the same name as the feature
-    // in this case the class method has a priority
-    val nameConflicts = clazzes map (c ⇒ decapitalize(c.getName))
+    // collect all features for which we will generate the assignments
     val featuresMap = pkg.getGenClasses
       .filter(c ⇒ !(skipTypes contains c.getName))
       .flatMap(_.getGenFeatures)
-      .filter(f ⇒ !f.isDerived && f.isChangeable && !(nameConflicts contains f.getName) && (f.isBidirectional implies !f.isContainer))
+      .filter(f ⇒ !f.isDerived && f.isChangeable && (f.isBidirectional implies !f.isContainer))
       .groupBy(_.getName)
 
     // are there any two or more methods that have the same names?  
     val overloadHackMax = featuresMap.values.map(_.size).max
 
-    !s"trait ${pkg.getPackageName.capitalize}Assignments"
-    if (overloadHackMax > 1) {
-      !s" extends OverloadHack"
-    }
+    !s"object ${pkg.getPackageName.capitalize}Assignments"
+    if (overloadHackMax > 1) !s" extends OverloadHack"
+
     out curlyIndent {
-      !s"this: $scalaUnitName =>" << endl
-      !endl
       !"""private def nothing: Nothing = sys.error("this method is not meant to be called")""" << endl
       !endl
 
@@ -117,13 +113,14 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
           !s"(target: T) ⇒ target.set${feature.getAccessorName}(value)" << endl
       }
       !endl
+
       // a proxy setter for all non-containable references
       if (!feature.isContains && feature.isReferenceType && !feature.isListType()) {
         !s"def ${featureName}_=[T <: $clazzName](value: ⇒ Option[${typeName(feature)}])$overload =" indent {
           if (feature.isListType)
-            !s"(target: T) ⇒ target.${feature.getGetAccessor}.addAll(ref(value))" << endl
+            !s"(target: T) ⇒ target.${feature.getGetAccessor}.addAll($scalaUnitName.ref(value))" << endl
           else
-            !s"(target: T) ⇒ target.set${feature.getAccessorName}(ref(value))" << endl
+            !s"(target: T) ⇒ target.set${feature.getAccessorName}($scalaUnitName.ref(value))" << endl
         }
         !endl
       }
@@ -135,11 +132,14 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
   protected def renderEClassConstructMethod(clazz: GenClass) {
     val clazzName = clazz.getImportedInterfaceName
 
-    !s"def ${safeName(decapitalize(clazz.getName))}(config: ($clazzName => Any)*): $clazzName = build[$clazzName](config: _*)"
+    !s"type ${clazzName} = ${clazz.getQualifiedInterfaceName}" << endl
+    !s"object ${clazzName}" curlyIndent {
+      !s"def apply(config: ($clazzName => Any)*): $clazzName = build[$clazzName](config: _*)"
+    }
+
   }
 
-  protected def decapitalize(s: String) = s(0).toLower + s.drop(1)
-
+  // TODO: refactor with the EMFScalaSupportGenerator
   protected def mapPrimitiveType(e: GenTypedElement) = e.getRawImportedType match {
     case "boolean" ⇒ "Boolean"
     case "byte" ⇒ "Byte"
@@ -167,7 +167,7 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
   }
 }
 
-object EMFBuilderGenerator {
+object EMFScalaBuilderGenerator {
   EMFUtils.IO.registerDefaultFactories
 
   // initialize packages
@@ -175,14 +175,14 @@ object EMFBuilderGenerator {
   GenModelPackage.eINSTANCE.getEFactoryInstance()
 }
 
-case class EMFBuilderGenerator(
+case class EMFScalaBuilderGenerator(
   val baseDir: String,
   val genModelURI: String,
-  val pkgName: String = null,
+  val pkgName: String,
   val skipTypes: List[String] = Nil) extends WorkflowComponent with Logging {
 
   // call the companion's object static block
-  EMFBuilderGenerator
+  EMFScalaBuilderGenerator
 
   def invoke {
     logger.info("Generating EMF Scala Builders for " + genModelURI)
@@ -190,17 +190,11 @@ case class EMFBuilderGenerator(
     val genModel = EMFUtils.IO.load[GenModel](URI.createURI(genModelURI, true))
 
     for (pkg ← genModel.getGenPackages) {
-
-      val scalaPkgName = Option(pkgName) match {
-        case Some(name) ⇒ name
-        case None ⇒ pkg.getBasePackage + "." + pkg.getPackageName
-      }
-
-      val dir = (new File(baseDir) /: scalaPkgName.split('.'))(new File(_, _))
+      val dir = (new File(baseDir) /: pkgName.split('.'))(new File(_, _))
       checkDir(dir)
 
       val scalaUnitName = pkg.getPackageName.capitalize + "Builder"
-      val scalaClazz = new EMFBuilderTemplate(pkg, scalaPkgName, scalaUnitName, skipTypes)
+      val scalaClazz = new EMFBuilderTemplate(pkg, pkgName, scalaUnitName, skipTypes)
 
       using(new File(dir, scalaUnitName + ".scala")) { f ⇒
         logger.debug("Generated: " + scalaUnitName)
@@ -208,14 +202,4 @@ case class EMFBuilderGenerator(
       }
     }
   }
-
-  // TODO: externalize
-  def checkDir(dir: File) {
-    if (!dir.exists()) {
-      assert(dir.mkdirs(), "Unable to create directory: " + dir)
-    } else {
-      require(dir.isDirectory())
-    }
-  }
-
 }
