@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.ui.util
+package fr.unice.i3s.sigma.ui.util
 
 import org.eclipse.swt.widgets.Display
 
