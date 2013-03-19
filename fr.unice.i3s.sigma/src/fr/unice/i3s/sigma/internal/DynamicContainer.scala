@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.core.internal
+package fr.unice.i3s.sigma.internal
 
 import scala.collection.mutable.Buffer
 import scala.reflect.runtime.universe.{ Type, TypeTag, typeOf }

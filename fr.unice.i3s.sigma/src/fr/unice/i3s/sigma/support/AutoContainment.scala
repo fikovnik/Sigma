@@ -3,7 +3,7 @@ package fr.unice.i3s.sigma.support
 import scala.collection.JavaConversions._
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
-import fr.unice.i3s.sigma.scala.core.internal.DynamicContainer
+import fr.unice.i3s.sigma.internal.DynamicContainer
 import scala.reflect.runtime.universe.TypeTag
 
 object AutoContainment {
