@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.construct
+package fr.unice.i3s.sigma.scala.workflow.lib
 
 import scala.collection.JavaConversions._
 import java.io.File
@@ -14,6 +14,14 @@ import fr.unice.i3s.sigma.common.EMFScalaSupport
 import fr.unice.i3s.sigma.util.EMFUtils
 import org.eclipse.emf.common.util.URI
 import fr.unice.i3s.sigma.util.ToolUtils
+import fr.unice.i3s.sigma.scala.construct.EMFBuilder
+import fr.unice.i3s.sigma.scala.workflow.WorkflowComponent
+import com.typesafe.scalalogging.log4j.Logging
+import org.eclipse.emf.ecore.EcorePackage
+import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
+import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
 
 class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: String, skipTypes: List[String] = Nil) extends TextTemplate with EMFScalaSupport {
 
@@ -159,33 +167,49 @@ class EMFBuilderTemplate(pkg: GenPackage, scalaPkgName: String, scalaUnitName: S
   }
 }
 
-class EMFBuilderGenerator {
-  def generate(baseDir: File, genModelURI: URI, pkgNameOpt: Option[String], skipTypes: List[String]) {
-    val (genModel, rs) = EMFUtils.IO.load[GenModel](genModelURI)
-    generate(baseDir, genModel, pkgNameOpt, skipTypes)
-  }
+object EMFBuilderGenerator {
+  EMFUtils.IO.registerDefaultFactories
 
-  def generate(baseDir: File, model: GenModel, pkgNameOpt: Option[String], skipTypes: List[String]) {
-    for (pkg ← model.getGenPackages) {
+  // initialize packages
+  EcorePackage.eINSTANCE.getEFactoryInstance()
+  GenModelPackage.eINSTANCE.getEFactoryInstance()
+}
 
-      val scalaPkgName = pkgNameOpt match {
+case class EMFBuilderGenerator(
+  val baseDir: String,
+  val genModelURI: String,
+  val pkgName: String = null,
+  val skipTypes: List[String] = Nil) extends WorkflowComponent with Logging {
+
+  // call the companion's object static block
+  EMFBuilderGenerator
+
+  def invoke {
+    logger.info("Generating EMF Scala Builders for " + genModelURI)
+
+    val genModel = EMFUtils.IO.load[GenModel](URI.createURI(genModelURI, true))
+
+    for (pkg ← genModel.getGenPackages) {
+
+      val scalaPkgName = Option(pkgName) match {
         case Some(name) ⇒ name
-        case None ⇒ pkg.getBasePackage + "." + pkg.getPackageName + ".scala"
+        case None ⇒ pkg.getBasePackage + "." + pkg.getPackageName
       }
 
-      val dir = (baseDir /: scalaPkgName.split('.'))(new File(_, _))
+      val dir = (new File(baseDir) /: scalaPkgName.split('.'))(new File(_, _))
       checkDir(dir)
 
       val scalaUnitName = pkg.getPackageName.capitalize + "Builder"
       val scalaClazz = new EMFBuilderTemplate(pkg, scalaPkgName, scalaUnitName, skipTypes)
 
       using(new File(dir, scalaUnitName + ".scala")) { f ⇒
-        println("Generated: " + scalaUnitName)
+        logger.debug("Generated: " + scalaUnitName)
         scalaClazz >> f
       }
     }
   }
 
+  // TODO: externalize
   def checkDir(dir: File) {
     if (!dir.exists()) {
       assert(dir.mkdirs(), "Unable to create directory: " + dir)
@@ -194,17 +218,4 @@ class EMFBuilderGenerator {
     }
   }
 
-}
-
-object EMFBuilderGenerator extends App {
-  if (args.length < 2 && args.length > 3) {
-    println("Usage: %s <model.genmodel> <target_dir> [<base_package>]" format getClass.getName)
-    scala.sys.exit(1)
-  }
-
-  val output = new File(args(1))
-  val pkgNameOpt = if (args.length != 3) None else Some(args(2))
-
-  val generator = new EMFBuilderGenerator
-  generator.generate(output, URI.createFileURI(args(0)), pkgNameOpt, List("EStringToStringMapEntry"))
 }
