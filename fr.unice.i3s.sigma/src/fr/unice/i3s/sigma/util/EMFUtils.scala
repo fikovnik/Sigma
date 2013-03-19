@@ -11,12 +11,16 @@ import org.eclipse.emf.ecore.resource.Resource
 import java.io.File
 import com.google.common.base.Charsets
 import org.eclipse.emf.ecore.xmi.XMLResource
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
+import org.eclipse.emf.ecore.EcorePackage
+import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
+import scala.reflect.{ ClassTag, classTag }
 
 object EMFUtils {
 
   object IO {
 
-    def load[T <: EObject](uri: URI, resolveAll: Boolean = true): (T, ResourceSet) = {
+    def load[T <: EObject: ClassTag](uri: URI, resolveAll: Boolean = true): T = {
       val rs = new ResourceSetImpl()
       val r = rs.getResource(uri, true)
 
@@ -24,8 +28,10 @@ object EMFUtils {
         EcoreUtil.resolveAll(rs)
       }
 
-      // TODO: fix the asInstanceOf
-      (r.getContents().get(0).asInstanceOf[T], rs)
+      r.getContents().get(0) match {
+        case x: T ⇒ x
+        case x ⇒ throw new RuntimeException(s"Loaded model `$x` is not of type: `${classTag[T]}` but `${x.getClass.getName}`")
+      }
     }
 
     def loadFromFile[T <: EObject](file: File, resolveAll: Boolean = true): (T, ResourceSet) = {
@@ -50,6 +56,11 @@ object EMFUtils {
       // TODO: should we have XMI dependency?
       resource.save(Map(
         XMLResource.OPTION_SCHEMA_LOCATION -> (true: java.lang.Boolean)))
+    }
+
+    def registerDefaultFactories {
+      Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap
+        .put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl)
     }
 
   }

@@ -119,7 +119,7 @@ class EPackageScalaSupportTemplate(pkg: GenPackage, scalaPkgName: String, scalaU
 class EMFScalaSupportGenerator {
 
   def generate(baseDir: File, genModelURI: URI, pkgName: String) {
-    val (genModel, rs) = EMFUtils.IO.load[GenModel](genModelURI)
+    val genModel = EMFUtils.IO.load[GenModel](genModelURI)
     generate(baseDir, genModel, Option(pkgName))
   }
 
