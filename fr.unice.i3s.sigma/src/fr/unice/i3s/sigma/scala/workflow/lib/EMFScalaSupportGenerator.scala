@@ -18,6 +18,7 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
+import fr.unice.i3s.sigma.support.AutoContainment
 
 trait Utils {
   val scalaKeywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
@@ -55,6 +56,7 @@ case class EMFBuilderTemplate(pkg: GenPackage, pkgName: String, builderName: Str
   val importManager = new ImportManager(pkgName, builderName)
   pkg.getGenModel.setImportManager(importManager)
   val emfBuilder = importManager.getImportedName(classOf[EMFBuilder[_]].getName, true)
+  val autoContainment = importManager.getImportedName(AutoContainment.getClass.getName, true)
 
   override def render {
     // starts
@@ -65,6 +67,7 @@ case class EMFBuilderTemplate(pkg: GenPackage, pkgName: String, builderName: Str
 
     val clazzes = pkg.getGenClasses filter { c ⇒ !skipTypes.contains(c.getName) && !c.isAbstract }
     !s"object $builderName extends $emfBuilder(${pkg.getImportedPackageInterfaceName()}.eINSTANCE)" curlyIndent {
+      !s"import ${autoContainment}_" << endl << endl
 
       // for each class generate a construct method
       for (clazz ← clazzes) {
@@ -157,9 +160,10 @@ case class EMFBuilderTemplate(pkg: GenPackage, pkgName: String, builderName: Str
 
     !s"type ${clazzName} = ${clazz.getQualifiedInterfaceName}" << endl
     !s"object ${clazzName}" curlyIndent {
-      !s"def apply(config: ($clazzName ⇒ Any)*): $clazzName = build[$clazzName](config: _*)"
+      !s"def apply(config: ($clazzName ⇒ Any)*): $clazzName =" indent {
+        !s"contained(build[$clazzName](config: _*))"
+      }
     }
-
   }
 }
 
