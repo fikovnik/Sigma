@@ -7,7 +7,7 @@ import java.lang.reflect.Method
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.EModelElement
 import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.EPackage
 import java.text.ParseException
 

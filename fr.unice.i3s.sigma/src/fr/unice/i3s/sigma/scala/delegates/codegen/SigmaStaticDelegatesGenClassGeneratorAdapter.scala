@@ -1,7 +1,6 @@
 package fr.unice.i3s.sigma.scala.delegates.codegen
 
 import scala.collection.JavaConversions.asScalaBuffer
-
 import org.eclipse.emf.codegen.ecore.genmodel.GenBase
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
@@ -9,13 +8,11 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenBaseGeneratorAdapter
 import org.eclipse.emf.common.util.Diagnostic
-import org.eclipse.emf.ecore.EClassifier
-import org.eclipse.emf.ecore.EOperation
-import org.eclipse.emf.ecore.scala.EcoreBuilder
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.util.EcoreUtil
-
 import fr.unice.i3s.sigma.delegates.SigmaDelegateDomain
+import fr.unice.i3s.sigma.support.ecore.EcoreBuilder._
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import org.eclipse.emf.ecore.EClassifier
 
 object ScalaEcoreExtensionsGenClassGeneratorAdapter {
   val ENABLE_SCALA_ECORE_EXTENSION = "EnableScalaEcoreExtension"
@@ -25,8 +22,6 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaDelegateDoma
   extends GenBaseGeneratorAdapter(factory) with EcorePackageScalaSupport {
 
   import ScalaEcoreExtensionsGenClassGeneratorAdapter._
-
-  val builder = new EcoreBuilder
 
   override def doPreGenerate(`object`: Any, projectType: Any): Diagnostic = {
     val genClazz = `object`.asInstanceOf[GenClass];
@@ -49,7 +44,7 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaDelegateDoma
     for (genFeature ← genClazz.getGenFeatures.toList) {
       val feature = genFeature.getEcoreFeature
 
-      val op = builder.eOperation()
+      val op = EOperation()
 
       op.name = feature.name
       op.lowerBound = feature.lowerBound
@@ -98,11 +93,11 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaDelegateDoma
 
     var option = pkg.getEClassifier("Option")
     if (option == null) {
-      option = builder.eDataType()
+      option = EDataType()
       option.setName("Option")
       option.setInstanceTypeName("scala.Option")
       option.getETypeParameters().add {
-        val T = builder.eTypeParameter()
+        val T = ETypeParameter()
         T.setName("T")
         T
       }
@@ -113,9 +108,9 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaDelegateDoma
       addDependencyToScalaLib(genPkg.getGenModel)
     }
 
-    val genericType = builder.eGenericType()
+    val genericType = EGenericType()
     genericType.eClassifier = option
-    val aT = builder.eGenericType()
+    val aT = EGenericType()
     aT.eClassifier = nested
     genericType.eTypeArguments += aT
 

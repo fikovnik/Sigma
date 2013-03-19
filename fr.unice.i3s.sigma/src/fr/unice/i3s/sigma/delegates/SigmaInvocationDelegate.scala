@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.EOperation.Internal.InvocationDelegate
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.InternalEObject
 import java.lang.reflect.Method
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.ETypedElement
 
 class SigmaInvocationDelegate(

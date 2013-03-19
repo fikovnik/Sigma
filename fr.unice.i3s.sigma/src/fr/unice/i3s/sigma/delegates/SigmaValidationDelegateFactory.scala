@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.EDataType
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EOperation
 import java.util.{ Map ⇒ JMap }
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.util.EcoreUtil
 import java.lang.reflect.Method
 import fr.unice.i3s.sigma.validation.Error

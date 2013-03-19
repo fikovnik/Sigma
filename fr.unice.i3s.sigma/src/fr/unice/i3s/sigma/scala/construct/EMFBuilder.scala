@@ -21,34 +21,34 @@ import fr.unice.i3s.sigma.scala.core.internal.DynamicContainer
 import scala.collection.mutable.SynchronizedBuffer
 import scala.collection.mutable.ArrayBuffer
 
-abstract class AbstractEMFBuilder {
-  def create[T <: EObject: TypeTag]: T
-}
+//abstract class AbstractEMFBuilder {
+//  def create[T <: EObject: TypeTag]: T
+//}
+//
+//abstract trait AutoContainment extends AbstractEMFBuilder {
+//
+//  implicit class InitializableEList[T <: EObject: TypeTag](val that: EList[T]) {
+//    def apply(fun: ⇒ Unit): EList[T] = {
+//      container.withValue(that) { fun }
+//      that
+//    }
+//  }
+//
+//  private[this] val container = new DynamicContainer
+//
+//  abstract override def create[T <: EObject: TypeTag]: T = {
+//    val instance = super.create[T]
+//
+//    // set the containment if supported
+//    if (container.isCompatible[T]) {
+//      container += instance
+//    }
+//
+//    instance
+//  }
+//}
 
-abstract trait AutoContainment extends AbstractEMFBuilder {
-
-  implicit class InitializableEList[T <: EObject: TypeTag](val that: EList[T]) {
-    def apply(fun: ⇒ Unit): EList[T] = {
-      container.withValue(that) { fun }
-      that
-    }
-  }
-
-  private[this] val container = new DynamicContainer
-
-  abstract override def create[T <: EObject: TypeTag]: T = {
-    val instance = super.create[T]
-
-    // set the containment if supported
-    if (container.isCompatible[T]) {
-      container += instance
-    }
-
-    instance
-  }
-}
-
-class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
+object EMFBuilder {
 
   implicit class InitializableEObject[T <: EObject: TypeTag](val obj: T) {
     def init(fun: T ⇒ Any): T = {
@@ -56,25 +56,30 @@ class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
       obj
     }
   }
+  
+}
 
-  protected case class InternalProxy(val proxy: EObject, val getter: Unit ⇒ Option[EObject], val setter: EObject ⇒ Any)
+class EMFBuilder[P <: EPackage](val pkg: P) {
+
+  private case class InternalProxy(val proxy: EObject, val getter: Unit ⇒ Option[EObject], val setter: EObject ⇒ Any)
 
   /**
    * This is a holder of the recorded getter in the proxy.
    */
-  protected class InternalProxyAdapter(val getter: Unit ⇒ Option[EObject]) extends AdapterImpl {
+  private case class InternalProxyAdapter(val getter: Unit ⇒ Option[EObject]) extends AdapterImpl {
     override def isAdapterForType(`type`: Object): Boolean = `type` == classOf[EMFBuilder.this.InternalProxyAdapter]
   }
 
   /**
    * Responsible for recording and resolving proxies.
    */
-  protected object ResolveProxyAdapter extends AdapterImpl with EMFScalaSupport {
-    protected val proxies = new ArrayBuffer[InternalProxy] with SynchronizedBuffer[InternalProxy]
+  private object ResolveProxyAdapter extends AdapterImpl with EMFScalaSupport {
+    val proxies = new ArrayBuffer[InternalProxy] with SynchronizedBuffer[InternalProxy]
 
     override def notifyChanged(msg: Notification) {
       import Notification._
 
+      // TODO: refactor into smaller pieces
       msg.getEventType match {
         case ADD | ADD_MANY | SET ⇒
 
@@ -125,7 +130,7 @@ class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
     }
   }
 
-  protected val factory = pkg.getEFactoryInstance
+  val factory = pkg.getEFactoryInstance
 
   def ref[T <: EObject: TypeTag](expr: ⇒ Option[T]): T = {
     val getter = () ⇒ expr
@@ -134,9 +139,9 @@ class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
       case Some(e) ⇒ e
       case None ⇒
         // create a proxy
-        val proxy = createInternal[T]
+        val proxy = create[T]
         proxy.asInstanceOf[InternalEObject].eSetProxyURI(URI.createURI(s"EMFBuilder internal proxy"))
-        proxy.eAdapters += new InternalProxyAdapter((Unit ⇒ expr))
+        proxy.eAdapters += InternalProxyAdapter((Unit ⇒ expr))
         proxy
     }
   }
@@ -145,9 +150,7 @@ class EMFBuilder[P <: EPackage](val pkg: P) extends AbstractEMFBuilder {
     configure(create[T], configs: _*)
   }
 
-  override def create[T <: EObject: TypeTag]: T = createInternal[T]
-
-  protected def createInternal[T <: EObject: TypeTag]: T = {
+  def create[T <: EObject: TypeTag]: T = {
     val m = runtimeMirror(getClass.getClassLoader)
     val clazz = m.runtimeClass(typeOf[T].typeSymbol.asClass)
     val classifier = pkg.getEClassifier(clazz.getSimpleName)

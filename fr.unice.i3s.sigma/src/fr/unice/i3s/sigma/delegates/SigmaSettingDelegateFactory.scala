@@ -3,7 +3,7 @@ package fr.unice.i3s.sigma.delegates
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.EStructuralFeature.Internal.SettingDelegate.Factory
 import java.lang.reflect.Method
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 
 final class SigmaSettingDelegateFactory extends AbstractSigmaDelegateFactory[EStructuralFeature] with Factory with EcorePackageScalaSupport {
   import EcorePackageScalaSupport._

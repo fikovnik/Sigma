@@ -6,7 +6,7 @@ import java.lang.reflect.Method
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EModelElement
 import java.text.ParseException
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import java.lang.reflect.Modifier
 
 abstract class AbstractSigmaDelegateFactory[T] extends EcorePackageScalaSupport {

@@ -19,7 +19,7 @@ import fr.unice.i3s.sigma.common.EMFScalaSupport
 import fr.unice.i3s.sigma.util.DelegatingEList
 import scala.collection.Seq
 import java.lang.reflect.InvocationTargetException
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.apache.commons.lang3.reflect.TypeUtils
 import scala.collection.mutable.Buffer
 import fr.unice.i3s.sigma.validation.ValidationResult

@@ -25,10 +25,7 @@ case class EcoreGenerator(
   val generateEditor: Boolean = false,
   val generateDelegates: Boolean = false,
   val srcPaths: List[String] = Nil,
-  val genModelURI: String,
-  val generateScalaSupport: Boolean = true,
-  val generateScalaBuilders: Boolean = true,
-  val useOptions: Boolean = false) extends WorkflowComponent {
+  val genModelURI: String) extends WorkflowComponent {
 
   // initialize packages
   EcorePackage.eINSTANCE.getEFactoryInstance()

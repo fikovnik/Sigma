@@ -28,8 +28,7 @@ Export-Package: fr.unice.i3s.sigma.common,
  fr.unice.i3s.sigma.scala.delegates.codegen,
  fr.unice.i3s.sigma.scala.mtt,
  fr.unice.i3s.sigma.scala.ui.util,
- fr.unice.i3s.sigma.util,
- org.eclipse.emf.ecore.scala
+ fr.unice.i3s.sigma.util
 Bundle-ClassPath: .
 Eclipse-BuddyPolicy: dependent
-Bundle-Activator: fr.unice.i3s.sigma.delegates.SigmaScalaPlugin
+Bundle-Activator: fr.unice.i3s.sigma.SigmaPlugin

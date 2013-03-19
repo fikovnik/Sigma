@@ -5,11 +5,11 @@ import scala.reflect.runtime.universe
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EcorePackage
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import org.scalatest.junit.JUnitRunner
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 
 @RunWith(classOf[JUnitRunner])
 class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport {
@@ -18,6 +18,7 @@ class EMFBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSu
 
   "EMFBuilder" must "create an EObject" in {
     val builder = new EMFBuilder(EcorePackage.eINSTANCE)
+    import EMFBuilder._
     import builder._
 
     val clazz = create[EClass] init { clz ⇒
