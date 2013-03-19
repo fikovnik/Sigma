@@ -15,42 +15,12 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.common.notify.Notification.ADD
 import org.eclipse.emf.common.notify.Notification.ADD_MANY
 import org.eclipse.emf.common.notify.Notification.SET
-import scala.reflect.runtime.universe.{ typeOf, TypeTag, runtimeMirror }
-import fr.unice.i3s.sigma.support.EMFScalaSupport
-import fr.unice.i3s.sigma.scala.core.internal.DynamicContainer
 import scala.collection.mutable.SynchronizedBuffer
 import scala.collection.mutable.ArrayBuffer
 
-//abstract class AbstractEMFBuilder {
-//  def create[T <: EObject: TypeTag]: T
-//}
-//
-//abstract trait AutoContainment extends AbstractEMFBuilder {
-//
-//  implicit class InitializableEList[T <: EObject: TypeTag](val that: EList[T]) {
-//    def apply(fun: ⇒ Unit): EList[T] = {
-//      container.withValue(that) { fun }
-//      that
-//    }
-//  }
-//
-//  private[this] val container = new DynamicContainer
-//
-//  abstract override def create[T <: EObject: TypeTag]: T = {
-//    val instance = super.create[T]
-//
-//    // set the containment if supported
-//    if (container.isCompatible[T]) {
-//      container += instance
-//    }
-//
-//    instance
-//  }
-//}
-
 object EMFBuilder {
 
-  implicit class InitializableEObject[T <: EObject: TypeTag](val obj: T) {
+  implicit class InitializableEObject[T <: EObject: ClassTag](val obj: T) {
     def init(fun: T ⇒ Any): T = {
       fun(obj)
       obj
@@ -132,7 +102,7 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
 
   val factory = pkg.getEFactoryInstance
 
-  def ref[T <: EObject: TypeTag](expr: ⇒ Option[T]): T = {
+  def ref[T <: EObject: ClassTag](expr: ⇒ Option[T]): T = {
     val getter = () ⇒ expr
 
     getter() match {
@@ -146,13 +116,12 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
     }
   }
 
-  def build[T <: EObject: TypeTag](configs: (T ⇒ Any)*): T = {
+  def build[T <: EObject: ClassTag](configs: (T ⇒ Any)*): T = {
     configure(create[T], configs: _*)
   }
 
-  def create[T <: EObject: TypeTag]: T = {
-    val m = runtimeMirror(getClass.getClassLoader)
-    val clazz = m.runtimeClass(typeOf[T].typeSymbol.asClass)
+  def create[T <: EObject: ClassTag]: T = {
+    val clazz = classTag[T].runtimeClass
     val classifier = pkg.getEClassifier(clazz.getSimpleName)
 
     require(classifier != null,
