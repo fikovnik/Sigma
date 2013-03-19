@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.mtt
+package fr.unice.i3s.sigma.m2t
 
 import TextSection._
 

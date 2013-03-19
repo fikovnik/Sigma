@@ -10,7 +10,7 @@ import org.eclipse.emf.codegen.util.ImportManager
 import org.eclipse.emf.common.util.URI
 import fr.unice.i3s.sigma.util.EMFUtils
 import fr.unice.i3s.sigma.util.IOUtils.using
-import fr.unice.i3s.sigma.scala.mtt.TextTemplate
+import fr.unice.i3s.sigma.m2t.TextTemplate
 import fr.unice.i3s.sigma.workflow.WorkflowComponent
 import com.typesafe.scalalogging.log4j.Logging
 import org.eclipse.emf.ecore.EcorePackage

@@ -1,9 +1,10 @@
-package fr.unice.i3s.sigma.scala.mtt
+package fr.unice.i3s.sigma.m2t
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+
 import java.io.StringWriter
 
 @RunWith(classOf[JUnitRunner])

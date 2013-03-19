@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.scala.mtt
+package fr.unice.i3s.sigma.m2t
 
 import scala.annotation.tailrec
 import scala.collection.mutable.Buffer
