@@ -20,7 +20,7 @@ object AutoContainment {
   /**
    * Sets the containment in the current container if it has the correct type
    */
-  protected[support] def contained[T <: EObject: TypeTag](instance: T): T = {
+  def contained[T <: EObject: TypeTag](instance: T): T = {
     if (container.isCompatible[T]) {
       container += instance
     }
