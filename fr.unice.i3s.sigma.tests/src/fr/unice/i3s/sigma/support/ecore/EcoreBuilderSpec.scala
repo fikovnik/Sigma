@@ -107,7 +107,7 @@ class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScala
       }
     }
 
-    println(pkg.validate prettyPrint)
+    //    println(pkg.validate prettyPrint)
     pkg.isValid must be === true
     pkg.eClassifiers must have size (4)
   }
