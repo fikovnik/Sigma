@@ -23,6 +23,6 @@
 				<artifactId>tycho-p2-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>
+	</build>	
 </project>
 

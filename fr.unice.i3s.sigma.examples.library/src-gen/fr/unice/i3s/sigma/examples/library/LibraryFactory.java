@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library;
 
@@ -16,7 +12,8 @@ import org.eclipse.emf.ecore.EFactory;
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage
  * @generated
  */
-public interface LibraryFactory extends EFactory {
+public interface LibraryFactory extends EFactory
+{
 	/**
 	 * The singleton instance of the factory.
 	 * <!-- begin-user-doc -->

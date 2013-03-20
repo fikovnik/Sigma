@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library;
 
@@ -28,7 +24,8 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Loan extends EObject {
+public interface Loan extends EObject
+{
 	/**
 	 * Returns the value of the '<em><b>Book</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -92,7 +89,7 @@ public interface Loan extends EObject {
 	 * @return the value of the '<em>Date</em>' attribute.
 	 * @see #setDate(Date)
 	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getLoan_Date()
-	 * @model ordered="false"
+	 * @model dataType="fr.unice.i3s.sigma.examples.library.Date" ordered="false"
 	 * @generated
 	 */
 	Date getDate();

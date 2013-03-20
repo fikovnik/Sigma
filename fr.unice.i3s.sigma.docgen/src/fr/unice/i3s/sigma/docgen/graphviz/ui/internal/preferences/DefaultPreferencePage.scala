@@ -20,7 +20,7 @@ class DefaultPreferencePage
 
   override def createFieldEditors {
     addField(new FileFieldEditor(DocgenPlugin.PREF_DOT_PATH, "Graphwiz dot path:", getFieldEditorParent) {
-      override def doCheckState = new GVDot(getStringValue) validate match {
+      override def doCheckState = new GVDot(getStringValue).validate match {
         case Success(version) ⇒ {
           clearErrorMessage
           true

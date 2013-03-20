@@ -8,13 +8,13 @@ import org.eclipse.swt.widgets.Shell
 import org.eclipse.ui.dialogs.PreferencesUtil
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVDot
 import fr.unice.i3s.sigma.docgen.core.DocgenPlugin
-import fr.unice.i3s.sigma.scala.ui.util.SWTUtils.asyncExec
+import fr.unice.i3s.sigma.ui.util.SWTUtils.asyncExec
 import org.eclipse.jface.dialogs.MessageDialog
 
 object GraphvizDiagnostics {
 
   def validate(dot: GVDot, shell: Shell): Boolean = {
-    dot validate match {
+    dot.validate match {
       case Success(_) ⇒ true
       case Failure(e) ⇒ askToOpenPreferences(shell); false
     }

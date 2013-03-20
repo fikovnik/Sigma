@@ -1,12 +1,9 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -29,7 +26,8 @@ import org.eclipse.emf.ecore.EObject;
  *        annotation="http://www.i3s.unice.fr/Sigma SufficientCopies='' AtLeastOneCopy=''"
  * @generated
  */
-public interface Book extends EObject {
+public interface Book extends EObject
+{
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -87,7 +85,7 @@ public interface Book extends EObject {
 	 * It is bidirectional and its opposite is '{@link fr.unice.i3s.sigma.examples.library.Library#getBooks <em>Books</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Library</em>' reference isn't clear,
+	 * If the meaning of the '<em>Library</em>' container reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->

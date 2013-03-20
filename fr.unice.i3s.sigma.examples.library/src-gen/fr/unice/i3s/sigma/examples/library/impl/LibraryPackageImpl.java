@@ -1,18 +1,6 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library.impl;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EValidator;
-import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Library;
@@ -20,7 +8,22 @@ import fr.unice.i3s.sigma.examples.library.LibraryFactory;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
 import fr.unice.i3s.sigma.examples.library.Member;
+import fr.unice.i3s.sigma.examples.library.MembershipType;
+
 import fr.unice.i3s.sigma.examples.library.util.LibraryValidator;
+
+import java.util.Date;
+
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EValidator;
+
+import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,7 +31,8 @@ import fr.unice.i3s.sigma.examples.library.util.LibraryValidator;
  * <!-- end-user-doc -->
  * @generated
  */
-public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
+public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage
+{
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -58,6 +62,20 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	private EClass loanEClass = null;
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum membershipTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType dateEDataType = null;
+
+	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -72,7 +90,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * @see #init()
 	 * @generated
 	 */
-	private LibraryPackageImpl() {
+	private LibraryPackageImpl()
+	{
 		super(eNS_URI, LibraryFactory.eINSTANCE);
 	}
 
@@ -95,7 +114,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static LibraryPackage init() {
+	public static LibraryPackage init()
+	{
 		if (isInited) return (LibraryPackage)EPackage.Registry.INSTANCE.getEPackage(LibraryPackage.eNS_URI);
 
 		// Obtain or create and register package
@@ -112,8 +132,10 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		// Register package validator
 		EValidator.Registry.INSTANCE.put
 			(theLibraryPackage, 
-			 new EValidator.Descriptor() {
-				 public EValidator getEValidator() {
+			 new EValidator.Descriptor()
+			 {
+				 public EValidator getEValidator()
+				 {
 					 return LibraryValidator.INSTANCE;
 				 }
 			 });
@@ -132,7 +154,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getLibrary() {
+	public EClass getLibrary()
+	{
 		return libraryEClass;
 	}
 
@@ -141,7 +164,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getLibrary_Name() {
+	public EAttribute getLibrary_Name()
+	{
 		return (EAttribute)libraryEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -150,7 +174,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getLibrary_Books() {
+	public EReference getLibrary_Books()
+	{
 		return (EReference)libraryEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -159,7 +184,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getLibrary_Loans() {
+	public EReference getLibrary_Loans()
+	{
 		return (EReference)libraryEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -168,7 +194,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getLibrary_Members() {
+	public EReference getLibrary_Members()
+	{
 		return (EReference)libraryEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -177,7 +204,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getLibrary__GetBookByName__String() {
+	public EOperation getLibrary__GetBookByName__String()
+	{
 		return libraryEClass.getEOperations().get(0);
 	}
 
@@ -186,7 +214,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getLibrary__ToString() {
+	public EOperation getLibrary__ToString()
+	{
 		return libraryEClass.getEOperations().get(1);
 	}
 
@@ -195,7 +224,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getBook() {
+	public EClass getBook()
+	{
 		return bookEClass;
 	}
 
@@ -204,7 +234,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBook_Name() {
+	public EAttribute getBook_Name()
+	{
 		return (EAttribute)bookEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -213,7 +244,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBook_Copies() {
+	public EAttribute getBook_Copies()
+	{
 		return (EAttribute)bookEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -222,7 +254,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getBook_Library() {
+	public EReference getBook_Library()
+	{
 		return (EReference)bookEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -231,7 +264,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getBook_Loans() {
+	public EReference getBook_Loans()
+	{
 		return (EReference)bookEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -240,7 +274,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getBook__IsAvailable() {
+	public EOperation getBook__IsAvailable()
+	{
 		return bookEClass.getEOperations().get(0);
 	}
 
@@ -249,7 +284,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getMember() {
+	public EClass getMember()
+	{
 		return memberEClass;
 	}
 
@@ -258,7 +294,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getMember_Name() {
+	public EAttribute getMember_Name()
+	{
 		return (EAttribute)memberEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -267,7 +304,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getMember_Library() {
+	public EReference getMember_Library()
+	{
 		return (EReference)memberEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -276,7 +314,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getMember_Loans() {
+	public EReference getMember_Loans()
+	{
 		return (EReference)memberEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -285,7 +324,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getMember_Books() {
+	public EReference getMember_Books()
+	{
 		return (EReference)memberEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -294,7 +334,18 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getLoan() {
+	public EAttribute getMember_MembershipType()
+	{
+		return (EAttribute)memberEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getLoan()
+	{
 		return loanEClass;
 	}
 
@@ -303,7 +354,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getLoan_Book() {
+	public EReference getLoan_Book()
+	{
 		return (EReference)loanEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -312,7 +364,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getLoan_Member() {
+	public EReference getLoan_Member()
+	{
 		return (EReference)loanEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -321,7 +374,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getLoan_Date() {
+	public EAttribute getLoan_Date()
+	{
 		return (EAttribute)loanEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -330,7 +384,28 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LibraryFactory getLibraryFactory() {
+	public EEnum getMembershipType()
+	{
+		return membershipTypeEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EDataType getDate()
+	{
+		return dateEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LibraryFactory getLibraryFactory()
+	{
 		return (LibraryFactory)getEFactoryInstance();
 	}
 
@@ -348,7 +423,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void createPackageContents() {
+	public void createPackageContents()
+	{
 		if (isCreated) return;
 		isCreated = true;
 
@@ -373,11 +449,18 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		createEReference(memberEClass, MEMBER__LIBRARY);
 		createEReference(memberEClass, MEMBER__LOANS);
 		createEReference(memberEClass, MEMBER__BOOKS);
+		createEAttribute(memberEClass, MEMBER__MEMBERSHIP_TYPE);
 
 		loanEClass = createEClass(LOAN);
 		createEReference(loanEClass, LOAN__BOOK);
 		createEReference(loanEClass, LOAN__MEMBER);
 		createEAttribute(loanEClass, LOAN__DATE);
+
+		// Create enums
+		membershipTypeEEnum = createEEnum(MEMBERSHIP_TYPE);
+
+		// Create data types
+		dateEDataType = createEDataType(DATE);
 	}
 
 	/**
@@ -394,7 +477,8 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void initializePackageContents() {
+	public void initializePackageContents()
+	{
 		if (isInitialized) return;
 		isInitialized = true;
 
@@ -434,11 +518,20 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 		initEReference(getMember_Library(), this.getLibrary(), this.getLibrary_Members(), "library", null, 1, 1, Member.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getMember_Loans(), this.getLoan(), null, "loans", null, 0, -1, Member.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
 		initEReference(getMember_Books(), this.getBook(), null, "books", null, 0, -1, Member.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getMember_MembershipType(), this.getMembershipType(), "membershipType", null, 1, 1, Member.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(loanEClass, Loan.class, "Loan", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLoan_Book(), this.getBook(), null, "book", null, 1, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getLoan_Member(), this.getMember(), null, "member", null, 1, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
-		initEAttribute(getLoan_Date(), ecorePackage.getEDate(), "date", null, 0, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+		initEAttribute(getLoan_Date(), this.getDate(), "date", null, 0, 1, Loan.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
+
+		// Initialize enums and add enum literals
+		initEEnum(membershipTypeEEnum, MembershipType.class, "MembershipType");
+		addEEnumLiteral(membershipTypeEEnum, MembershipType.STANDARD);
+		addEEnumLiteral(membershipTypeEEnum, MembershipType.EXCLUSIVE);
+
+		// Initialize data types
+		initEDataType(dateEDataType, Date.class, "Date", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -456,28 +549,32 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void createEcoreAnnotations() {
+	protected void createEcoreAnnotations()
+	{
 		String source = "http://www.eclipse.org/emf/2002/Ecore";		
 		addAnnotation
 		  (this, 
 		   source, 
-		   new String[] {
-			 "invocationDelegates", "http://www.i3s.unice.fr/Sigma",
-			 "settingDelegates", "http://www.i3s.unice.fr/Sigma",
-			 "validationDelegates", "http://www.i3s.unice.fr/Sigma"
+		   new String[] 
+		   {
+			 "invocationDelegates", "http://www.i3s.unice.fr/Sigma/Scala",
+			 "settingDelegates", "http://www.i3s.unice.fr/Sigma/Scala",
+			 "validationDelegates", "http://www.i3s.unice.fr/Sigma/Scala"
 		   });					
 		addAnnotation
 		  (bookEClass, 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 			 "constraints", "SufficientCopies AtLeastOneCopy"
 		   });					
 		addAnnotation
 		  (memberEClass, 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 			 "constraints", "AtMostTwoLoans UniqueLoans"
-		   });			
+		   });				
 	}
 
 	/**
@@ -486,58 +583,68 @@ public class LibraryPackageImpl extends EPackageImpl implements LibraryPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void createSigmaAnnotations() {
+	protected void createSigmaAnnotations()
+	{
 		String source = "http://www.i3s.unice.fr/Sigma";			
 		addAnnotation
 		  (this, 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 			 "delegate", "fr.unice.i3s.sigma.examples.library.delegate"
 		   });		
 		addAnnotation
 		  (getLibrary__GetBookByName__String(), 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 		   });		
 		addAnnotation
 		  (getLibrary__ToString(), 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 		   });			
 		addAnnotation
 		  (bookEClass, 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 			 "SufficientCopies", "",
 			 "AtLeastOneCopy", ""
 		   });		
 		addAnnotation
 		  (getBook__IsAvailable(), 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 		   });		
 		addAnnotation
 		  (getBook_Loans(), 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 		   });			
 		addAnnotation
 		  (memberEClass, 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 			 "AtMostTwoLoans", "",
 			 "UniqueLoans", ""
 		   });		
 		addAnnotation
 		  (getMember_Loans(), 
 		   source, 
-		   new String[] {
+		   new String[] 
+		   {
 		   });		
 		addAnnotation
 		  (getMember_Books(), 
 		   source, 
-		   new String[] {
-		   });
+		   new String[] 
+		   {
+		   });	
 	}
 
 } //LibraryPackageImpl

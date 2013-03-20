@@ -22,11 +22,11 @@ import fr.unice.i3s.sigma.docgen.core.DocgenPlugin
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVDot
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVOutputType
 import fr.unice.i3s.sigma.docgen.graphviz.core.GenerateClassDiagramJob
-import fr.unice.i3s.sigma.scala.construct.EMFBuilder
-import fr.unice.i3s.sigma.scala.ui.util.SWTUtils
+import fr.unice.i3s.sigma.ui.util.SWTUtils
 import fr.unice.i3s.sigma.docgen.graphviz.ui.GraphvizDiagnostics
 import org.eclipse.swt.widgets.Shell
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcoreBuilder
 
 class ExportClassDiagramHandler extends AbstractHandler with EcorePackageScalaSupport {
 
@@ -57,7 +57,7 @@ class ExportClassDiagramHandler extends AbstractHandler with EcorePackageScalaSu
 
       case _ ⇒ {
         val copier = new Copier(true, true)
-        val pkg = (new EMFBuilder(EcorePackage.eINSTANCE)).create[EPackage]
+        val pkg = EcoreBuilder.EPackage()
 
         pkg.eClassifiers ++= items.collect {
           case e: EClass ⇒
@@ -123,7 +123,7 @@ class ExportClassDiagramHandler extends AbstractHandler with EcorePackageScalaSu
       }
     }
 
-    job schedule
+    job.schedule
   }
 
 }

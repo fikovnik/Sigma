@@ -1,12 +1,9 @@
 /**
- * <copyright>
- * </copyright>
- *
- * $Id$
  */
 package fr.unice.i3s.sigma.examples.library;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -21,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Member#getLibrary <em>Library</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Member#getLoans <em>Loans</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Member#getBooks <em>Books</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.Member#getMembershipType <em>Membership Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -29,7 +27,8 @@ import org.eclipse.emf.ecore.EObject;
  *        annotation="http://www.i3s.unice.fr/Sigma AtMostTwoLoans='' UniqueLoans=''"
  * @generated
  */
-public interface Member extends EObject {
+public interface Member extends EObject
+{
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -61,7 +60,7 @@ public interface Member extends EObject {
 	 * It is bidirectional and its opposite is '{@link fr.unice.i3s.sigma.examples.library.Library#getMembers <em>Members</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Library</em>' reference isn't clear,
+	 * If the meaning of the '<em>Library</em>' container reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
@@ -115,5 +114,34 @@ public interface Member extends EObject {
 	 * @generated
 	 */
 	EList<Book> getBooks();
+
+	/**
+	 * Returns the value of the '<em><b>Membership Type</b></em>' attribute.
+	 * The literals are from the enumeration {@link fr.unice.i3s.sigma.examples.library.MembershipType}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Membership Type</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Membership Type</em>' attribute.
+	 * @see fr.unice.i3s.sigma.examples.library.MembershipType
+	 * @see #setMembershipType(MembershipType)
+	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getMember_MembershipType()
+	 * @model required="true"
+	 * @generated
+	 */
+	MembershipType getMembershipType();
+
+	/**
+	 * Sets the value of the '{@link fr.unice.i3s.sigma.examples.library.Member#getMembershipType <em>Membership Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Membership Type</em>' attribute.
+	 * @see fr.unice.i3s.sigma.examples.library.MembershipType
+	 * @see #getMembershipType()
+	 * @generated
+	 */
+	void setMembershipType(MembershipType value);
 
 } // Member
