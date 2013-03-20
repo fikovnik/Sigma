@@ -9,7 +9,7 @@
 		<relativePath>../fr.unice.i3s.sigma.releng/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>fr.unice.i3s.sigma.scala.tests</artifactId>
+	<artifactId>fr.unice.i3s.sigma.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
 

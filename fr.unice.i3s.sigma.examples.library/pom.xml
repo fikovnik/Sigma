@@ -21,6 +21,6 @@
 		<relativePath>../fr.unice.i3s.sigma.releng/pom.xml</relativePath>
 	</parent>
 	
-	<artifactId>fr.unice.i3s.sigma</artifactId>
+	<artifactId>fr.unice.i3s.sigma.examples.library</artifactId>
 	<packaging>eclipse-plugin</packaging>
 </project>

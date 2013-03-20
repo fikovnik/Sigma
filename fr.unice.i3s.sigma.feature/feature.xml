@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="fr.unice.i3s.sigma.scala.feature"
+      id="fr.unice.i3s.sigma.feature"
       label="%featureName"
       version="1.0.0.qualifier"
       provider-name="%providerName">
 
-   <description url="https://github.com/fikovnik/sigma
-feature.properties
-license.html">
+   <description url="https://github.com/fikovnik/Sigma">
       %description
    </description>
 
@@ -19,33 +17,47 @@ license.html">
       %license
    </license>
 
-   <includes
-         id="fr.unice.i3s.sigma.feature"
-         version="0.0.0"/>
+   <requires>
+      <import plugin="org.scala-ide.scala.library" version="2.10.0" match="greaterOrEqual"/>
+      <import plugin="org.scala-lang.scala-reflect" version="2.10.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.7.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="11.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.ecore.xmi" version="2.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.text" version="3.5.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.lang3" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="com.typesafe.scalalogging-log4j_2.10" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.log4j-api" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="fr.unice.i3s.sigma" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.8.2" match="greaterOrEqual"/>
+      <import plugin="org.scalatest" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.codegen.ecore" version="2.8.1" match="greaterOrEqual"/>
+      <import plugin="org.mockito.mockito-all" version="1.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug" version="3.7.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.pde.core" version="3.7.1" match="greaterOrEqual"/>
+      <import plugin="fr.unice.i3s.sigma.examples.library" version="1.0.0" match="greaterOrEqual"/>
+   </requires>
 
    <plugin
-         id="fr.unice.i3s.sigma.scala"
+         id="fr.unice.i3s.sigma"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="fr.unice.i3s.sigma.scala.tools"
+         id="fr.unice.i3s.sigma.examples.library"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="fr.unice.i3s.sigma.scala.scalatest"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="fr.unice.i3s.sigma.docgen"
+         id="fr.unice.i3s.sigma.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -9,7 +9,7 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
             uri="http://www.i3s.unice.fr/sigma/examples/Library"
-            class="fr.unice.i3s.sigma.examples.library.support.LibraryPackage"
+            class="fr.unice.i3s.sigma.examples.library.LibraryPackage"
             genModel="model/Library.genmodel"/>
    </extension>
 
