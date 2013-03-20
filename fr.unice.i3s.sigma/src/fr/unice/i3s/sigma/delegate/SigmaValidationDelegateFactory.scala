@@ -13,6 +13,7 @@ import java.lang.reflect.Method
 import fr.unice.i3s.sigma.validation.Error
 import fr.unice.i3s.sigma.validation.ValidationResult
 import java.util.{ Map ⇒ JMap }
+import fr.unice.i3s.sigma.validation.Passed
 
 final class SigmaValidationDelegateFactory extends AbstractSigmaDelegateFactory[(EClass, String)] with ValidationDelegate with EcorePackageScalaSupport {
 
@@ -90,12 +91,11 @@ final class SigmaValidationDelegateFactory extends AbstractSigmaDelegateFactory[
 
   override def validate(eClass: EClass, eObject: EObject,
     context: JMap[Object, Object], invariant: EOperation, expression: String) =
-    doValidate(eClass, eObject, context, invariant.getName()).isValidOrCanceled;
+    doValidate(eClass, eObject, context, invariant.getName()) == Passed;
 
   override def validate(eClass: EClass, eObject: EObject,
     context: JMap[Object, Object], constraint: String, expression: String) =
-    doValidate(eClass, eObject, context, constraint)
-      .isValidOrCanceled
+    doValidate(eClass, eObject, context, constraint) == Passed
 
   override def validate(eDataType: EDataType, value: Object,
     context: JMap[Object, Object], constraint: String, expression: String) =

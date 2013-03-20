@@ -1,29 +1,18 @@
 package fr.unice.i3s.sigma.validation
 
-sealed trait ValidationResult {
-  def isValidOrCanceled: Boolean
-}
+sealed trait ValidationResult
 
-object Passed extends ValidationResult {
-  def isValidOrCanceled = true
-}
+object Passed extends ValidationResult
 
-object Canceled extends ValidationResult {
-  def isValidOrCanceled = true
-}
+object Cancelled extends ValidationResult
 
-object Warning {
-  def apply(message: String, fixes: Fix*) = new Warning(message, fixes: _*)
-}
+case class Warning(val message: String, val fixes: Fix*) extends ValidationResult
 
-class Warning(val message: String, val fixes: Fix*) extends ValidationResult {
-  def isValidOrCanceled = false
-}
+case class Error(val message: String, val fixes: Fix*) extends ValidationResult
 
-object Error {
-  def apply(message: String, fixes: Fix*) = new Error(message, fixes: _*)
-}
-
-class Error(val message: String, val fixes: Fix*) extends ValidationResult {
-  def isValidOrCanceled = false
+class ValidationContextResult(val results: Map[String, ValidationResult]) {
+  def cancelled: Boolean = results == Map.empty
+  def passed: Boolean = results forall { case (_, inv) ⇒ inv == Passed }
+  def violates(constraint: String): Boolean =
+    results.get(constraint).map(_ != Passed) getOrElse (false)
 }
