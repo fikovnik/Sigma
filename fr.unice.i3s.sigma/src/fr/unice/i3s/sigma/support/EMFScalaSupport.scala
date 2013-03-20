@@ -48,6 +48,8 @@ trait EMFScalaSupport {
 
     def containsConstraint(name: String, obj: Option[EObject], severity: Int = Diagnostic.ERROR) =
       findConstraint(name, obj, severity).isDefined
+
+    def isOK = that.getSeverity == Diagnostic.OK
   }
 
   implicit class RichSigmaNotifier(that: Notifier) {
@@ -79,7 +81,7 @@ trait EMFScalaSupport {
     }
 
     def isValid = {
-      validate.getSeverity == Diagnostic.OK
+      validate.isOK
     }
 
     def copy = EcoreUtil.copy(that)
