@@ -17,7 +17,8 @@ import org.eclipse.emf.common.util.Enumerator;
  * @model
  * @generated
  */
-public enum MembershipType implements Enumerator {
+public enum MembershipType implements Enumerator
+{
 	/**
 	 * The '<em><b>Standard</b></em>' literal object.
 	 * <!-- begin-user-doc -->
@@ -75,7 +76,8 @@ public enum MembershipType implements Enumerator {
 	 * @generated
 	 */
 	private static final MembershipType[] VALUES_ARRAY =
-		new MembershipType[] {
+		new MembershipType[]
+		{
 			STANDARD,
 			EXCLUSIVE,
 		};
@@ -94,10 +96,13 @@ public enum MembershipType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static MembershipType get(String literal) {
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+	public static MembershipType get(String literal)
+	{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
 			MembershipType result = VALUES_ARRAY[i];
-			if (result.toString().equals(literal)) {
+			if (result.toString().equals(literal))
+			{
 				return result;
 			}
 		}
@@ -110,10 +115,13 @@ public enum MembershipType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static MembershipType getByName(String name) {
-		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
+	public static MembershipType getByName(String name)
+	{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i)
+		{
 			MembershipType result = VALUES_ARRAY[i];
-			if (result.getName().equals(name)) {
+			if (result.getName().equals(name))
+			{
 				return result;
 			}
 		}
@@ -126,8 +134,10 @@ public enum MembershipType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static MembershipType get(int value) {
-		switch (value) {
+	public static MembershipType get(int value)
+	{
+		switch (value)
+		{
 			case STANDARD_VALUE: return STANDARD;
 			case EXCLUSIVE_VALUE: return EXCLUSIVE;
 		}
@@ -161,7 +171,8 @@ public enum MembershipType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private MembershipType(int value, String name, String literal) {
+	private MembershipType(int value, String name, String literal)
+	{
 		this.value = value;
 		this.name = name;
 		this.literal = literal;
@@ -172,7 +183,8 @@ public enum MembershipType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getValue() {
+	public int getValue()
+	{
 	  return value;
 	}
 
@@ -181,7 +193,8 @@ public enum MembershipType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+	public String getName()
+	{
 	  return name;
 	}
 
@@ -190,7 +203,8 @@ public enum MembershipType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getLiteral() {
+	public String getLiteral()
+	{
 	  return literal;
 	}
 
@@ -201,7 +215,8 @@ public enum MembershipType implements Enumerator {
 	 * @generated
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return literal;
 	}
 	

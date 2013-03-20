@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.examples.library.scala
+package fr.unice.i3s.sigma.examples.library.support
 
 import fr.unice.i3s.sigma.examples.library.Book;
 import fr.unice.i3s.sigma.examples.library.Loan;

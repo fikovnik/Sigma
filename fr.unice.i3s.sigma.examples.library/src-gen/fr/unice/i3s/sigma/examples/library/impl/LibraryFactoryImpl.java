@@ -21,21 +21,26 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * <!-- end-user-doc -->
  * @generated
  */
-public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
+public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory
+{
 	/**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static LibraryFactory init() {
-		try {
+	public static LibraryFactory init()
+	{
+		try
+		{
 			LibraryFactory theLibraryFactory = (LibraryFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.i3s.unice.fr/sigma/examples/Library"); 
-			if (theLibraryFactory != null) {
+			if (theLibraryFactory != null)
+			{
 				return theLibraryFactory;
 			}
 		}
-		catch (Exception exception) {
+		catch (Exception exception)
+		{
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new LibraryFactoryImpl();
@@ -47,7 +52,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LibraryFactoryImpl() {
+	public LibraryFactoryImpl()
+	{
 		super();
 	}
 
@@ -57,8 +63,10 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * @generated
 	 */
 	@Override
-	public EObject create(EClass eClass) {
-		switch (eClass.getClassifierID()) {
+	public EObject create(EClass eClass)
+	{
+		switch (eClass.getClassifierID())
+		{
 			case LibraryPackage.LIBRARY: return createLibrary();
 			case LibraryPackage.BOOK: return createBook();
 			case LibraryPackage.MEMBER: return createMember();
@@ -74,8 +82,10 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * @generated
 	 */
 	@Override
-	public Object createFromString(EDataType eDataType, String initialValue) {
-		switch (eDataType.getClassifierID()) {
+	public Object createFromString(EDataType eDataType, String initialValue)
+	{
+		switch (eDataType.getClassifierID())
+		{
 			case LibraryPackage.MEMBERSHIP_TYPE:
 				return createMembershipTypeFromString(eDataType, initialValue);
 			case LibraryPackage.DATE:
@@ -91,8 +101,10 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * @generated
 	 */
 	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue) {
-		switch (eDataType.getClassifierID()) {
+	public String convertToString(EDataType eDataType, Object instanceValue)
+	{
+		switch (eDataType.getClassifierID())
+		{
 			case LibraryPackage.MEMBERSHIP_TYPE:
 				return convertMembershipTypeToString(eDataType, instanceValue);
 			case LibraryPackage.DATE:
@@ -107,7 +119,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Library createLibrary() {
+	public Library createLibrary()
+	{
 		LibraryImpl library = new LibraryImpl();
 		return library;
 	}
@@ -117,7 +130,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Book createBook() {
+	public Book createBook()
+	{
 		BookImpl book = new BookImpl();
 		return book;
 	}
@@ -127,7 +141,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Member createMember() {
+	public Member createMember()
+	{
 		MemberImpl member = new MemberImpl();
 		return member;
 	}
@@ -137,7 +152,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Loan createLoan() {
+	public Loan createLoan()
+	{
 		LoanImpl loan = new LoanImpl();
 		return loan;
 	}
@@ -147,7 +163,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MembershipType createMembershipTypeFromString(EDataType eDataType, String initialValue) {
+	public MembershipType createMembershipTypeFromString(EDataType eDataType, String initialValue)
+	{
 		MembershipType result = MembershipType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
@@ -158,7 +175,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertMembershipTypeToString(EDataType eDataType, Object instanceValue) {
+	public String convertMembershipTypeToString(EDataType eDataType, Object instanceValue)
+	{
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
@@ -167,7 +185,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Date createDateFromString(EDataType eDataType, String initialValue) {
+	public Date createDateFromString(EDataType eDataType, String initialValue)
+	{
 		return (Date)super.createFromString(eDataType, initialValue);
 	}
 
@@ -176,7 +195,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertDateToString(EDataType eDataType, Object instanceValue) {
+	public String convertDateToString(EDataType eDataType, Object instanceValue)
+	{
 		return super.convertToString(eDataType, instanceValue);
 	}
 
@@ -185,7 +205,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LibraryPackage getLibraryPackage() {
+	public LibraryPackage getLibraryPackage()
+	{
 		return (LibraryPackage)getEPackage();
 	}
 
@@ -196,7 +217,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory {
 	 * @generated
 	 */
 	@Deprecated
-	public static LibraryPackage getPackage() {
+	public static LibraryPackage getPackage()
+	{
 		return LibraryPackage.eINSTANCE;
 	}
 

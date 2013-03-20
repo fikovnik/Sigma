@@ -22,7 +22,8 @@ import org.eclipse.emf.ecore.util.EObjectValidator;
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage
  * @generated
  */
-public class LibraryValidator extends EObjectValidator {
+public class LibraryValidator extends EObjectValidator
+{
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
@@ -63,7 +64,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LibraryValidator() {
+	public LibraryValidator()
+	{
 		super();
 	}
 
@@ -74,7 +76,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * @generated
 	 */
 	@Override
-	protected EPackage getEPackage() {
+	protected EPackage getEPackage()
+	{
 	  return LibraryPackage.eINSTANCE;
 	}
 
@@ -85,8 +88,10 @@ public class LibraryValidator extends EObjectValidator {
 	 * @generated
 	 */
 	@Override
-	protected boolean validate(int classifierID, Object value, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		switch (classifierID) {
+	protected boolean validate(int classifierID, Object value, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
+		switch (classifierID)
+		{
 			case LibraryPackage.LIBRARY:
 				return validateLibrary((Library)value, diagnostics, context);
 			case LibraryPackage.BOOK:
@@ -109,7 +114,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateLibrary(Library library, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateLibrary(Library library, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		return validate_EveryDefaultConstraint(library, diagnostics, context);
 	}
 
@@ -118,7 +124,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateBook(Book book, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateBook(Book book, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		if (!validate_NoCircularContainment(book, diagnostics, context)) return false;
 		boolean result = validate_EveryMultiplicityConforms(book, diagnostics, context);
 		if (result || diagnostics != null) result &= validate_EveryDataValueConforms(book, diagnostics, context);
@@ -139,13 +146,16 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateBook_SufficientCopies(Book book, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateBook_SufficientCopies(Book book, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		// TODO implement the constraint
 		// -> specify the condition that violates the constraint
 		// -> verify the diagnostic details, including severity, code, and message
 		// Ensure that you remove @generated or mark it @generated NOT
-		if (false) {
-			if (diagnostics != null) {
+		if (false)
+		{
+			if (diagnostics != null)
+			{
 				diagnostics.add
 					(createDiagnostic
 						(Diagnostic.ERROR,
@@ -167,13 +177,16 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateBook_AtLeastOneCopy(Book book, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateBook_AtLeastOneCopy(Book book, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		// TODO implement the constraint
 		// -> specify the condition that violates the constraint
 		// -> verify the diagnostic details, including severity, code, and message
 		// Ensure that you remove @generated or mark it @generated NOT
-		if (false) {
-			if (diagnostics != null) {
+		if (false)
+		{
+			if (diagnostics != null)
+			{
 				diagnostics.add
 					(createDiagnostic
 						(Diagnostic.ERROR,
@@ -194,7 +207,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateMember(Member member, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateMember(Member member, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		if (!validate_NoCircularContainment(member, diagnostics, context)) return false;
 		boolean result = validate_EveryMultiplicityConforms(member, diagnostics, context);
 		if (result || diagnostics != null) result &= validate_EveryDataValueConforms(member, diagnostics, context);
@@ -215,13 +229,16 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateMember_AtMostTwoLoans(Member member, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateMember_AtMostTwoLoans(Member member, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		// TODO implement the constraint
 		// -> specify the condition that violates the constraint
 		// -> verify the diagnostic details, including severity, code, and message
 		// Ensure that you remove @generated or mark it @generated NOT
-		if (false) {
-			if (diagnostics != null) {
+		if (false)
+		{
+			if (diagnostics != null)
+			{
 				diagnostics.add
 					(createDiagnostic
 						(Diagnostic.ERROR,
@@ -243,13 +260,16 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateMember_UniqueLoans(Member member, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateMember_UniqueLoans(Member member, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		// TODO implement the constraint
 		// -> specify the condition that violates the constraint
 		// -> verify the diagnostic details, including severity, code, and message
 		// Ensure that you remove @generated or mark it @generated NOT
-		if (false) {
-			if (diagnostics != null) {
+		if (false)
+		{
+			if (diagnostics != null)
+			{
 				diagnostics.add
 					(createDiagnostic
 						(Diagnostic.ERROR,
@@ -270,7 +290,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateLoan(Loan loan, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateLoan(Loan loan, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		return validate_EveryDefaultConstraint(loan, diagnostics, context);
 	}
 
@@ -279,7 +300,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateMembershipType(MembershipType membershipType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateMembershipType(MembershipType membershipType, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		return true;
 	}
 
@@ -288,7 +310,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateDate(Date date, DiagnosticChain diagnostics, Map<Object, Object> context) {
+	public boolean validateDate(Date date, DiagnosticChain diagnostics, Map<Object, Object> context)
+	{
 		return true;
 	}
 
@@ -299,7 +322,8 @@ public class LibraryValidator extends EObjectValidator {
 	 * @generated
 	 */
 	@Override
-	public ResourceLocator getResourceLocator() {
+	public ResourceLocator getResourceLocator()
+	{
 		// TODO
 		// Specialize this to return a resource locator for messages specific to this validator.
 		// Ensure that you remove @generated or mark it @generated NOT

@@ -28,7 +28,8 @@ import org.eclipse.emf.ecore.EReference;
  *        annotation="http://www.i3s.unice.fr/Sigma delegate='fr.unice.i3s.sigma.examples.library.delegate'"
  * @generated
  */
-public interface LibraryPackage extends EPackage {
+public interface LibraryPackage extends EPackage
+{
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -654,7 +655,8 @@ public interface LibraryPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	interface Literals {
+	interface Literals
+	{
 		/**
 		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.library.impl.LibraryImpl <em>Library</em>}' class.
 		 * <!-- begin-user-doc -->

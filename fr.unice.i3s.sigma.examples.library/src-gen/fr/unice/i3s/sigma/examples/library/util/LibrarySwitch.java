@@ -22,7 +22,8 @@ import org.eclipse.emf.ecore.util.Switch;
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage
  * @generated
  */
-public class LibrarySwitch<T> extends Switch<T> {
+public class LibrarySwitch<T> extends Switch<T>
+{
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
@@ -37,8 +38,10 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LibrarySwitch() {
-		if (modelPackage == null) {
+	public LibrarySwitch()
+	{
+		if (modelPackage == null)
+		{
 			modelPackage = LibraryPackage.eINSTANCE;
 		}
 	}
@@ -52,7 +55,8 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	@Override
-	protected boolean isSwitchFor(EPackage ePackage) {
+	protected boolean isSwitchFor(EPackage ePackage)
+	{
 		return ePackage == modelPackage;
 	}
 
@@ -64,27 +68,33 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	@Override
-	protected T doSwitch(int classifierID, EObject theEObject) {
-		switch (classifierID) {
-			case LibraryPackage.LIBRARY: {
+	protected T doSwitch(int classifierID, EObject theEObject)
+	{
+		switch (classifierID)
+		{
+			case LibraryPackage.LIBRARY:
+			{
 				Library library = (Library)theEObject;
 				T result = caseLibrary(library);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case LibraryPackage.BOOK: {
+			case LibraryPackage.BOOK:
+			{
 				Book book = (Book)theEObject;
 				T result = caseBook(book);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case LibraryPackage.MEMBER: {
+			case LibraryPackage.MEMBER:
+			{
 				Member member = (Member)theEObject;
 				T result = caseMember(member);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case LibraryPackage.LOAN: {
+			case LibraryPackage.LOAN:
+			{
 				Loan loan = (Loan)theEObject;
 				T result = caseLoan(loan);
 				if (result == null) result = defaultCase(theEObject);
@@ -105,7 +115,8 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseLibrary(Library object) {
+	public T caseLibrary(Library object)
+	{
 		return null;
 	}
 
@@ -120,7 +131,8 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseBook(Book object) {
+	public T caseBook(Book object)
+	{
 		return null;
 	}
 
@@ -135,7 +147,8 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseMember(Member object) {
+	public T caseMember(Member object)
+	{
 		return null;
 	}
 
@@ -150,7 +163,8 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseLoan(Loan object) {
+	public T caseLoan(Loan object)
+	{
 		return null;
 	}
 
@@ -166,7 +180,8 @@ public class LibrarySwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	@Override
-	public T defaultCase(EObject object) {
+	public T defaultCase(EObject object)
+	{
 		return null;
 	}
 

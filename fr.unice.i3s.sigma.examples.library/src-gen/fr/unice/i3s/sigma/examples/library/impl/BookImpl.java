@@ -38,7 +38,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *
  * @generated
  */
-public class BookImpl extends EObjectImpl implements Book {
+public class BookImpl extends EObjectImpl implements Book
+{
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -84,7 +85,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected BookImpl() {
+	protected BookImpl()
+	{
 		super();
 	}
 
@@ -94,7 +96,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass() {
+	protected EClass eStaticClass()
+	{
 		return LibraryPackage.Literals.BOOK;
 	}
 
@@ -103,7 +106,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
@@ -112,7 +116,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(String newName) {
+	public void setName(String newName)
+	{
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
@@ -124,7 +129,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getCopies() {
+	public int getCopies()
+	{
 		return copies;
 	}
 
@@ -133,7 +139,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCopies(int newCopies) {
+	public void setCopies(int newCopies)
+	{
 		int oldCopies = copies;
 		copies = newCopies;
 		if (eNotificationRequired())
@@ -145,7 +152,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Library getLibrary() {
+	public Library getLibrary()
+	{
 		if (eContainerFeatureID() != LibraryPackage.BOOK__LIBRARY) return null;
 		return (Library)eContainer();
 	}
@@ -155,7 +163,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetLibrary(Library newLibrary, NotificationChain msgs) {
+	public NotificationChain basicSetLibrary(Library newLibrary, NotificationChain msgs)
+	{
 		msgs = eBasicSetContainer((InternalEObject)newLibrary, LibraryPackage.BOOK__LIBRARY, msgs);
 		return msgs;
 	}
@@ -165,8 +174,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setLibrary(Library newLibrary) {
-		if (newLibrary != eInternalContainer() || (eContainerFeatureID() != LibraryPackage.BOOK__LIBRARY && newLibrary != null)) {
+	public void setLibrary(Library newLibrary)
+	{
+		if (newLibrary != eInternalContainer() || (eContainerFeatureID() != LibraryPackage.BOOK__LIBRARY && newLibrary != null))
+		{
 			if (EcoreUtil.isAncestor(this, newLibrary))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
@@ -186,7 +197,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Loan> getLoans() {
+	public EList<Loan> getLoans()
+	{
 		// TODO: implement this method to return the 'Loans' reference list
 		// Ensure that you remove @generated or mark it @generated NOT
 		// The list is expected to implement org.eclipse.emf.ecore.util.InternalEList and org.eclipse.emf.ecore.EStructuralFeature.Setting
@@ -199,7 +211,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isAvailable() {
+	public boolean isAvailable()
+	{
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -211,8 +224,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.BOOK__LIBRARY:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
@@ -227,8 +242,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.BOOK__LIBRARY:
 				return basicSetLibrary(null, msgs);
 		}
@@ -241,8 +258,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
-		switch (eContainerFeatureID()) {
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs)
+	{
+		switch (eContainerFeatureID())
+		{
 			case LibraryPackage.BOOK__LIBRARY:
 				return eInternalContainer().eInverseRemove(this, LibraryPackage.LIBRARY__BOOKS, Library.class, msgs);
 		}
@@ -255,8 +274,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-		switch (featureID) {
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.BOOK__NAME:
 				return getName();
 			case LibraryPackage.BOOK__COPIES:
@@ -275,8 +296,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue) {
-		switch (featureID) {
+	public void eSet(int featureID, Object newValue)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.BOOK__NAME:
 				setName((String)newValue);
 				return;
@@ -296,8 +319,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID) {
-		switch (featureID) {
+	public void eUnset(int featureID)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.BOOK__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -317,8 +342,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID) {
-		switch (featureID) {
+	public boolean eIsSet(int featureID)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.BOOK__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case LibraryPackage.BOOK__COPIES:
@@ -337,8 +364,10 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-		switch (operationID) {
+	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException
+	{
+		switch (operationID)
+		{
 			case LibraryPackage.BOOK___IS_AVAILABLE:
 				return isAvailable();
 		}
@@ -351,7 +380,8 @@ public class BookImpl extends EObjectImpl implements Book {
 	 * @generated
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());

@@ -26,7 +26,8 @@ import org.eclipse.emf.ecore.EObject;
  *        annotation="http://www.i3s.unice.fr/Sigma SufficientCopies='' AtLeastOneCopy=''"
  * @generated
  */
-public interface Book extends EObject {
+public interface Book extends EObject
+{
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->

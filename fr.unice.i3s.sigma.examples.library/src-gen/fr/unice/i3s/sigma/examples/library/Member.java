@@ -27,7 +27,8 @@ import org.eclipse.emf.ecore.EObject;
  *        annotation="http://www.i3s.unice.fr/Sigma AtMostTwoLoans='' UniqueLoans=''"
  * @generated
  */
-public interface Member extends EObject {
+public interface Member extends EObject
+{
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->

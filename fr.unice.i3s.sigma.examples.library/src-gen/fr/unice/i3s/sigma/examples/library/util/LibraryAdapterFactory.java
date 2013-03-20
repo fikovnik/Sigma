@@ -19,7 +19,8 @@ import org.eclipse.emf.ecore.EObject;
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage
  * @generated
  */
-public class LibraryAdapterFactory extends AdapterFactoryImpl {
+public class LibraryAdapterFactory extends AdapterFactoryImpl
+{
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
@@ -34,8 +35,10 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LibraryAdapterFactory() {
-		if (modelPackage == null) {
+	public LibraryAdapterFactory()
+	{
+		if (modelPackage == null)
+		{
 			modelPackage = LibraryPackage.eINSTANCE;
 		}
 	}
@@ -49,11 +52,14 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	@Override
-	public boolean isFactoryForType(Object object) {
-		if (object == modelPackage) {
+	public boolean isFactoryForType(Object object)
+	{
+		if (object == modelPackage)
+		{
 			return true;
 		}
-		if (object instanceof EObject) {
+		if (object instanceof EObject)
+		{
 			return ((EObject)object).eClass().getEPackage() == modelPackage;
 		}
 		return false;
@@ -66,25 +72,31 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	protected LibrarySwitch<Adapter> modelSwitch =
-		new LibrarySwitch<Adapter>() {
+		new LibrarySwitch<Adapter>()
+		{
 			@Override
-			public Adapter caseLibrary(Library object) {
+			public Adapter caseLibrary(Library object)
+			{
 				return createLibraryAdapter();
 			}
 			@Override
-			public Adapter caseBook(Book object) {
+			public Adapter caseBook(Book object)
+			{
 				return createBookAdapter();
 			}
 			@Override
-			public Adapter caseMember(Member object) {
+			public Adapter caseMember(Member object)
+			{
 				return createMemberAdapter();
 			}
 			@Override
-			public Adapter caseLoan(Loan object) {
+			public Adapter caseLoan(Loan object)
+			{
 				return createLoanAdapter();
 			}
 			@Override
-			public Adapter defaultCase(EObject object) {
+			public Adapter defaultCase(EObject object)
+			{
 				return createEObjectAdapter();
 			}
 		};
@@ -98,7 +110,8 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	@Override
-	public Adapter createAdapter(Notifier target) {
+	public Adapter createAdapter(Notifier target)
+	{
 		return modelSwitch.doSwitch((EObject)target);
 	}
 
@@ -113,7 +126,8 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @see fr.unice.i3s.sigma.examples.library.Library
 	 * @generated
 	 */
-	public Adapter createLibraryAdapter() {
+	public Adapter createLibraryAdapter()
+	{
 		return null;
 	}
 
@@ -127,7 +141,8 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @see fr.unice.i3s.sigma.examples.library.Book
 	 * @generated
 	 */
-	public Adapter createBookAdapter() {
+	public Adapter createBookAdapter()
+	{
 		return null;
 	}
 
@@ -141,7 +156,8 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @see fr.unice.i3s.sigma.examples.library.Member
 	 * @generated
 	 */
-	public Adapter createMemberAdapter() {
+	public Adapter createMemberAdapter()
+	{
 		return null;
 	}
 
@@ -155,7 +171,8 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @see fr.unice.i3s.sigma.examples.library.Loan
 	 * @generated
 	 */
-	public Adapter createLoanAdapter() {
+	public Adapter createLoanAdapter()
+	{
 		return null;
 	}
 
@@ -167,7 +184,8 @@ public class LibraryAdapterFactory extends AdapterFactoryImpl {
 	 * @return the new adapter.
 	 * @generated
 	 */
-	public Adapter createEObjectAdapter() {
+	public Adapter createEObjectAdapter()
+	{
 		return null;
 	}
 

@@ -32,7 +32,8 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class LoanImpl extends EObjectImpl implements Loan {
+public class LoanImpl extends EObjectImpl implements Loan
+{
 	/**
 	 * The cached value of the '{@link #getBook() <em>Book</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -78,7 +79,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected LoanImpl() {
+	protected LoanImpl()
+	{
 		super();
 	}
 
@@ -88,7 +90,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass() {
+	protected EClass eStaticClass()
+	{
 		return LibraryPackage.Literals.LOAN;
 	}
 
@@ -97,11 +100,14 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Book getBook() {
-		if (book != null && book.eIsProxy()) {
+	public Book getBook()
+	{
+		if (book != null && book.eIsProxy())
+		{
 			InternalEObject oldBook = (InternalEObject)book;
 			book = (Book)eResolveProxy(oldBook);
-			if (book != oldBook) {
+			if (book != oldBook)
+			{
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, LibraryPackage.LOAN__BOOK, oldBook, book));
 			}
@@ -114,7 +120,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Book basicGetBook() {
+	public Book basicGetBook()
+	{
 		return book;
 	}
 
@@ -123,7 +130,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setBook(Book newBook) {
+	public void setBook(Book newBook)
+	{
 		Book oldBook = book;
 		book = newBook;
 		if (eNotificationRequired())
@@ -135,11 +143,14 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Member getMember() {
-		if (member != null && member.eIsProxy()) {
+	public Member getMember()
+	{
+		if (member != null && member.eIsProxy())
+		{
 			InternalEObject oldMember = (InternalEObject)member;
 			member = (Member)eResolveProxy(oldMember);
-			if (member != oldMember) {
+			if (member != oldMember)
+			{
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, LibraryPackage.LOAN__MEMBER, oldMember, member));
 			}
@@ -152,7 +163,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Member basicGetMember() {
+	public Member basicGetMember()
+	{
 		return member;
 	}
 
@@ -161,7 +173,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setMember(Member newMember) {
+	public void setMember(Member newMember)
+	{
 		Member oldMember = member;
 		member = newMember;
 		if (eNotificationRequired())
@@ -173,7 +186,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Date getDate() {
+	public Date getDate()
+	{
 		return date;
 	}
 
@@ -182,7 +196,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDate(Date newDate) {
+	public void setDate(Date newDate)
+	{
 		Date oldDate = date;
 		date = newDate;
 		if (eNotificationRequired())
@@ -195,8 +210,10 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-		switch (featureID) {
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LOAN__BOOK:
 				if (resolve) return getBook();
 				return basicGetBook();
@@ -215,8 +232,10 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue) {
-		switch (featureID) {
+	public void eSet(int featureID, Object newValue)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LOAN__BOOK:
 				setBook((Book)newValue);
 				return;
@@ -236,8 +255,10 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID) {
-		switch (featureID) {
+	public void eUnset(int featureID)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LOAN__BOOK:
 				setBook((Book)null);
 				return;
@@ -257,8 +278,10 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID) {
-		switch (featureID) {
+	public boolean eIsSet(int featureID)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LOAN__BOOK:
 				return book != null;
 			case LibraryPackage.LOAN__MEMBER:
@@ -275,7 +298,8 @@ public class LoanImpl extends EObjectImpl implements Loan {
 	 * @generated
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());

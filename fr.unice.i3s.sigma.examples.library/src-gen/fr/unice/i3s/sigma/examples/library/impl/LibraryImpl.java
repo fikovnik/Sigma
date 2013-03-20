@@ -43,7 +43,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class LibraryImpl extends EObjectImpl implements Library {
+public class LibraryImpl extends EObjectImpl implements Library
+{
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -99,7 +100,8 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected LibraryImpl() {
+	protected LibraryImpl()
+	{
 		super();
 	}
 
@@ -109,7 +111,8 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass() {
+	protected EClass eStaticClass()
+	{
 		return LibraryPackage.Literals.LIBRARY;
 	}
 
@@ -118,7 +121,8 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
@@ -127,7 +131,8 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(String newName) {
+	public void setName(String newName)
+	{
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
@@ -139,8 +144,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Book> getBooks() {
-		if (books == null) {
+	public EList<Book> getBooks()
+	{
+		if (books == null)
+		{
 			books = new EObjectContainmentWithInverseEList<Book>(Book.class, this, LibraryPackage.LIBRARY__BOOKS, LibraryPackage.BOOK__LIBRARY);
 		}
 		return books;
@@ -151,8 +158,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Loan> getLoans() {
-		if (loans == null) {
+	public EList<Loan> getLoans()
+	{
+		if (loans == null)
+		{
 			loans = new EObjectContainmentEList<Loan>(Loan.class, this, LibraryPackage.LIBRARY__LOANS);
 		}
 		return loans;
@@ -163,8 +172,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Member> getMembers() {
-		if (members == null) {
+	public EList<Member> getMembers()
+	{
+		if (members == null)
+		{
 			members = new EObjectContainmentWithInverseEList<Member>(Member.class, this, LibraryPackage.LIBRARY__MEMBERS, LibraryPackage.MEMBER__LIBRARY);
 		}
 		return members;
@@ -175,7 +186,8 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Book getBookByName(String name) {
+	public Book getBookByName(String name)
+	{
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -186,7 +198,8 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String toString() {
+	public String toString()
+	{
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -199,8 +212,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LIBRARY__BOOKS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getBooks()).basicAdd(otherEnd, msgs);
 			case LibraryPackage.LIBRARY__MEMBERS:
@@ -215,8 +230,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LIBRARY__BOOKS:
 				return ((InternalEList<?>)getBooks()).basicRemove(otherEnd, msgs);
 			case LibraryPackage.LIBRARY__LOANS:
@@ -233,8 +250,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-		switch (featureID) {
+	public Object eGet(int featureID, boolean resolve, boolean coreType)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LIBRARY__NAME:
 				return getName();
 			case LibraryPackage.LIBRARY__BOOKS:
@@ -254,8 +273,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue) {
-		switch (featureID) {
+	public void eSet(int featureID, Object newValue)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LIBRARY__NAME:
 				setName((String)newValue);
 				return;
@@ -281,8 +302,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID) {
-		switch (featureID) {
+	public void eUnset(int featureID)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LIBRARY__NAME:
 				setName(NAME_EDEFAULT);
 				return;
@@ -305,8 +328,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID) {
-		switch (featureID) {
+	public boolean eIsSet(int featureID)
+	{
+		switch (featureID)
+		{
 			case LibraryPackage.LIBRARY__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case LibraryPackage.LIBRARY__BOOKS:
@@ -325,8 +350,10 @@ public class LibraryImpl extends EObjectImpl implements Library {
 	 * @generated
 	 */
 	@Override
-	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-		switch (operationID) {
+	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException
+	{
+		switch (operationID)
+		{
 			case LibraryPackage.LIBRARY___GET_BOOK_BY_NAME__STRING:
 				return getBookByName((String)arguments.get(0));
 			case LibraryPackage.LIBRARY___TO_STRING:
