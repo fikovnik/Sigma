@@ -10,7 +10,7 @@ import fr.unice.i3s.sigma.support.EMFScalaSupport
 trait EMFValidatorMatchers extends EMFScalaSupport {
 
   class ValidBePropertyMatcher extends BePropertyMatcher[EObject] {
-    def apply(left: EObject) = BePropertyMatchResult(left isValid, "valid")
+    def apply(left: EObject) = BePropertyMatchResult(left.isValid, "valid")
   }
 
   def violate(right: String): Matcher[EObject] =

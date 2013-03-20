@@ -5,24 +5,27 @@ import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.MustMatchers
-import fr.unice.i3s.sigma.scala.mtt.TextTemplateTest
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
-import org.eclipse.emf.ecore.scala.EcoreBuilder
-import org.eclipse.emf.ecore.scala.EcoreAssignments
-import fr.unice.i3s.sigma.scala.common.EMFScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcoreBuilder
+import fr.unice.i3s.sigma.support.ecore.EcoreAssignments
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.EMFScalaSupport
+import scala.collection.mutable.Buffer
+import org.eclipse.emf.common.util.EList
+import fr.unice.i3s.sigma.util.DelegatingEList
+import fr.unice.i3s.sigma.m2t.TextTemplateTest
 
 @RunWith(classOf[JUnitRunner])
 class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
 
-  val builder = new EcoreBuilder with EcoreAssignments
-  import builder._
+  import EcoreBuilder._
+  import EcoreAssignments._
 
-  val pkg = ePackage(name = "MyPackage", nsURI = "http://mypkg", nsPrefix = "my")
+  val pkg = EPackage(name = "MyPackage", nsURI = "http://mypkg", nsPrefix = "my")
 
   "ClassDiagram" must "must render a generalization" in {
 
-    val classA = eClass(name = "A")
-    val classB = eClass(name = "B", eSuperTypes = List(classA))
+    val classA = EClass(name = "A")
+    val classB = EClass(name = "B", eSuperTypes = Buffer(classA))
     pkg.eClassifiers += (classA, classB)
 
     val diag = new ClassDiagram(pkg) with TextTemplateTest
@@ -36,7 +39,7 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
   it must "must render a data type" in {
 
-    val dataTypeA = eDataType(name = "A", instanceClassName = "java.util.A")
+    val dataTypeA = EDataType(name = "A", instanceClassName = "java.util.A")
     pkg.eClassifiers += dataTypeA
 
     val diag = new ClassDiagram(pkg) with TextTemplateTest
@@ -64,7 +67,7 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
   it must "must render an enum" in {
 
-    val enumA = eEnum(name = "A", eLiterals = List(eEnumLiteral(name = "ValueA"), eEnumLiteral(name = "ValueB")))
+    val enumA = EEnum(name = "A", eLiterals = Buffer(EEnumLiteral(name = "ValueA"), EEnumLiteral(name = "ValueB")))
     pkg.eClassifiers += enumA
 
     val diag = new ClassDiagram(pkg) with TextTemplateTest

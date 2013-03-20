@@ -9,6 +9,9 @@ import org.eclipse.emf.common.notify.Notifier
 import org.eclipse.emf.ecore.util.Diagnostician
 import scala.collection.GenTraversableOnce
 import org.eclipse.emf.common.util.EMap
+import fr.unice.i3s.sigma.util.DelegatingEList
+import scala.collection.mutable.Buffer
+import scala.language.implicitConversions
 
 trait EMFScalaSupport {
 
@@ -22,7 +25,7 @@ trait EMFScalaSupport {
       Diagnostic.CANCEL -> "CANCEL")
 
     def flatten: List[Diagnostic] = {
-      that.getChildren toList match {
+      that.getChildren.toList match {
         case Nil ⇒ that :: Nil
         case e ⇒ e.flatMap(_.flatten).toList
       }
@@ -109,6 +112,8 @@ trait EMFScalaSupport {
       !that || b
     }
   }
+
+  implicit def scalaBufferAsEList[T](that: Buffer[T]) = new DelegatingEList(that)
 
   //  // conversion between EMF collections
   //  implicit def eListAsScalaImmutableList[A](a: EList[A]): List[A] =

@@ -2,15 +2,15 @@ package fr.unice.i3s.sigma.docgen.graphviz.common
 
 import org.eclipse.emf.ecore.EPackage
 import scala.collection.JavaConversions._
-import fr.unice.i3s.sigma.scala.mtt.TextTemplate
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EDataType
 import org.eclipse.emf.ecore.EClassifier
-import org.eclipse.emf.ecore.scala.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.EEnum
+import fr.unice.i3s.sigma.m2t.TextTemplate
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 
 class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScalaSupport {
 

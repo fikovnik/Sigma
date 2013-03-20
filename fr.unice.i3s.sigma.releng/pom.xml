@@ -28,8 +28,8 @@
 		<module>../fr.unice.i3s.sigma.examples.library</module>
 		<module>../fr.unice.i3s.sigma.feature</module>
 		<module>../fr.unice.i3s.sigma.tests</module>
-<!--        <module>../fr.unice.i3s.sigma.docgen</module> -->
-<!-- 		<module>../fr.unice.i3s.sigma.docgen.tests</module> -->
+        <module>../fr.unice.i3s.sigma.docgen</module>
+ 		<module>../fr.unice.i3s.sigma.docgen.tests</module>
 		<module>../fr.unice.i3s.sigma.site</module>
 	</modules>
 

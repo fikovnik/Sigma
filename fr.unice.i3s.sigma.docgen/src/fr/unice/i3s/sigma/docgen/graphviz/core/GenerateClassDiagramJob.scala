@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EPackage
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVOutputType
 import fr.unice.i3s.sigma.docgen.graphviz.common.ClassDiagram
 import fr.unice.i3s.sigma.util.IOUtils.using
-import fr.unice.i3s.sigma.scala.core.util.PlatformUtils;
+import fr.unice.i3s.sigma.util.PlatformUtils;
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVDot
 
 // TODO: get rid of the file here

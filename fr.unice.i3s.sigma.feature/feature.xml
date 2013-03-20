@@ -50,14 +50,7 @@
          unpack="false"/>
 
    <plugin
-         id="fr.unice.i3s.sigma.examples.library"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="fr.unice.i3s.sigma.tests"
+         id="fr.unice.i3s.sigma.docgen"
          download-size="0"
          install-size="0"
          version="0.0.0"
