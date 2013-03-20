@@ -26,7 +26,7 @@ object StandaloneSetup {
   EcorePackage.eINSTANCE.getEClass
   GenModelPackage.eINSTANCE.getGenClass
 
-  private val skipDir = "\\.[^.]+".r
+  private val skipDir = "^\\.[^.]+".r
 }
 
 case class StandaloneSetup(

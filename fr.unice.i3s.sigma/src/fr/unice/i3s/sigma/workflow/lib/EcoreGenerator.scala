@@ -19,13 +19,21 @@ import org.eclipse.emf.codegen.ecore.genmodel.generator.GenEnumGeneratorAdapter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenModelGeneratorAdapter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenPackageGeneratorAdapter
 import fr.unice.i3s.sigma.workflow.WorkflowComponent
+import com.typesafe.scalalogging.log4j.Logging
+import fr.unice.i3s.sigma.support.EMFScalaSupport._
+import com.typesafe.scalalogging.log4j.Logger
+
+private class LoggingMonitor(logger: Logger) extends BasicMonitor {
+  override def beginTask(name: String, totalWork: Int): Unit = logger.debug(name)
+  override def subTask(name: String): Unit = logger.debug(name)
+}
 
 case class EcoreGenerator(
   val generateEdit: Boolean = false,
   val generateEditor: Boolean = false,
   val generateDelegates: Boolean = false,
   val srcPaths: List[String] = Nil,
-  val genModelURI: String) extends WorkflowComponent {
+  val genModelURI: String) extends WorkflowComponent with Logging {
 
   // initialize packages
   EcorePackage.eINSTANCE.getEFactoryInstance()
@@ -64,26 +72,25 @@ case class EcoreGenerator(
       }
     }
 
-    //    log.info("generating EMF code for " + this.genModel);
     generator.getAdapterFactoryDescriptorRegistry().addDescriptor(GenModelPackage.eNS_URI,
       new GeneratorAdapterDescriptor);
     generator.setInput(genModel);
 
-    val diagnostic = generator.generate(genModel, MODEL_PROJECT_TYPE, new BasicMonitor);
+    logger.info("Generating Ecore model code for: " + genModelURI)
+    val diagnostic = generator.generate(genModel, MODEL_PROJECT_TYPE, new LoggingMonitor(logger));
 
-    //    if (diagnostic.getSeverity() != Diagnostic.OK)
-    //      log.info(diagnostic);
+    if (!diagnostic.isOK) logger.error(diagnostic.prettyPrint);
 
     if (generateEdit) {
-      val editDiag = generator.generate(genModel, EDIT_PROJECT_TYPE, new BasicMonitor);
-      //      if (editDiag.getSeverity() != Diagnostic.OK)
-      //        log.info(editDiag);
+      logger.info("Generating Ecore edit code for: " + genModelURI)
+      val editDiag = generator.generate(genModel, EDIT_PROJECT_TYPE, new LoggingMonitor(logger));
+      if (!editDiag.isOK) logger.error(diagnostic.prettyPrint);
     }
 
     if (generateEditor) {
-      val editorDiag = generator.generate(genModel, EDITOR_PROJECT_TYPE, new BasicMonitor);
-      //      if (editorDiag.getSeverity != Diagnostic.OK)
-      //        log.info(editorDiag);
+      logger.info("Generating Ecore editor code for: " + genModelURI)
+      val editorDiag = generator.generate(genModel, EDITOR_PROJECT_TYPE, new LoggingMonitor(logger));
+      if (!editorDiag.isOK) logger.error(diagnostic.prettyPrint);
     }
 
   }
