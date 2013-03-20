@@ -7,7 +7,6 @@ import org.scalatest.matchers.MustMatchers
 import org.eclipse.emf.ecore.EcorePackage
 import collection.JavaConversions._
 import org.scalatest.junit.JUnitRunner
-import fr.unice.i3s.sigma.scala.utils._
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.support.AutoContainment
 import fr.unice.i3s.sigma.support.EMFBuilder

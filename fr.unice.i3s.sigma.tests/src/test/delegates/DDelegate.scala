@@ -2,7 +2,6 @@ package test.delegates
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.Buffer
-import fr.unice.i3s.sigma.scala.utils._
 import test.D
 
 object DDelegate {

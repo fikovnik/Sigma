@@ -6,6 +6,7 @@ import java.io.FileWriter
 import java.io.File
 import scala.collection.TraversableLike
 import scala.annotation.tailrec
+import com.google.common.io.Files.copy
 
 object IOUtils {
 
@@ -23,12 +24,28 @@ object IOUtils {
       else Continue
     }
 
-    walk(dir) { e ⇒
-      e match {
-        case VisitFile(f) ⇒ remove(f)
-        case PostVisitDir(f) if !(f == dir) || deleteParentDir ⇒ remove(f)
-      }
+    walk(dir) {
+      case VisitFile(f) ⇒ remove(f)
+      case PostVisitDir(f) if !(f == dir) || deleteParentDir ⇒ remove(f)
     }
+  }
+
+  def cpdir(from: File, to: File, logger: (File, File) ⇒ Unit = { (_, _) ⇒ }) {
+    require(from.exists, s"Source ${from.getCanonicalPath} does not exist")
+    if (!to.exists()) assert(to.mkdirs, "Unable to crate target directory: " + to.getCanonicalPath)
+
+    walk(from) {
+      case VisitFile(f) ⇒
+        val dest = new File(to, f.getName)
+        logger(f, dest)
+        copy(f, dest)
+        Continue
+      case PreVisitDir(f) if f != from ⇒
+        val dest = new File(to, f.getName)
+        cpdir(f, dest, logger)
+        Skip
+    }
+
   }
 
   def mkdtemp: File = mkdtemp("temp", System.nanoTime.toString)
@@ -81,7 +98,8 @@ object IOUtils {
               case _ ⇒ proc.applyOrElse(PostVisitDir(f), continue)
             }
             else Continue
-          case r ⇒ r
+          case Skip ⇒ proc.applyOrElse(PostVisitDir(f), continue)
+          case Terminate ⇒ Terminate
         }
       } else proc(VisitFile(f))
     }

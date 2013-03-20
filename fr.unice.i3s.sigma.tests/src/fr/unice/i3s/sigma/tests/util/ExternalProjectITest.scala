@@ -25,6 +25,7 @@ import fr.unice.i3s.sigma.util.EMFUtils
 import org.junit.runner.Result
 import scala.Array.canBuildFrom
 import fr.unice.i3s.sigma.Activator
+import fr.unice.i3s.sigma.util.IOUtils
 
 trait ExternalProjectITest {
 
@@ -34,16 +35,16 @@ trait ExternalProjectITest {
   val workspaceRoot = workspace.getRoot
   val bundleContext = Activator.context.get
 
-  def copyDir(from: File, to: File) {
-    if (!to.exists()) to.mkdirs()
-
-    for (f ← from.listFiles) yield {
-      val dest = new File(to, f.getName())
-
-      if (f.isDirectory) copyDir(f, dest)
-      else copy(f, dest)
-    }
-  }
+  //  def copyDir(from: File, to: File) {
+  //    if (!to.exists()) to.mkdirs()
+  //
+  //    for (f ← from.listFiles) yield {
+  //      val dest = new File(to, f.getName())
+  //
+  //      if (f.isDirectory) copyDir(f, dest)
+  //      else copy(f, dest)
+  //    }
+  //  }
 
   def getBundleByName(symbolicName: String, version: Version = null): Option[Bundle] = {
     val bundles = bundleContext.getBundles.filter(_.getSymbolicName == symbolicName)
@@ -62,7 +63,6 @@ trait ExternalProjectITest {
   def importProject(projectName: String) = {
     // prerequisites 
     val monitor = new BasicMonitor.Printing(System.out)
-    val projectName = "fr.unice.i3s.sigma.scala.tests.extensions"
 
     val sourceProject = new File(projectName)
     val targetProject = new File(workspaceRoot.getLocation.toFile, projectName)
@@ -70,7 +70,7 @@ trait ExternalProjectITest {
     // import a copy of a project
     println("Importing project")
 
-    copyDir(sourceProject, targetProject)
+    IOUtils.cpdir(sourceProject, targetProject, { (f, t) ⇒ println(s"Copying ${f.getCanonicalPath} to ${t.getCanonicalPath}") })
 
     val projectDescriptorFile = new File(targetProject, ".project")
     val projectDescription = workspace.loadProjectDescription(
@@ -200,6 +200,12 @@ trait ExternalProjectITest {
         }
       }
     }
+
+    val projectBin = new File(projectPath.toOSString(), "bin")
+    val metaInfDir = new File(projectBin, "META-INF")
+
+    // FIXME: here we copy the original manifest because codegen will rewrite it from whatever reason
+    IOUtils.cpdir(new File(projectPath.toOSString, "META-INF"), metaInfDir)
 
     project
   }

@@ -2,7 +2,6 @@ package test.delegates
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.Buffer
-import fr.unice.i3s.sigma.scala.utils._
 import test.A
 import test.B
 
@@ -21,7 +20,7 @@ object ADelegate {
    * @see A#op1()
    */
   def invokeOp1(self: A): String = self match {
-    case b: B => BDelegate.invokeOp1(b)
-    case a: A => "A"
+    case b: B ⇒ BDelegate.invokeOp1(b)
+    case a: A ⇒ "A"
   }
 }

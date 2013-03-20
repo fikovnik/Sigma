@@ -38,7 +38,7 @@ class SigmaStaticDelegatesCodeGenITest extends FunSuite with ExternalProjectITes
 
   test("Generate Model with EMF static delegates") {
 
-    val projectName = "fr.unice.i3s.sigma.scala.tests.extensions"
+    val projectName = "fr.unice.i3s.sigma.tests.delegate.static"
 
     importProject(projectName)
     generateModel(s"/$projectName/model/Test.genmodel");

@@ -123,4 +123,30 @@ class IOUtilsSpec extends FlatSpec with MustMatchers {
     tmp.exists must be === false
   }
 
+  it must "be able to skip in pre dir visit" in {
+
+    val tmp = IOUtils.mkdtemp
+    new File(tmp, "1/2").mkdirs must be === true
+    new File(tmp, "1/2/a").createNewFile must be === true
+    new File(tmp, "1/3").mkdirs must be === true
+    new File(tmp, "1/c").createNewFile must be === true
+
+    val visited = Buffer[String]()
+    IOUtils.walk(tmp) {
+      case IOUtils.PreVisitDir(f) if f != tmp ⇒
+        visited += "pre" + f.getName;
+        if (f.getName == "2") IOUtils.Skip
+        else IOUtils.Continue
+      case IOUtils.PostVisitDir(f) if f != tmp ⇒
+        visited += "post" + f.getName; IOUtils.Continue
+      case IOUtils.VisitFile(f) ⇒
+        visited += f.getName; IOUtils.Continue
+    }
+
+    visited must be === Buffer("pre1", "pre2", "post2", "pre3", "post3", "c", "post1")
+
+    IOUtils.rmdir(tmp)
+    tmp.exists must be === false
+  }
+
 }

@@ -15,7 +15,7 @@ import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import org.eclipse.emf.ecore.EClassifier
 
 object ScalaEcoreExtensionsGenClassGeneratorAdapter {
-  val ENABLE_SCALA_ECORE_EXTENSION = "EnableScalaEcoreExtension"
+  val ENABLE_STATIC_DELEGATES = "EnableStaticDelegates"
 }
 
 class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaDelegateDomain, factory: ScalaEcoreExtensionsGeneratorAdapterFactory)
@@ -139,7 +139,7 @@ class ScalaEcoreExtensionsGenClassGeneratorAdapter(val domain: SigmaDelegateDoma
       }
     }
 
-    val enabled = findAnnotation(genClazz, domain.getURI, ENABLE_SCALA_ECORE_EXTENSION)
+    val enabled = findAnnotation(genClazz, domain.getURI, ENABLE_STATIC_DELEGATES)
     enabled match {
       case Some(value) ⇒ value.toBoolean
       case None ⇒ false
