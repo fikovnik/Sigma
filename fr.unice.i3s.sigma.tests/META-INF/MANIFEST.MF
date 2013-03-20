@@ -27,6 +27,5 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  org.apache.commons.log4j-api;bundle-version="2.0.0",
  org.apache.commons.log4j-core;bundle-version="2.0.0";resolution:=optional,
  fr.unice.i3s.sigma.examples.library;bundle-version="1.0.0"
-Export-Package: fr.unice.i3s.sigma.delegate.codegen
 Bundle-Activator: fr.unice.i3s.sigma.Activator
 Bundle-ActivationPolicy: lazy
