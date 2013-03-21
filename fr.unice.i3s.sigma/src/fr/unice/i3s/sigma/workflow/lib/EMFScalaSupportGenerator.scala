@@ -51,7 +51,12 @@ trait Utils {
   }
 }
 
-case class EMFBuilderTemplate(pkg: GenPackage, pkgName: String, builderName: String, skipTypes: List[String] = Nil) extends TextTemplate with EMFScalaSupport with Utils {
+case class EMFBuilderTemplate(
+  pkg: GenPackage,
+  pkgName: String,
+  builderName: String,
+  skipTypes: List[String] = Nil,
+  aliases: Map[String, String] = Map.empty) extends TextTemplate with EMFScalaSupport with Utils with Logging {
 
   val importManager = new ImportManager(pkgName, builderName)
   pkg.getGenModel.setImportManager(importManager)
@@ -156,7 +161,7 @@ case class EMFBuilderTemplate(pkg: GenPackage, pkgName: String, builderName: Str
   }
 
   protected def renderEClassConstructMethod(clazz: GenClass) {
-    val clazzName = clazz.getImportedInterfaceName
+    val clazzName = mapClazzName(clazz)
 
     !s"type ${clazzName} = ${clazz.getQualifiedInterfaceName}" << endl
     !s"object ${clazzName}" curlyIndent {
@@ -165,6 +170,21 @@ case class EMFBuilderTemplate(pkg: GenPackage, pkgName: String, builderName: Str
       }
     }
   }
+
+  protected def mapClazzName(clazz: GenClass) = {
+    aliases.get(clazz.getName) match {
+      case Some(name) => name
+      case None =>
+        val name = clazz.getImportedInterfaceName
+        if (name.contains(".")) {
+         val pkgName = clazz.getGenPackage.getPackageName.map {_.toUpper}
+       	 val alias = pkgName + clazz.getName
+          logger.warn(s"Class name: ${clazz.getName} conflicts with an already imported class (likely default import). It will be aliased to ${alias}.")
+          alias
+        } else name
+    }
+  }
+
 }
 
 // we do not have to worry much about this class since it will
@@ -264,7 +284,8 @@ case class EMFScalaSupportGenerator(
   val baseDir: String,
   val genModelURI: String,
   val pkgName: String,
-  val skipTypes: List[String] = Nil) extends WorkflowComponent with Logging {
+  val skipTypes: List[String] = Nil,
+  val aliases: Map[String, String] = Map.empty) extends WorkflowComponent with Logging {
 
   // call the companion's object static block
   EMFScalaSupportGenerator
@@ -274,6 +295,11 @@ case class EMFScalaSupportGenerator(
 
     val genModel = EMFUtils.IO.load[GenModel](URI.createURI(genModelURI))
 
+    val unresolvedPackages = genModel.getUsedGenPackages.filter { _.eIsProxy }
+    if (unresolvedPackages.size > 0) {
+      logger.warn("Following packages are unresolved after loading - this might likely cause problems:")
+      unresolvedPackages.foreach { p ⇒ logger.warn("- " + p) }
+    }
     for (pkg ← genModel.getGenPackages) {
 
       val dir = (new File(baseDir) /: pkgName.split('.'))(new File(_, _))
@@ -282,7 +308,7 @@ case class EMFScalaSupportGenerator(
       val builderName = pkg.getPackageName.capitalize + "Builder"
       using(new File(dir, builderName + ".scala")) { f ⇒
         logger debug s"Generated builder for $builderName"
-        EMFBuilderTemplate(pkg, pkgName, builderName, skipTypes) >> f
+        EMFBuilderTemplate(pkg, pkgName, builderName, skipTypes, aliases) >> f
       }
 
       val pkgSupportName = pkg.getPackageName.capitalize + "PackageScalaSupport"
