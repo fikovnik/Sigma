@@ -107,11 +107,14 @@ class IOUtilsSpec extends FlatSpec with MustMatchers {
 
     IOUtils.walk(tmp) {
       case IOUtils.PreVisitDir(f) ⇒
-        println("predir: " + f); IOUtils.Continue
-      case IOUtils.PostVisitDir(f) if f != tmp ⇒
-        println("postdir: " + f); IOUtils.Continue
-      case IOUtils.VisitFile(f) if "a" == f.getName ⇒
-        println("file: " + f); IOUtils.Continue
+        println("predir: " + f)
+        IOUtils.Continue
+      case IOUtils.PostVisitDir(f) ⇒
+        println("postdir: " + f)
+        IOUtils.Continue
+      case IOUtils.VisitFile(f) ⇒
+        println("file: " + f)
+        IOUtils.Continue
     }
 
     val visited = Buffer[String]()
@@ -125,6 +128,8 @@ class IOUtilsSpec extends FlatSpec with MustMatchers {
       case IOUtils.VisitFile(f) ⇒
         visited += f.getName; IOUtils.Continue
     }
+
+    println
 
     visited must be === Buffer("pre1", "pre2", "post2", "post1", "pre3", "c", "post3")
 
@@ -142,11 +147,14 @@ class IOUtilsSpec extends FlatSpec with MustMatchers {
 
     IOUtils.walk(tmp) {
       case IOUtils.PreVisitDir(f) ⇒
-        println("predir: " + f); IOUtils.Continue
-      case IOUtils.PostVisitDir(f) if f != tmp ⇒
-        println("postdir: " + f); IOUtils.Continue
-      case IOUtils.VisitFile(f) if "a" == f.getName ⇒
-        println("file: " + f); IOUtils.Continue
+        println("predir: " + f)
+        IOUtils.Continue
+      case IOUtils.PostVisitDir(f) ⇒
+        println("postdir: " + f)
+        IOUtils.Continue
+      case IOUtils.VisitFile(f) ⇒
+        println("file: " + f)
+        IOUtils.Continue
     }
 
     val visited = Buffer[String]()
