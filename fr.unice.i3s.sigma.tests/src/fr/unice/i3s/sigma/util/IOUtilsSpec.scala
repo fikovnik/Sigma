@@ -105,6 +105,15 @@ class IOUtilsSpec extends FlatSpec with MustMatchers {
     new File(tmp, "3").mkdirs must be === true
     new File(tmp, "3/c").createNewFile must be === true
 
+    IOUtils.walk(tmp) {
+      case IOUtils.PreVisitDir(f) ⇒
+        println("predir: " + f); IOUtils.Continue
+      case IOUtils.PostVisitDir(f) if f != tmp ⇒
+        println("postdir: " + f); IOUtils.Continue
+      case IOUtils.VisitFile(f) if "a" == f.getName ⇒
+        println("file: " + f); IOUtils.Continue
+    }
+
     val visited = Buffer[String]()
     IOUtils.walk(tmp) {
       case IOUtils.PreVisitDir(f) if f != tmp ⇒
@@ -130,6 +139,15 @@ class IOUtilsSpec extends FlatSpec with MustMatchers {
     new File(tmp, "1/2/a").createNewFile must be === true
     new File(tmp, "1/3").mkdirs must be === true
     new File(tmp, "1/c").createNewFile must be === true
+
+    IOUtils.walk(tmp) {
+      case IOUtils.PreVisitDir(f) ⇒
+        println("predir: " + f); IOUtils.Continue
+      case IOUtils.PostVisitDir(f) if f != tmp ⇒
+        println("postdir: " + f); IOUtils.Continue
+      case IOUtils.VisitFile(f) if "a" == f.getName ⇒
+        println("file: " + f); IOUtils.Continue
+    }
 
     val visited = Buffer[String]()
     IOUtils.walk(tmp) {
