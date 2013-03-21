@@ -18,6 +18,10 @@ import fr.unice.i3s.sigma.util.IOUtils.walk
 import fr.unice.i3s.sigma.util.IOUtils.PreVisitDir
 import fr.unice.i3s.sigma.workflow.ConfigurationException
 import fr.unice.i3s.sigma.workflow.WorkflowComponent
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
+import org.eclipse.emf.codegen.ecore.genmodel.GenModel
+import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.emf.ecore.EPackage
 
 object StandaloneSetup {
   EMFUtils.IO.registerDefaultFactories
@@ -32,7 +36,8 @@ object StandaloneSetup {
 case class StandaloneSetup(
   val platformURI: String,
   val scanClassPath: Boolean = true,
-  val logResourceURIMap: Boolean = false) extends WorkflowComponent with Logging {
+  val logResourceURIMap: Boolean = false,
+  val registerGenModelFiles: Seq[String] = Seq.empty) extends WorkflowComponent with Logging {
 
   import StandaloneSetup._
 
@@ -47,6 +52,7 @@ case class StandaloneSetup(
     initPlatformURI
     doScanClassPath
     doLogResourceUriMap
+    doRegisterGenModelFiles
   }
 
   def initPlatformURI = {
@@ -93,6 +99,48 @@ case class StandaloneSetup(
         registerBundle(f); Continue
       case _ ⇒ Continue
     }
+  }
+
+  val resourceSet = new ResourceSetImpl
+
+  protected def doRegisterGenModelFiles {
+    registerGenModelFiles foreach registerGenModelFile
+  }
+
+  protected def registerGenModelFile(genModelURI: String) {
+    val res = resourceSet.getResource(URI.createURI(genModelURI), true)
+    if (res == null)
+      throw new ConfigurationException("Couldn't find resource under  " + genModelURI)
+
+    res.getContents.collect { case e: GenModel ⇒ e } foreach (registerGenModel)
+  }
+
+  protected def registerGenModel(genModel: GenModel) {
+    //    EPackage.Registry.INSTANCE.
+    val registry = EcorePlugin.getEPackageNsURIToGenModelLocationMap
+
+    println((genModel.getGenPackages ++ genModel.getUsedGenPackages) mkString ("\n"))
+
+    for (pkg ← (genModel.getGenPackages ++ genModel.getUsedGenPackages)) {
+      if (pkg.eIsProxy) {
+        logger.debug("Unresolved proxy for GenPackage " + EcoreUtil.getURI(pkg))
+      } else {
+        val nsURI = pkg.getEcorePackage.getNsURI
+        EPackage.Registry.INSTANCE.put(nsURI, pkg.getEcorePackage)
+        logger.debug(s"!!!Registered $nsURI to ${pkg.getEcorePackage}")
+        if (nsURI != null) {
+          val newUri = pkg.eResource.getURI;
+          if (registry.containsKey(nsURI)) {
+            val oldURI = registry.get(nsURI);
+            if (!oldURI.equals(newUri))
+              logger.warn(s"There is already a GenModel registered for NamespaceURI '$nsURI'. It will be overwritten from '$oldURI' to '$newUri'");
+          }
+          registry.put(nsURI, newUri);
+          logger.info("Registered GenModel '" + nsURI + "' from '" + newUri + "'");
+        }
+      }
+    }
+
   }
 
   protected def registerBundle(file: File) {
