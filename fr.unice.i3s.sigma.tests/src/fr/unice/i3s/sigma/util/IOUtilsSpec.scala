@@ -93,21 +93,24 @@ class IOUtilsSpec extends FlatSpec with MustMatchers {
     new File(tmp, "1/2").mkdirs must be === true
     new File(tmp, "1/2/a").createNewFile must be === true
     new File(tmp, "1/2/b").createNewFile must be === true
-    new File(tmp, "3").mkdirs must be === true
-    new File(tmp, "3/c").createNewFile must be === true
+    new File(tmp, "3/4").mkdirs must be === true
+    new File(tmp, "3/4/c").createNewFile must be === true
+    new File(tmp, "3/4/d").createNewFile must be === true
 
     val visited = Buffer[String]()
     IOUtils.walk(tmp) {
       case IOUtils.PreVisitDir(f) if f != tmp ⇒
-        visited += "pre" + f.getName; IOUtils.Continue
+        visited += "pre"
+        IOUtils.Continue
       case IOUtils.PostVisitDir(f) if f != tmp ⇒
-        visited += "post" + f.getName; IOUtils.Continue
-      case IOUtils.VisitFile(f) ⇒ IOUtils.Terminate
+        visited += "post"
+        IOUtils.Continue
+      case IOUtils.VisitFile(f) ⇒
+        IOUtils.Terminate
     }
 
     visited must have size (2)
-    visited must contain("pre1")
-    visited must contain("pre2")
+    visited must be === Buffer("pre", "pre")
 
     IOUtils.rmdir(tmp)
     tmp.exists must be === false
