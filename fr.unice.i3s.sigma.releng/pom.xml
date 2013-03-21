@@ -20,6 +20,7 @@
 		<p2.scala-ide>http://download.scala-ide.org/sdk/e37/scala210/dev/site</p2.scala-ide>
 		<p2.eclipse-indigo>http://download.eclipse.org/releases/indigo/</p2.eclipse-indigo>
 		<p2.eclipse-emf>http://download.eclipse.org/modeling/emf/emf/updates/releases/</p2.eclipse-emf>
+		<p2.eclipse-uml>http://download.eclipse.org/modeling/mdt/uml2/updates/releases/</p2.eclipse-uml>
 		<p2.eclipse-swtbot>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</p2.eclipse-swtbot>
 	</properties>
 
@@ -63,6 +64,12 @@
 			<name>Eclipse EMF repository</name>
 			<layout>p2</layout>
 			<url>${p2.eclipse-emf}</url>
+		</repository>
+		<repository>
+			<id>eclipse-uml</id>
+			<name>Eclipse UML repository</name>
+			<layout>p2</layout>
+			<url>${p2.eclipse-uml}</url>
 		</repository>
 		<repository>
 			<id>eclipse-swtbot</id>
