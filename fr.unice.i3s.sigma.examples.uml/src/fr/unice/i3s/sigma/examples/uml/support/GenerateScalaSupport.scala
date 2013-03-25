@@ -5,15 +5,14 @@ import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.URIConverter
 import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
-import fr.unice.i3s.sigma.workflow.lib.DirectoryCleaner
-import fr.unice.i3s.sigma.workflow.lib.EMFScalaSupportGenerator
-import fr.unice.i3s.sigma.workflow.lib.EcoreGenerator
 import fr.unice.i3s.sigma.workflow.WorkflowApp
 import fr.unice.i3s.sigma.workflow.lib.LoadModel
 import org.eclipse.emf.ecore.EObject
 import fr.unice.i3s.sigma.workflow.lib.ValidateModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.ecore.plugin.EcorePlugin
+import fr.unice.i3s.sigma.workflow.lib.GenerateEMFScalaSupport
+import fr.unice.i3s.sigma.workflow.lib.CleanDirectory
 
 object GenerateScalaSupport extends WorkflowApp {
 
@@ -52,7 +51,9 @@ object GenerateScalaSupport extends WorkflowApp {
   //  val model = LoadModel(ecoreModel).model[GenModel]
   //  ValidateModel(model)
 
-  EMFScalaSupportGenerator(
+  CleanDirectory(path = srcGen)
+
+  GenerateEMFScalaSupport(
     baseDir = srcGen,
     genModelURI = ecoreModel,
     pkgName = targetPackage,

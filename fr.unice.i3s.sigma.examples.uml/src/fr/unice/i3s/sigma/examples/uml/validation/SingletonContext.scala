@@ -27,16 +27,55 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.uml2.uml.resources.ResourcesPlugin
 import org.eclipse.emf.ecore.plugin.EcorePlugin
 import org.eclipse.uml2.uml.UMLPlugin
+import fr.unice.i3s.sigma.validation.Error
+import fr.unice.i3s.sigma.validation.Fix
+import scala.collection.mutable.Buffer
 
 class SingletonContext extends ValidationContext[UMLClass] with UmlPackageScalaSupport {
 
-  // getAppliedStereotypes is an operation not a reference thus
-  // no Scala-like getter is available
   guard = self.getAppliedStereotype("TestProfile::singleton") != null
 
   val invDefinesGetInstance = new Constraint("DefinesGetInstance") {
-    check = Passed
+    check =
+      if (getGetInstanceOperation.isDefined) Passed
+      else
+        Error(s"Singleton ${self.name} must define a getInstance() operation",
+          Fix(s"Add a getInstance() operation to ${self.name}") {
+            val op = self.createOwnedOperation("getInstance", null, null)
+            op.setIsStatic(true)
+            op.createReturnResult(null, self)
+          })
   }
+
+  val invGetInstanceIsStatic = new Constraint("GetInstanceIsStatic") {
+    guard = self.satisfies(invDefinesGetInstance)
+    check =
+      if (getGetInstanceOperation.get.isStatic) Passed
+      else
+        Error(s" The getInstance() operation of singleton ${self.name} must be static",
+          Fix("Change to static") {
+            getGetInstanceOperation.get.setIsStatic(true)
+          })
+  }
+
+  val invGetInstanceReturnsSame = new Constraint("GetInstanceReturnsSame") {
+    guard = self.satisfies(invDefinesGetInstance)
+    check = Option(getGetInstanceOperation.get.getReturnResult) match {
+      case Some(p) if p.getType == self ⇒ Passed
+      case _ ⇒
+        Error(s"The getInstance() operation of singleton ${self.name} must return ${self.name}",
+          Fix(s"Change return type to ${self.name}") {
+            val op = getGetInstanceOperation.get
+            Option(op.getReturnResult) match {
+              case Some(p) ⇒ p.setType(self)
+              case None ⇒ op.createReturnResult(null, self)
+            }
+          })
+    }
+  }
+
+  def getGetInstanceOperation =
+    self.ownedOperation find { _.name == "getInstance" }
 
 }
 
@@ -49,8 +88,6 @@ object Test extends WorkflowApp with UmlPackageScalaSupport {
 
   StandaloneSetup(
     platformPath = s"$runtimeProject/..",
-    logResourceURIMap = true,
-    logRegisteredPackages = true,
     config = { t ⇒
       t.registerPackages += org.eclipse.uml2.uml.UMLPackage.eINSTANCE
 
@@ -60,22 +97,112 @@ object Test extends WorkflowApp with UmlPackageScalaSupport {
       t.URIMap += (UMLResource.LIBRARIES_PATHMAP -> "platform:/resource/org.eclipse.uml2.uml.resources/libraries/")
       t.URIMap += (UMLResource.METAMODELS_PATHMAP -> "platform:/resource/org.eclipse.uml2.uml.resources/metamodels/")
       t.URIMap += (UMLResource.PROFILES_PATHMAP -> "platform:/resource/org.eclipse.uml2.uml.resources/profiles/")
-
     })
 
   val pkg = LoadModel(URI.createPlatformResourceURI("/fr.unice.i3s.sigma.examples.uml/model/Test.uml", false)).model[UMLPackage]
   ValidateModel(pkg)
 
-  println(pkg)
-  println(pkg.getAllAppliedProfiles())
-
   val ctx = new SingletonContext
   for (cls ← pkg.packagedElement collect { case e: UMLClass ⇒ e }) {
+    println(cls.name)
     println(ctx.validate(cls))
-    println(cls)
-    println(pkg.getAllAppliedProfiles())
-    println(cls.getAppliedStereotypes())
-    println(cls.getAppliedStereotypes() map { _.qualifiedName })
   }
+
+  //  println(pkg)
+  //  println(pkg.getAllAppliedProfiles())
+  //
+  //    println(ctx.validate(cls))
+  //    println(cls)
+  //    println(pkg.getAllAppliedProfiles())
+  //    println(cls.getAppliedStereotypes())
+  //    println(cls.getAppliedStereotypes() map { _.qualifiedName })
+  //  }
+
+  //context Singleton {
+  //    
+  //     guard : self.stereotype->exists(s|s.name = "singleton")
+  //    
+  //     constraint DefinesGetInstance {
+  //          check : self.getGetInstanceOperation().isDefined()
+  //          message : "Singleton " + self.name +
+  //               " must define a getInstance() operation"
+  //          fix {
+  //               title : "Add a getInstance() operation to " + self.name
+  //               do {
+  //                    // Create the getInstance operation
+  //                    var op : new Operation;
+  //                    op.name = "getInstance";
+  //                    op.owner = self;
+  //                    op.ownerScope = ScopeKind#sk_classifier;
+  //                   
+  //                    // Create the return parameter
+  //                    var returnParameter : new Parameter;
+  //                    returnParameter.type = self;
+  //                    op.parameter = Sequence{returnParameter};
+  //                    returnParameter.kind = ParameterDirectionKind#pdk_return;
+  //               }
+  //          }
+  //     }
+  //    
+  //     constraint GetInstanceIsStatic {
+  //          guard : self.satisfies("DefinesGetInstance")
+  //          check : self.getGetInstanceOperation().ownerScope =
+  //                  ScopeKind#sk_classifier
+  //          message : " The getInstance() operation of singleton "
+  //                    + self.name + " must be static"
+  //    
+  //          fix {
+  //               title : "Change to static"
+  //               do {
+  //                    self.getGetInstanceOperation.ownerScope
+  //                      = ScopeKind#sk_classifier;
+  //               }
+  //          }
+  //     }
+  //    
+  //     constraint GetInstanceReturnsSame {
+  //    
+  //          guard : self.satisfies("DefinesGetInstance")
+  //          check {
+  //               var returnParameter : Parameter;
+  //               returnParameter = self.getReturnParameter();
+  //               return (returnParameter->isDefined()
+  //                       and returnParameter.type = self);
+  //          }
+  //          message : " The getInstance() operation of singleton "
+  //                    + self.name + " must return " + self.name
+  //              
+  //          fix {
+  //               title : "Change return type to " + self.name
+  //               do {
+  //                    var returnParameter : Parameter;
+  //                    returnParameter = self.getReturnParameter();
+  //                   
+  //                    // If the operation does not have a return parameter
+  //                    // create one
+  //                    if (not returnParameter.isDefined()){
+  //                         returnParameter = Parameter.newInstance();
+  //                         returnParameter.kind = ParameterDirectionKind#pdk_return;
+  //                         returnParameter.behavioralFeature =
+  //                              self.getInstanceOperation();
+  //                    }
+  //                    // Set the correct return type
+  //                    returnParameter.type = self;
+  //               }
+  //          }
+  //     }
+  //}
+  //
+  //operation Class getGetInstanceOperation() : Operation {
+  //     return self.feature.
+  //          select(o:Operation|o.name = "getInstance").first();
+  //}
+  //
+  //operation Operation getReturnParameter() : Parameter {
+  //     return self.parameter.
+  //          select(p:Parameter|p.kind =
+  //               ParameterDirectionKind#pdk_return).first();
+  //}
+  //  
 
 }

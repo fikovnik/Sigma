@@ -6,9 +6,10 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import fr.unice.i3s.sigma.util.IOUtils
 import org.scalatest.junit.JUnitRunner
+import fr.unice.i3s.sigma.workflow.BasicWorkflowRunner
 
 @RunWith(classOf[JUnitRunner])
-class DirectoryCleanerSpec extends FlatSpec with MustMatchers {
+class CleanDirectorySpec extends FlatSpec with MustMatchers {
 
   "DirectoryCleaner" must "remove all files within a direcoty including parent" in {
     val tmp = IOUtils.mkdtemp
@@ -18,7 +19,7 @@ class DirectoryCleanerSpec extends FlatSpec with MustMatchers {
     new File(tmp, "3").mkdirs must be === true
     new File(tmp, "3/c").createNewFile must be === true
 
-    DirectoryCleaner(tmp.getCanonicalPath, deleteParentDir = true)
+    CleanDirectory(tmp.getCanonicalPath, deleteParentDir = true)(new BasicWorkflowRunner)
 
     tmp.exists must be === false
   }

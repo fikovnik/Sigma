@@ -24,7 +24,7 @@ abstract class ValidationContext[T >: Null](val name: String) extends GuardedSel
   class Overloaded1
   implicit val overload1 = new Overloaded1
 
-  abstract class Constraint(val name: String) extends GuardedSelf[T] {
+  class Constraint(val name: String) extends GuardedSelf[T] {
     require(name != null && !name.trim.isEmpty, "Constraint name must not be null")
     require(!constraints.contains(name), s"A constraint $name has been already defined")
 

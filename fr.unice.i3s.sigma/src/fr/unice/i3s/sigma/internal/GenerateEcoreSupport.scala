@@ -18,9 +18,9 @@ object GenerateEcoreSupport extends WorkflowApp {
 
   StandaloneSetup(platformPath = s"$runtimeProject/..", logResourceURIMap = true)
 
-  DirectoryCleaner(path = srcGen)
+  CleanDirectory(path = srcGen)
 
-  EMFScalaSupportGenerator(
+  GenerateEMFScalaSupport(
     baseDir = srcGen,
     genModelURI = ecoreModel,
     pkgName = targetPackage,

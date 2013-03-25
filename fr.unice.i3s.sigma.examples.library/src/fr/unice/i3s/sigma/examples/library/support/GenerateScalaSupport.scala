@@ -1,10 +1,10 @@
 package fr.unice.i3s.sigma.examples.library.support
 
 import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
-import fr.unice.i3s.sigma.workflow.lib.DirectoryCleaner
-import fr.unice.i3s.sigma.workflow.lib.EMFScalaSupportGenerator
-import fr.unice.i3s.sigma.workflow.lib.EcoreGenerator
 import fr.unice.i3s.sigma.workflow.WorkflowApp
+import fr.unice.i3s.sigma.workflow.lib.CleanDirectory
+import fr.unice.i3s.sigma.workflow.lib.GenerateEcore
+import fr.unice.i3s.sigma.workflow.lib.GenerateEMFScalaSupport
 
 object GenerateScalaSupport extends WorkflowApp {
 
@@ -17,11 +17,11 @@ object GenerateScalaSupport extends WorkflowApp {
 
   StandaloneSetup(platformPath = s"$runtimeProject/..", logResourceURIMap = true)
 
-  DirectoryCleaner(path = srcGen)
+  CleanDirectory(path = srcGen)
 
-  EcoreGenerator(genModelURI = ecoreModel)
+  GenerateEcore(genModelURI = ecoreModel)
 
-  EMFScalaSupportGenerator(
+  GenerateEMFScalaSupport(
     baseDir = srcGen,
     genModelURI = ecoreModel,
     pkgName = targetPackage)

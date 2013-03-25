@@ -10,11 +10,11 @@ object Cancelled extends ValidationResult {
   override def toString = "Cancelled"
 }
 
-case class Warning(val message: String, val fixes: Fix*) extends ValidationResult {
+case class Warning[T](val message: String, val fixes: Fix*) extends ValidationResult {
   override def toString = s"Warning(${fixes.size} fixes): $message"
 }
 
-case class Error(val message: String, val fixes: Fix*) extends ValidationResult {
+case class Error[T](val message: String, val fixes: Fix*) extends ValidationResult {
   override def toString = s"Error(${fixes.size} fixes): $message"
 }
 
