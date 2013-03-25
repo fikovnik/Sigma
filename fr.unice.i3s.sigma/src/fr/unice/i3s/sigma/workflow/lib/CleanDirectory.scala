@@ -7,21 +7,21 @@ import com.typesafe.scalalogging.log4j.Logging
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
 import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
 
-object DirectoryCleaner extends WorkflowTaskFactory {
-  type Task = DirectoryCleaner
+object CleanDirectory extends WorkflowTaskFactory {
+  type Task = CleanDirectory
 
   def apply(
     path: String,
     deleteParentDir: Boolean = false,
-    stopOnError: Boolean = false)(implicit runner: WorkflowRunner): DirectoryCleaner = {
+    stopOnError: Boolean = false)(implicit runner: WorkflowRunner): CleanDirectory = {
 
-    val task = new DirectoryCleaner(path, deleteParentDir, stopOnError)
+    val task = new CleanDirectory(path, deleteParentDir, stopOnError)
     execute(task)
     task
   }
 }
 
-class DirectoryCleaner(
+class CleanDirectory(
   val path: String,
   val deleteParentDir: Boolean = false,
   val stopOnError: Boolean = false) extends WorkflowTask with Logging {

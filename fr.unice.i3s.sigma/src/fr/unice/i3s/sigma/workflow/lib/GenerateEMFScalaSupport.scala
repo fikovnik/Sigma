@@ -275,8 +275,8 @@ case class EPackageScalaSupportTemplate(pkg: GenPackage, pkgName: String, pkgSup
 
 }
 
-object EMFScalaSupportGenerator extends WorkflowTaskFactory {
-  type Task = EMFScalaSupportGenerator
+object GenerateEMFScalaSupport extends WorkflowTaskFactory {
+  type Task = GenerateEMFScalaSupport
   
   EMFUtils.IO.registerDefaultFactories
 
@@ -284,12 +284,12 @@ object EMFScalaSupportGenerator extends WorkflowTaskFactory {
   EcorePackage.eINSTANCE.getEFactoryInstance()
   GenModelPackage.eINSTANCE.getEFactoryInstance()
 
-  def apply(baseDir: String,
-    genModelURI: String,
-    pkgName: String,
-    config: Config = {_ =>})(implicit runner: WorkflowRunner): EMFScalaSupportGenerator = {
+  def apply(baseDir: String, 
+    genModelURI: String, 
+    pkgName: String, 
+    config: Config = {_ => })(implicit runner: WorkflowRunner): GenerateEMFScalaSupport = {
     
-    val task = new EMFScalaSupportGenerator(baseDir, genModelURI, pkgName)
+    val task = new GenerateEMFScalaSupport(baseDir, genModelURI, pkgName)
     config(task)
     execute(task)
     task
@@ -297,16 +297,16 @@ object EMFScalaSupportGenerator extends WorkflowTaskFactory {
 
 }
 
-class EMFScalaSupportGenerator(
-  val baseDir: String,
-  val genModelURI: String,
+class GenerateEMFScalaSupport(
+  val baseDir: String, 
+  val genModelURI: String, 
   val pkgName: String) extends WorkflowTask with Logging {
 
   val skipTypes: Buffer[String] = Buffer.empty
   val aliases: collection.mutable.Map[String, String] = collection.mutable.Map.empty
   
   // call the companion's object static block
-  EMFScalaSupportGenerator
+  GenerateEMFScalaSupport
 
   def execute {
     logger.info("Generating EMF Scala Support for " + genModelURI)
@@ -318,6 +318,7 @@ class EMFScalaSupportGenerator(
       logger.warn("Following packages are unresolved after loading - this might likely cause problems:")
       unresolvedPackages.foreach { p ⇒ logger.warn("- " + p) }
     }
+    
     for (pkg ← genModel.getGenPackages) {
 
       val dir = (new File(baseDir) /: pkgName.split('.'))(new File(_, _))

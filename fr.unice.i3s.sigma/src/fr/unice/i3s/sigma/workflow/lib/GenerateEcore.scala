@@ -31,8 +31,8 @@ private class LoggingMonitor(logger: Logger) extends BasicMonitor {
   override def subTask(name: String): Unit = logger.debug(name)
 }
 
-object EcoreGenerator extends WorkflowTaskFactory {
-  type Task = EcoreGenerator
+object GenerateEcore extends WorkflowTaskFactory {
+  type Task = GenerateEcore
 
   EMFUtils.IO.registerDefaultFactories
 
@@ -45,15 +45,15 @@ object EcoreGenerator extends WorkflowTaskFactory {
     generateEdit: Boolean = false,
     generateEditor: Boolean = false,
     generateDelegates: Boolean = false,
-    srcPath: String = null)(implicit runner: WorkflowRunner): EcoreGenerator = {
+    srcPath: String = null)(implicit runner: WorkflowRunner): GenerateEcore = {
 
-    val task = new EcoreGenerator(genModelURI, generateEdit, generateEditor, generateDelegates, srcPath)
+    val task = new GenerateEcore(genModelURI, generateEdit, generateEditor, generateDelegates, srcPath)
     execute(task)
     task
   }
 }
 
-class EcoreGenerator(
+class GenerateEcore(
   val genModelURI: String,
   val generateEdit: Boolean = false,
   val generateEditor: Boolean = false,
@@ -67,7 +67,7 @@ class EcoreGenerator(
   }
 
   // execute the companion's object static block
-  EcoreGenerator
+  GenerateEcore
 
   def delegateClassNameMapper(from: String): Option[String] = {
     require(from != null)

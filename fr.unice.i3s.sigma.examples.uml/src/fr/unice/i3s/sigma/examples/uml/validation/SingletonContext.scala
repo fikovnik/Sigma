@@ -63,7 +63,7 @@ object Test extends WorkflowApp with UmlPackageScalaSupport {
 
     })
 
-  val pkg = LoadModel(URI.createFileURI("model/Test.uml")).model[UMLPackage]
+  val pkg = LoadModel(URI.createPlatformResourceURI("/fr.unice.i3s.sigma.examples.uml/model/Test.uml", false)).model[UMLPackage]
   ValidateModel(pkg)
 
   println(pkg)
