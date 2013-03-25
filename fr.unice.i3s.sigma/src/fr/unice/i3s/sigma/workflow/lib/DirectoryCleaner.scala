@@ -1,18 +1,34 @@
 package fr.unice.i3s.sigma.workflow.lib
 
-import fr.unice.i3s.sigma.workflow.WorkflowComponent
+import fr.unice.i3s.sigma.workflow.WorkflowTask
 import java.io.File
 import fr.unice.i3s.sigma.util.IOUtils
 import com.typesafe.scalalogging.log4j.Logging
+import fr.unice.i3s.sigma.workflow.WorkflowRunner
+import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
 
-case class DirectoryCleaner(
+object DirectoryCleaner extends WorkflowTaskFactory {
+  type Task = DirectoryCleaner
+
+  def apply(
+    path: String,
+    deleteParentDir: Boolean = false,
+    stopOnError: Boolean = false)(implicit runner: WorkflowRunner): DirectoryCleaner = {
+
+    val task = new DirectoryCleaner(path, deleteParentDir, stopOnError)
+    execute(task)
+    task
+  }
+}
+
+class DirectoryCleaner(
   val path: String,
   val deleteParentDir: Boolean = false,
-  val stopOnError: Boolean = false) extends WorkflowComponent with Logging {
+  val stopOnError: Boolean = false) extends WorkflowTask with Logging {
 
   val dir = new File(path)
 
-  def invoke {
+  def execute {
     if (dir.exists) {
       logger.info("Deleting directory: " + dir.getCanonicalPath)
       cleanDirectory

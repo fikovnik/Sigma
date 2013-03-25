@@ -11,7 +11,7 @@ import org.eclipse.emf.common.util.URI
 import fr.unice.i3s.sigma.util.EMFUtils
 import fr.unice.i3s.sigma.util.IOUtils.using
 import fr.unice.i3s.sigma.m2t.TextTemplate
-import fr.unice.i3s.sigma.workflow.WorkflowComponent
+import fr.unice.i3s.sigma.workflow.WorkflowTask
 import com.typesafe.scalalogging.log4j.Logging
 import org.eclipse.emf.ecore.EcorePackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
@@ -19,6 +19,9 @@ import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
 import fr.unice.i3s.sigma.support.AutoContainment
+import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
+import fr.unice.i3s.sigma.workflow.WorkflowRunner
+import scala.collection.mutable.Buffer
 
 trait Utils {
   val scalaKeywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
@@ -173,12 +176,12 @@ case class EMFBuilderTemplate(
 
   protected def mapClazzName(clazz: GenClass) = {
     aliases.get(clazz.getName) match {
-      case Some(name) => name
-      case None =>
+      case Some(name) ⇒ name
+      case None ⇒
         val name = clazz.getImportedInterfaceName
         if (name.contains(".")) {
-         val pkgName = clazz.getGenPackage.getPackageName.map {_.toUpper}
-       	 val alias = pkgName + clazz.getName
+          val pkgName = clazz.getGenPackage.getPackageName.map { _.toUpper }
+          val alias = pkgName + clazz.getName
           logger.warn(s"Class name: ${clazz.getName} conflicts with an already imported class (likely default import). It will be aliased to ${alias}.")
           alias
         } else name
@@ -272,25 +275,40 @@ case class EPackageScalaSupportTemplate(pkg: GenPackage, pkgName: String, pkgSup
 
 }
 
-object EMFScalaSupportGenerator {
+object EMFScalaSupportGenerator extends WorkflowTaskFactory {
+  type Task = EMFScalaSupportGenerator
+  
   EMFUtils.IO.registerDefaultFactories
 
   // initialize packages
   EcorePackage.eINSTANCE.getEFactoryInstance()
   GenModelPackage.eINSTANCE.getEFactoryInstance()
+
+  def apply(baseDir: String,
+    genModelURI: String,
+    pkgName: String,
+    config: Config = {_ =>})(implicit runner: WorkflowRunner): EMFScalaSupportGenerator = {
+    
+    val task = new EMFScalaSupportGenerator(baseDir, genModelURI, pkgName)
+    config(task)
+    execute(task)
+    task
+  }
+
 }
 
-case class EMFScalaSupportGenerator(
+class EMFScalaSupportGenerator(
   val baseDir: String,
   val genModelURI: String,
-  val pkgName: String,
-  val skipTypes: List[String] = Nil,
-  val aliases: Map[String, String] = Map.empty) extends WorkflowComponent with Logging {
+  val pkgName: String) extends WorkflowTask with Logging {
 
+  val skipTypes: Buffer[String] = Buffer.empty
+  val aliases: collection.mutable.Map[String, String] = collection.mutable.Map.empty
+  
   // call the companion's object static block
   EMFScalaSupportGenerator
 
-  def invoke {
+  def execute {
     logger.info("Generating EMF Scala Support for " + genModelURI)
 
     val genModel = EMFUtils.IO.load[GenModel](URI.createURI(genModelURI))
@@ -308,13 +326,13 @@ case class EMFScalaSupportGenerator(
       val builderName = pkg.getPackageName.capitalize + "Builder"
       using(new File(dir, builderName + ".scala")) { f ⇒
         logger debug s"Generated builder for $builderName"
-        EMFBuilderTemplate(pkg, pkgName, builderName, skipTypes, aliases) >> f
+        EMFBuilderTemplate(pkg, pkgName, builderName, skipTypes.toList, aliases.toMap) >> f
       }
 
       val pkgSupportName = pkg.getPackageName.capitalize + "PackageScalaSupport"
       using(new File(dir, pkgSupportName + ".scala")) { f ⇒
         logger debug s"Generated package support for ${pkg.getPackageName}"
-        EPackageScalaSupportTemplate(pkg, pkgName, pkgSupportName, skipTypes) >> f
+        EPackageScalaSupportTemplate(pkg, pkgName, pkgSupportName, skipTypes.toList) >> f
       }
 
       for (clazz ← pkg.getGenClasses if !(skipTypes contains clazz.getName)) {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20110701" xmlns:xmi="http://www.omg.org/spec/XMI/20110701" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:TestProfile="http://i3s.unice.fr/Sigma/examples/uml/TestProfile" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/4.0.0/UML" xsi:schemaLocation="http://i3s.unice.fr/Sigma/examples/uml/TestProfile model/Test.profile.uml#_4KtQgJVCEeK01KKsnbwhjg">
+  <uml:Package xmi:id="_un0lAJVCEeK01KKsnbwhjg" name="test" URI="http://i3s.unice.fr/Sigma/examples/uml/test">
+    <packagedElement xmi:type="uml:Class" xmi:id="_-qsywJVCEeK01KKsnbwhjg" name="Factory"/>
+    <profileApplication xmi:id="_OiWn8JVDEeK01KKsnbwhjg">
+      <eAnnotations xmi:id="_OiWn8ZVDEeK01KKsnbwhjg" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="model/Test.profile.uml#_4KtQgJVCEeK01KKsnbwhjg"/>
+      </eAnnotations>
+      <appliedProfile href="model/Test.profile.uml#_Xt3skJLjEeKmZcJrtpLdOQ"/>
+    </profileApplication>
+  </uml:Package>
+  <TestProfile:singleton xmi:id="_Qe_60JVDEeK01KKsnbwhjg" base_Class="_-qsywJVCEeK01KKsnbwhjg"/>
+</xmi:XMI>

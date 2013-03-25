@@ -17,13 +17,22 @@ import fr.unice.i3s.sigma.util.IOUtils.pathSep
 import fr.unice.i3s.sigma.util.IOUtils.walk
 import fr.unice.i3s.sigma.util.IOUtils.PreVisitDir
 import fr.unice.i3s.sigma.workflow.ConfigurationException
-import fr.unice.i3s.sigma.workflow.WorkflowComponent
+import fr.unice.i3s.sigma.workflow.WorkflowTask
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.EPackage
+import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
+import fr.unice.i3s.sigma.workflow.WorkflowRunner
+import scala.collection.mutable.Buffer
+import scala.util.Failure
+import scala.util.Success
+import org.eclipse.emf.ecore.resource.URIConverter
+import org.eclipse.emf.ecore.resource.Resource
 
-object StandaloneSetup {
+object StandaloneSetup extends WorkflowTaskFactory {
+  type Task = StandaloneSetup
+
   EMFUtils.IO.registerDefaultFactories
 
   // initialize packages
@@ -31,39 +40,67 @@ object StandaloneSetup {
   GenModelPackage.eINSTANCE.getGenClass
 
   private val skipDir = "^\\.[^.]+".r
+
+  def apply(
+    platformPath: String,
+    scanClassPath: Boolean = true,
+    logResourceURIMap: Boolean = false,
+    logRegisteredPackages: Boolean = false,
+    config: Config = { _ ⇒ })(implicit runner: WorkflowRunner): StandaloneSetup = {
+
+    val task = new StandaloneSetup(platformPath, scanClassPath, logResourceURIMap, logRegisteredPackages)
+    config(task)
+    execute(task)
+    task
+  }
+
 }
 
-case class StandaloneSetup(
-  val platformURI: String,
+class StandaloneSetup(
+  val platformPath: String,
   val scanClassPath: Boolean = true,
   val logResourceURIMap: Boolean = false,
-  val registerGenModelFiles: Seq[String] = Seq.empty) extends WorkflowComponent with Logging {
+  val logRegisteredPackages: Boolean = false) extends WorkflowTask with Logging {
 
   import StandaloneSetup._
 
+  protected val platformFile = new File(platformPath)
+
+  val registerGenModelFiles: Buffer[String] = Buffer.empty
+  val registerPackages: Buffer[EPackage] = Buffer.empty
+  val registerExtensions: collection.mutable.Map[String, Resource.Factory] = collection.mutable.Map.empty
+  val URIMap: collection.mutable.Map[String, String] = collection.mutable.Map.empty
   val bundleNameMapping = Map[String, String]()
 
   // call the companion's object static block
   StandaloneSetup
 
-  def invoke {
+  override def validate = {
+    if (!platformFile.isDirectory) {
+      Failure(new ConfigurationException("The platformURI location must point to a directory"))
+    } else {
+      Success()
+    }
+  }
+
+  def execute {
     logger.info("Initializing Standalone Setup")
 
     initPlatformURI
     doScanClassPath
     doLogResourceUriMap
-    doRegisterGenModelFiles
+    doLogRegisteredPackages
+    // TODO: there should be extra map of URI->URI checked in the validate method
+    URIMap foreach registerURIMapping
+    registerExtensions foreach registerExtension
+    registerPackages foreach registerPackage
+    registerGenModelFiles foreach registerGenModelFile
   }
 
   def initPlatformURI = {
-    val f = new File(platformURI);
+    logger.info(s"Registering platform uri '${platformFile.getCanonicalPath}'");
 
-    if (!f.isDirectory())
-      throw new ConfigurationException("The platformURI location must point to a directory");
-
-    logger.info(s"Registering platform uri '${f.getCanonicalPath}'");
-
-    scan(f);
+    scan(platformFile);
   }
 
   protected def doScanClassPath {
@@ -81,7 +118,17 @@ case class StandaloneSetup(
   protected def doLogResourceUriMap {
     if (!logResourceURIMap) return ;
 
+    logger.info("Resource URI Map:")
     EcorePlugin.getPlatformResourceMap.toSeq
+      .sortBy(_._1)
+      .foreach { case (k, v) ⇒ logger.info(s"$k - $v") }
+  }
+
+  protected def doLogRegisteredPackages {
+    if (!logRegisteredPackages) return
+
+    logger.info("Registered Epackages:")
+    EPackage.Registry.INSTANCE.toSeq
       .sortBy(_._1)
       .foreach { case (k, v) ⇒ logger.info(s"$k - $v") }
   }
@@ -103,8 +150,18 @@ case class StandaloneSetup(
 
   val resourceSet = new ResourceSetImpl
 
-  protected def doRegisterGenModelFiles {
-    registerGenModelFiles foreach registerGenModelFile
+  protected def registerExtension(mapping: (String, Resource.Factory)) {
+    val (ext, factory) = mapping
+    Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap += (ext -> factory)
+  }
+
+  protected def registerURIMapping(mapping: (String, String)) {
+    val (from, to) = mapping
+    URIConverter.URI_MAP.put(URI.createURI(from), URI.createURI(to));
+  }
+
+  protected def registerPackage(pkg: EPackage) {
+    pkg.getEFactoryInstance
   }
 
   protected def registerGenModelFile(genModelURI: String) {

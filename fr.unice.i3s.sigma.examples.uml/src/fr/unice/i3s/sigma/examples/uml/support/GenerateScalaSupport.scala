@@ -8,59 +8,58 @@ import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
 import fr.unice.i3s.sigma.workflow.lib.DirectoryCleaner
 import fr.unice.i3s.sigma.workflow.lib.EMFScalaSupportGenerator
 import fr.unice.i3s.sigma.workflow.lib.EcoreGenerator
+import fr.unice.i3s.sigma.workflow.WorkflowApp
+import fr.unice.i3s.sigma.workflow.lib.LoadModel
+import org.eclipse.emf.ecore.EObject
+import fr.unice.i3s.sigma.workflow.lib.ValidateModel
+import org.eclipse.emf.codegen.ecore.genmodel.GenModel
+import org.eclipse.emf.ecore.plugin.EcorePlugin
 
-object GenerateScalaSupport extends App {
+object GenerateScalaSupport extends WorkflowApp {
 
   val projectName = "fr.unice.i3s.sigma.examples.uml"
   val runtimeProject = s"../$projectName"
   val srcGen = s"$runtimeProject/src-gen"
 
   val targetPackage = "fr.unice.i3s.sigma.examples.uml.support"
-  //  val ecoreModel = s"platform:/resource/org.eclipse.uml2.uml/model/UML.genmodel"
-  val ecoreModel = s"platform:/resource/$projectName/model/UML.genmodel"
-
-  // add support for this to standalone setup
-  // registerEPackage(org.eclipse.emf.ecore.EcorePackage.eINSTANCE)
-  org.eclipse.emf.ecore.EcorePackage.eINSTANCE.getEClass
-  org.eclipse.uml2.types.TypesPackage.eINSTANCE.getBoolean
-  org.eclipse.uml2.codegen.ecore.genmodel.GenModelPackage.eINSTANCE.getGenClass
-  org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage.eINSTANCE.getGenClass
-  println(EPackage.Registry.INSTANCE map { case (k, v) ⇒ s"$k -> $v" } mkString ("\n"))
+  val ecoreModel = s"platform:/resource/org.eclipse.uml2.uml/model/UML.genmodel"
 
   StandaloneSetup(
-    platformURI = s"$runtimeProject/..",
-    logResourceURIMap = true //    registerGenModelFiles = List(
-    //      "platform:/resource/org.eclipse.uml2.codegen.ecore/model/GenModel.genmodel",
-    //      "platform:/resource/org.eclipse.emf.ecore/model/Ecore.genmodel",
-    //      "platform:/resource/org.eclipse.emf.codegen.ecore/model/GenModel.genmodel")
-    )
+    platformPath = s"$runtimeProject/..",
+    logResourceURIMap = true,
+    logRegisteredPackages = true,
+    config = { t ⇒
+      t.registerPackages += org.eclipse.emf.ecore.EcorePackage.eINSTANCE
+      t.registerPackages += org.eclipse.uml2.types.TypesPackage.eINSTANCE
+      t.registerPackages += org.eclipse.uml2.codegen.ecore.genmodel.GenModelPackage.eINSTANCE
+      t.registerPackages += org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage.eINSTANCE
 
-  // TODO: check how to work with the URI conversions
-  // so there is no need to rewrite the the files - TODO later
-  val mapp = URIConverter.INSTANCE.getURIMap
-  mapp.put(
-    URI.createURI("platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel"),
-    URI.createURI(org.eclipse.emf.ecore.EcorePackage.eINSTANCE.getNsURI))
-  mapp.put(
-    URI.createURI("platform:/plugin/org.eclipse.uml2.types/model/Types.genmodel"),
-    URI.createURI(org.eclipse.uml2.types.TypesPackage.eINSTANCE.getNsURI))
+      val maps = List(
+        "platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel",
+        "platform:/plugin/org.eclipse.emf.codegen.ecore/model/GenModel.genmodel",
+        "platform:/plugin/org.eclipse.uml2.codegen.ecore/model/GenModel.genmodel",
+        "platform:/plugin/org.eclipse.uml2.uml/model/UML.genmodel",
+        "platform:/plugin/org.eclipse.emf.codegen.ecore/model/GenModel.ecore",
+        "platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore",
+        "platform:/plugin/org.eclipse.uml2.codegen.ecore/model/GenModel.ecore",
+        "platform:/plugin/org.eclipse.uml2.uml/model/UML.ecore",
+        "platform:/plugin/org.eclipse.uml2.types/model/Types.ecore",
+        "platform:/plugin/org.eclipse.uml2.types/model/Types.genmodel")
 
-  //  URIConverter.URI_MAP.put(
-  //    URI.createURI("platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel"), URI.createURI("platform:/resource/org.eclipse.emf.ecore/model/Ecore.genmodel"))
-  //  URIConverter.URI_MAP.put(
-  //    URI.createURI("platform:/plugin/org.eclipse.uml2.types/model/Types.genmodel"), URI.createURI("platform:/resource/org.eclipse.uml2.types/model/Types.genmodel"))
+      t.URIMap ++= maps map { uri ⇒ (uri, uri.replace("plugin", "resource")) }
+    })
 
-  DirectoryCleaner(path = srcGen)
+  //  val model = LoadModel(ecoreModel).model[GenModel]
+  //  ValidateModel(model)
 
   EMFScalaSupportGenerator(
     baseDir = srcGen,
     genModelURI = ecoreModel,
     pkgName = targetPackage,
-    skipTypes = List("DurationObservation", "DurationConstraint") //    aliases = {
-    //      List("Boolean", "Integer", "String", "Class", "Package")
-    //        .map { e ⇒ (e, "UML" + e) }
-    //        .toMap
-    //    }
-    )
+    config = { t ⇒
+      // FIXME: there is a problem with EList[scala.boolean] and EList[java.lang.Boolean] 
+      t.skipTypes += "DurationObservation"
+      t.skipTypes += "DurationConstraint"
+    })
 
 }

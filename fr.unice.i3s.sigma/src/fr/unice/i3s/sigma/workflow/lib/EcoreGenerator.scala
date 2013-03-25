@@ -18,26 +18,56 @@ import org.eclipse.emf.ecore.resource.URIConverter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenEnumGeneratorAdapter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenModelGeneratorAdapter
 import org.eclipse.emf.codegen.ecore.genmodel.generator.GenPackageGeneratorAdapter
-import fr.unice.i3s.sigma.workflow.WorkflowComponent
+import fr.unice.i3s.sigma.workflow.WorkflowTask
 import com.typesafe.scalalogging.log4j.Logging
 import fr.unice.i3s.sigma.support.EMFScalaSupport._
 import com.typesafe.scalalogging.log4j.Logger
+import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
+import fr.unice.i3s.sigma.workflow.WorkflowRunner
+import scala.collection.mutable.Buffer
 
 private class LoggingMonitor(logger: Logger) extends BasicMonitor {
   override def beginTask(name: String, totalWork: Int): Unit = logger.debug(name)
   override def subTask(name: String): Unit = logger.debug(name)
 }
 
-case class EcoreGenerator(
+object EcoreGenerator extends WorkflowTaskFactory {
+  type Task = EcoreGenerator
+
+  EMFUtils.IO.registerDefaultFactories
+
+  // initialize packages
+  EcorePackage.eINSTANCE.getEClass
+  GenModelPackage.eINSTANCE.getGenClass
+
+  def apply(
+    genModelURI: String,
+    generateEdit: Boolean = false,
+    generateEditor: Boolean = false,
+    generateDelegates: Boolean = false,
+    srcPath: String = null)(implicit runner: WorkflowRunner): EcoreGenerator = {
+
+    val task = new EcoreGenerator(genModelURI, generateEdit, generateEditor, generateDelegates, srcPath)
+    execute(task)
+    task
+  }
+}
+
+class EcoreGenerator(
+  val genModelURI: String,
   val generateEdit: Boolean = false,
   val generateEditor: Boolean = false,
   val generateDelegates: Boolean = false,
-  val srcPaths: List[String] = Nil,
-  val genModelURI: String) extends WorkflowComponent with Logging {
+  val srcPath: String = null) extends WorkflowTask with Logging {
 
-  // initialize packages
-  EcorePackage.eINSTANCE.getEFactoryInstance()
-  GenModelPackage.eINSTANCE.getEFactoryInstance()
+  val srcPaths: Buffer[String] = {
+    val b = Buffer[String]()
+    if (srcPath != null) b += srcPath
+    b
+  }
+
+  // execute the companion's object static block
+  EcoreGenerator
 
   def delegateClassNameMapper(from: String): Option[String] = {
     require(from != null)
@@ -53,7 +83,7 @@ case class EcoreGenerator(
     }
   }
 
-  def invoke = {
+  def execute {
     generateEcore
   }
 

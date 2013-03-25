@@ -20,12 +20,11 @@ object EMFUtils {
 
   object IO {
 
-    def load[T <: EObject: ClassTag](uri: URI, resolveAll: Boolean = true): T = {
-      val rs = new ResourceSetImpl()
-      val r = rs.getResource(uri, true)
+    def load[T <: EObject: ClassTag](uri: URI, resolveAll: Boolean = true, resourceSet: ResourceSet = new ResourceSetImpl): T = {
+      val r = resourceSet.getResource(uri, true)
 
       if (resolveAll) {
-        EcoreUtil.resolveAll(rs)
+        EcoreUtil.resolveAll(resourceSet)
       }
 
       r.getContents().get(0) match {
@@ -52,7 +51,7 @@ object EMFUtils {
 
       resource.getContents().add(root)
 
-      // TODO: reogranize - should be a boolean param
+      // TODO: reogrganize - should be a boolean param
       // TODO: should we have XMI dependency?
       resource.save(Map(
         XMLResource.OPTION_SCHEMA_LOCATION -> (true: java.lang.Boolean)))
