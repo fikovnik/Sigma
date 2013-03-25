@@ -39,6 +39,7 @@ object StandaloneSetup extends WorkflowTaskFactory {
   EcorePackage.eINSTANCE.getEClass
   GenModelPackage.eINSTANCE.getGenClass
 
+  // skip .dot dirs (like .git)
   private val skipDir = "^\\.[^.]+".r
 
   def apply(
@@ -66,12 +67,6 @@ class StandaloneSetup(
 
   protected val platformFile = new File(platformPath)
 
-  val registerGenModelFiles: Buffer[String] = Buffer.empty
-  val registerPackages: Buffer[EPackage] = Buffer.empty
-  val registerExtensions: collection.mutable.Map[String, Resource.Factory] = collection.mutable.Map.empty
-  val URIMap: collection.mutable.Map[String, String] = collection.mutable.Map.empty
-  val bundleNameMapping = Map[String, String]()
-
   // call the companion's object static block
   StandaloneSetup
 
@@ -90,11 +85,6 @@ class StandaloneSetup(
     doScanClassPath
     doLogResourceUriMap
     doLogRegisteredPackages
-    // TODO: there should be extra map of URI->URI checked in the validate method
-    URIMap foreach registerURIMapping
-    registerExtensions foreach registerExtension
-    registerPackages foreach registerPackage
-    registerGenModelFiles foreach registerGenModelFile
   }
 
   def initPlatformURI = {
@@ -150,21 +140,19 @@ class StandaloneSetup(
 
   val resourceSet = new ResourceSetImpl
 
-  protected def registerExtension(mapping: (String, Resource.Factory)) {
-    val (ext, factory) = mapping
+  def registerExtension(ext: String, factory: Resource.Factory) {
     Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap += (ext -> factory)
   }
 
-  protected def registerURIMapping(mapping: (String, String)) {
-    val (from, to) = mapping
+  def addMapping(from: String, to: String) {
     URIConverter.URI_MAP.put(URI.createURI(from), URI.createURI(to));
   }
 
-  protected def registerPackage(pkg: EPackage) {
+  def registerPackage(pkg: EPackage) {
     pkg.getEFactoryInstance
   }
 
-  protected def registerGenModelFile(genModelURI: String) {
+  def registerGenModelFile(genModelURI: String) {
     val res = resourceSet.getResource(URI.createURI(genModelURI), true)
     if (res == null)
       throw new ConfigurationException("Couldn't find resource under  " + genModelURI)
@@ -226,10 +214,10 @@ class StandaloneSetup(
     val uri = URI.createFileURI(file.getParentFile().getCanonicalPath() + File.separator)
 
     EcorePlugin.getPlatformResourceMap().put(name, uri);
-    bundleNameMapping.get(name) match {
-      case Some(mapping) ⇒ EcorePlugin.getPlatformResourceMap().put(mapping, uri);
-      case None ⇒
-    }
+    //    bundleNameMapping.get(name) match {
+    //      case Some(mapping) ⇒ EcorePlugin.getPlatformResourceMap().put(mapping, uri);
+    //      case None ⇒
+    //    }
 
     logger.debug(s"Registering project $name -> $uri");
   }

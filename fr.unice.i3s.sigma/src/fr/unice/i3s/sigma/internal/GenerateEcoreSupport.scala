@@ -25,6 +25,6 @@ object GenerateEcoreSupport extends WorkflowApp {
     genModelURI = ecoreModel,
     pkgName = targetPackage,
     config = { t ⇒
-      t.skipTypes += "EStringToStringMapEntry"
+      t.skipType("EStringToStringMapEntry")
     })
 }

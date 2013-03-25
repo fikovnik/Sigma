@@ -302,8 +302,8 @@ class GenerateEMFScalaSupport(
   val genModelURI: String, 
   val pkgName: String) extends WorkflowTask with Logging {
 
-  val skipTypes: Buffer[String] = Buffer.empty
-  val aliases: collection.mutable.Map[String, String] = collection.mutable.Map.empty
+  protected val skipTypes: Buffer[String] = Buffer.empty
+  protected val aliases: collection.mutable.Map[String, String] = collection.mutable.Map.empty
   
   // call the companion's object static block
   GenerateEMFScalaSupport
@@ -346,8 +346,10 @@ class GenerateEMFScalaSupport(
 
     }
   }
+  
+  def skipType(typeName: String) = skipTypes += typeName
 
-  def checkDir(dir: File) {
+  protected def checkDir(dir: File) {
     if (!dir.exists()) {
       assert(dir.mkdirs(), "Unable to create directory: " + dir)
     } else {

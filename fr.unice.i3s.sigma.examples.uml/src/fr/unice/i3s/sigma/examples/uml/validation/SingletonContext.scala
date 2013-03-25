@@ -89,14 +89,14 @@ object Test extends WorkflowApp with UmlPackageScalaSupport {
   StandaloneSetup(
     platformPath = s"$runtimeProject/..",
     config = { t ⇒
-      t.registerPackages += org.eclipse.uml2.uml.UMLPackage.eINSTANCE
+      t.registerPackage(org.eclipse.uml2.uml.UMLPackage.eINSTANCE)
 
-      t.registerExtensions += (UMLResource.FILE_EXTENSION -> UMLResource.Factory.INSTANCE)
+      t.registerExtension(UMLResource.FILE_EXTENSION, UMLResource.Factory.INSTANCE)
 
-      t.URIMap += ("platform:/plugin/org.eclipse.uml2.uml/model/UML.ecore" -> "platform:/resource/org.eclipse.uml2.uml/model/UML.ecore")
-      t.URIMap += (UMLResource.LIBRARIES_PATHMAP -> "platform:/resource/org.eclipse.uml2.uml.resources/libraries/")
-      t.URIMap += (UMLResource.METAMODELS_PATHMAP -> "platform:/resource/org.eclipse.uml2.uml.resources/metamodels/")
-      t.URIMap += (UMLResource.PROFILES_PATHMAP -> "platform:/resource/org.eclipse.uml2.uml.resources/profiles/")
+      t.addMapping("platform:/plugin/org.eclipse.uml2.uml/model/UML.ecore", "platform:/resource/org.eclipse.uml2.uml/model/UML.ecore")
+      t.addMapping(UMLResource.LIBRARIES_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/libraries/")
+      t.addMapping(UMLResource.METAMODELS_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/metamodels/")
+      t.addMapping(UMLResource.PROFILES_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/profiles/")
     })
 
   val pkg = LoadModel(URI.createPlatformResourceURI("/fr.unice.i3s.sigma.examples.uml/model/Test.uml", false)).model[UMLPackage]

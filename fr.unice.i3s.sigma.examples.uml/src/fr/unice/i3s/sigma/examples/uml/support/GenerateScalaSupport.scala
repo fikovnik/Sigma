@@ -28,10 +28,10 @@ object GenerateScalaSupport extends WorkflowApp {
     logResourceURIMap = true,
     logRegisteredPackages = true,
     config = { t ⇒
-      t.registerPackages += org.eclipse.emf.ecore.EcorePackage.eINSTANCE
-      t.registerPackages += org.eclipse.uml2.types.TypesPackage.eINSTANCE
-      t.registerPackages += org.eclipse.uml2.codegen.ecore.genmodel.GenModelPackage.eINSTANCE
-      t.registerPackages += org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage.eINSTANCE
+      t.registerPackage(org.eclipse.emf.ecore.EcorePackage.eINSTANCE)
+      t.registerPackage(org.eclipse.uml2.types.TypesPackage.eINSTANCE)
+      t.registerPackage(org.eclipse.uml2.codegen.ecore.genmodel.GenModelPackage.eINSTANCE)
+      t.registerPackage(org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage.eINSTANCE)
 
       val maps = List(
         "platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel",
@@ -45,7 +45,9 @@ object GenerateScalaSupport extends WorkflowApp {
         "platform:/plugin/org.eclipse.uml2.types/model/Types.ecore",
         "platform:/plugin/org.eclipse.uml2.types/model/Types.genmodel")
 
-      t.URIMap ++= maps map { uri ⇒ (uri, uri.replace("plugin", "resource")) }
+      maps foreach { uri ⇒
+        t.addMapping(uri, uri.replace("plugin", "resource"))
+      }
     })
 
   //  val model = LoadModel(ecoreModel).model[GenModel]
@@ -59,8 +61,8 @@ object GenerateScalaSupport extends WorkflowApp {
     pkgName = targetPackage,
     config = { t ⇒
       // FIXME: there is a problem with EList[scala.boolean] and EList[java.lang.Boolean] 
-      t.skipTypes += "DurationObservation"
-      t.skipTypes += "DurationConstraint"
+      t.skipType("DurationObservation")
+      t.skipType("DurationConstraint")
     })
 
 }
