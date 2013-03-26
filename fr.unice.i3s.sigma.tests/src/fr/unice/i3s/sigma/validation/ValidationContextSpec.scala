@@ -17,25 +17,24 @@ class ValidationContextSpec extends FlatSpec with MustMatchers with LibraryPacka
     val ctx = new ValidationContext[Book]() {
       guard = self.name != null
 
-      new Constraint("AlwaysPass") {
-        check = true
+      Constraint('AlwaysPass) { inv ⇒
+        inv.check = true
       }
     }
 
     ctx.validate(Book(name = "MyBook")).passed must be === true
     ctx.validate(Book()).cancelled must be === true
-
   }
 
   it must "support constraint satisfaction" in {
     val ctx = new ValidationContext[Book]() {
-      val inv1 = new Constraint("NotNullName") {
-        check = self.name != null
+      Constraint('NotNullName) { inv ⇒
+        inv.check = self.name != null
       }
 
-      new Constraint("NotEmptyName") {
-        guard = self.satisfies(inv1)
-        check = !self.name.trim.isEmpty
+      Constraint('NotEmptyName) { inv ⇒
+        inv.guard = self satisfies 'NotNullName
+        inv.check = !self.name.trim.isEmpty
       }
     }
 
@@ -46,9 +45,9 @@ class ValidationContextSpec extends FlatSpec with MustMatchers with LibraryPacka
   }
 
   "Constraint" must "register itself into the surrounding validation context scope" in {
-    val ctx = new ValidationContext[Book]() {
-      new Constraint("Hi") {
-        check = self.name != null
+    val ctx = new ValidationContext[Book]() { inv ⇒
+      Constraint('Hi) { inv ⇒
+        inv.check = self.name != null
       }
     }
 

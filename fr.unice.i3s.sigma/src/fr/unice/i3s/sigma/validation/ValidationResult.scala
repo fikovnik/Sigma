@@ -1,5 +1,7 @@
 package fr.unice.i3s.sigma.validation
 
+import scala.collection.mutable.Buffer
+
 sealed trait ValidationResult
 
 object Passed extends ValidationResult {
@@ -10,11 +12,26 @@ object Cancelled extends ValidationResult {
   override def toString = "Cancelled"
 }
 
-case class Warning[T](val message: String, val fixes: Fix*) extends ValidationResult {
+trait Fixable { this: ValidationResult ⇒
+  private[validation] val fixes = Buffer[Fix]()
+
+  def apply(config: (this.type) ⇒ Unit): this.type = {
+    config(this)
+    this
+  }
+
+  def quickFix(title: String)(action: ⇒ Unit): Fix = {
+    val fix = new Fix(title, { () ⇒ action })
+    fixes += fix
+    fix
+  }
+}
+
+case class Warning[T](val message: String) extends ValidationResult with Fixable {
   override def toString = s"Warning(${fixes.size} fixes): $message"
 }
 
-case class Error[T](val message: String, val fixes: Fix*) extends ValidationResult {
+case class Error(val message: String) extends ValidationResult with Fixable {
   override def toString = s"Error(${fixes.size} fixes): $message"
 }
 

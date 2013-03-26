@@ -35,42 +35,55 @@ class SingletonContext extends ValidationContext[UMLClass] with UmlPackageScalaS
 
   guard = self.getAppliedStereotype("TestProfile::singleton") != null
 
-  val invDefinesGetInstance = new Constraint("DefinesGetInstance") {
-    check =
-      if (getGetInstanceOperation.isDefined) Passed
-      else
-        Error(s"Singleton ${self.name} must define a getInstance() operation",
-          Fix(s"Add a getInstance() operation to ${self.name}") {
-            val op = self.createOwnedOperation("getInstance", null, null)
-            op.setIsStatic(true)
-            op.createReturnResult(null, self)
-          })
+  Constraint('DefinesGetInstance) { inv ⇒
+    inv.check = {
+      getGetInstanceOperation match {
+        case Some(_) ⇒ Passed
+        case None ⇒ {
+          Error(s"Singleton ${self.name} must define a getInstance() operation") { e ⇒
+
+            e.quickFix(s"Add a getInstance() operation to ${self.name}") {
+              val op = self.createOwnedOperation("getInstance", null, null)
+              op.setIsStatic(true)
+              op.createReturnResult(null, self)
+            }
+          }
+        }
+      }
+    }
   }
 
-  val invGetInstanceIsStatic = new Constraint("GetInstanceIsStatic") {
-    guard = self.satisfies(invDefinesGetInstance)
-    check =
+  Constraint('GetInstanceIsStatic) { inv ⇒
+    inv.guard = self satisfies 'DefinesGetInstance
+    inv.check = {
       if (getGetInstanceOperation.get.isStatic) Passed
-      else
-        Error(s" The getInstance() operation of singleton ${self.name} must be static",
-          Fix("Change to static") {
+      else {
+        Error(s"The getInstance() operation of singleton ${self.name} must be static") { e ⇒
+
+          e.quickFix("Change to static") {
             getGetInstanceOperation.get.setIsStatic(true)
-          })
+          }
+        }
+      }
+    }
   }
 
-  val invGetInstanceReturnsSame = new Constraint("GetInstanceReturnsSame") {
-    guard = self.satisfies(invDefinesGetInstance)
-    check = Option(getGetInstanceOperation.get.getReturnResult) match {
+  Constraint('GetInstanceReturnsSame) { inv ⇒
+    inv.guard = self satisfies 'DefinesGetInstance
+    inv.check = Option(getGetInstanceOperation.get.getReturnResult) match {
       case Some(p) if p.getType == self ⇒ Passed
-      case _ ⇒
-        Error(s"The getInstance() operation of singleton ${self.name} must return ${self.name}",
-          Fix(s"Change return type to ${self.name}") {
+      case _ ⇒ {
+        Error(s"The getInstance() operation of singleton ${self.name} must return ${self.name}") { e ⇒
+
+          e.quickFix(s"Change return type to ${self.name}") {
             val op = getGetInstanceOperation.get
             Option(op.getReturnResult) match {
               case Some(p) ⇒ p.setType(self)
               case None ⇒ op.createReturnResult(null, self)
             }
-          })
+          }
+        }
+      }
     }
   }
 

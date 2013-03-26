@@ -2,11 +2,12 @@ package fr.unice.i3s.sigma.validation
 
 import scala.util.DynamicVariable
 import org.eclipse.emf.ecore.EObject
+import scala.reflect.{ ClassTag, classTag }
 
-private[validation] trait GuardedSelf[T >: Null] {
+private[validation] trait SelfGuard[T >: Null] {
   private var _guard: Unit ⇒ Boolean = { _ ⇒ true }
-  protected def guard = _guard
-  protected def guard_=(g: ⇒ Boolean) = _guard = { _ ⇒ g }
+  def guard = _guard
+  def guard_=(g: ⇒ Boolean) = _guard = { _ ⇒ g }
 
   private val _self = new DynamicVariable[T](null)
   protected def self: T = _self.value
@@ -20,22 +21,37 @@ private[validation] trait GuardedSelf[T >: Null] {
 
 }
 
-abstract class ValidationContext[T >: Null](val name: String) extends GuardedSelf[T] {
+abstract class ValidationContext[T >: Null: ClassTag](val name: String) extends SelfGuard[T] {
   class Overloaded1
   implicit val overload1 = new Overloaded1
 
-  class Constraint(val name: String) extends GuardedSelf[T] {
-    require(name != null && !name.trim.isEmpty, "Constraint name must not be null")
-    require(!constraints.contains(name), s"A constraint $name has been already defined")
+  private val constraints = collection.mutable.Map[Symbol, Constraint]()
 
-    constraints += (name -> this)
+  def this() = this(getClass.getSimpleName)
 
+  object Constraint {
+    def apply(name: Symbol): Constraint = {
+      require(name != null, "Constraint name must not be null")
+      require(!constraints.contains(name), s"A constraint $name has been already defined")
+
+      val inv = new Constraint(name)
+      constraints += (name -> inv)
+      inv
+    }
+  }
+
+  class Constraint(val name: Symbol) extends SelfGuard[T] {
     private var _check: Unit ⇒ ValidationResult = { _ ⇒ throw new RuntimeException(s"Check in constraint $name has not been defined") }
-    protected def check = _check
-    protected def check_=(g: ⇒ ValidationResult) = _check = { _ ⇒ g }
-    protected def check_=(g: ⇒ Boolean)(implicit o: Overloaded1) = _check = { _ ⇒
+    def check = _check
+    def check_=(g: ⇒ ValidationResult) = _check = { _ ⇒ g }
+    def check_=(g: ⇒ Boolean)(implicit o: Overloaded1) = _check = { _ ⇒
       if (g) Passed
       else Error(s"The `$name` constraint is violated on `$self`")
+    }
+
+    def apply(config: this.type ⇒ Unit): this.type = {
+      config(this)
+      this
     }
 
     def validate(instance: T): ValidationResult = {
@@ -43,22 +59,25 @@ abstract class ValidationContext[T >: Null](val name: String) extends GuardedSel
     }
   }
 
-  def this() = this(getClass.getSimpleName)
-
   def validate(instance: T): ValidationContextResult = {
     val validations = validateWithSelf(instance) {
       constraints map {
-        case (name, inv) ⇒ (name -> inv.validate(instance))
+        case (name, inv) ⇒ (name.name -> inv.validate(instance))
       }
     }
 
     new ValidationContextResult(validations.map(_.toMap).getOrElse(Map.empty))
   }
 
-  private val constraints = new collection.mutable.HashMap[String, Constraint]
-
   implicit class Satisfiable(that: T) {
-    def satisfies(c: Constraint): Boolean = c.validate(that) == Passed
+    def satisfies(name: Symbol): Boolean = {
+      constraints.get(name) match {
+        case Some(inv) ⇒ inv.validate(that) == Passed
+        case None ⇒ throw new RuntimeException(s"Unresolvable constraint dependency from $this to `$name` that does not exists in context $this")
+      }
+    }
   }
+
+  override def toString = s"Validation context $name for class: ${classTag[T]}"
 
 }
