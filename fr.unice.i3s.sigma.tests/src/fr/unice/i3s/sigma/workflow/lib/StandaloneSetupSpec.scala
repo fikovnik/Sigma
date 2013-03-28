@@ -9,9 +9,14 @@ import fr.unice.i3s.sigma.workflow.BasicWorkflowRunner
 @RunWith(classOf[JUnitRunner])
 class StandaloneSetupSpec extends FlatSpec with MustMatchers {
 
+  implicit val runner = new BasicWorkflowRunner
+
   "StandaloneSetup" must "register platform URI" in {
 
-    StandaloneSetup(platformPath = "..", logResourceURIMap = true)(new BasicWorkflowRunner)
+    !new StandaloneSetup {
+      platformPath = ".."
+      logResourceURIMap = true
+    }
 
   }
 

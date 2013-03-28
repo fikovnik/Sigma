@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.EPackage
-import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
 import scala.collection.mutable.Buffer
 import scala.util.Failure
@@ -30,9 +29,7 @@ import scala.util.Success
 import org.eclipse.emf.ecore.resource.URIConverter
 import org.eclipse.emf.ecore.resource.Resource
 
-object StandaloneSetup extends WorkflowTaskFactory {
-  type Task = StandaloneSetup
-
+object StandaloneSetup {
   EMFUtils.IO.registerDefaultFactories
 
   // initialize packages
@@ -41,44 +38,40 @@ object StandaloneSetup extends WorkflowTaskFactory {
 
   // skip .dot dirs (like .git)
   private val skipDir = "^\\.[^.]+".r
-
-  def apply(
-    platformPath: String,
-    scanClassPath: Boolean = true,
-    logResourceURIMap: Boolean = false,
-    logRegisteredPackages: Boolean = false,
-    config: Config = { _ ⇒ })(implicit runner: WorkflowRunner): StandaloneSetup = {
-
-    val task = new StandaloneSetup(platformPath, scanClassPath, logResourceURIMap, logRegisteredPackages)
-    config(task)
-    execute(task)
-    task
-  }
-
 }
 
-class StandaloneSetup(
-  val platformPath: String,
-  val scanClassPath: Boolean = true,
-  val logResourceURIMap: Boolean = false,
-  val logRegisteredPackages: Boolean = false) extends WorkflowTask with Logging {
+class StandaloneSetup extends WorkflowTask with Logging {
+  private var _platformPath: File = _
+  protected def platformPath: File = _platformPath
+  protected def platformPath_=(v: File) = _platformPath = v
+  protected def platformPath_=(v: String) = _platformPath = new File(v)
+
+  private var _scanClassPath: Boolean = true
+  protected def scanClassPath: Boolean = _scanClassPath
+  protected def scanClassPath_=(v: Boolean) = _scanClassPath = v
+
+  private var _logResourceURIMap: Boolean = false
+  protected def logResourceURIMap: Boolean = _logResourceURIMap
+  protected def logResourceURIMap_=(v: Boolean) = _logResourceURIMap = v
+
+  private var _logRegisteredPackages: Boolean = false
+  protected def logRegisteredPackages: Boolean = _logRegisteredPackages
+  protected def logRegisteredPackages_=(v: Boolean) = _logRegisteredPackages = v
 
   import StandaloneSetup._
-
-  protected val platformFile = new File(platformPath)
 
   // call the companion's object static block
   StandaloneSetup
 
   override def validate = {
-    if (!platformFile.isDirectory) {
+    if (!platformPath.isDirectory) {
       Failure(new ConfigurationException("The platformURI location must point to a directory"))
     } else {
       Success()
     }
   }
 
-  def execute {
+  def doExecute {
     logger.info("Initializing Standalone Setup")
 
     initPlatformURI
@@ -88,9 +81,9 @@ class StandaloneSetup(
   }
 
   def initPlatformURI = {
-    logger.info(s"Registering platform uri '${platformFile.getCanonicalPath}'");
+    logger.info(s"Registering platform uri '${platformPath.getCanonicalPath}'");
 
-    scan(platformFile);
+    scan(platformPath);
   }
 
   protected def doScanClassPath {

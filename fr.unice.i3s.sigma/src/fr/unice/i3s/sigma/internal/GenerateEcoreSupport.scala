@@ -16,15 +16,20 @@ object GenerateEcoreSupport extends WorkflowApp {
   val targetPackage = "fr.unice.i3s.sigma.support.ecore"
   val ecoreModel = "platform:/resource/org.eclipse.emf.ecore/model/Ecore.genmodel"
 
-  StandaloneSetup(platformPath = s"$runtimeProject/..", logResourceURIMap = true)
+  !new StandaloneSetup {
+    platformPath = s"$runtimeProject/.."
+    logResourceURIMap = true
+  }
 
-  CleanDirectory(path = srcGen)
+  !new CleanDirectory {
+    path = srcGen
+  }
 
-  GenerateEMFScalaSupport(
-    baseDir = srcGen,
-    genModelURI = ecoreModel,
-    pkgName = targetPackage,
-    config = { t ⇒
-      t.skipType("EStringToStringMapEntry")
-    })
+  !new GenerateEMFScalaSupport {
+    baseDir = srcGen
+    genModelURI = ecoreModel
+    pkgName = targetPackage
+
+    skipType("EStringToStringMapEntry")
+  }
 }

@@ -15,15 +15,22 @@ object GenerateScalaSupport extends WorkflowApp {
   val targetPackage = "fr.unice.i3s.sigma.examples.library.support"
   val ecoreModel = s"platform:/resource/$projectName/model/Library.genmodel"
 
-  StandaloneSetup(platformPath = s"$runtimeProject/..", logResourceURIMap = true)
+  !new StandaloneSetup {
+    platformPath = s"$runtimeProject/.."
+    logResourceURIMap = true
+  }
 
-  CleanDirectory(path = srcGen)
+  !new CleanDirectory {
+    path = srcGen
+  }
 
-  GenerateEcore(genModelURI = ecoreModel)
+  !new GenerateEcore {
+    genModelURI = ecoreModel
+  }
 
-  GenerateEMFScalaSupport(
-    baseDir = srcGen,
-    genModelURI = ecoreModel,
-    pkgName = targetPackage)
-
+  !new GenerateEMFScalaSupport {
+    baseDir = srcGen
+    genModelURI = ecoreModel
+    pkgName = targetPackage
+  }
 }

@@ -21,23 +21,21 @@ abstract class AbstractSingletonSpec[T <: ValidationContext[UMLClass]: ClassTag]
 
   val projectName = "fr.unice.i3s.sigma.examples.uml.tests"
   val runtimeProject = s"../$projectName"
-  val modelURI = "/model/Test.uml"
 
   override def beforeAll(configMap: Map[String, Any]) {
 
-    StandaloneSetup(
-      platformPath = s"$runtimeProject/..",
-      config = { t ⇒
-        t.registerPackage(org.eclipse.uml2.uml.UMLPackage.eINSTANCE)
+    !new StandaloneSetup {
+      platformPath = s"$runtimeProject/.."
+      registerPackage(org.eclipse.uml2.uml.UMLPackage.eINSTANCE)
 
-        t.registerExtension(UMLResource.FILE_EXTENSION, UMLResource.Factory.INSTANCE)
+      registerExtension(UMLResource.FILE_EXTENSION, UMLResource.Factory.INSTANCE)
 
-        t.addMapping("platform:/plugin/org.eclipse.uml2.uml/model/UML.ecore", "platform:/resource/org.eclipse.uml2.uml/model/UML.ecore")
-        t.addMapping(UMLResource.LIBRARIES_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/libraries/")
-        t.addMapping(UMLResource.METAMODELS_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/metamodels/")
-        t.addMapping(UMLResource.PROFILES_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/profiles/")
-      }
-    )
+      addMapping("platform:/plugin/org.eclipse.uml2.uml/model/UML.ecore", "platform:/resource/org.eclipse.uml2.uml/model/UML.ecore")
+      addMapping(UMLResource.LIBRARIES_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/libraries/")
+      addMapping(UMLResource.METAMODELS_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/metamodels/")
+      addMapping(UMLResource.PROFILES_PATHMAP, "platform:/resource/org.eclipse.uml2.uml.resources/profiles/")
+    }
+
   }
 
   var pkg: UMLPackage = _
@@ -45,7 +43,11 @@ abstract class AbstractSingletonSpec[T <: ValidationContext[UMLClass]: ClassTag]
   val name: String = classTag[T].runtimeClass.getSimpleName
 
   before {
-    pkg = LoadModel(URI.createURI(getClass.getResource(modelURI).toString)).model[UMLPackage]
+    val loader = !new LoadModel {
+      modelURI(getClass.getResource("/model/Test.uml"))
+    }
+    pkg = loader.model[UMLPackage]
+
     context = classTag[T].runtimeClass.getConstructor().newInstance().asInstanceOf[T]
   }
 

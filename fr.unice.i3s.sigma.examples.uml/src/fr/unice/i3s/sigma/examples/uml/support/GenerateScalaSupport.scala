@@ -23,46 +23,50 @@ object GenerateScalaSupport extends WorkflowApp {
   val targetPackage = "fr.unice.i3s.sigma.examples.uml.support"
   val ecoreModel = s"platform:/resource/org.eclipse.uml2.uml/model/UML.genmodel"
 
-  StandaloneSetup(
-    platformPath = s"$runtimeProject/..",
-    logResourceURIMap = true,
-    logRegisteredPackages = true,
-    config = { t ⇒
-      t.registerPackage(org.eclipse.emf.ecore.EcorePackage.eINSTANCE)
-      t.registerPackage(org.eclipse.uml2.types.TypesPackage.eINSTANCE)
-      t.registerPackage(org.eclipse.uml2.codegen.ecore.genmodel.GenModelPackage.eINSTANCE)
-      t.registerPackage(org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage.eINSTANCE)
+  !new StandaloneSetup {
+    platformPath = s"$runtimeProject/.."
+    logResourceURIMap = true
+    logRegisteredPackages = true
 
-      val maps = List(
-        "platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel",
-        "platform:/plugin/org.eclipse.emf.codegen.ecore/model/GenModel.genmodel",
-        "platform:/plugin/org.eclipse.uml2.codegen.ecore/model/GenModel.genmodel",
-        "platform:/plugin/org.eclipse.uml2.uml/model/UML.genmodel",
-        "platform:/plugin/org.eclipse.emf.codegen.ecore/model/GenModel.ecore",
-        "platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore",
-        "platform:/plugin/org.eclipse.uml2.codegen.ecore/model/GenModel.ecore",
-        "platform:/plugin/org.eclipse.uml2.uml/model/UML.ecore",
-        "platform:/plugin/org.eclipse.uml2.types/model/Types.ecore",
-        "platform:/plugin/org.eclipse.uml2.types/model/Types.genmodel")
+    registerPackage(org.eclipse.emf.ecore.EcorePackage.eINSTANCE)
+    registerPackage(org.eclipse.uml2.types.TypesPackage.eINSTANCE)
+    registerPackage(org.eclipse.uml2.codegen.ecore.genmodel.GenModelPackage.eINSTANCE)
+    registerPackage(org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage.eINSTANCE)
 
-      maps foreach { uri ⇒
-        t.addMapping(uri, uri.replace("plugin", "resource"))
-      }
-    })
+    val maps = List(
+      "platform:/plugin/org.eclipse.emf.ecore/model/Ecore.genmodel",
+      "platform:/plugin/org.eclipse.emf.codegen.ecore/model/GenModel.genmodel",
+      "platform:/plugin/org.eclipse.uml2.codegen.ecore/model/GenModel.genmodel",
+      "platform:/plugin/org.eclipse.uml2.uml/model/UML.genmodel",
+      "platform:/plugin/org.eclipse.emf.codegen.ecore/model/GenModel.ecore",
+      "platform:/plugin/org.eclipse.emf.ecore/model/Ecore.ecore",
+      "platform:/plugin/org.eclipse.uml2.codegen.ecore/model/GenModel.ecore",
+      "platform:/plugin/org.eclipse.uml2.uml/model/UML.ecore",
+      "platform:/plugin/org.eclipse.uml2.types/model/Types.ecore",
+      "platform:/plugin/org.eclipse.uml2.types/model/Types.genmodel")
+
+    maps foreach { uri ⇒
+      addMapping(uri, uri.replace("plugin", "resource"))
+    }
+  }
 
   //  val model = LoadModel(ecoreModel).model[GenModel]
   //  ValidateModel(model)
 
-  CleanDirectory(path = srcGen)
+  new CleanDirectory {
+    path = srcGen
+  }
 
-  GenerateEMFScalaSupport(
-    baseDir = srcGen,
-    genModelURI = ecoreModel,
-    pkgName = targetPackage,
-    config = { t ⇒
-      // FIXME: there is a problem with EList[scala.boolean] and EList[java.lang.Boolean] 
-      t.skipType("DurationObservation")
-      t.skipType("DurationConstraint")
-    })
+  new GenerateEMFScalaSupport {
+    baseDir = srcGen
+    genModelURI = ecoreModel
+    pkgName = targetPackage
+
+    // FIXME: there is a problem with EList[scala.boolean] and EList[java.lang.Boolean] 
+    skipType("DurationObservation")
+    skipType("DurationConstraint")
+
+    mapping("Feature.isStatic", "static")
+  }
 
 }

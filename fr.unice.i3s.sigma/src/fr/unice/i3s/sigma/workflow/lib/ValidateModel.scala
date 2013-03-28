@@ -1,26 +1,22 @@
 package fr.unice.i3s.sigma.workflow.lib
 
-import fr.unice.i3s.sigma.workflow.WorkflowTask
+import scala.collection.mutable.Buffer
+
 import org.eclipse.emf.ecore.EObject
-import com.typesafe.scalalogging.log4j.Logging
 import org.eclipse.emf.ecore.util.Diagnostician
+
+import com.typesafe.scalalogging.log4j.Logging
+
 import fr.unice.i3s.sigma.support.EMFScalaSupport
-import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
-import fr.unice.i3s.sigma.workflow.WorkflowRunner
+import fr.unice.i3s.sigma.workflow.WorkflowTask
 
-object ValidateModel extends WorkflowTaskFactory {
-  type Task = ValidateModel
+class ValidateModel extends WorkflowTask with Logging with EMFScalaSupport {
 
-  def apply(models: EObject*)(implicit runner: WorkflowRunner): ValidateModel = {
-    val task = new ValidateModel(models)
-    execute(task)
-    task
-  }
-}
+  private val models = Buffer[EObject]()
 
-class ValidateModel(val models: Seq[EObject]) extends WorkflowTask with Logging with EMFScalaSupport {
+  def model(m: EObject) = models += m
 
-  def execute {
+  def doExecute {
     val diagnostician = Diagnostician.INSTANCE
     models.par.map { m ⇒
       logger.debug("Validating model: " + m)

@@ -22,17 +22,16 @@ import fr.unice.i3s.sigma.workflow.WorkflowTask
 import com.typesafe.scalalogging.log4j.Logging
 import fr.unice.i3s.sigma.support.EMFScalaSupport._
 import com.typesafe.scalalogging.log4j.Logger
-import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
 import scala.collection.mutable.Buffer
+import fr.unice.i3s.sigma.workflow.WorkflowTask
 
 private class LoggingMonitor(logger: Logger) extends BasicMonitor {
   override def beginTask(name: String, totalWork: Int): Unit = logger.debug(name)
   override def subTask(name: String): Unit = logger.debug(name)
 }
 
-object GenerateEcore extends WorkflowTaskFactory {
-  type Task = GenerateEcore
+object GenerateEcore {
 
   EMFUtils.IO.registerDefaultFactories
 
@@ -40,31 +39,28 @@ object GenerateEcore extends WorkflowTaskFactory {
   EcorePackage.eINSTANCE.getEClass
   GenModelPackage.eINSTANCE.getGenClass
 
-  def apply(
-    genModelURI: String,
-    generateEdit: Boolean = false,
-    generateEditor: Boolean = false,
-    generateDelegates: Boolean = false,
-    srcPath: String = null)(implicit runner: WorkflowRunner): GenerateEcore = {
-
-    val task = new GenerateEcore(genModelURI, generateEdit, generateEditor, generateDelegates, srcPath)
-    execute(task)
-    task
-  }
 }
 
-class GenerateEcore(
-  val genModelURI: String,
-  val generateEdit: Boolean = false,
-  val generateEditor: Boolean = false,
-  val generateDelegates: Boolean = false,
-  val srcPath: String = null) extends WorkflowTask with Logging {
+class GenerateEcore extends WorkflowTask with Logging {
 
-  val srcPaths: Buffer[String] = {
-    val b = Buffer[String]()
-    if (srcPath != null) b += srcPath
-    b
-  }
+  private var _genModelURI: URI = _
+  protected def genModelURI: URI = _genModelURI
+  protected def genModelURI_=(v: URI) = _genModelURI = v
+  protected def genModelURI_=(v: String) = _genModelURI = URI.createURI(v)
+
+  private var _generateEdit: Boolean = false
+  protected def generateEdit: Boolean = _generateEdit
+  protected def generateEdit_=(v: Boolean) = _generateEdit = v
+
+  private var _generateEditor: Boolean = false
+  protected def generateEditor: Boolean = _generateEditor
+  protected def generateEditor_=(v: Boolean) = _generateEditor = v
+
+  private var _generateDelegates: Boolean = false
+  protected def generateDelegates: Boolean = _generateDelegates
+  protected def generateDelegates_=(v: Boolean) = _generateDelegates = v
+
+  private val srcPaths: Buffer[String] = Buffer[String]()
 
   // execute the companion's object static block
   GenerateEcore
@@ -83,12 +79,14 @@ class GenerateEcore(
     }
   }
 
-  def execute {
+  def doExecute {
     generateEcore
   }
 
+  protected def addSrcSearchPath(path: String) = srcPaths += path
+
   protected def generateEcore {
-    val genModel = EMFUtils.IO.load[GenModel](URI.createURI(genModelURI))
+    val genModel = EMFUtils.IO.load[GenModel](genModelURI)
     genModel.setCanGenerate(true);
     genModel.reconcile();
     //	createGenModelSetup().registerGenModel(genModel);

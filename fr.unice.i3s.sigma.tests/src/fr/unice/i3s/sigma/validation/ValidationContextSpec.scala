@@ -64,7 +64,7 @@ class ValidationContextSpec extends FlatSpec with MustMatchers with LibraryPacka
         self.name != null
       }
 
-      constraint('NotEmptyName) guardedBy {
+      constraint('NotEmptyName) guard {
         self satisfies 'NotNullName
       } check {
         if (!self.name.trim.isEmpty) Passed

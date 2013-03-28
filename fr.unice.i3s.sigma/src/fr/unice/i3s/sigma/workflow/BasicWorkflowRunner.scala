@@ -14,7 +14,9 @@ class BasicWorkflowRunner extends WorkflowRunner with Logging {
         logger.error("Task validation failed", e)
       case Success(_) ⇒
         val stopwatch = System.currentTimeMillis
+
         task.execute
+
         val duration = System.currentTimeMillis - stopwatch
         logger.trace(s"Executed in ${duration}ms")
     }

@@ -19,7 +19,6 @@ import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
 import fr.unice.i3s.sigma.support.AutoContainment
-import fr.unice.i3s.sigma.workflow.WorkflowTaskFactory
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
 import scala.collection.mutable.Buffer
 
@@ -54,12 +53,25 @@ trait Utils {
   }
 }
 
+trait NameMappings {
+
+  val mappings: Map[String, String]
+
+  protected def mapName(feature: GenFeature) = {
+    val key = feature.getGenClass.getName + "." + feature.getName
+    mappings.get(key) match {
+      case Some(name) ⇒ name
+      case None ⇒ feature.getName
+    }
+  }
+}
+
 case class EMFBuilderTemplate(
   pkg: GenPackage,
   pkgName: String,
   builderName: String,
   skipTypes: List[String] = Nil,
-  aliases: Map[String, String] = Map.empty) extends TextTemplate with EMFScalaSupport with Utils with Logging {
+  mappings: Map[String, String] = Map.empty) extends TextTemplate with EMFScalaSupport with Utils with NameMappings with Logging {
 
   val importManager = new ImportManager(pkgName, builderName)
   pkg.getGenModel.setImportManager(importManager)
@@ -94,7 +106,7 @@ case class EMFBuilderTemplate(
       .filter { c ⇒ !(skipTypes contains c.getName) }
       .flatMap(_.getGenFeatures)
       .filter { f ⇒ !f.isDerived && f.isChangeable && (f.isBidirectional implies !f.isContainer) }
-      .groupBy(_.getName)
+      .groupBy { f ⇒ checkName(mapName(f)) }
 
     // are there any two or more methods that have the same names?  
     val overloadHackMax = featuresMap.values.map(_.size).max
@@ -132,7 +144,7 @@ case class EMFBuilderTemplate(
 
   protected def renderFeatureMethods(featureName: String, features: Seq[GenFeature]) {
     // getter
-    !s"def ${checkName(featureName)}(implicit ev: Nothing) = nothing" << endl
+    !s"def ${featureName}(implicit ev: Nothing) = nothing" << endl
 
     // setters
     for ((feature, i) ← features.zipWithIndex) {
@@ -175,7 +187,7 @@ case class EMFBuilderTemplate(
   }
 
   protected def mapClazzName(clazz: GenClass) = {
-    aliases.get(clazz.getName) match {
+    mappings.get(clazz.getName) match {
       case Some(name) ⇒ name
       case None ⇒
         val name = clazz.getImportedInterfaceName
@@ -187,12 +199,14 @@ case class EMFBuilderTemplate(
         } else name
     }
   }
-
 }
 
 // we do not have to worry much about this class since it will
 // get replaced by a Type macro later
-case class EClassScalaSupportTemplate(clazz: GenClass, pkgName: String, clazzSupportName: String) extends TextTemplate with Utils {
+case class EClassScalaSupportTemplate(clazz: GenClass, 
+    pkgName: String, 
+    clazzSupportName: String,
+    mappings: Map[String, String] = Map.empty) extends TextTemplate with NameMappings with Utils {
 
   val importManager = new ImportManager(pkgName, clazzSupportName)
   clazz.getGenModel.setImportManager(importManager)
@@ -221,7 +235,7 @@ case class EClassScalaSupportTemplate(clazz: GenClass, pkgName: String, clazzSup
   }
 
   protected def renderFeatureSupport(feature: GenFeature) {
-    val featureName = feature.getName
+    val featureName = mapName(feature)
     val featureType = typeName(feature)
 
     // getter
@@ -275,59 +289,58 @@ case class EPackageScalaSupportTemplate(pkg: GenPackage, pkgName: String, pkgSup
 
 }
 
-object GenerateEMFScalaSupport extends WorkflowTaskFactory {
-  type Task = GenerateEMFScalaSupport
-  
+object GenerateEMFScalaSupport {
+
   EMFUtils.IO.registerDefaultFactories
 
   // initialize packages
   EcorePackage.eINSTANCE.getEFactoryInstance()
   GenModelPackage.eINSTANCE.getEFactoryInstance()
 
-  def apply(baseDir: String, 
-    genModelURI: String, 
-    pkgName: String, 
-    config: Config = {_ => })(implicit runner: WorkflowRunner): GenerateEMFScalaSupport = {
-    
-    val task = new GenerateEMFScalaSupport(baseDir, genModelURI, pkgName)
-    config(task)
-    execute(task)
-    task
-  }
-
 }
 
-class GenerateEMFScalaSupport(
-  val baseDir: String, 
-  val genModelURI: String, 
-  val pkgName: String) extends WorkflowTask with Logging {
+class GenerateEMFScalaSupport extends WorkflowTask with Logging {
 
-  protected val skipTypes: Buffer[String] = Buffer.empty
-  protected val aliases: collection.mutable.Map[String, String] = collection.mutable.Map.empty
-  
+  private var _baseDir: File = _
+  protected def baseDir: File = _baseDir
+  protected def baseDir_=(v: File) = _baseDir = v
+  protected def baseDir_=(v: String) = _baseDir = new File(v)
+
+  private var _genModelURI: URI = _
+  protected def genModelURI: URI = _genModelURI
+  protected def genModelURI_=(v: URI) = _genModelURI = v
+  protected def genModelURI_=(v: String) = _genModelURI = URI.createURI(v)
+
+  private var _pkgName: String = _
+  protected def pkgName: String = _pkgName
+  protected def pkgName_=(v: String) = _pkgName = v
+
+  private val skipTypes: Buffer[String] = Buffer.empty
+  private val mappings: collection.mutable.Map[String, String] = collection.mutable.Map.empty
+
   // call the companion's object static block
   GenerateEMFScalaSupport
 
-  def execute {
+  def doExecute {
     logger.info("Generating EMF Scala Support for " + genModelURI)
 
-    val genModel = EMFUtils.IO.load[GenModel](URI.createURI(genModelURI))
+    val genModel = EMFUtils.IO.load[GenModel](genModelURI)
 
     val unresolvedPackages = genModel.getUsedGenPackages.filter { _.eIsProxy }
     if (unresolvedPackages.size > 0) {
       logger.warn("Following packages are unresolved after loading - this might likely cause problems:")
       unresolvedPackages.foreach { p ⇒ logger.warn("- " + p) }
     }
-    
+
     for (pkg ← genModel.getGenPackages) {
 
-      val dir = (new File(baseDir) /: pkgName.split('.'))(new File(_, _))
+      val dir = (baseDir /: pkgName.split('.'))(new File(_, _))
       checkDir(dir)
 
       val builderName = pkg.getPackageName.capitalize + "Builder"
       using(new File(dir, builderName + ".scala")) { f ⇒
         logger debug s"Generated builder for $builderName"
-        EMFBuilderTemplate(pkg, pkgName, builderName, skipTypes.toList, aliases.toMap) >> f
+        EMFBuilderTemplate(pkg, pkgName, builderName, skipTypes.toList, mappings.toMap) >> f
       }
 
       val pkgSupportName = pkg.getPackageName.capitalize + "PackageScalaSupport"
@@ -340,13 +353,15 @@ class GenerateEMFScalaSupport(
         val clazzSupportName = clazz.getName + "ScalaSupport"
         using(new File(dir, clazzSupportName + ".scala")) { f ⇒
           logger debug s"Generated class support for ${clazz.getName}"
-          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName) >> f
+          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName, mappings.toMap) >> f
         }
       }
 
     }
   }
-  
+
+  def mapping(from: String, to: String) = mappings += (from -> to)
+
   def skipType(typeName: String) = skipTypes += typeName
 
   protected def checkDir(dir: File) {
