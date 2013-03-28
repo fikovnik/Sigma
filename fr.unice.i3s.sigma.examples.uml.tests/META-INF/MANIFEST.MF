@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: fr.unice.i3s.sigma.examples.uml
+Bundle-SymbolicName: fr.unice.i3s.sigma.examples.uml.tests
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -16,6 +16,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.core.resources;bundle-version="3.7.101",
  org.eclipse.jdt.core;bundle-version="3.7.3",
  org.eclipse.uml2.uml.resources;bundle-version="4.0.2",
- org.eclipse.text;bundle-version="3.5.101"
-Export-Package: fr.unice.i3s.sigma.examples.uml.support,
- fr.unice.i3s.sigma.examples.uml.validation
+ org.eclipse.text;bundle-version="3.5.101",
+ fr.unice.i3s.sigma.examples.uml;bundle-version="1.0.0",
+ org.scalatest;bundle-version="2.0.0",
+ org.junit;bundle-version="4.8.2"

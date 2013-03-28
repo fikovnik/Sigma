@@ -39,7 +39,7 @@ class LoadModel(val modelsURI: Seq[URI])(implicit val _runner: WorkflowRunner) e
 
   def execute {
     _models = modelsURI.par.map { uri ⇒
-      logger.debug("Loading model: " + uri);
+      logger.info("Loading model: " + uri);
       EMFUtils.IO.load[EObject](uri, true)
     }.toList
   }

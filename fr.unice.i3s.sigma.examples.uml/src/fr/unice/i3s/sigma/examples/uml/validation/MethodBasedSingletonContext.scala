@@ -30,46 +30,23 @@ import org.eclipse.uml2.uml.UMLPlugin
 import fr.unice.i3s.sigma.validation.Error
 import scala.collection.mutable.Buffer
 
-class SingletonContext extends ValidationContext[UMLClass] with UmlPackageScalaSupport {
+class MethodBasedSingletonContext extends ValidationContext[UMLClass] with UmlPackageScalaSupport {
 
   guard = self.getAppliedStereotype("TestProfile::singleton") != null
 
-  new Constraint {
-    name = 'DefinesGetInstance
-    check = {
-      getGetInstanceOperation match {
-        case Some(_) ⇒ Passed
-        case None ⇒ {
-          new Error {
-            message = s"Singleton ${self.name} must define a getInstance() operation"
-
-            new Fix {
-              title = "Add a getInstance() operation to ${self.name}"
-              perform = {
-                val op = self.createOwnedOperation("getInstance", null, null)
-                op.setIsStatic(true)
-                op.createReturnResult(null, self)
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  new Constraint {
-    name = 'GetInstanceIsStatic
-    guard = self satisfies 'DefinesGetInstance
-    check = {
-      if (getGetInstanceOperation.get.isStatic) Passed
-      else {
+  def invDefinesGetInstance = {
+    getGetInstanceOperation match {
+      case Some(_) ⇒ Passed
+      case None ⇒ {
         new Error {
-          message = s"The getInstance() operation of singleton ${self.name} must be static"
+          message = s"Singleton ${self.name} must define a getInstance() operation"
 
           new Fix {
-            title = "Change to static"
+            title = "Add a getInstance() operation to ${self.name}"
             perform = {
-              getGetInstanceOperation.get.setIsStatic(true)
+              val op = self.createOwnedOperation("getInstance", null, null)
+              op.setIsStatic(true)
+              op.createReturnResult(null, self)
             }
           }
         }
@@ -77,10 +54,26 @@ class SingletonContext extends ValidationContext[UMLClass] with UmlPackageScalaS
     }
   }
 
-  new Constraint {
-    name = 'GetInstanceReturnsSame
-    guard = self satisfies 'DefinesGetInstance
-    check = Option(getGetInstanceOperation.get.getReturnResult) match {
+  def invGetInstanceIsStatic_Guard = self satisfies 'DefinesGetInstance
+  def invGetInstanceIsStatic = {
+    if (getGetInstanceOperation.get.isStatic) Passed
+    else {
+      new Error {
+        message = s"The getInstance() operation of singleton ${self.name} must be static"
+
+        new Fix {
+          title = "Change to static"
+          perform = {
+            getGetInstanceOperation.get.setIsStatic(true)
+          }
+        }
+      }
+    }
+  }
+
+  def invGetInstanceReturnsSame_Guard = self satisfies 'DefinesGetInstance
+  def invGetInstanceReturnsSame = {
+    Option(getGetInstanceOperation.get.getReturnResult) match {
       case Some(p) if p.getType == self ⇒ Passed
       case _ ⇒ {
         new Error {

@@ -12,33 +12,67 @@ object Cancelled extends ValidationResult {
   override def toString = "Cancelled"
 }
 
-trait Fixable { this: ValidationResult ⇒
-  private[validation] val fixes = Buffer[Fix]()
+sealed trait Fixable { this: ValidationResult ⇒
+  private val _fixes = Buffer[Fix]()
+  def fixes: List[Fix] = _fixes.toList
 
-  def apply(config: (this.type) ⇒ Unit): this.type = {
-    config(this)
-    this
-  }
+  private var _message: String = _
+  def message: String = _message
+  protected def message_=(v: String) = _message = v
 
-  def quickFix(title: String)(action: ⇒ Unit): Fix = {
-    val fix = new Fix(title, { () ⇒ action })
-    fixes += fix
-    fix
+  private class Overloaded1
+  private implicit val overload1 = new Overloaded1
+
+  class Fix {
+    def this(title: String, perform: () ⇒ Unit) = {
+      this()
+      this.title = title
+      this.perform = perform
+    }
+
+    _fixes += this
+
+    private var _title: String = _
+    def title: String = _message
+    protected def title_=(v: String) = _message = v
+
+    private var _perform: () ⇒ Unit = _
+    def perform: () ⇒ Unit = _perform
+    protected def perform_=(v: ⇒ Unit) = _perform = { () ⇒ v }
+    private def perform_=(v: () ⇒ Unit)(implicit o: Overloaded1) = _perform = v
+
+    override def toString = s"Fix `$title` for `${Fixable.this}`"
   }
 }
 
-case class Warning[T](val message: String) extends ValidationResult with Fixable {
+object Warning {
+  def apply(message: String): Warning = new Warning(message)
+}
+
+class Warning extends ValidationResult with Fixable {
+  def this(message: String) = {
+    this()
+    this.message = message
+  }
   override def toString = s"Warning(${fixes.size} fixes): $message"
 }
 
-case class Error(val message: String) extends ValidationResult with Fixable {
+object Error {
+  def apply(message: String): Error = new Error(message)
+}
+
+class Error extends ValidationResult with Fixable {
+  def this(message: String) = {
+    this()
+    this.message = message
+  }
   override def toString = s"Error(${fixes.size} fixes): $message"
 }
 
-class ValidationContextResult(val results: Map[String, ValidationResult]) {
+class ValidationContextResult(val results: Map[Symbol, ValidationResult]) {
   def cancelled: Boolean = results == Map.empty
   def passed: Boolean = results forall { case (_, inv) ⇒ inv == Passed }
-  def violates(constraint: String): Boolean =
+  def violates(constraint: Symbol): Boolean =
     results.get(constraint).map(_ != Passed) getOrElse (false)
 
   override def toString =
