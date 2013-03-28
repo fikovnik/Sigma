@@ -53,11 +53,11 @@ object GenerateScalaSupport extends WorkflowApp {
   //  val model = LoadModel(ecoreModel).model[GenModel]
   //  ValidateModel(model)
 
-  new CleanDirectory {
+  !new CleanDirectory {
     path = srcGen
   }
 
-  new GenerateEMFScalaSupport {
+  !new GenerateEMFScalaSupport {
     baseDir = srcGen
     genModelURI = ecoreModel
     pkgName = targetPackage

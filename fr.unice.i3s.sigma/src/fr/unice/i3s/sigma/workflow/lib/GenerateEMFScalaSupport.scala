@@ -106,7 +106,7 @@ case class EMFBuilderTemplate(
       .filter { c ⇒ !(skipTypes contains c.getName) }
       .flatMap(_.getGenFeatures)
       .filter { f ⇒ !f.isDerived && f.isChangeable && (f.isBidirectional implies !f.isContainer) }
-      .groupBy { f ⇒ checkName(mapName(f)) }
+      .groupBy { f ⇒ mapName(f) }
 
     // are there any two or more methods that have the same names?  
     val overloadHackMax = featuresMap.values.map(_.size).max
@@ -144,7 +144,7 @@ case class EMFBuilderTemplate(
 
   protected def renderFeatureMethods(featureName: String, features: Seq[GenFeature]) {
     // getter
-    !s"def ${featureName}(implicit ev: Nothing) = nothing" << endl
+    !s"def ${checkName(featureName)}(implicit ev: Nothing) = nothing" << endl
 
     // setters
     for ((feature, i) ← features.zipWithIndex) {

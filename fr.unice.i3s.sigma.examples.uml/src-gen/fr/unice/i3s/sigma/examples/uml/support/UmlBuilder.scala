@@ -1407,6 +1407,11 @@ object UmlAssignments extends OverloadHack {
     (target: T) ⇒ target.setIsIndirectlyInstantiated(value)
   
   
+  def static(implicit ev: Nothing) = nothing
+  def static_=[T <: Feature](value: Boolean) =
+    (target: T) ⇒ target.setIsStatic(value)
+  
+  
   def exceptionType(implicit ev: Nothing) = nothing
   def exceptionType_=[T <: ExceptionHandler](value: EList[Classifier]) =
     (target: T) ⇒ target.getExceptionTypes.addAll(value)
@@ -3523,11 +3528,6 @@ object UmlAssignments extends OverloadHack {
   def isDestroyOwnedObjects(implicit ev: Nothing) = nothing
   def isDestroyOwnedObjects_=[T <: DestroyObjectAction](value: Boolean) =
     (target: T) ⇒ target.setIsDestroyOwnedObjects(value)
-  
-  
-  def isStatic(implicit ev: Nothing) = nothing
-  def isStatic_=[T <: Feature](value: Boolean) =
-    (target: T) ⇒ target.setIsStatic(value)
   
   
   def unmarshallType(implicit ev: Nothing) = nothing
