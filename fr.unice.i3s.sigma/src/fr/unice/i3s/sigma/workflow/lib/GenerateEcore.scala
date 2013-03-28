@@ -72,8 +72,8 @@ class GenerateEcore extends WorkflowTask with Logging {
     else {
       srcPaths collectFirst {
         case p if {
-          val createURI = URI.createURI(p + "/" + from.replace('.', '/') + "Delegate.scala");
-          URIConverter.INSTANCE.exists(createURI, null)
+          val uri = URI.createURI(p + "/" + from.replace('.', '/') + "Delegate.scala");
+          URIConverter.INSTANCE.exists(uri, null)
         } ⇒ from + "Delegate"
       }
     }
@@ -83,7 +83,7 @@ class GenerateEcore extends WorkflowTask with Logging {
     generateEcore
   }
 
-  protected def addSrcSearchPath(path: String) = srcPaths += path
+  protected def addSrcPath(path: String) = srcPaths += path
 
   protected def generateEcore {
     val genModel = EMFUtils.IO.load[GenModel](genModelURI)
@@ -127,61 +127,47 @@ class GenerateEcore extends WorkflowTask with Logging {
     class AdapterFactory extends GenModelGeneratorAdapterFactory {
 
       override def createGenClassAdapter = {
-        if (genClassGeneratorAdapter == null) {
-          genClassGeneratorAdapter = new GenClassGeneratorAdapter(this) {
-            override def createImportManager(packageName: String, className: String) = {
-              importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
-              importManager.addMasterImport(packageName, className)
-              if (generatingObject != null)
-                generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
-            }
+        new GenClassGeneratorAdapter(this) {
+          override def createImportManager(packageName: String, className: String) = {
+            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager.addMasterImport(packageName, className)
+            if (generatingObject != null)
+              generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
           }
         }
-        genClassGeneratorAdapter
       }
 
       override def createGenEnumAdapter = {
-        if (genEnumGeneratorAdapter == null) {
-          genEnumGeneratorAdapter = new GenEnumGeneratorAdapter(this) {
-            override def createImportManager(packageName: String, className: String) = {
-              importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
-              importManager.addMasterImport(packageName, className)
-              if (generatingObject != null)
-                generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
-            }
+        new GenEnumGeneratorAdapter(this) {
+          override def createImportManager(packageName: String, className: String) = {
+            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager.addMasterImport(packageName, className)
+            if (generatingObject != null)
+              generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
           }
         }
-        genEnumGeneratorAdapter
       }
 
       override def createGenModelAdapter = {
-        if (genModelGeneratorAdapter == null) {
-          genModelGeneratorAdapter = new GenModelGeneratorAdapter(this) {
-            override def createImportManager(packageName: String, className: String) = {
-              importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
-              importManager.addMasterImport(packageName, className)
-              if (generatingObject != null)
-                generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
-            }
+        new GenModelGeneratorAdapter(this) {
+          override def createImportManager(packageName: String, className: String) = {
+            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager.addMasterImport(packageName, className)
+            if (generatingObject != null)
+              generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
           }
         }
-        genModelGeneratorAdapter
-
       }
 
       override def createGenPackageAdapter = {
-        if (genPackageGeneratorAdapter == null) {
-          genPackageGeneratorAdapter = new GenPackageGeneratorAdapter(this) {
-            override def createImportManager(packageName: String, className: String) = {
-              importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
-              importManager.addMasterImport(packageName, className)
-              if (generatingObject != null)
-                generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
-            }
+        new GenPackageGeneratorAdapter(this) {
+          override def createImportManager(packageName: String, className: String) = {
+            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager.addMasterImport(packageName, className)
+            if (generatingObject != null)
+              generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
           }
         }
-        genPackageGeneratorAdapter
-
       }
     }
 
@@ -189,14 +175,15 @@ class GenerateEcore extends WorkflowTask with Logging {
   }
 
   class ImportManagerHack(compilationUnitPackage: String, val mapper: String ⇒ Option[String]) extends ImportManager(compilationUnitPackage) {
-    override def getImportedName(qualifiedName: String, autoImport: Boolean) =
+    override def getImportedName(qualifiedName: String, autoImport: Boolean) = {
       mapper(qualifiedName) match {
         case Some(mapped) ⇒ {
-          // TODO: log
+          logger.debug(s"mapping $qualifiedName to $mapped")
           super.getImportedName(mapped, autoImport)
         }
         case None ⇒ super.getImportedName(qualifiedName, autoImport)
       }
+    }
   }
 
 }
