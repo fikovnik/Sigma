@@ -45,7 +45,7 @@ class MethodBasedSingletonContext extends ValidationContext[UMLClass] with UmlPa
             title = "Add a getInstance() operation to ${self.name}"
             perform = {
               val op = self.createOwnedOperation("getInstance", null, null)
-              op.setIsStatic(true)
+              op.static = true
               op.createReturnResult(null, self)
             }
           }
@@ -56,7 +56,7 @@ class MethodBasedSingletonContext extends ValidationContext[UMLClass] with UmlPa
 
   def invGetInstanceIsStatic_Guard = self satisfies 'DefinesGetInstance
   def invGetInstanceIsStatic = {
-    if (getGetInstanceOperation.get.isStatic) Passed
+    if (getGetInstanceOperation.get.static) Passed
     else {
       new Error {
         message = s"The getInstance() operation of singleton ${self.name} must be static"
@@ -64,7 +64,7 @@ class MethodBasedSingletonContext extends ValidationContext[UMLClass] with UmlPa
         new Fix {
           title = "Change to static"
           perform = {
-            getGetInstanceOperation.get.setIsStatic(true)
+            getGetInstanceOperation.get.static = true
           }
         }
       }
@@ -84,7 +84,7 @@ class MethodBasedSingletonContext extends ValidationContext[UMLClass] with UmlPa
             perform = {
               val op = getGetInstanceOperation.get
               Option(op.getReturnResult) match {
-                case Some(p) ⇒ p.setType(self)
+                case Some(p) ⇒ p.`type` = self
                 case None ⇒ op.createReturnResult(null, self)
               }
             }

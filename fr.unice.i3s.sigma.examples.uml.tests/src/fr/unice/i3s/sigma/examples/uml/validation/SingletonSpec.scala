@@ -61,3 +61,6 @@ class SingletonSpec extends AbstractSingletonSpec[SingletonContext]
 
 @RunWith(classOf[JUnitRunner])
 class MethodBasedSingletonSpec extends AbstractSingletonSpec[MethodBasedSingletonContext]
+
+@RunWith(classOf[JUnitRunner])
+class BuilderBasedSingletonSpec extends AbstractSingletonSpec[BuilderBasedSingletonContext]

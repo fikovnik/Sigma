@@ -124,16 +124,16 @@ class ValidationContext[T >: Null: ClassTag](val name: String) extends SelfGuard
   // constraint builder
 
   trait ConstraintBuilder {
-    def guardedBy(thunk: ⇒ Boolean): ConstraintBuilder
+    def guard(thunk: ⇒ Boolean): ConstraintBuilder
     def check(thunk: ⇒ ValidationResult): Constraint
     def check(thunk: ⇒ Boolean)(implicit o: Overloaded1): Constraint
   }
 
   private class ConstraintBuilderImpl(val name: Symbol) extends ConstraintBuilder {
-    private var guard: Guard = NoGuard
+    private var _guard: Guard = NoGuard
 
-    def guardedBy(thunk: ⇒ Boolean) = {
-      guard = () ⇒ thunk
+    def guard(thunk: ⇒ Boolean) = {
+      _guard = () ⇒ thunk
       this
     }
 
@@ -141,7 +141,7 @@ class ValidationContext[T >: Null: ClassTag](val name: String) extends SelfGuard
     def check(thunk: ⇒ Boolean)(implicit o: Overloaded1) = build(() ⇒ toValidationResult(name, thunk))
 
     private def build(check: Check) = {
-      new Constraint(name, guard, check) {}
+      new Constraint(name, _guard, check) {}
     }
   }
 
