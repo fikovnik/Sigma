@@ -111,10 +111,16 @@ case class EMFBuilderTemplate(
     // are there any two or more methods that have the same names?  
     val overloadHackMax = featuresMap.values.map(_.size).max
 
-    !s"object ${pkg.getPackageName.capitalize}Assignments"
-    if (overloadHackMax > 1) !s" extends OverloadHack"
+    !s"object ${pkg.getPackageName.capitalize}Assignments" curlyIndent {
+      for (i ← 1 until overloadHackMax) {
+        !s"class Overloaded$i" << endl
+        !s"implicit val overload$i = new Overloaded$i" << endl
+        !endl
+      }
 
-    out curlyIndent {
+      !endl
+      !endl
+
       !"""private def nothing: Nothing = sys.error("this method is not meant to be called")""" << endl
       !endl
 
@@ -122,21 +128,6 @@ case class EMFBuilderTemplate(
         renderFeatureMethods(featureName, features)
         !endl
       }
-    }
-
-    if (overloadHackMax > 1) {
-      !endl
-      !endl
-
-      !"trait OverloadHack" curlyIndent {
-        for (i ← 1 until overloadHackMax) {
-          !s"class Overloaded$i" << endl
-          !s"implicit val overload$i = new Overloaded$i" << endl
-          !endl
-        }
-      }
-
-      !endl
     }
 
     imports << importManager.computeSortedImports() << endl << endl
@@ -203,10 +194,10 @@ case class EMFBuilderTemplate(
 
 // we do not have to worry much about this class since it will
 // get replaced by a Type macro later
-case class EClassScalaSupportTemplate(clazz: GenClass, 
-    pkgName: String, 
-    clazzSupportName: String,
-    mappings: Map[String, String] = Map.empty) extends TextTemplate with NameMappings with Utils {
+case class EClassScalaSupportTemplate(clazz: GenClass,
+  pkgName: String,
+  clazzSupportName: String,
+  mappings: Map[String, String] = Map.empty) extends TextTemplate with NameMappings with Utils {
 
   val importManager = new ImportManager(pkgName, clazzSupportName)
   clazz.getGenModel.setImportManager(importManager)
@@ -311,15 +302,15 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
   protected def genModelURI_=(v: URI) = _genModelURI = v
   protected def genModelURI_=(v: String) = _genModelURI = URI.createURI(v)
 
-  private var _packageNameMapping: String => String = _
-  protected def packageNameMapping: String => String = _packageNameMapping
-  protected def packageNameMapping_=(v: String => String) = _packageNameMapping = v
-  
+  private var _packageNameMapping: String ⇒ String = _
+  protected def packageNameMapping: String ⇒ String = _packageNameMapping
+  protected def packageNameMapping_=(v: String ⇒ String) = _packageNameMapping = v
+
   private var _packageName: String = _
   protected def packageName: String = _packageName
   protected def packageName_=(v: String) = {
     _packageName = v
-    _packageNameMapping = {_ => _packageName }
+    _packageNameMapping = { _ ⇒ _packageName }
   }
 
   private val skipTypes: Buffer[String] = Buffer.empty
