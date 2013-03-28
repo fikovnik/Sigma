@@ -9,6 +9,8 @@ title: Sigma Project
 
 While it started as a quick fix to a problems faced in [OCL](http://en.wikipedia.org/wiki/Object_Constraint_Language) (see the [OCL'12](http://st.inf.tu-dresden.de/OCL2012/preproceedings/09.pdf) paper for more details) it focuses towars much more ambitions goal...
 
+Sigma is used for the implementation of the [ACTRESS](http://fikovnik.net/Actress) project.
+
 _The documentation is under construction_
 
 ## Introduction ##
@@ -58,3 +60,27 @@ Scala is a statically typed object-oriented and functional programming language 
 It includes features such as flexible syntax, higher-order functions, implicit definitions and mixin-class compositions.
 Together with the seamless integration with EMF, this allows one to realize type-safe internal DSLs that are consistent and have similar features found in existing model manipulation DSLs.
 Moreover, we can leverage the state-of-the-art tool support provided by the major tool vendors as well as from the many existing libraries available in the Java and Scala eco-systems.
+
+## Publications ##
+
+* Filip Křikava, Philippe Collet. "[On the Use of an Internal DSL for Enriching EMF Models](http://st.inf.tu-dresden.de/OCL2012/preproceedings/09.pdf)" in Proceedings of the International [Workshop on OCL and Textual Modelling 2012](http://st.inf.tu-dresden.de/OCL2012/) (OCL), Innsbruck, September 2012. 
+
+## Presentation ##
+
+* Filip Křikava. [Enriching EMF Models with Scala (quick overview)](http://www.slideshare.net/krikava/enriching-emf-models-with-scala), EclipseCon'12 Europe Modeling Symposium, October 2012
+
+* Filip Křikava, Philippe Collet. [On the Use of an Internal DSL for Enriching EMF Models](http://www.slideshare.net/krikava/krikava-ocl12), OCL'12 Workshop, September 2012
+
+## Acknowledgement ##
+
+This work is partly funded by the [ANR SALTY project](https://salty.unice.fr/) under contract ANR-09-SEGI-012.
+
+## Contact ##
+
+SIGMA is being developed by the [MODALIS](http://modalis.polytech.unice.fr/) team of [I3S Laboratory](http://www.i3s.unice.fr/I3S/).
+
+For further information, please contact:
+
+* [Philippe Collet](http://www.i3s.unice.fr/~collet/)
+* [Filip Křikava](http://fikovnik.net/canape/index.html)
+* or visit [SIGMA](https://github.com/fikovnik/Sigma) github project
