@@ -1,14 +1,31 @@
-title: "Sigma Documentation"
-description: "Documentation for the Sigma Project"
+title: "Sigma"
+description: "The Sigma Model Manipulation DSLs"
+githubProject: "https://github.com/fikovnik/Sigma"
 
 pygments: true
 
 docs:
   - 
-    title: Delegates
-    url: delegates.html
-    desc: The core part of the Sigma framework is in the ability to enrich EMF models by delegating the computation of derived features, operation bodies and validation of structural constraints.
+    title: Model Navigation and Modification
+    url: model-navigation-and-modification.html
+    desc: The essential support provides a common ground that facilitates model navigation and modification operations.
+  - 
+    title: Model Validation
+    url: model-validation.html
+    desc: Model Validation support.
+  - 
+    title: Model to Model Transformation
+    url: model-to-model-transformation.html
+    desc: Model to Model Transformation support in Sigma.
   - 
     title: Model to Text Transformation
-    url: mtt.html
+    url: model-to-text-transformation.html
     desc: Model to Text Transformation support in Sigma.
+  - 
+    title: Model Workflow Orchestration
+    url: model-workflow-orchestration.html
+    desc: Model Workflow Orchestration support in Sigma.
+  - 
+    title: Model Delegates
+    url: model-delegates.html
+    desc: Enrich EMF models by delegating the computation of derived features, operation bodies and validation of structural constraints.

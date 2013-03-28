@@ -3,6 +3,8 @@ layout: docs
 title: Delegates
 ---
 
+_Following documentation is outdated. Sigma now support instance delegates that are far easier to use. The documentation is coming soon._
+
 The core part of the Sigma framework is in the ability to enrich EMF models by delegating the computation of derived features, operation bodies and validation of structural constraints. While EMF supports extending the generated model code using Java, it actually breaks the [Generation Gap Pattern](http://www.research.ibm.com/designpatterns/pubs/gg.html). Instead, the Sigma framework allows to delegate the computation to some external methods that can be written in any [JVM based language TODO]() and the model contains only a reference where to find such methods. 
 
 * For a 5 minutes introduction have a look at [Enriching EMF Models with Scala](http://www.slideshare.net/krikava/enriching-emf-models-with-scala) - a quick overview of Sigma Core given at [EclipseCon'12 Europe Modeling Symposium](http://eclipsesource.com/blogs/2012/10/22/modeling-symposium-eclipsecon-europe-2012/)
