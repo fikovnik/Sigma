@@ -332,6 +332,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
     logger.info("Generating EMF Scala Support for " + genModelURI)
 
     val genModel = EMFUtils.IO.load[GenModel](genModelURI)
+    genModel.reconcile()
 
     val unresolvedPackages = genModel.getUsedGenPackages.filter { _.eIsProxy }
     if (unresolvedPackages.size > 0) {
