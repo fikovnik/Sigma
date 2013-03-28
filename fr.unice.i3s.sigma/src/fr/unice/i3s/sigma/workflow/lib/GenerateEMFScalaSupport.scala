@@ -311,9 +311,16 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
   protected def genModelURI_=(v: URI) = _genModelURI = v
   protected def genModelURI_=(v: String) = _genModelURI = URI.createURI(v)
 
-  private var _pkgName: String = _
-  protected def pkgName: String = _pkgName
-  protected def pkgName_=(v: String) = _pkgName = v
+  private var _packageNameMapping: String => String = _
+  protected def packageNameMapping: String => String = _packageNameMapping
+  protected def packageNameMapping_=(v: String => String) = _packageNameMapping = v
+  
+  private var _packageName: String = _
+  protected def packageName: String = _packageName
+  protected def packageName_=(v: String) = {
+    _packageName = v
+    _packageNameMapping = {_ => _packageName }
+  }
 
   private val skipTypes: Buffer[String] = Buffer.empty
   private val mappings: collection.mutable.Map[String, String] = collection.mutable.Map.empty
@@ -334,6 +341,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
 
     for (pkg ← genModel.getGenPackages) {
 
+      val pkgName = packageNameMapping(pkg.getBasePackage + "." + pkg.getPackageName)
       val dir = (baseDir /: pkgName.split('.'))(new File(_, _))
       checkDir(dir)
 

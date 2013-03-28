@@ -60,7 +60,7 @@ object GenerateScalaSupport extends WorkflowApp {
   !new GenerateEMFScalaSupport {
     baseDir = srcGen
     genModelURI = ecoreModel
-    pkgName = targetPackage
+    packageName = targetPackage
 
     // FIXME: there is a problem with EList[scala.boolean] and EList[java.lang.Boolean] 
     skipType("DurationObservation")

@@ -28,7 +28,7 @@ object GenerateEcoreSupport extends WorkflowApp {
   !new GenerateEMFScalaSupport {
     baseDir = srcGen
     genModelURI = ecoreModel
-    pkgName = targetPackage
+    packageName = targetPackage
 
     skipType("EStringToStringMapEntry")
   }
