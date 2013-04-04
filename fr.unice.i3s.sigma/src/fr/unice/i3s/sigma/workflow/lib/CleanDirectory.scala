@@ -12,14 +12,17 @@ class CleanDirectory extends WorkflowTask with Logging {
   protected def path: File = _path
   protected def path_=(v: File) = _path = v
   protected def path_=(v: String) = _path = new File(v)
+  protected def setPath(v: String) = path = v
 
   private var _deleteParentDir: Boolean = _
   protected def deleteParentDir: Boolean = _deleteParentDir
   protected def deleteParentDir_=(v: Boolean) = _deleteParentDir = v
+  protected def setDeleteParentDir(v: Boolean) = deleteParentDir = v
 
   private var _stopOnError: Boolean = _
   protected def stopOnError: Boolean = _stopOnError
   protected def stopOnError_=(v: Boolean) = _stopOnError = v
+  protected def setStopOnError(v: Boolean) = stopOnError = v
 
   def doExecute {
     if (path.exists) {

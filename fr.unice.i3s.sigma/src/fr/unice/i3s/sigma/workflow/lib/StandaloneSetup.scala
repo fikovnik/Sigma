@@ -45,6 +45,7 @@ class StandaloneSetup extends WorkflowTask with Logging {
   protected def platformPath: File = _platformPath
   protected def platformPath_=(v: File) = _platformPath = v
   protected def platformPath_=(v: String) = _platformPath = new File(v)
+  protected def setPlatformPath(v: String) = platformPath = v
 
   private var _scanClassPath: Boolean = true
   protected def scanClassPath: Boolean = _scanClassPath

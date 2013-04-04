@@ -47,6 +47,7 @@ class GenerateEcore extends WorkflowTask with Logging {
   protected def genModelURI: URI = _genModelURI
   protected def genModelURI_=(v: URI) = _genModelURI = v
   protected def genModelURI_=(v: String) = _genModelURI = URI.createURI(v)
+  protected def setGenModelURI(v: String) = genModelURI = v
 
   private var _generateEdit: Boolean = false
   protected def generateEdit: Boolean = _generateEdit
@@ -60,21 +61,30 @@ class GenerateEcore extends WorkflowTask with Logging {
   protected def generateDelegates: Boolean = _generateDelegates
   protected def generateDelegates_=(v: Boolean) = _generateDelegates = v
 
+  private var _instanceDelegateNameMapper: (String, String) ⇒ Option[String] = defaultInstanceDelegateNameMapper
+  protected def instanceDelegateNameMapper: (String, String) ⇒ Option[String] = _instanceDelegateNameMapper
+  protected def instanceDelegateNameMapper_=(v: (String, String) ⇒ Option[String]) = _instanceDelegateNameMapper = v
+  protected def setInstanceDelegateNameMapper(v: (String, String) ⇒ Option[String]) = instanceDelegateNameMapper = v
+
   private val srcPaths: Buffer[String] = Buffer[String]()
 
   // execute the companion's object static block
   GenerateEcore
 
-  def delegateClassNameMapper(from: String): Option[String] = {
+  protected def defaultInstanceDelegateNameMapper(base: String, from: String): Option[String] = {
+    val uri = URI.createURI(base + "/" + from.replace('.', '/') + "Delegate.scala");
+    if (URIConverter.INSTANCE.exists(uri, null)) Some(from + "Delegate")
+    else None
+  }
+
+  protected def instanceDelegateMapper(from: String): Option[String] = {
     require(from != null)
 
     if (from.startsWith("org.eclipse.emf.ecore")) None
     else {
       srcPaths collectFirst {
-        case p if {
-          val uri = URI.createURI(p + "/" + from.replace('.', '/') + "Delegate.scala");
-          URIConverter.INSTANCE.exists(uri, null)
-        } ⇒ from + "Delegate"
+        case p if instanceDelegateNameMapper(p, from).isDefined ⇒
+          instanceDelegateNameMapper(p, from).get
       }
     }
   }
@@ -129,7 +139,7 @@ class GenerateEcore extends WorkflowTask with Logging {
       override def createGenClassAdapter = {
         new GenClassGeneratorAdapter(this) {
           override def createImportManager(packageName: String, className: String) = {
-            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager = new ImportManagerHack(packageName, instanceDelegateMapper _)
             importManager.addMasterImport(packageName, className)
             if (generatingObject != null)
               generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
@@ -140,7 +150,7 @@ class GenerateEcore extends WorkflowTask with Logging {
       override def createGenEnumAdapter = {
         new GenEnumGeneratorAdapter(this) {
           override def createImportManager(packageName: String, className: String) = {
-            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager = new ImportManagerHack(packageName, instanceDelegateMapper _)
             importManager.addMasterImport(packageName, className)
             if (generatingObject != null)
               generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
@@ -151,7 +161,7 @@ class GenerateEcore extends WorkflowTask with Logging {
       override def createGenModelAdapter = {
         new GenModelGeneratorAdapter(this) {
           override def createImportManager(packageName: String, className: String) = {
-            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager = new ImportManagerHack(packageName, instanceDelegateMapper _)
             importManager.addMasterImport(packageName, className)
             if (generatingObject != null)
               generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
@@ -162,7 +172,7 @@ class GenerateEcore extends WorkflowTask with Logging {
       override def createGenPackageAdapter = {
         new GenPackageGeneratorAdapter(this) {
           override def createImportManager(packageName: String, className: String) = {
-            importManager = new ImportManagerHack(packageName, delegateClassNameMapper _)
+            importManager = new ImportManagerHack(packageName, instanceDelegateMapper _)
             importManager.addMasterImport(packageName, className)
             if (generatingObject != null)
               generatingObject.asInstanceOf[GenBase].getGenModel().setImportManager(importManager);
