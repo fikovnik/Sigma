@@ -20,7 +20,7 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  org.apache.commons.lang3;bundle-version="3.1.0",
  com.typesafe.scalalogging-log4j_2.10;bundle-version="1.0.1";visibility:=reexport,
  org.apache.commons.log4j-api;bundle-version="2.0.0";visibility:=reexport,
- org.apache.commons.log4j-core;bundle-version="2.0.0";resolution:=optional
+ org.apache.commons.log4j-core;bundle-version="2.0.0"
 Export-Package: fr.unice.i3s.sigma,
  fr.unice.i3s.sigma.java.workflow,
  fr.unice.i3s.sigma.m2t,
