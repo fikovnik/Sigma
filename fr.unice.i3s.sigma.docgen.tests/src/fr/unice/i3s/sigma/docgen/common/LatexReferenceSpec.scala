@@ -31,7 +31,6 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
     val ref = new LatexReference with TextTemplateTesting
 
     ref.genClassReference(clazz)
-    println(ref.partial)
 
     ref.partial must be ===
       """|\subsection*{Class: MyClass}
@@ -72,7 +71,6 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
     val ref = new LatexReference with TextTemplateTesting
 
     ref.genClassReference(clazz)
-    println(ref.partial)
 
     ref.partial must be ===
       """|\subsection*{Class: MyClass}
