@@ -18,6 +18,7 @@ trait EcoreDocUtils extends EcorePackageScalaSupport {
   protected[common] def multiplicity(typedElement: ETypedElement): Option[String] = {
     val multi = (typedElement.lowerBound, typedElement.upperBound) match {
       case (-1, -1) ⇒ Some("*")
+      case (0, -1) ⇒ Some("0..*")
       case (1, -1) ⇒ Some("1..*")
       case (1, 1) ⇒ None
       case (-1, 1) ⇒ Some("0..1")
@@ -44,10 +45,7 @@ trait EcoreDocUtils extends EcorePackageScalaSupport {
   }
 
   protected[common] def documentation(elem: EModelElement) =
-    Option(EcoreUtil.getDocumentation(elem)) match {
-      case Some(doc) ⇒ doc
-      case None ⇒ ""
-    }
+    Option(EcoreUtil.getDocumentation(elem))
 
   protected[common] def typeName(typedElement: ETypedElement) =
     s"${typedElement.eType.name}"

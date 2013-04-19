@@ -42,7 +42,23 @@ class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScal
 
       // FIXME: use type unions [T: (EPackage |∨| EClassifier)#λ]
       rootElement match {
-        case e: EClass ⇒ renderClass(e, "white")
+        case e: EClass ⇒ {
+          renderClass(e, "lightgrey")
+
+          // render generalization
+          for (superType ← e.eSuperTypes) {
+            renderClass(superType, "white", attributes = false, operations = false)
+            renderGeneralization(e, superType)
+            !endl
+          }
+
+          // render references
+          for (ref ← e.eReferences) {
+            renderClass(ref.eReferenceType, "white", attributes = false, operations = false)
+            renderReference(e, ref)
+            !endl
+          }
+        }
         case e: EPackage ⇒ renderPackage(e)
         case e ⇒ error("rootElement must be either EClass or EPackage not " + e)
       }
@@ -148,7 +164,11 @@ class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScal
     }
   }
 
-  protected[common] def renderClass(clazz: EClass, bgColor: String) {
+  protected[common] def renderClass(clazz: EClass,
+    bgColor: String,
+    attributes: Boolean = true,
+    operations: Boolean = true) {
+
     val name =
       if (clazz.isAbstract) s"<I>${clazz.name}</I>" else clazz.name
 
@@ -167,9 +187,7 @@ class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScal
         """
 
         // generate attributes
-        if (attrs.isEmpty) {
-          !"<!-- No attributes -->"
-        } else {
+        if (attributes && !attrs.isEmpty) {
           !"""
           <!-- Begin attributes -->
           <TR><TD>
@@ -184,6 +202,25 @@ class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScal
           </TABLE>
           </TD></TR>
           <!-- End attributes -->
+          """
+        }
+
+        // generate operations
+        if (operations && !clazz.eOperations.isEmpty) {
+          !"""
+          <!-- Begin operations -->
+          <TR><TD>
+          <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+          """
+
+          for (o ← clazz.eOperations) {
+            !s"""<TR><TD align="left">${operationLabelWithType(o)}</TD></TR>"""
+          }
+
+          !"""
+          </TABLE>
+          </TD></TR>
+          <!-- End operations -->
           """
         }
         !"</TABLE>"
@@ -203,13 +240,17 @@ class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScal
   }
 
   protected[common] def renderReference(clazz: EClass, ref: EReference) {
+    val multi = multiplicity(ref) match {
+      case Some(m) ⇒ m
+      case None ⇒ "1"
+    }
     !s"${fqcn(clazz)}:port -> ${fqcn(ref.eReferenceType)}:port" squareIndent {
       !s"""
       arrowhead = "${if (ref.eOpposite == null) "vee" else "none"}" 
       arrowtail = "${if (ref.isContainment) "diamond" else "none"}" 
       taillabel = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD></TD></TR></TABLE>>
       label = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD>- ${ref.name}</TD></TR></TABLE>>
-      headlabel = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD>${multiplicity(ref)}</TD></TR></TABLE>>
+      headlabel = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD>${multi}</TD></TR></TABLE>>
       minlen = "3"
       labeldistance = "3.0"
       labelangle = "20.0" 

@@ -24,9 +24,9 @@ object LatexReference {
 
     private lazy val idx = Sections.indexOf(this)
 
-    def apply(name: String, label: String) =
+    def apply(name: String, label: String, star: Boolean = false) =
       s"""
-      \\$cmd{$name}
+      \\$cmd${if (star) "*" else ""}{$name}
       \\label{$labelPrefix:$label}
       """
 
@@ -88,26 +88,27 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
   }
 
   protected[common] def genClassReference(clazz: EClass) {
-    !topSection.next.next("Class: " + clazz.name, "EClassRef" + fqcn(clazz, sep = "_"))
+    !topSection.next.next("Class: " + clazz.name, "EClassRef" + fqcn(clazz, sep = "_"), star = true)
 
     genClassDiagram(clazz)
 
+    !"\\paragraph*{Documentation}"
     !endl
-    !documentation(clazz)
+    !documentation(clazz).getOrElse("")
     !endl
 
     if (clazz.eStructuralFeatures.nonEmpty) {
       !"\\paragraph*{Attributes}"
       begin("center") {
-        !"\\rowcolors{2}{white}{lightgray}"
-        begin("tabularx", "{\\textwidth}", "{ l X }") {
-          !s"""
-          \\toprule
-          \\textbf{Attribute} & \\textbf{Description} \\\\ \\midrule 
-          """
+        begin("tabularx", "{\\textwidth}", "{ X }") {
+          !"\\toprule"
 
           for (f ← clazz.eStructuralFeatures.sortBy(_.name)) {
-            !s"\\small ${featureLabelWithType(f)} & \\small ${documentation(f)} \\\\ \\hline"
+            !s"\\cellcolor[gray]{0.9} \\ttfamily ${featureLabelWithType(f)} \\\\"
+            documentation(f) match {
+              case Some(doc) ⇒ !s"\\small \\hspace*{5mm} $doc \\\\"
+              case None ⇒
+            }
           }
 
           !"\\bottomrule"
@@ -118,15 +119,15 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
     if (clazz.eOperations.nonEmpty) {
       !"\\paragraph*{Operations}"
       begin("center") {
-        !"\\rowcolors{2}{white}{lightgray}"
-        begin("tabularx", "{\\textwidth}", "{ l X }") {
-          !s"""
-          \\toprule
-          \\textbf{Operation} & \\textbf{Description} \\\\ \\midrule
-          """
+        begin("tabularx", "{\\textwidth}", "{ X }") {
+          !"\\toprule"
 
           for (o ← clazz.eOperations.sortBy(_.name)) {
-            !s"\\small ${operationLabelWithType(o)} & \\small ${documentation(o)} \\\\ \\hline"
+            !s"\\cellcolor[gray]{0.9} \\small \\ttfamily ${operationLabelWithType(o)} \\\\"
+            documentation(o) match {
+              case Some(doc) ⇒ !s"\\small \\hspace*{5mm} $doc \\\\"
+              case None ⇒
+            }
           }
 
           !"\\bottomrule"
@@ -144,11 +145,11 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
   }
 
   protected def genPackageRefernce(pkg: EPackage) {
-    !topSection.next("Package: " + fqpn(pkg, sep = "."), "EPackageRef" + fqpn(pkg, sep = "_"))
+    !topSection.next("Package: " + fqpn(pkg, sep = "."), "EPackageRef" + fqpn(pkg, sep = "_"), star = true)
 
     genClassDiagram(pkg)
 
-    !documentation(pkg)
+    !documentation(pkg).getOrElse("")
 
     pkg.eClassifiers.collect { case e: EClass ⇒ e }.foreach(genClassReference)
 
@@ -158,28 +159,8 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
 
   protected def genModelReference {
 
-    !"""
-	\makeatletter
-	\newbox\image@box%
-	\newdimen\image@width%
-	\newcommand\IncludeGraphics[2][\@empty]{%
-	  \setbox\image@box=\hbox{\includegraphics[#1]{#2}}%
-	  \image@width\wd\image@box%
-	  \ifdim \image@width>\linewidth%
-	    \setbox\image@box=\hbox{\includegraphics[width=\linewidth]{#2}}%
-	    \box\image@box%
-	  \else%
-	    \includegraphics[#1]{#2}%
-	  \fi%
-	}
-	\makeatother
-	"""
-
-    !s"""
-    \\definecolor{lightgray}{RGB}{247,247,247}
-    """
-
     !topSection(topSectionName, topSectionLabel)
+    !"\\clearpage"
     genPackageRefernce(rootPackage)
 
   }
@@ -199,6 +180,23 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
 
     begin("document") {
       !"""
+	  \makeatletter
+	  \newbox\image@box%
+	  \newdimen\image@width%
+	  \newcommand\IncludeGraphics[2][\@empty]{%
+		\setbox\image@box=\hbox{\includegraphics[#1]{#2}}%
+		\image@width\wd\image@box%
+		\ifdim \image@width>\linewidth%
+		   \setbox\image@box=\hbox{\includegraphics[width=\linewidth]{#2}}%
+		   \box\image@box%
+		\else%
+		   \includegraphics[#1]{#2}%
+		\fi%
+	  }
+	  \makeatother
+	  """
+
+      !"""
       \\title{A Title}
 	  \\author{An Author}
 
@@ -208,13 +206,4 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
       genModelReference
     }
   }
-
-  protected[common] override def typeName(typedElement: ETypedElement) = {
-    s"\\texttt{${super.typeName(typedElement)}}"
-  }
-
-  protected[common] override def featureType(feature: EStructuralFeature) = {
-    s"\\texttt{${super.featureType(feature)}}"
-  }
-
 }
