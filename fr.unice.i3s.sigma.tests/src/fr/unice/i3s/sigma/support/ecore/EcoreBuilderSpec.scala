@@ -1,5 +1,6 @@
 package fr.unice.i3s.sigma.support.ecore
 
+import scala.language.implicitConversions
 import scala.reflect.runtime.universe
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
@@ -17,8 +18,6 @@ import org.eclipse.emf.ecore.EClassifier
 
 @RunWith(classOf[JUnitRunner])
 class EcoreBuilderSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
-
-  import EcorePackageScalaSupport._
 
   def setDerived[T <: EStructuralFeature] =
     (feature: T) ⇒ {

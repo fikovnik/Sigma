@@ -26,7 +26,7 @@ import scala.collection.mutable.Stack
 
 object TextSection {
   val endl = System.getProperty("line.separator")
-
+  val endlc = endl.charAt(0)
 }
 
 import TextSection._
@@ -39,6 +39,12 @@ abstract class TextSection[T <: TextSection[T]] {
   protected[this] val decorators = new Stack[Decorator]
 
   protected def createSection: T
+
+  protected def deleteRight(chars: Int) = {
+    if (buffer.size >= chars) {
+      buffer.delete(buffer.size - chars, buffer.size)
+    }
+  }
 
   def append(text: String): this.type = {
     val decorator: Decorator = decorators match {
@@ -93,6 +99,10 @@ abstract class TextSection[T <: TextSection[T]] {
   }
 }
 
+/**
+ * Provides some convenient methods for outputting text into streams and writers.
+ * The text is taken from the {{{#toString}}} method of the class where this trait is mixed in.
+ */
 trait TextOutput {
   def output(out: Writer): this.type = {
     out append (toString)
@@ -107,7 +117,7 @@ trait TextOutput {
   def >>(out: OutputStream): this.type = output(out)
 }
 
-trait TextSectionAdditions { this: TextSection[_] ⇒
+trait TextAdditions { this: Text ⇒
 
   private[this] var _defaultIndent: Int = 2
 
@@ -120,36 +130,47 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
   def <<(text: String): this.type = append(text)
 
   def indentBy(num: Int)(block: ⇒ Unit): this.type = {
-    append(endl)
+    if (!relaxedNewLines) {
+      append(endl)
+    }
+
     withBlockDecorator(Decorators.indentText(num))(block)
+
+    this
   }
 
   def indent(block: ⇒ Unit): this.type = indentBy(defaultIndent)(block)
 
   def surroundWith(begin: String, end: String)(block: ⇒ Unit): this.type = {
-    withBlockDecorator(Decorators.surroundText(begin, end))(block)
+    if (relaxedNewLines) {
+      // remove the last new line
+      deleteRight(1)
+      withBlockDecorator(Decorators.surroundText(begin + endl, end + endl))(block)
+    } else {
+      withBlockDecorator(Decorators.surroundText(begin, endl + end))(block)
+    }
   }
 
   def curlyIndent(block: ⇒ Unit): this.type = {
-    surroundWith(" {", endl + "}") {
+    surroundWith(" {", "}") {
       indent(block)
     }
   }
 
   def squareIndent(block: ⇒ Unit): this.type = {
-    surroundWith(" [", endl + "]") {
+    surroundWith(" [", "]") {
       indent(block)
     }
   }
 
   def parenIndent(block: ⇒ Unit): this.type = {
-    surroundWith(" (", endl + ")") {
+    surroundWith(" (", ")") {
       indent(block)
     }
   }
 
   def angleIndent(block: ⇒ Unit): this.type = {
-    surroundWith(" <", endl + ">") {
+    surroundWith(" <", ">") {
       indent(block)
     }
   }
@@ -159,18 +180,22 @@ trait TextSectionAdditions { this: TextSection[_] ⇒
   }
 }
 
-object Text {
-  def apply() = new Text
-}
+case class Text(
+  stripWhitespace: Boolean = false,
+  relaxedNewLines: Boolean = false,
+  indent: Int = 2)
 
-class Text(val stripWhitespace: Boolean = false, indent: Int = 2) extends TextSection[Text]
-  with TextSectionAdditions
+  extends TextSection[Text]
+  with TextAdditions
   with TextOutput {
 
   this.defaultIndent = indent
 
+  if (relaxedNewLines) {
+    decorators push Decorators.relaxedNewLines
+  }
   if (stripWhitespace) {
-    decorators push Decorators.stripWhitespace(defaultIndent)
+    decorators push Decorators.stripWhitespace(defaultIndent, relaxedNewLines)
   }
 
   override def createSection: Text = new Text

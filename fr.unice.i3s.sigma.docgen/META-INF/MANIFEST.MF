@@ -15,7 +15,8 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  com.google.guava;bundle-version="11.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: fr.unice.i3s.sigma.docgen.core;uses:="org.eclipse.ui.plugin,org.osgi.framework,fr.unice.i3s.sigma.docgen.graphviz.common",
+Export-Package: fr.unice.i3s.sigma.docgen.common,
+ fr.unice.i3s.sigma.docgen.core;uses:="org.eclipse.ui.plugin,org.osgi.framework,fr.unice.i3s.sigma.docgen.graphviz.common",
  fr.unice.i3s.sigma.docgen.graphviz.common;
   uses:="org.eclipse.emf.ecore,
    scala.math,

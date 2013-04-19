@@ -13,6 +13,7 @@ import scala.collection.JavaConversions._
 import scala.util.Success
 import java.io.File
 import org.mockito.Matchers
+import fr.unice.i3s.sigma.util.Executor
 
 @RunWith(classOf[JUnitRunner])
 class GVDotSpec extends FlatSpec with MustMatchers with MockitoSugar {
@@ -63,7 +64,7 @@ class GVDotSpec extends FlatSpec with MustMatchers with MockitoSugar {
 
   it must "correctly compose the cmdline arguments" in {
     val executorMock = mock[Executor]
-    when(executorMock.execute(any())).thenReturn(Success(""))
+    when(executorMock.execute(anyString())).thenReturn(Success(""))
     val dot = new GVDot("pathToDot") {
       override val executor = executorMock
     }

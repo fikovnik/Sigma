@@ -225,4 +225,23 @@ class TextSpec extends FlatSpec with MustMatchers {
 
   }
 
+  it must "relaxed whitespace test" in {
+    val text = new Text(stripWhitespace = true, relaxedNewLines = true, indent = 2)
+
+    text << "class A" curlyIndent {
+      text << """
+      val a = 1
+      val b = 1
+      """
+    }
+
+    text.toString must be ===
+      """|class A {
+  		 |  val a = 1
+   		 |  val b = 1
+   		 |}
+         |""".stripMargin
+
+  }
+
 }

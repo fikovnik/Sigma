@@ -25,6 +25,7 @@ import com.typesafe.scalalogging.log4j.Logger
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
 import scala.collection.mutable.Buffer
 import fr.unice.i3s.sigma.workflow.WorkflowTask
+import scala.beans.BeanProperty
 
 private class LoggingMonitor(logger: Logger) extends BasicMonitor {
   override def beginTask(name: String, totalWork: Int): Unit = logger.debug(name)
@@ -43,33 +44,28 @@ object GenerateEcore {
 
 class GenerateEcore extends WorkflowTask with Logging {
 
-  private var _genModelURI: URI = _
-  protected def genModelURI: URI = _genModelURI
-  protected def genModelURI_=(v: URI) = _genModelURI = v
-  protected def genModelURI_=(v: String) = _genModelURI = URI.createURI(v)
-  protected def setGenModelURI(v: String) = genModelURI = v
-
-  private var _generateEdit: Boolean = false
-  protected def generateEdit: Boolean = _generateEdit
-  protected def generateEdit_=(v: Boolean) = _generateEdit = v
-
-  private var _generateEditor: Boolean = false
-  protected def generateEditor: Boolean = _generateEditor
-  protected def generateEditor_=(v: Boolean) = _generateEditor = v
-
-  private var _generateDelegates: Boolean = false
-  protected def generateDelegates: Boolean = _generateDelegates
-  protected def generateDelegates_=(v: Boolean) = _generateDelegates = v
-
-  private var _instanceDelegateNameMapper: (String, String) ⇒ Option[String] = defaultInstanceDelegateNameMapper
-  protected def instanceDelegateNameMapper: (String, String) ⇒ Option[String] = _instanceDelegateNameMapper
-  protected def instanceDelegateNameMapper_=(v: (String, String) ⇒ Option[String]) = _instanceDelegateNameMapper = v
-  protected def setInstanceDelegateNameMapper(v: (String, String) ⇒ Option[String]) = instanceDelegateNameMapper = v
-
-  private val srcPaths: Buffer[String] = Buffer[String]()
-
   // execute the companion's object static block
   GenerateEcore
+
+  @BeanProperty
+  protected var genModelURI: URI = _
+  protected def genModelURI_=(v: String): Unit = genModelURI = URI.createURI(v)
+  protected def setGenModelURI(v: String) = genModelURI = v
+
+  @BeanProperty
+  protected var generateEdit: Boolean = false
+
+  @BeanProperty
+  protected var generateEditor: Boolean = false
+
+  @BeanProperty
+  protected var generateDelegates: Boolean = false
+
+  @BeanProperty
+  protected var instanceDelegateNameMapper: (String, String) ⇒ Option[String] = defaultInstanceDelegateNameMapper
+
+  private val srcPaths: Buffer[String] = Buffer[String]()
+  protected def srcPath(path: String) = srcPaths += path
 
   protected def defaultInstanceDelegateNameMapper(base: String, from: String): Option[String] = {
     val uri = URI.createURI(base + "/" + from.replace('.', '/') + "Delegate.scala");
@@ -93,8 +89,6 @@ class GenerateEcore extends WorkflowTask with Logging {
     generateEcore
   }
 
-  protected def addSrcPath(path: String) = srcPaths += path
-
   protected def generateEcore {
     val genModel = EMFUtils.IO.load[GenModel](genModelURI)
     genModel.setCanGenerate(true);
@@ -109,6 +103,9 @@ class GenerateEcore extends WorkflowTask with Logging {
         }
       }
     }
+
+    // prevent overriding bundle manifest
+    genModel.setBundleManifest(false);
 
     generator.getAdapterFactoryDescriptorRegistry().addDescriptor(GenModelPackage.eNS_URI,
       new GeneratorAdapterDescriptor);

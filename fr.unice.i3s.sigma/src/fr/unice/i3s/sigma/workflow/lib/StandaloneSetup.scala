@@ -28,6 +28,7 @@ import scala.util.Failure
 import scala.util.Success
 import org.eclipse.emf.ecore.resource.URIConverter
 import org.eclipse.emf.ecore.resource.Resource
+import scala.beans.BeanProperty
 
 object StandaloneSetup {
   EMFUtils.IO.registerDefaultFactories
@@ -41,23 +42,20 @@ object StandaloneSetup {
 }
 
 class StandaloneSetup extends WorkflowTask with Logging {
-  private var _platformPath: File = _
-  protected def platformPath: File = _platformPath
-  protected def platformPath_=(v: File) = _platformPath = v
-  protected def platformPath_=(v: String) = _platformPath = new File(v)
+
+  @BeanProperty
+  protected var platformPath: File = _
+  protected def platformPath_=(v: String): Unit = platformPath = new File(v)
   protected def setPlatformPath(v: String) = platformPath = v
 
-  private var _scanClassPath: Boolean = true
-  protected def scanClassPath: Boolean = _scanClassPath
-  protected def scanClassPath_=(v: Boolean) = _scanClassPath = v
+  @BeanProperty
+  protected var scanClassPath: Boolean = true
 
-  private var _logResourceURIMap: Boolean = false
-  protected def logResourceURIMap: Boolean = _logResourceURIMap
-  protected def logResourceURIMap_=(v: Boolean) = _logResourceURIMap = v
+  @BeanProperty
+  protected var logResourceURIMap: Boolean = false
 
-  private var _logRegisteredPackages: Boolean = false
-  protected def logRegisteredPackages: Boolean = _logRegisteredPackages
-  protected def logRegisteredPackages_=(v: Boolean) = _logRegisteredPackages = v
+  @BeanProperty
+  protected var logRegisteredPackages: Boolean = false
 
   import StandaloneSetup._
 

@@ -5,6 +5,8 @@ import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 import com.google.common.io.Files
+import fr.unice.i3s.sigma.util.IOUtils
+import fr.unice.i3s.sigma.util.Executor
 
 abstract sealed class GVOutputType(val name: String, val ext: String, val description: String)
 
@@ -30,25 +32,8 @@ object GVDot {
   class UnsupportedVersionException(val version: DotVersion) extends Exception(s"Expected >= $COMPATIBLE_VERSION, got $version")
 }
 
-trait Executor {
-  def execute(args: Seq[String]): Try[String]
-}
 
-private class SystemExecutor extends Executor {
 
-  def execute(command: Seq[String]): Try[String] = {
-    import sys.process._
-
-    try {
-      val stderr = new StringBuilder
-      command !! ProcessLogger(line ⇒ stderr append line)
-      Success(stderr.toString)
-    } catch {
-      case e: Throwable ⇒ Failure(e)
-    }
-  }
-
-}
 
 /**
  * Wrapper of the Graphviz dot program
@@ -60,7 +45,7 @@ private class SystemExecutor extends Executor {
  */
 class GVDot(path: String) {
 
-  val executor: Executor = new SystemExecutor
+  val executor: Executor = IOUtils.SystemExecutor
 
   import GVDot._
 
