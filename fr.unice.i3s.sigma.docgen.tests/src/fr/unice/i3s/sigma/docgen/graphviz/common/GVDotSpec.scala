@@ -64,7 +64,8 @@ class GVDotSpec extends FlatSpec with MustMatchers with MockitoSugar {
 
   it must "correctly compose the cmdline arguments" in {
     val executorMock = mock[Executor]
-    when(executorMock.execute(anyString())).thenReturn(Success(""))
+    // TODO: there must be a betrer way to do this
+    when(executorMock.execute(any().asInstanceOf[Seq[String]])).thenReturn(Success(""))
     val dot = new GVDot("pathToDot") {
       override val executor = executorMock
     }

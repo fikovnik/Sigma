@@ -34,21 +34,22 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
     println(ref.partial)
 
     ref.partial must be ===
-      """|\subsection{Class: MyClass}
-    	 |\label{sec:EClassRef_MyClass}
-		 |
-		 |My Class documentation
-		 |
-		 |\paragraph*{Attributes}
-		 |\begin{center}
-		 |  \rowcolors{2}{white}{lightgray}
-		 |  \begin{tabular}{ | l | p{.6\textwidth} | }
-		 |    \hline
-		 |    \textbf{Attribute} & \textbf{Description} \\ \hline
-    	 |    \small - attr1 : \texttt{EString} & \small attr1 documentation \\ \hline
-		 |    \small - attr2 : \texttt{EString} [1..*] & \small  \\ \hline
-		 |  \end{tabular}
-		 |\end{center}
+      """|\subsection*{Class: MyClass}
+         |\label{sec:EClassRef_MyClass}
+         |\paragraph*{Documentation}
+         |
+         |My Class documentation
+         |
+         |\paragraph*{Attributes}
+         |\begin{center}
+         |  \begin{tabularx}{\textwidth}{ X }
+         |    \toprule
+         |    \cellcolor[gray]{0.9} \ttfamily - attr1 : EString \\
+         |    \small \hspace*{5mm} attr1 documentation \\
+         |    \cellcolor[gray]{0.9} \ttfamily - attr2 : EString [1..*] \\
+         |    \bottomrule
+         |  \end{tabularx}
+         |\end{center}
          |""".stripMargin
   }
 
@@ -74,20 +75,21 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
     println(ref.partial)
 
     ref.partial must be ===
-      """|\subsection{Class: MyClass}
+      """|\subsection*{Class: MyClass}
     	 |\label{sec:EClassRef_MyClass}
-		 |
+		 |\paragraph*{Documentation}
+         |
 		 |My Class documentation
 		 |
 		 |\paragraph*{Operations}
 		 |\begin{center}
-		 |  \rowcolors{2}{white}{lightgray}
-		 |  \begin{tabular}{ | l | p{.6\textwidth} | }
-		 |    \hline
-		 |    \textbf{Operation} & \textbf{Description} \\ \hline
-		 |    \small - op1(a: \texttt{EInt}, b: \texttt{EString}) : \texttt{EString} & \small op1 documentation \\ \hline
-		 |  \end{tabular}
-		 |\end{center}
+         |  \begin{tabularx}{\textwidth}{ X }
+         |    \toprule
+         |    \cellcolor[gray]{0.9} \small \ttfamily - op1(a: EInt, b: EString) : EString \\
+         |    \small \hspace*{5mm} op1 documentation \\
+         |    \bottomrule
+         |  \end{tabularx}
+         |\end{center}
          |""".stripMargin
   }
 

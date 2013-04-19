@@ -6,7 +6,6 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.URIConverter
 import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
 import fr.unice.i3s.sigma.workflow.WorkflowApp
-import fr.unice.i3s.sigma.workflow.lib.LoadModel
 import org.eclipse.emf.ecore.EObject
 import fr.unice.i3s.sigma.workflow.lib.ValidateModel
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
@@ -49,9 +48,6 @@ object GenerateScalaSupport extends WorkflowApp {
       addMapping(uri, uri.replace("plugin", "resource"))
     }
   }
-
-  //  val model = LoadModel(ecoreModel).model[GenModel]
-  //  ValidateModel(model)
 
   !new CleanDirectory {
     path = srcGen

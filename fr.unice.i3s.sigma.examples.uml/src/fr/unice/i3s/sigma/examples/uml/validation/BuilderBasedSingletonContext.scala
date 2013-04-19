@@ -20,7 +20,6 @@ import org.eclipse.uml2.uml.resource.UML22UMLExtendedMetaData
 import org.eclipse.uml2.uml.resources.util.UMLResourcesUtil
 import fr.unice.i3s.sigma.workflow.WorkflowApp
 import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
-import fr.unice.i3s.sigma.workflow.lib.LoadModel
 import fr.unice.i3s.sigma.workflow.lib.ValidateModel
 import fr.unice.i3s.sigma.validation.Passed
 import org.eclipse.emf.ecore.resource.ResourceSet

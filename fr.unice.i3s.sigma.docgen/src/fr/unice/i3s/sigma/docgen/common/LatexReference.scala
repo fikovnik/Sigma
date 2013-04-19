@@ -55,7 +55,9 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
 
   protected var topSectionLabel: String = "chap:ModelReference"
 
-  protected var classDiagramMap: ENamedElement ⇒ (String, String) = _
+  protected var classDiagramMap: Option[ENamedElement ⇒ (String, String)] = None
+  protected def classDiagramMap_=(v: ENamedElement ⇒ (String, String)): Unit =
+    classDiagramMap = Option(v)
 
   def render = {
 
@@ -68,13 +70,21 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
   }
 
   protected def genClassDiagram(pkg: EPackage) {
-    val (args, imagePath) = classDiagramMap(pkg)
-    genIncludeGraphics(args, s"Package: ${pkg.name}", imagePath)
+    classDiagramMap match {
+      case None ⇒
+      case Some(f) ⇒
+        val (args, imagePath) = f(pkg)
+        genIncludeGraphics(args, s"Package: ${pkg.name}", imagePath)
+    }
   }
 
   protected def genClassDiagram(clazz: EClass) {
-    val (args, imagePath) = classDiagramMap(clazz)
-    genIncludeGraphics(args, s"Class: ${clazz.name}", imagePath)
+    classDiagramMap match {
+      case None ⇒
+      case Some(f) ⇒
+        val (args, imagePath) = f(clazz)
+        genIncludeGraphics(args, s"Class: ${clazz.name}", imagePath)
+    }
   }
 
   protected def genIncludeGraphics(args: String, caption: String, imagePath: String) {
