@@ -11,13 +11,13 @@ import org.scalatest.matchers.MustMatchers
 import fr.unice.i3s.sigma.examples.uml.support.UmlBuilder._
 import fr.unice.i3s.sigma.examples.uml.support.UmlPackageScalaSupport
 import fr.unice.i3s.sigma.test.scalatest.WorkflowTestSupport
-import fr.unice.i3s.sigma.workflow.lib.LoadModel
 import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
 import org.scalatest.junit.JUnitRunner
 import fr.unice.i3s.sigma.validation.ValidationContext
 import scala.reflect.{ classTag, ClassTag }
+import fr.unice.i3s.sigma.workflow.EMFWorkflow
 
-abstract class AbstractSingletonSpec[T <: ValidationContext[UMLClass]: ClassTag] extends FlatSpec with MustMatchers with WorkflowTestSupport with UmlPackageScalaSupport with BeforeAndAfter with BeforeAndAfterAll {
+abstract class AbstractSingletonSpec[T <: ValidationContext[UMLClass]: ClassTag] extends FlatSpec with MustMatchers with WorkflowTestSupport with EMFWorkflow with UmlPackageScalaSupport with BeforeAndAfter with BeforeAndAfterAll {
 
   val projectName = "fr.unice.i3s.sigma.examples.uml.tests"
   val runtimeProject = s"../$projectName"
@@ -43,10 +43,7 @@ abstract class AbstractSingletonSpec[T <: ValidationContext[UMLClass]: ClassTag]
   val name: String = classTag[T].runtimeClass.getSimpleName
 
   before {
-    val loader = !new LoadModel {
-      modelURI(getClass.getResource("/model/Test.uml"))
-    }
-    pkg = loader.model[UMLPackage]
+    pkg = loadModel[UMLPackage](getClass.getResource("/model/Test.uml"))
 
     context = classTag[T].runtimeClass.getConstructor().newInstance().asInstanceOf[T]
   }

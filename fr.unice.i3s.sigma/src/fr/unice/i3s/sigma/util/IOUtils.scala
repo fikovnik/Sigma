@@ -7,10 +7,40 @@ import java.io.File
 import scala.collection.TraversableLike
 import scala.annotation.tailrec
 import com.google.common.io.Files.copy
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
 
 object IOUtils {
 
   lazy val pathSep = System.getProperty("path.separator")
+
+  object SystemExecutor extends Executor {
+
+    import sys.process._
+    def execute(cmd: String): Try[String] = {
+
+      try {
+        val stderr = new StringBuilder
+        cmd !! ProcessLogger(line ⇒ stderr append line)
+        Success(stderr.toString)
+      } catch {
+        case e: Throwable ⇒ Failure(e)
+      }
+    }
+
+    def execute(cmdArgs: Seq[String]): Try[String] = {
+
+      try {
+        val stderr = new StringBuilder
+        cmdArgs !! ProcessLogger(line ⇒ stderr append line)
+        Success(stderr.toString)
+      } catch {
+        case e: Throwable ⇒ Failure(e)
+      }
+    }
+
+  }
 
   def rmdir(dir: File,
     deleteParentDir: Boolean = true,

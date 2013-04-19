@@ -1,7 +1,7 @@
 #!/bin/sh
 
 HOST="nyx.unice.fr"
-BASEDIR="/nasrainbow/www/www-nossl/p2/sigma"
+BASEDIR="/nasrainbow/www/www-ssl/p2/sigma"
 
 if [ $# -ne 1 ]; then
 	echo "Usage: $0 <dir>"
@@ -25,11 +25,14 @@ echo "Uploading $source to $HOST:$target:"
 echo "1. creating temp dir"
 tmp=$(ssh $HOST "mktemp -d")
 
-echo "2. copying to temp: $HOST:$tmp"
+echo "2. copy current update site into temp"
+ssh $HOST "cp -r $target/* $tmp"
+
+echo "3. rsync to temp: $HOST:$tmp"
 rsync -av $source/ $HOST:$tmp
 
-echo "3. sync changes"
+echo "4. sync changes"
 ssh -t $HOST "sudo -u www-data rsync -a $tmp/ $target"
 
-echo "4. remove the temp: $tmp"
+echo "5. remove the temp: $tmp"
 ssh $HOST "rm -fr $tmp"

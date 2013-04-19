@@ -8,7 +8,7 @@ package fr.unice.i3s.sigma
 object TypeUnion {
 
   private type ¬[A] = A ⇒ Nothing
-  private type ∨[T, U] = ¬[¬[T] with ¬[U]]
+  type ∨[T, U] = ¬[¬[T] with ¬[U]]
   private type ¬¬[A] = ¬[¬[A]]
 
   /**

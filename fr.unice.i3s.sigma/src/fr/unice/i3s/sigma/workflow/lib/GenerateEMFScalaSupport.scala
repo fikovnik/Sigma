@@ -292,32 +292,29 @@ object GenerateEMFScalaSupport {
 
 class GenerateEMFScalaSupport extends WorkflowTask with Logging {
 
-  private var _baseDir: File = _
-  protected def baseDir: File = _baseDir
-  protected def baseDir_=(v: File) = _baseDir = v
-  protected def baseDir_=(v: String) = _baseDir = new File(v)
+  // call the companion's object static block
+  GenerateEMFScalaSupport
 
-  private var _genModelURI: URI = _
-  protected def genModelURI: URI = _genModelURI
-  protected def genModelURI_=(v: URI) = _genModelURI = v
-  protected def genModelURI_=(v: String) = _genModelURI = URI.createURI(v)
+  protected var baseDir: File = _
+  protected def baseDir_=(v: String): Unit = baseDir = new File(v)
 
-  private var _packageNameMapping: String ⇒ String = _
-  protected def packageNameMapping: String ⇒ String = _packageNameMapping
-  protected def packageNameMapping_=(v: String ⇒ String) = _packageNameMapping = v
+  protected var genModelURI: URI = _
+  protected def genModelURI_=(v: String): Unit = genModelURI = URI.createURI(v)
+
+  protected var packageNameMapping: String ⇒ String = _
 
   private var _packageName: String = _
   protected def packageName: String = _packageName
   protected def packageName_=(v: String) = {
     _packageName = v
-    _packageNameMapping = { _ ⇒ _packageName }
+    packageNameMapping = { _ ⇒ _packageName }
   }
 
   private val skipTypes: Buffer[String] = Buffer.empty
-  private val mappings: collection.mutable.Map[String, String] = collection.mutable.Map.empty
+  def skipType(typeName: String) = skipTypes += typeName
 
-  // call the companion's object static block
-  GenerateEMFScalaSupport
+  private val mappings: collection.mutable.Map[String, String] = collection.mutable.Map.empty
+  def mapping(from: String, to: String) = mappings += (from -> to)
 
   def doExecute {
     logger.info("Generating EMF Scala Support for " + genModelURI)
@@ -359,10 +356,6 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
 
     }
   }
-
-  def mapping(from: String, to: String) = mappings += (from -> to)
-
-  def skipType(typeName: String) = skipTypes += typeName
 
   protected def checkDir(dir: File) {
     if (!dir.exists()) {

@@ -1,24 +1,19 @@
-package fr.unice.i3s.sigma.docgen.graphviz.common
+package fr.unice.i3s.sigma.docgen.common
 
 import scala.collection.JavaConversions._
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.MustMatchers
-import fr.unice.i3s.sigma.support.ecore.EcoreBuilder
-import fr.unice.i3s.sigma.support.ecore.EcoreAssignments
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.EMFScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcoreAssignments._
+import fr.unice.i3s.sigma.support.ecore.EcoreBuilder._
 import scala.collection.mutable.Buffer
-import org.eclipse.emf.common.util.EList
-import fr.unice.i3s.sigma.util.DelegatingEList
-import fr.unice.i3s.sigma.m2t.TextTemplateTest
+import org.scalatest.junit.JUnitRunner
+import fr.unice.i3s.sigma.m2t.TextTemplateTesting
 
 @RunWith(classOf[JUnitRunner])
 class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
-
-  import EcoreBuilder._
-  import EcoreAssignments._
 
   val pkg = EPackage(name = "MyPackage", nsURI = "http://mypkg", nsPrefix = "my")
 
@@ -28,11 +23,13 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
     val classB = EClass(name = "B", eSuperTypes = Buffer(classA))
     pkg.eClassifiers += (classA, classB)
 
-    val diag = new ClassDiagram(pkg) with TextTemplateTest
+    val diag = new ClassDiagram with TextTemplateTesting {
+      rootElement = pkg
+    }
     diag.renderGeneralization(classB, classA)
 
     // actually we only need to check the first row
-    diag.toString.split("\n").head must be ===
+    diag.partial.split("\n").head must be ===
       "MyPackage__A:port -> MyPackage__B:port ["
 
   }
@@ -42,10 +39,13 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
     val dataTypeA = EDataType(name = "A", instanceClassName = "java.util.A")
     pkg.eClassifiers += dataTypeA
 
-    val diag = new ClassDiagram(pkg) with TextTemplateTest
+    val diag = new ClassDiagram with TextTemplateTesting {
+      rootElement = pkg
+    }
     diag.renderDataType(dataTypeA)
 
-    diag.toString must be ===
+    println(diag.partial)
+    diag.partial must be ===
       """|MyPackage__A [
          |  label =  <
 		 |    <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
@@ -62,7 +62,8 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
 		 |    </TD></TR>
 		 |    </TABLE>
 		 |  >
-		 |]""".stripMargin
+		 |]
+         |""".stripMargin
   }
 
   it must "must render an enum" in {
@@ -70,28 +71,31 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
     val enumA = EEnum(name = "A", eLiterals = Buffer(EEnumLiteral(name = "ValueA"), EEnumLiteral(name = "ValueB")))
     pkg.eClassifiers += enumA
 
-    val diag = new ClassDiagram(pkg) with TextTemplateTest
+    val diag = new ClassDiagram with TextTemplateTesting {
+      rootElement = pkg
+    }
     diag.renderEnum(enumA)
 
-    diag.toString must be ===
+    diag.partial must be ===
       """|MyPackage__A [
          |  label =  <
-		 |    <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
-		 |    <TR><TD>
-		 |    <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
-		 |    <TR><TD>«enumeration»</TD></TR>
-		 |    <TR><TD>A</TD></TR>
-		 |    </TABLE>
-		 |    </TD></TR>
-		 |    <TR><TD>
-		 |    <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+  		 |    <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
+  		 |    <TR><TD>
+  		 |    <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+  		 |    <TR><TD>«enumeration»</TD></TR>
+  		 |    <TR><TD>A</TD></TR>
+  		 |    </TABLE>
+  		 |    </TD></TR>
+  		 |    <TR><TD>
+  		 |    <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
          |    <TR><TD align="left">- ValueA</TD></TR>
-		 |    <TR><TD align="left">- ValueB</TD></TR>
-		 |    </TABLE>
-		 |    </TD></TR>
-		 |    </TABLE>
-		 |  >
-		 |]""".stripMargin
+  		 |    <TR><TD align="left">- ValueB</TD></TR>
+  		 |    </TABLE>
+  		 |    </TD></TR>
+  		 |    </TABLE>
+  		 |  >
+  		 |]
+         |""".stripMargin
   }
 
 }

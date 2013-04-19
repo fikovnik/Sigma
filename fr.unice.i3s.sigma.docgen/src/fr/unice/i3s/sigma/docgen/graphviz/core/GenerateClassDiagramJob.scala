@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Status
 import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.emf.ecore.EPackage
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVOutputType
-import fr.unice.i3s.sigma.docgen.graphviz.common.ClassDiagram
+import fr.unice.i3s.sigma.docgen.common.ClassDiagram
 import fr.unice.i3s.sigma.util.IOUtils.using
 import fr.unice.i3s.sigma.util.PlatformUtils;
 import fr.unice.i3s.sigma.docgen.graphviz.common.GVDot
@@ -38,7 +38,9 @@ class GenerateClassDiagramJob(val pkg: EPackage, val output: File, val outputTyp
     val dotFile = File.createTempFile("sigma-docgen-classdiagram", ".dot")
 
     using(dotFile) { writer ⇒
-      val digram = new ClassDiagram(pkg)
+      val digram = new ClassDiagram {
+        rootElement = pkg
+      }
       digram >> writer
     }
 

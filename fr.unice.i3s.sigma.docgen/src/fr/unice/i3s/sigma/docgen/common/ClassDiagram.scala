@@ -1,20 +1,20 @@
-package fr.unice.i3s.sigma.docgen.graphviz.common
+package fr.unice.i3s.sigma.docgen.common
 
 import org.eclipse.emf.ecore.EPackage
 import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EDataType
-import org.eclipse.emf.ecore.EClassifier
 import org.eclipse.emf.ecore.EEnum
 import fr.unice.i3s.sigma.m2t.TextTemplate
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import org.eclipse.emf.ecore.EObject
+import fr.unice.i3s.sigma.TypeUnion._
 
-class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScalaSupport {
+class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScalaSupport {
 
-  override def stripWhitespace = true
+  protected var rootElement: EObject = _
 
   override def render {
     !"digraph G" curlyIndent {
@@ -40,7 +40,28 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
 	   """
       !endl << endl
 
-      renderPackage(rootPkg)
+      // FIXME: use type unions [T: (EPackage |∨| EClassifier)#λ]
+      rootElement match {
+        case e: EClass ⇒ {
+          renderClass(e, "lightgrey")
+
+          // render generalization
+          for (superType ← e.eSuperTypes) {
+            renderClass(superType, "white", attributes = false, operations = false)
+            renderGeneralization(e, superType)
+            !endl
+          }
+
+          // render references
+          for (ref ← e.eReferences) {
+            renderClass(ref.eReferenceType, "white", attributes = false, operations = false)
+            renderReference(e, ref)
+            !endl
+          }
+        }
+        case e: EPackage ⇒ renderPackage(e)
+        case e ⇒ error("rootElement must be either EClass or EPackage not " + e)
+      }
     }
   }
 
@@ -48,21 +69,21 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
     // render sub packages
     for (spkg ← pkg.getESubpackages) {
       renderSubPackage(spkg)
-      !endl << endl
+      !endl
     }
 
     // render data types
     val dataTypes = pkg.eClassifiers collect { case e: EDataType ⇒ e }
     for (dataType ← dataTypes) {
       renderDataType(dataType)
-      !endl << endl
+      !endl
     }
 
     // render enums
     val enums = pkg.eClassifiers collect { case e: EEnum ⇒ e }
     for (enum ← enums) {
       renderEnum(enum)
-      !endl << endl
+      !endl
     }
 
     // render call classes
@@ -70,31 +91,31 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
     for (clazz ← classes) {
       // render class
       renderClass(clazz, "white")
-      !endl << endl
+      !endl
 
       // render generalization
       for (superType ← clazz.eSuperTypes intersect (classes)) {
         renderGeneralization(clazz, superType)
-        !endl << endl
+        !endl
       }
 
       // render references
       for (ref ← clazz.eReferences if classes.contains(ref.eReferenceType)) {
         renderReference(clazz, ref)
-        !endl << endl
+        !endl
       }
     }
   }
 
   protected[common] def renderSubPackage(pkg: EPackage) {
-    !s"subgraph ${fqn(pkg)}" curlyIndent {
-      !s"label = ${pkg.name.quoted}" << endl
+    !s"subgraph ${fqpn(pkg)}" curlyIndent {
+      !s"label = ${pkg.name.quoted}"
       renderPackage(pkg)
     }
   }
 
   protected[common] def renderDataType(dataType: EDataType) {
-    !s"${fqn(dataType)}" squareIndent {
+    !s"${fqcn(dataType)}" squareIndent {
       !"label = " angleIndent {
         !s"""
 		  <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
@@ -116,7 +137,7 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
   }
 
   protected[common] def renderEnum(enum: EEnum) {
-    !s"${fqn(enum)}" squareIndent {
+    !s"${fqcn(enum)}" squareIndent {
       !"label = " angleIndent {
         !s"""
     	  <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
@@ -129,10 +150,9 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
     	  <TR><TD>
     	  <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
         """
-        !endl
 
         for (e ← enum.eLiterals) {
-          !s"""<TR><TD align="left">- ${e.literal}</TD></TR>""" << endl
+          !s"""<TR><TD align="left">- ${e.literal}</TD></TR>"""
         }
 
         !"""
@@ -144,13 +164,17 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
     }
   }
 
-  protected[common] def renderClass(clazz: EClass, bgColor: String) {
+  protected[common] def renderClass(clazz: EClass,
+    bgColor: String,
+    attributes: Boolean = true,
+    operations: Boolean = true) {
+
     val name =
       if (clazz.isAbstract) s"<I>${clazz.name}</I>" else clazz.name
 
     val attrs = clazz.eStructuralFeatures collect { case e: EAttribute ⇒ e }
 
-    !s"${fqn(clazz)}" squareIndent {
+    !s"${fqcn(clazz)}" squareIndent {
       !"label = " angleIndent {
         // name
         !s"""
@@ -162,20 +186,16 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
         </TD></TR>
         """
 
-        !endl
         // generate attributes
-        if (attrs.isEmpty) {
-          !"<!-- No attributes -->" << endl
-        } else {
+        if (attributes && !attrs.isEmpty) {
           !"""
           <!-- Begin attributes -->
           <TR><TD>
           <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
           """
-          !endl
 
           for (e ← attrs) {
-            !s"""<TR><TD align="left">${featureLabelWithType(e)}</TD></TR>""" << endl
+            !s"""<TR><TD align="left">${featureLabelWithType(e)}</TD></TR>"""
           }
 
           !"""
@@ -183,8 +203,25 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
           </TD></TR>
           <!-- End attributes -->
           """
+        }
 
-          !endl
+        // generate operations
+        if (operations && !clazz.eOperations.isEmpty) {
+          !"""
+          <!-- Begin operations -->
+          <TR><TD>
+          <TABLE border="1" cellborder="0" cellpadding="3" cellspacing="0" align="left">
+          """
+
+          for (o ← clazz.eOperations) {
+            !s"""<TR><TD align="left">${operationLabelWithType(o)}</TD></TR>"""
+          }
+
+          !"""
+          </TABLE>
+          </TD></TR>
+          <!-- End operations -->
+          """
         }
         !"</TABLE>"
       }
@@ -192,7 +229,7 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
   }
 
   protected[common] def renderGeneralization(subType: EClass, superType: EClass) {
-    !s"${fqn(superType)}:port -> ${fqn(subType)}:port" squareIndent {
+    !s"${fqcn(superType)}:port -> ${fqcn(subType)}:port" squareIndent {
       !"""
       arrowhead = "none"
       arrowhead = "none"
@@ -203,56 +240,21 @@ class ClassDiagram(rootPkg: EPackage) extends TextTemplate with EcorePackageScal
   }
 
   protected[common] def renderReference(clazz: EClass, ref: EReference) {
-    !s"${fqn(clazz)}:port -> ${fqn(ref.eReferenceType)}:port" squareIndent {
+    val multi = multiplicity(ref) match {
+      case Some(m) ⇒ m
+      case None ⇒ "1"
+    }
+    !s"${fqcn(clazz)}:port -> ${fqcn(ref.eReferenceType)}:port" squareIndent {
       !s"""
       arrowhead = "${if (ref.eOpposite == null) "vee" else "none"}" 
       arrowtail = "${if (ref.isContainment) "diamond" else "none"}" 
       taillabel = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD></TD></TR></TABLE>>
       label = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD>- ${ref.name}</TD></TR></TABLE>>
-      headlabel = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD>${multiplicity(ref)}</TD></TR></TABLE>>
+      headlabel = <<TABLE border="0" cellborder="0" cellspacing="0" cellpadding="0"><TR><TD>${multi}</TD></TR></TABLE>>
       minlen = "3"
       labeldistance = "3.0"
       labelangle = "20.0" 
       """
     }
   }
-
-  protected[common] def multiplicity(feature: EStructuralFeature): String = {
-    val multi = (feature.lowerBound, feature.upperBound) match {
-      case (-1, -1) ⇒ "*"
-      case (1, -1) ⇒ "1..*"
-      case (1, 1) ⇒ "1"
-      case (-1, 1) ⇒ "0..1"
-      case (n, m) ⇒ s"$n..$m"
-    }
-    s"[$multi]"
-  }
-
-  protected[common] def featureLabel(feature: EStructuralFeature): String = {
-    s"- ${feature.name} ${multiplicity(feature)}"
-  }
-
-  protected[common] def featureLabelWithType(feature: EStructuralFeature) = {
-    feature match {
-      case e: EAttribute ⇒ s"- ${e.name} : ${e.eType.name} ${multiplicity(e)}"
-      case e: EReference ⇒ s"- ${e.name} : ${e.eReferenceType.name} ${multiplicity(e)}"
-    }
-  }
-
-  protected[common] def fqn(pkg: EPackage): String = {
-    require(pkg != null)
-
-    def superPackages(p: EPackage): List[EPackage] = Option(p.eSuperPackage) match {
-      case None ⇒ List(p)
-      case Some(sp) ⇒ superPackages(sp) ::: List(sp, p)
-    }
-    superPackages(pkg) map (_.name) mkString ("__")
-  }
-
-  protected[common] def fqn(classifier: EClassifier): String = {
-    require(classifier != null)
-
-    Option(classifier.ePackage).map(fqn(_)).getOrElse("") + "__" + classifier.name
-  }
-
 }
