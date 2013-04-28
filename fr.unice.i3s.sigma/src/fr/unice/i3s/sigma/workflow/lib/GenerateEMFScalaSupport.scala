@@ -21,6 +21,8 @@ import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
 import fr.unice.i3s.sigma.support.AutoContainment
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
 import scala.collection.mutable.Buffer
+import org.eclipse.emf.codegen.ecore.genmodel.util.GenModelUtil
+import org.eclipse.emf.codegen.ecore.genmodel.GenBase
 
 trait Utils {
   val scalaKeywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
@@ -66,10 +68,12 @@ trait NameMappings {
   }
 }
 
+// TODO: update new template styles
 case class EMFBuilderTemplate(
   pkg: GenPackage,
   pkgName: String,
   builderName: String,
+  generateExtractors: Boolean,
   skipTypes: List[String] = Nil,
   mappings: Map[String, String] = Map.empty) extends TextTemplate with EMFScalaSupport with Utils with NameMappings with Logging {
 
@@ -174,6 +178,22 @@ case class EMFBuilderTemplate(
       !s"def apply(config: ($clazzName ⇒ Any)*): $clazzName =" indent {
         !s"contained(build[$clazzName](config: _*))"
       }
+
+      if (generateExtractors && !isExcludedFromExtractors(clazz)) {
+        val features = clazz.getAllGenFeatures filter { f ⇒ !isExcludedFromExtractors(f) } map { f ⇒ (f.getGetAccessor -> typeName(f)) }
+        val types = features map (_._2) mkString (",")
+        val names = features map ("that." + _._1) mkString (",")
+        !s"def unapply(that: $clazzName): Option[($types)] =" indent {
+          !s"Some(($names))"
+        }
+      }
+    }
+  }
+
+  protected def isExcludedFromExtractors(feature: GenBase) = {
+    Option(GenModelUtil.getAnnotation(feature, "http://www.i3s.unice.fr/Sigma", "excludeFromExtractors")) match {
+      case Some(x) ⇒ x.toBoolean
+      case None ⇒ false
     }
   }
 
@@ -256,10 +276,14 @@ case class EPackageScalaSupportTemplate(pkg: GenPackage, pkgName: String, pkgSup
 
     // the trait
     !s"trait $pkgSupportName" indent {
-      !pkg.getGenClasses
+      val traits = pkg.getGenClasses
         .filter { c ⇒ !(skipTypes contains c.getName) }
         .map { _.getName + "ScalaSupport" }
-        .mkString("extends ", " with" + endl, "")
+
+      // always include EMFScalaSupport
+      traits += importManager.getImportedName(classOf[EMFScalaSupport].getName)
+
+      !traits.mkString("extends ", " with" + endl, "")
     }
 
     !endl
@@ -303,6 +327,8 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
 
   protected var packageNameMapping: String ⇒ String = _
 
+  protected var generateExtractors: Boolean = false
+
   private var _packageName: String = _
   protected def packageName: String = _packageName
   protected def packageName_=(v: String) = {
@@ -337,7 +363,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
       val builderName = pkg.getPackageName.capitalize + "Builder"
       using(new File(dir, builderName + ".scala")) { f ⇒
         logger debug s"Generated builder for $builderName"
-        EMFBuilderTemplate(pkg, pkgName, builderName, skipTypes.toList, mappings.toMap) >> f
+        EMFBuilderTemplate(pkg, pkgName, builderName, generateExtractors, skipTypes.toList, mappings.toMap) >> f
       }
 
       val pkgSupportName = pkg.getPackageName.capitalize + "PackageScalaSupport"
