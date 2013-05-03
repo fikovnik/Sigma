@@ -12,6 +12,7 @@ import org.eclipse.emf.common.util.EMap
 import fr.unice.i3s.sigma.util.DelegatingEList
 import scala.collection.mutable.Buffer
 import scala.language.implicitConversions
+import java.io.PrintStream
 
 trait EMFScalaSupport {
 
@@ -62,6 +63,13 @@ trait EMFScalaSupport {
   }
 
   implicit class RichSigmaEObject[A <: EObject](that: A) {
+
+    def dump(out: PrintStream = System.out, indent: Int = 0) {
+      out.println(" " * indent + that)
+      for (e ← that.eContents) {
+        e.dump(out, indent + 2)
+      }
+    }
 
     def validate = Diagnostician.INSTANCE.validate(that)
 
