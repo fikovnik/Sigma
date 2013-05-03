@@ -107,7 +107,7 @@ case class EMFBuilderTemplate(
 
     // collect all features for which we will generate the assignments
     val featuresMap = pkg.getGenClasses
-      .filter { c ⇒ !(skipTypes contains c.getName) }
+      .filter { c ⇒ !(skipTypes contains c.getName) && isGenerateApply(c) }
       .flatMap(_.getGenFeatures)
       .filter { f ⇒ !f.isDerived && f.isChangeable && (f.isBidirectional implies !f.isContainer) }
       .groupBy { f ⇒ mapName(f) }
@@ -175,8 +175,11 @@ case class EMFBuilderTemplate(
 
     !s"type ${clazzName} = ${clazz.getQualifiedInterfaceName}" << endl
     !s"object ${clazzName}" curlyIndent {
-      !s"def apply(config: ($clazzName ⇒ Any)*): $clazzName =" indent {
-        !s"contained(build[$clazzName](config: _*))"
+
+      if (isGenerateApply(clazz)) {
+        !s"def apply(config: ($clazzName ⇒ Any)*): $clazzName =" indent {
+          !s"contained(build[$clazzName](config: _*))"
+        }
       }
 
       if (generateExtractors && !isExcludedFromExtractors(clazz)) {
@@ -187,13 +190,29 @@ case class EMFBuilderTemplate(
           !s"Some(($names))"
         }
       }
+
+      getExtraCompanionObjectCode(clazz) match {
+        case Some(code) ⇒ !code
+        case None ⇒
+      }
     }
+  }
+
+  protected def getExtraCompanionObjectCode(clazz: GenClass) = {
+    Option(GenModelUtil.getAnnotation(clazz, "http://www.i3s.unice.fr/Sigma", "extraCompanionObjectCode"))
   }
 
   protected def isExcludedFromExtractors(feature: GenBase) = {
     Option(GenModelUtil.getAnnotation(feature, "http://www.i3s.unice.fr/Sigma", "excludeFromExtractors")) match {
       case Some(x) ⇒ x.toBoolean
       case None ⇒ false
+    }
+  }
+
+  protected def isGenerateApply(feature: GenBase) = {
+    Option(GenModelUtil.getAnnotation(feature, "http://www.i3s.unice.fr/Sigma", "generateApply")) match {
+      case Some(x) ⇒ x.toBoolean
+      case None ⇒ true
     }
   }
 
@@ -217,6 +236,7 @@ case class EMFBuilderTemplate(
 case class EClassScalaSupportTemplate(clazz: GenClass,
   pkgName: String,
   clazzSupportName: String,
+  useOption: Boolean,
   mappings: Map[String, String] = Map.empty) extends TextTemplate with NameMappings with Utils {
 
   val importManager = new ImportManager(pkgName, clazzSupportName)
@@ -250,7 +270,13 @@ case class EClassScalaSupportTemplate(clazz: GenClass,
     val featureType = typeName(feature)
 
     // getter
-    !s"def ${checkName(featureName)}: $featureType = that.${feature.getGetAccessor}" << endl
+    if (useOption && !feature.getEcoreFeature.isRequired && !feature.getEcoreFeature.isMany()) {
+      val option = importManager.getImportedName(classOf[Option[_]].getName)
+      !s"def ${checkName(featureName)}: $option[$featureType] = $option(that.${feature.getGetAccessor})"
+    } else {
+      !s"def ${checkName(featureName)}: $featureType = that.${feature.getGetAccessor}"
+    }
+
     if (feature.isSet()) {
       // setter
       !s"def ${featureName}_=(value: $featureType): Unit = that.set${feature.getAccessorName}(value)" << endl
@@ -329,6 +355,8 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
 
   protected var generateExtractors: Boolean = false
 
+  protected var useOption: Boolean = false
+
   private var _packageName: String = _
   protected def packageName: String = _packageName
   protected def packageName_=(v: String) = {
@@ -376,7 +404,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging {
         val clazzSupportName = clazz.getName + "ScalaSupport"
         using(new File(dir, clazzSupportName + ".scala")) { f ⇒
           logger debug s"Generated class support for ${clazz.getName}"
-          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName, mappings.toMap) >> f
+          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName, useOption, mappings.toMap) >> f
         }
       }
 
