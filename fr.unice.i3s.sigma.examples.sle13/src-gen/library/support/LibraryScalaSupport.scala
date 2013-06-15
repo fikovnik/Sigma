@@ -11,7 +11,7 @@ trait LibraryScalaSupport {
   
   object Library {
     def apply(catalog: EList[Book] = null, authors: EList[Author] = null): Library = {
-      val instance = library.LibraryFactory.eINSTANCE.createLibrary
+      val instance = LibraryPackageScalaSupport.builder.create[Library]
       
       if (catalog != null) instance.getCatalog.addAll(catalog)
       if (authors != null) instance.getAuthors.addAll(authors)

@@ -24,6 +24,7 @@ import scala.collection.mutable.Buffer
 import org.eclipse.emf.codegen.ecore.genmodel.util.GenModelUtil
 import org.eclipse.emf.codegen.ecore.genmodel.GenBase
 import org.eclipse.emf.codegen.ecore.genmodel.GenDataType
+import scala.reflect.{ classTag, ClassTag }
 
 object GenModelScalaSupport {
   val ScalaKeywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
@@ -57,6 +58,12 @@ trait GenModelScalaSupport extends EMFScalaSupport {
         .replace('<', '[')
         .replace('>', ']')
         .replace('?', '_')
+    }
+  }
+
+  implicit class ImportManagerEx(that: ImportManager) {
+    def importName[T: ClassTag] = {
+      that.getImportedName(classTag[T].runtimeClass.getName, true)
     }
   }
 
@@ -129,7 +136,9 @@ case class EClassScalaSupportTemplate(
   clazz: GenClass,
   pkgName: String,
   clazzSupportName: String,
+  pkgSupportName: String,
   useOption: Boolean,
+  useEMFBuilder: Boolean,
   mappings: Map[String, String] = Map.empty) extends TextTemplate with Logging with GenModelScalaSupport {
 
   implicit class GenClassMapping(that: GenClass) {
@@ -228,7 +237,11 @@ case class EClassScalaSupportTemplate(
     }
 
     !s"def apply(${featureParams mkString (", ")}): ${clazz.scalaName} =" curlyIndent {
-      !s"val instance = ${clazz.genPackage.qualifiedFactoryInterfaceName}.eINSTANCE.create${clazz.name}" << endl
+      if (useEMFBuilder) {
+        !s"val instance = $pkgSupportName.builder.create[${clazz.name}]" << endl
+      } else {
+        !s"val instance = ${clazz.genPackage.qualifiedFactoryInterfaceName}.eINSTANCE.create${clazz.name}" << endl
+      }
 
       for (f ← features) {
         !s"if (${f.scalaName} != ${f.defaultValue}) instance.${f.setter}(${f.scalaName})"
@@ -250,7 +263,7 @@ case class EClassScalaSupportTemplate(
 
   protected def renderFeatureGetter(f: GenFeature) = {
     if (useOption && !f.required && !f.many) {
-      val option = importManager.getImportedName(classOf[Option[_]].getName)
+      val option = importManager.importName[Option[_]]
       !s"def ${f.scalaName}: $option[${f.scalaType}] = $option(that.${f.getter})"
     } else {
       !s"def ${f.scalaName}: ${f.scalaType} = that.${f.getter}"
@@ -259,6 +272,12 @@ case class EClassScalaSupportTemplate(
 
   protected def renderFeatureSetter(f: GenFeature) = {
     !s"def ${f.scalaName}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
+    // a proxy setter for all non-containable references
+    if (!f.isContains && f.isReferenceType && !f.isListType) {
+      !s"def ${f.scalaName}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
+        !s"that.${f.setter}($pkgSupportName.builder.ref(value))"
+      }
+    }
   }
 
   implicit class GenBaseEx(that: GenBase) {
@@ -303,7 +322,7 @@ case class EPackageScalaSupportTemplate(
         .map { _.name + "ScalaSupport" }
 
       // always include EMFScalaSupport
-      traits += importManager.getImportedName(classOf[EMFScalaSupport].getName)
+      traits += importManager.importName[EMFScalaSupport]
 
       !traits.mkString("extends ", " with" + endl, "")
     }
@@ -313,6 +332,8 @@ case class EPackageScalaSupportTemplate(
     !s"object $pkgSupportName extends $pkgSupportName" curlyIndent {
       // get the package  
       !s"private[this] val pkg = ${pkg.importedPackageInterfaceName}.eINSTANCE" << endl
+      !s"val builder = new ${importManager.importName[EMFBuilder[_]]}(pkg)" << endl
+
       // constants for all data types
       pkg.genDataTypes foreach renderDataType("pkg") _
     }
@@ -350,6 +371,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelSca
   protected var generateExtractors: Boolean = false
 
   protected var useOption: Boolean = false
+  protected var useEMFBuilder: Boolean = false
 
   private var _packageName: String = _
   protected def packageName: String = _packageName
@@ -392,7 +414,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelSca
         val clazzSupportName = clazz.name + "ScalaSupport"
         using(new File(dir, clazzSupportName + ".scala")) { f ⇒
           logger debug s"Generated class support for ${clazz.name}"
-          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName, useOption, mappings.toMap) >> f
+          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName, pkgSupportName, useOption, useEMFBuilder, mappings.toMap) >> f
         }
       }
 

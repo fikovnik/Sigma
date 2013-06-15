@@ -17,18 +17,9 @@ import org.eclipse.emf.common.notify.Notification.ADD_MANY
 import org.eclipse.emf.common.notify.Notification.SET
 import scala.collection.mutable.SynchronizedBuffer
 import scala.collection.mutable.ArrayBuffer
-
-object EMFBuilder {
-
-  // TODO: move to EMFScalaSupport
-  implicit class InitializableEObject[T <: EObject: ClassTag](val obj: T) {
-    def init(fun: T ⇒ Any): T = {
-      fun(obj)
-      obj
-    }
-  }
-  
-}
+import org.eclipse.emf.ecore.util.EContentAdapter
+import org.eclipse.emf.ecore.EReference
+import org.eclipse.emf.ecore.resource.Resource
 
 class EMFBuilder[P <: EPackage](val pkg: P) {
 
@@ -39,6 +30,44 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
    */
   private case class InternalProxyAdapter(val getter: Unit ⇒ Option[EObject]) extends AdapterImpl {
     override def isAdapterForType(`type`: Object): Boolean = `type` == classOf[EMFBuilder.this.InternalProxyAdapter]
+  }
+
+  private object PostponeContentInitializerAdapter extends AdapterImpl with EMFScalaSupport {
+    val codes = {
+      import Notification._
+
+      ADD :: ADD_MANY :: SET :: Nil
+    }
+
+    override def notifyChanged(notification: Notification) {
+      super.notifyChanged(notification)
+
+      if (codes contains notification.getEventType) {
+        notification.getNotifier match {
+          case resource: Resource ⇒
+            initializeObject(notification.getNewValue)
+          case _ ⇒ {
+            Option(notification.getFeature).collect {
+              case r: EReference if r.isContainment ⇒ r
+            } match {
+              case Some(ref) ⇒
+                initializeObject(notification.getNewValue)
+              case None ⇒
+            }
+          }
+        }
+      }
+    }
+
+    private def initializeObject(obj: Object) {
+      obj match {
+        case eobj: EObject ⇒ eobj.adapter[PostponedInitizationAdapter[_]] match {
+          case Some(adapter) ⇒ adapter.initialize
+          case None ⇒
+        }
+        case _ ⇒
+      }
+    }
   }
 
   /**
@@ -137,8 +166,10 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
         s"EClassifier $clazz is not an EClass")
     }
 
-    // attach a listener to resolve proxies
+    // attach proxy resolution adapter
     instance.eAdapters += ResolveProxyAdapter
+    // attach postpone initialization adapter
+    instance.eAdapters += PostponeContentInitializerAdapter
 
     instance
 

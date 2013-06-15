@@ -13,6 +13,11 @@ import fr.unice.i3s.sigma.util.DelegatingEList
 import scala.collection.mutable.Buffer
 import scala.language.implicitConversions
 import java.io.PrintStream
+import org.eclipse.emf.ecore.util.EContentAdapter
+import org.eclipse.emf.common.notify.Notification
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.EReference
+import org.eclipse.emf.common.notify.impl.AdapterImpl
 
 trait EMFScalaSupport {
 
@@ -63,6 +68,19 @@ trait EMFScalaSupport {
   }
 
   implicit class RichSigmaEObject[A <: EObject](that: A) {
+
+    def init(fun: A ⇒ Any): A = {
+      fun(that)
+      that
+    }
+
+    def initLater(fun: A ⇒ Any): A = {
+      that.adapter[PostponedInitizationAdapter[_]] match {
+        case Some(_) ⇒ throw new IllegalStateException("Multiple postponed initialization is not supported. Object: " + that)
+        case None ⇒ that.eAdapters += new PostponedInitizationAdapter(fun)
+      }
+      that
+    }
 
     def dump(out: PrintStream = System.out, indent: Int = 0) {
       out.println(" " * indent + that)

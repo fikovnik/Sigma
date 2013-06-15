@@ -7,7 +7,7 @@ trait AuthorScalaSupport {
   
   object Author {
     def apply(name: String = null): Author = {
-      val instance = library.LibraryFactory.eINSTANCE.createAuthor
+      val instance = LibraryPackageScalaSupport.builder.create[Author]
       
       if (name != null) instance.setName(name)
       

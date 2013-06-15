@@ -45,6 +45,7 @@ object GenerateSLE13ScalaSupport extends WorkflowApp {
       baseDir = srcGen
       genModelURI = genModel
       generateExtractors = true
+      useEMFBuilder = true
       packageNameMapping = { _ + packageSuffix }
     }
   }

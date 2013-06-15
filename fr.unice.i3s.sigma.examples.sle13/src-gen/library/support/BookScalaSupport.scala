@@ -3,12 +3,14 @@ package library.support
 import library.Author;
 import library.Book;
 
+import scala.Option;
+
 trait BookScalaSupport {
   type Book = library.Book
   
   object Book {
     def apply(name: String = null, author: Author = null, pages: Int = 0): Book = {
-      val instance = library.LibraryFactory.eINSTANCE.createBook
+      val instance = LibraryPackageScalaSupport.builder.create[Book]
       
       if (name != null) instance.setName(name)
       if (author != null) instance.setAuthor(author)
@@ -26,6 +28,8 @@ trait BookScalaSupport {
     def name_=(value: String): Unit = that.setName(value)
     def author: Author = that.getAuthor
     def author_=(value: Author): Unit = that.setAuthor(value)
+    def author_=(value: ⇒ Option[Author]): Unit =
+      that.setAuthor(LibraryPackageScalaSupport.builder.ref(value))
     def pages: Int = that.getPages
     def pages_=(value: Int): Unit = that.setPages(value)
   }
