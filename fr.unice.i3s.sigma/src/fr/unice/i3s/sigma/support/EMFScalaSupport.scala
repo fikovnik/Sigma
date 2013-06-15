@@ -18,6 +18,7 @@ import org.eclipse.emf.common.notify.Notification
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.common.notify.impl.AdapterImpl
+import org.eclipse.emf.common.util.EList
 
 trait EMFScalaSupport {
 
@@ -139,8 +140,6 @@ trait EMFScalaSupport {
     }
   }
 
-  implicit def scalaBufferAsEList[T](that: Buffer[T]) = new DelegatingEList(that)
-
   //  // conversion between EMF collections
   //  implicit def eListAsScalaImmutableList[A](a: EList[A]): List[A] =
   //    asScalaBuffer(a).toList
@@ -150,6 +149,11 @@ trait EMFScalaSupport {
 
   implicit def eMapAsScalaMap[A, B](a: EMap[A, B]): scala.collection.mutable.Map[A, B] =
     mapAsScalaMap(a.map())
+
+  implicit def asScalaBuffer[A](that: EList[A]): Buffer[A] =
+    scala.collection.JavaConversions.asScalaBuffer(that)
+  implicit def asEList[T](that: Buffer[T]) = new DelegatingEList(that)
+  implicit def asEList[T](that: Seq[T]) = new DelegatingEList(that.toBuffer)
 }
 
 object EMFScalaSupport extends EMFScalaSupport
