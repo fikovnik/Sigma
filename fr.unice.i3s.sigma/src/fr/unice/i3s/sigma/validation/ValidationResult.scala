@@ -44,10 +44,10 @@ class Error(val message: String) extends ValidationResult with Fixable {
   override def toString = s"Error(${quickFixes.size} fixes): $message"
 }
 
-class ValidationContextResult(val results: Map[Symbol, ValidationResult]) {
+class ValidationContextResult(val results: Map[String, ValidationResult]) {
   def cancelled: Boolean = results == Map.empty
   def passed: Boolean = results forall { case (_, inv) ⇒ inv == Passed }
-  def violates(constraint: Symbol): Boolean =
+  def violates(constraint: String): Boolean =
     results.get(constraint).map(_ != Passed) getOrElse (false)
 
   override def toString =

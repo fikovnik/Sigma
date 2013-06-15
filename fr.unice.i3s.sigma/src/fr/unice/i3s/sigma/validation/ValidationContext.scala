@@ -36,11 +36,11 @@ private[validation] trait SelfVariable {
 
 }
 
-class ValidationContext(val name: String) extends SelfVariable with Guardable with OverloadHack {
+trait ValidationContext extends SelfVariable with Guardable with OverloadHack {
   override type Self >: Null <: EObject
   type Check = () ⇒ ValidationResult
 
-  case class Constraint(name: Symbol, check: Check) extends SelfVariable {
+  case class Constraint(name: String, check: Check) extends SelfVariable {
     type Self = ValidationContext#Self
 
     // TODO: is this possible to replace this with AutoContainment
@@ -50,12 +50,8 @@ class ValidationContext(val name: String) extends SelfVariable with Guardable wi
       withSelf(instance) { check() }
     }
 
-    override def toString = s"Constraint $name for $selfClassTag"
+    override def toString = s"Constraint $name"
   }
-
-  def this() = this(getClass.getSimpleName)
-
-  protected[validation] implicit val selfClassTag: ClassTag[Self] = implicitly
 
   private val _constraints = Buffer[Constraint]()
 
@@ -70,7 +66,7 @@ class ValidationContext(val name: String) extends SelfVariable with Guardable wi
           (inv.name -> inv.validate(instance))
         }
       } else {
-        constraints.map((_.name -> Cancelled)).toMap
+        Map.empty
       }
 
       new ValidationContextResult(validations.toMap)
@@ -83,7 +79,7 @@ class ValidationContext(val name: String) extends SelfVariable with Guardable wi
     }
   }
 
-  override def toString = s"Validation context $name for $selfClassTag with " +
+  override def toString = s"Validation context ${getClass.getSimpleName} with " +
     constraints.mkString(", ")
 
   // helpers
@@ -95,13 +91,13 @@ class ValidationContext(val name: String) extends SelfVariable with Guardable wi
     _constraints += inv
   }
 
-  protected[validation] def toValidationResult(name: Symbol, res: Boolean): ValidationResult = {
+  protected[validation] def toValidationResult(name: String, res: Boolean): ValidationResult = {
     if (res) Passed
     else Error(s"The `$name` constraint is violated on `$self`")
   }
 
   implicit class Satisfiable(that: Self) {
-    def satisfies(name: Symbol): Boolean = {
+    def satisfies(name: String): Boolean = {
       constraints.find { _.name == name } match {
         case Some(inv) ⇒ inv.validate(that) == Passed
         case None ⇒ throw new RuntimeException(s"Unresolvable constraint dependency from $this to `$name` that does not exists in context $this")

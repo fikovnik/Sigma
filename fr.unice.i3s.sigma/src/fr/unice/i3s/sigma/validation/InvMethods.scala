@@ -16,18 +16,11 @@ trait InvMethods { this: ValidationContext ⇒
 
   private def loadMethodBasedConstraints() {
     val invMethodPrefix = "inv"
-    val guardMethodSuffix = "_Guard"
 
     val methods = getClass.getMethods
 
-    def registerConstraint(method: Method) {
-      val name = Symbol(method.getName.drop(3))
-
-      def findGuard = methods.find { m ⇒
-        m.getName == invMethodPrefix + name.name + guardMethodSuffix &&
-          classOf[Boolean].isAssignableFrom(m.getReturnType) &&
-          m.getParameterTypes.size == 0
-      }
+    def register(method: Method) {
+      val name = method.getName.drop(3)
 
       val check = () ⇒ {
         invoke(method) match {
@@ -42,13 +35,12 @@ trait InvMethods { this: ValidationContext ⇒
     methods
       .filter { m ⇒
         m.getName.startsWith(invMethodPrefix) &&
-          !m.getName.endsWith(guardMethodSuffix) &&
           m.getName.length > 3 &&
           m.getParameterTypes.size == 0 &&
           (classOf[ValidationResult].isAssignableFrom(m.getReturnType) ||
             classOf[Boolean].isAssignableFrom(m.getReturnType))
       }
-      .foreach(registerConstraint)
+      .foreach(register)
   }
 
   private def invoke(method: Method) = method.invoke(this).asInstanceOf[Any]

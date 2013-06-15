@@ -8,7 +8,7 @@ trait InvBuilder { this: ValidationContext ⇒
     def check(thunk: ⇒ Boolean)(implicit o: Overloaded1): Constraint
   }
 
-  private class ConstraintBuilderImpl(val name: Symbol) extends ConstraintBuilder {
+  private class ConstraintBuilderImpl(val name: String) extends ConstraintBuilder {
     type Guard = () ⇒ Boolean
     final val NoGuard = () ⇒ true
 
@@ -39,6 +39,6 @@ trait InvBuilder { this: ValidationContext ⇒
     }
   }
 
-  protected def constraint(name: Symbol): ConstraintBuilder = new ConstraintBuilderImpl(name)
+  protected def constraint(name: String): ConstraintBuilder = new ConstraintBuilderImpl(name)
 
 }
