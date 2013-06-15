@@ -227,7 +227,7 @@ case class EClassScalaSupportTemplate(
   }
 
   protected def renderConstructor(clazz: GenClass) = {
-    val features = clazz.genFeatures filter { f ⇒
+    val features = clazz.allGenFeatures filter { f ⇒
       !f.isDerived &&
         f.isChangeable &&
         f.isBidirectional implies !f.isContainer
