@@ -69,6 +69,7 @@ trait GenModelScalaSupport extends EMFScalaSupport {
 
   implicit class GenFeatureEx(that: GenFeature) {
     def genClass = that.getGenClass
+    def name = that.getName
     def scalaName = checkName(that.getName)
     def scalaType = typeName(that)
     def defaultValue = that.getStaticDefaultValue
@@ -238,7 +239,7 @@ case class EClassScalaSupportTemplate(
 
     !s"def apply(${featureParams mkString (", ")}): ${clazz.scalaName} =" curlyIndent {
       if (useEMFBuilder) {
-        !s"val instance = $pkgSupportName.builder.create[${clazz.name}]" << endl
+        !s"val instance = $pkgSupportName.builder.create[${clazz.scalaName}]" << endl
       } else {
         !s"val instance = ${clazz.genPackage.qualifiedFactoryInterfaceName}.eINSTANCE.create${clazz.name}" << endl
       }
@@ -271,10 +272,12 @@ case class EClassScalaSupportTemplate(
   }
 
   protected def renderFeatureSetter(f: GenFeature) = {
-    !s"def ${f.scalaName}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
+    // for setters we do not need to escape scala keywords
+    val name = f.name
+    !s"def ${name}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
     // a proxy setter for all non-containable references
     if (!f.isContains && f.isReferenceType && !f.isListType) {
-      !s"def ${f.scalaName}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
+      !s"def ${name}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
         !s"that.${f.setter}($pkgSupportName.builder.ref(value))"
       }
     }

@@ -21,9 +21,9 @@ object GenerateSLE13ScalaSupport extends WorkflowApp {
 
   val packageSuffix = ".support"
   val genModels = List(
-    s"platform:/resource/$projectName/model/Library.genmodel"
-  //	  s"platform:/resource/$projectName/model/DB.genmodel",
-  //      s"platform:/resource/$projectName/model/SimpleUML.genmodel"
+    s"platform:/resource/$projectName/model/Library.genmodel",
+    //	  s"platform:/resource/$projectName/model/DB.genmodel",
+    s"platform:/resource/$projectName/model/SimpleUML.genmodel"
   )
 
   !new StandaloneSetup {
@@ -47,6 +47,9 @@ object GenerateSLE13ScalaSupport extends WorkflowApp {
       generateExtractors = true
       useEMFBuilder = true
       packageNameMapping = { _ + packageSuffix }
+
+      mapping("Class", "UMLClass")
+      mapping("Package", "UMLPackage")
     }
   }
 
