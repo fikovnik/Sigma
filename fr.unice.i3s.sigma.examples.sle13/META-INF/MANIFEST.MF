@@ -11,5 +11,6 @@ Export-Package: library,
  library.impl,
  library.util
 Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
- fr.unice.i3s.sigma;bundle-version="1.0.0"
+ fr.unice.i3s.sigma;bundle-version="1.0.0",
+ org.scalatest;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy

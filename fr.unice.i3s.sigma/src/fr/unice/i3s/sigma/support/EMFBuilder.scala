@@ -20,6 +20,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object EMFBuilder {
 
+  // TODO: move to EMFScalaSupport
   implicit class InitializableEObject[T <: EObject: ClassTag](val obj: T) {
     def init(fun: T ⇒ Any): T = {
       fun(obj)
