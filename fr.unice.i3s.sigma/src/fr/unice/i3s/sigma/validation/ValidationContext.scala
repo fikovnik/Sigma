@@ -13,48 +13,94 @@ trait OverloadHack {
   implicit val overload2 = new Overloaded2
 }
 
-private[validation] object SelfGuard {
-  type Guard = () ⇒ Boolean
-  val NoGuard: Guard = { () ⇒ true }
+trait Guardable {
+  def guardedBy(g: Boolean) = g
+
+  implicit class CheckedBoolean(that: Boolean) {
+    def check(g: ⇒ ValidationResult) =
+      if (that) g
+      else Cancelled
+  }
 }
 
-private[validation] trait SelfGuard[T >: Null] extends OverloadHack {
-  import SelfGuard._
+private[validation] trait SelfVariable {
+  type Self >: Null
 
-  private var _guard: Guard = NoGuard
-  protected def guard = _guard
-  protected def guard_=(v: ⇒ Boolean) = _guard = { () ⇒ v }
-  private[validation] def guard_=(v: Guard)(implicit o: Overloaded1) = _guard = v
+  private val _self = new DynamicVariable[Self](null)
+  protected def self: Self = _self.value
 
-  private val _self = new DynamicVariable[T](null)
-  protected def self: T = _self.value
-
-  protected def validateWithSelf[R](newself: T)(thunk: ⇒ R): Option[R] = {
-    _self.withValue(newself) {
-      if (!guard()) None
-      else Some(thunk)
-    }
-  }
-  protected def withSelf(newself: T)(thunk: ⇒ Unit) =
+  protected def withSelf[R](newself: Self)(thunk: ⇒ R): R =
     _self.withValue(newself) {
       thunk
     }
 
 }
 
-class ValidationContext[T >: Null: ClassTag](val name: String) extends SelfGuard[T] with OverloadHack {
-  import SelfGuard._
-
+class ValidationContext(val name: String) extends SelfVariable with Guardable with OverloadHack {
+  override type Self >: Null <: EObject
   type Check = () ⇒ ValidationResult
+
+  case class Constraint(name: Symbol, check: Check) extends SelfVariable {
+    type Self = ValidationContext#Self
+
+    // TODO: is this possible to replace this with AutoContainment
+    registerConstraint(this)
+
+    def validate(instance: Self): ValidationResult = {
+      withSelf(instance) { check() }
+    }
+
+    override def toString = s"Constraint $name for $selfClassTag"
+  }
 
   def this() = this(getClass.getSimpleName)
 
+  protected[validation] implicit val selfClassTag: ClassTag[Self] = implicitly
+
   private val _constraints = Buffer[Constraint]()
+
+  def guard: Boolean = true
+
   def constraints: List[Constraint] = _constraints.toList
 
-  loadMethodBasedConstraints()
+  def validate(instance: Self): ValidationContextResult = {
+    withSelf(instance) {
+      val validations = if (guard) {
+        constraints map { inv ⇒
+          (inv.name -> inv.validate(instance))
+        }
+      } else {
+        constraints.map((_.name -> Cancelled)).toMap
+      }
 
-  implicit class Satisfiable(that: T) {
+      new ValidationContextResult(validations.toMap)
+    }
+  }
+
+  def fix(instance: Self, fix: QuickFix) {
+    withSelf(instance) {
+      fix.perform()
+    }
+  }
+
+  override def toString = s"Validation context $name for $selfClassTag with " +
+    constraints.mkString(", ")
+
+  // helpers
+
+  protected[validation] def registerConstraint(inv: Constraint) = {
+    require(inv != null, "Constraint name must not be null")
+    require(!constraints.exists { _.name == inv.name }, s"A constraint ${inv.name} has been already defined")
+
+    _constraints += inv
+  }
+
+  protected[validation] def toValidationResult(name: Symbol, res: Boolean): ValidationResult = {
+    if (res) Passed
+    else Error(s"The `$name` constraint is violated on `$self`")
+  }
+
+  implicit class Satisfiable(that: Self) {
     def satisfies(name: Symbol): Boolean = {
       constraints.find { _.name == name } match {
         case Some(inv) ⇒ inv.validate(that) == Passed
@@ -62,146 +108,4 @@ class ValidationContext[T >: Null: ClassTag](val name: String) extends SelfGuard
       }
     }
   }
-
-  abstract class Constraint extends SelfGuard[T] {
-
-    def this(name: Symbol, guard: Guard, check: Check) = {
-      this()
-      this.name = name
-      this.guard = guard
-      this.check = check
-    }
-
-    // TODO: is this possible to replace this with AutoContainment
-    registerConstraint(this)
-
-    private var _name: Symbol = _
-    def name: Symbol = _name
-    protected def name_=(v: Symbol) = {
-      require(v != null, "Constraint name must not be null")
-      require(!constraints.exists { _.name == v }, s"A constraint `$v` has been already defined")
-
-      _name = v
-    }
-
-    private var _check: Check = {
-      () ⇒ throw new RuntimeException(s"Check in constraint $name has not been defined")
-    }
-    protected def check = _check
-    protected def check_=(v: ⇒ ValidationResult)(implicit o: Overloaded1) = _check = { () ⇒ v }
-    protected def check_=(v: ⇒ Boolean)(implicit o: Overloaded2) = _check = () ⇒ toValidationResult(name, v)
-    private def check_=(v: Check) = _check = v
-
-    def validate(instance: T): ValidationResult = {
-      validateWithSelf(instance) { check() } getOrElse (Cancelled)
-    }
-
-    override def toString = s"Constraint $name for ${classTag[T]} " + {
-      if (guard != NoGuard) "with" else "without"
-    } + " guard"
-  }
-
-  def validate(instance: T): ValidationContextResult = {
-    // TODO: validate constraints
-    val validations = validateWithSelf(instance) {
-      constraints map { inv ⇒
-        (inv.name -> inv.validate(instance))
-      }
-    }
-
-    new ValidationContextResult(validations.map(_.toMap).getOrElse(Map.empty))
-  }
-
-  def fix(instance: T, fix: Fixable#Fix) {
-    withSelf(instance) {
-      fix.perform()
-    }
-  }
-
-  override def toString = s"Validation context $name for `${classTag[T]}` with " +
-    constraints.mkString(", ")
-
-  // constraint builder
-
-  trait ConstraintBuilder {
-    def guard(thunk: ⇒ Boolean): ConstraintBuilder
-    def check(thunk: ⇒ ValidationResult): Constraint
-    def check(thunk: ⇒ Boolean)(implicit o: Overloaded1): Constraint
-  }
-
-  private class ConstraintBuilderImpl(val name: Symbol) extends ConstraintBuilder {
-    private var _guard: Guard = NoGuard
-
-    def guard(thunk: ⇒ Boolean) = {
-      _guard = () ⇒ thunk
-      this
-    }
-
-    def check(thunk: ⇒ ValidationResult) = build(() ⇒ thunk)
-    def check(thunk: ⇒ Boolean)(implicit o: Overloaded1) = build(() ⇒ toValidationResult(name, thunk))
-
-    private def build(check: Check) = {
-      new Constraint(name, _guard, check) {}
-    }
-  }
-
-  protected def constraint(name: Symbol): ConstraintBuilder = new ConstraintBuilderImpl(name)
-
-  // helpers
-
-  private def registerConstraint(inv: Constraint) = _constraints += inv
-
-  private def toValidationResult(name: Symbol, res: Boolean): ValidationResult = {
-    if (res) Passed
-    else Error(s"The `$name` constraint is violated on `$self`")
-  }
-
-  private def loadMethodBasedConstraints() {
-    val invMethodPrefix = "inv"
-    val guardMethodSuffix = "_Guard"
-
-    val methods = getClass.getMethods
-
-    def registerConstraint(method: Method) {
-      val name = Symbol(method.getName.drop(3))
-
-      def findGuard = methods.find { m ⇒
-        m.getName == invMethodPrefix + name.name + guardMethodSuffix &&
-          classOf[Boolean].isAssignableFrom(m.getReturnType) &&
-          m.getParameterTypes.size == 0
-      }
-
-      val check = () ⇒ {
-        invoke(method) match {
-          case x: Boolean ⇒ toValidationResult(name, x)
-          case x: ValidationResult ⇒ x
-        }
-      }
-
-      val guard = findGuard match {
-        case Some(m) ⇒ () ⇒ {
-          invoke(m) match {
-            case x: Boolean ⇒ x
-          }
-        }
-        case None ⇒ NoGuard
-      }
-
-      new Constraint(name, guard, check) {}
-    }
-
-    methods
-      .filter { m ⇒
-        m.getName.startsWith(invMethodPrefix) &&
-          !m.getName.endsWith(guardMethodSuffix) &&
-          m.getName.length > 3 &&
-          m.getParameterTypes.size == 0 &&
-          (classOf[ValidationResult].isAssignableFrom(m.getReturnType) ||
-            classOf[Boolean].isAssignableFrom(m.getReturnType))
-      }
-      .foreach(registerConstraint)
-  }
-
-  private def invoke(method: Method) = method.invoke(ValidationContext.this).asInstanceOf[Any]
-
 }

@@ -12,61 +12,36 @@ object Cancelled extends ValidationResult {
   override def toString = "Cancelled"
 }
 
+case class QuickFix(title: String, perform: () ⇒ Any) {
+  override def toString = s"QuickFix `$title`"
+}
+
 sealed trait Fixable { this: ValidationResult ⇒
-  private val _fixes = Buffer[Fix]()
-  def fixes: List[Fix] = _fixes.toList
+  private val _quickFixes = Buffer[QuickFix]()
+  def quickFixes: Seq[QuickFix] = _quickFixes.toSeq
 
-  private var _message: String = _
-  def message: String = _message
-  protected def message_=(v: String) = _message = v
-
-  private class Overloaded1
-  private implicit val overload1 = new Overloaded1
-
-  class Fix {
-    def this(title: String, perform: () ⇒ Unit) = {
-      this()
-      this.title = title
-      this.perform = perform
-    }
-
-    _fixes += this
-
-    private var _title: String = _
-    def title: String = _message
-    protected def title_=(v: String) = _message = v
-
-    private var _perform: () ⇒ Unit = _
-    def perform: () ⇒ Unit = _perform
-    protected def perform_=(v: ⇒ Unit) = _perform = { () ⇒ v }
-    private def perform_=(v: () ⇒ Unit)(implicit o: Overloaded1) = _perform = v
-
-    override def toString = s"Fix `$title` for `${Fixable.this}`"
+  def quickFix(title: String)(perform: ⇒ Any): this.type = {
+    _quickFixes += QuickFix(title, () ⇒ perform)
+    this
   }
 }
 
 object Warning {
   def apply(message: String): Warning = new Warning(message)
+  def unapply(that: Warning) = Some((that.message, that.quickFixes))
 }
 
-class Warning extends ValidationResult with Fixable {
-  def this(message: String) = {
-    this()
-    this.message = message
-  }
-  override def toString = s"Warning(${fixes.size} fixes): $message"
+class Warning(val message: String) extends ValidationResult with Fixable {
+  override def toString = s"Warning(${quickFixes.size} fixes): $message"
 }
 
 object Error {
   def apply(message: String): Error = new Error(message)
+  def unapply(that: Error) = Some((that.message, that.quickFixes))
 }
 
-class Error extends ValidationResult with Fixable {
-  def this(message: String) = {
-    this()
-    this.message = message
-  }
-  override def toString = s"Error(${fixes.size} fixes): $message"
+class Error(val message: String) extends ValidationResult with Fixable {
+  override def toString = s"Error(${quickFixes.size} fixes): $message"
 }
 
 class ValidationContextResult(val results: Map[Symbol, ValidationResult]) {
