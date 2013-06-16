@@ -2,13 +2,17 @@ package fr.unice.i3s.sigma.validation
 
 import scala.collection.mutable.Buffer
 
-sealed trait ValidationResult
+sealed trait ValidationResult {
+  def passed: Boolean
+}
 
 object Passed extends ValidationResult {
+  def passed = true
   override def toString = "Passed"
 }
 
 object Cancelled extends ValidationResult {
+  def passed = false
   override def toString = "Cancelled"
 }
 
@@ -32,6 +36,7 @@ object Warning {
 }
 
 class Warning(val message: String) extends ValidationResult with Fixable {
+  def passed = false
   override def toString = s"Warning(${quickFixes.size} fixes): $message"
 }
 
@@ -41,6 +46,7 @@ object Error {
 }
 
 class Error(val message: String) extends ValidationResult with Fixable {
+  def passed = false
   override def toString = s"Error(${quickFixes.size} fixes): $message"
 }
 

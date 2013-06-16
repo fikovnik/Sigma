@@ -5,13 +5,7 @@ import org.eclipse.emf.ecore.EObject
 import scala.reflect.{ ClassTag, classTag }
 import java.lang.reflect.Method
 import scala.collection.mutable.Buffer
-
-trait OverloadHack {
-  class Overloaded1
-  class Overloaded2
-  implicit val overload1 = new Overloaded1
-  implicit val overload2 = new Overloaded2
-}
+import fr.unice.i3s.sigma.internal.OverloadHack
 
 trait Guardable {
   def guardedBy(g: Boolean) = g
@@ -33,25 +27,13 @@ private[validation] trait SelfVariable {
     _self.withValue(newself) {
       thunk
     }
-
 }
 
 trait ValidationContext extends SelfVariable with Guardable with OverloadHack {
   override type Self >: Null <: EObject
   type Check = () ⇒ ValidationResult
 
-  case class Constraint(name: String, check: Check) extends SelfVariable {
-    type Self = ValidationContext#Self
-
-    // TODO: is this possible to replace this with AutoContainment
-    registerConstraint(this)
-
-    def validate(instance: Self): ValidationResult = {
-      withSelf(instance) { check() }
-    }
-
-    override def toString = s"Constraint $name"
-  }
+  implicit val selfTag: ClassTag[Self]
 
   private val _constraints = Buffer[Constraint]()
 
@@ -79,8 +61,8 @@ trait ValidationContext extends SelfVariable with Guardable with OverloadHack {
     }
   }
 
-  override def toString = s"Validation context ${getClass.getSimpleName} with " +
-    constraints.mkString(", ")
+  override def toString = s"Validation context ${getClass.getSimpleName} for $selfTag: " +
+    constraints.map(_.name).mkString(", ")
 
   // helpers
 
@@ -94,6 +76,19 @@ trait ValidationContext extends SelfVariable with Guardable with OverloadHack {
   protected[validation] def toValidationResult(name: String, res: Boolean): ValidationResult = {
     if (res) Passed
     else Error(s"The `$name` constraint is violated on `$self`")
+  }
+
+  case class Constraint(name: String, check: Check) extends SelfVariable {
+    type Self = ValidationContext#Self
+
+    // TODO: is this possible to replace this with AutoContainment
+    registerConstraint(this)
+
+    def validate(instance: Self): ValidationResult = {
+      withSelf(instance) { check() }
+    }
+
+    override def toString = s"Constraint $name for $selfTag"
   }
 
   implicit class Satisfiable(that: Self) {
