@@ -13,7 +13,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * <ul>
  *   <li>{@link uml.Class#isAbstract <em>Abstract</em>}</li>
- *   <li>{@link uml.Class#getAttributes <em>Attributes</em>}</li>
+ *   <li>{@link uml.Class#getProperties <em>Properties</em>}</li>
  *   <li>{@link uml.Class#getOperations <em>Operations</em>}</li>
  * </ul>
  * </p>
@@ -51,20 +51,20 @@ public interface Class extends Classifier
 	void setAbstract(boolean value);
 
 	/**
-	 * Returns the value of the '<em><b>Attributes</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Properties</b></em>' containment reference list.
 	 * The list contents are of type {@link uml.Property}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Attributes</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>Properties</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Attributes</em>' containment reference list.
-	 * @see uml.UMLPackage#getClass_Attributes()
+	 * @return the value of the '<em>Properties</em>' containment reference list.
+	 * @see uml.UMLPackage#getClass_Properties()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Property> getAttributes();
+	EList<Property> getProperties();
 
 	/**
 	 * Returns the value of the '<em><b>Operations</b></em>' containment reference list.

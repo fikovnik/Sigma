@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ASCII"?>
+<uml:Package
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:uml="http://uml/1.0"
+    xsi:schemaLocation="http://uml/1.0 ../model/SimpleUML.ecore"
+    name="pkg">
+  <ownedElements
+      xsi:type="uml:Class"
+      name="A">
+    <stereotypes
+        name="singleton"/>
+    <operations
+        name="getInstance"
+        returnType="//@ownedElements.0"/>
+  </ownedElements>
+  <ownedElements
+      xsi:type="uml:Class"
+      name="B">
+    <stereotypes
+        name="singleton"/>
+  </ownedElements>
+  <ownedElements
+      xsi:type="uml:Class"
+      name="C">
+    <stereotypes
+        name="singleton"/>
+    <operations
+        name="getInstance"
+        ownerScope="sk_classifier"
+        returnType="//@ownedElements.2"/>
+  </ownedElements>
+</uml:Package>

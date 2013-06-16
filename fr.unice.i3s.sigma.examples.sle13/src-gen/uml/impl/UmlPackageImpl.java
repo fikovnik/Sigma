@@ -267,7 +267,7 @@ public class UMLPackageImpl extends EPackageImpl implements UMLPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getClass_Attributes()
+	public EReference getClass_Properties()
 	{
 		return (EReference)classEClass.getEStructuralFeatures().get(1);
 	}
@@ -416,7 +416,7 @@ public class UMLPackageImpl extends EPackageImpl implements UMLPackage
 
 		classEClass = createEClass(CLASS);
 		createEAttribute(classEClass, CLASS__ABSTRACT);
-		createEReference(classEClass, CLASS__ATTRIBUTES);
+		createEReference(classEClass, CLASS__PROPERTIES);
 		createEReference(classEClass, CLASS__OPERATIONS);
 
 		primitiveTypeEClass = createEClass(PRIMITIVE_TYPE);
@@ -487,7 +487,7 @@ public class UMLPackageImpl extends EPackageImpl implements UMLPackage
 
 		initEClass(classEClass, uml.Class.class, "Class", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getClass_Abstract(), ecorePackage.getEBoolean(), "abstract", null, 1, 1, uml.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getClass_Attributes(), this.getProperty(), null, "attributes", null, 0, -1, uml.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getClass_Properties(), this.getProperty(), null, "properties", null, 0, -1, uml.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getClass_Operations(), this.getOperation(), null, "operations", null, 0, -1, uml.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(primitiveTypeEClass, PrimitiveType.class, "PrimitiveType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

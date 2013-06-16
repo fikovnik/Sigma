@@ -243,13 +243,13 @@ public interface UMLPackage extends EPackage
 	int CLASS__ABSTRACT = CLASSIFIER_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS__ATTRIBUTES = CLASSIFIER_FEATURE_COUNT + 1;
+	int CLASS__PROPERTIES = CLASSIFIER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Operations</b></em>' containment reference list.
@@ -588,15 +588,15 @@ public interface UMLPackage extends EPackage
 	EAttribute getClass_Abstract();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link uml.Class#getAttributes <em>Attributes</em>}'.
+	 * Returns the meta object for the containment reference list '{@link uml.Class#getProperties <em>Properties</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Attributes</em>'.
-	 * @see uml.Class#getAttributes()
+	 * @return the meta object for the containment reference list '<em>Properties</em>'.
+	 * @see uml.Class#getProperties()
 	 * @see #getClass_()
 	 * @generated
 	 */
-	EReference getClass_Attributes();
+	EReference getClass_Properties();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link uml.Class#getOperations <em>Operations</em>}'.
@@ -817,12 +817,12 @@ public interface UMLPackage extends EPackage
 		EAttribute CLASS__ABSTRACT = eINSTANCE.getClass_Abstract();
 
 		/**
-		 * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CLASS__ATTRIBUTES = eINSTANCE.getClass_Attributes();
+		EReference CLASS__PROPERTIES = eINSTANCE.getClass_Properties();
 
 		/**
 		 * The meta object literal for the '<em><b>Operations</b></em>' containment reference list feature.

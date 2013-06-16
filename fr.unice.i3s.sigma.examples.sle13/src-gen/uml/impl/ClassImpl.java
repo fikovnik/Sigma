@@ -29,7 +29,7 @@ import uml.UMLPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link uml.impl.ClassImpl#isAbstract <em>Abstract</em>}</li>
- *   <li>{@link uml.impl.ClassImpl#getAttributes <em>Attributes</em>}</li>
+ *   <li>{@link uml.impl.ClassImpl#getProperties <em>Properties</em>}</li>
  *   <li>{@link uml.impl.ClassImpl#getOperations <em>Operations</em>}</li>
  * </ul>
  * </p>
@@ -59,14 +59,14 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	protected boolean abstract_ = ABSTRACT_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getAttributes() <em>Attributes</em>}' containment reference list.
+	 * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getAttributes()
+	 * @see #getProperties()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Property> attributes;
+	protected EList<Property> properties;
 
 	/**
 	 * The cached value of the '{@link #getOperations() <em>Operations</em>}' containment reference list.
@@ -127,13 +127,13 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Property> getAttributes()
+	public EList<Property> getProperties()
 	{
-		if (attributes == null)
+		if (properties == null)
 		{
-			attributes = new EObjectContainmentEList<Property>(Property.class, this, UMLPackage.CLASS__ATTRIBUTES);
+			properties = new EObjectContainmentEList<Property>(Property.class, this, UMLPackage.CLASS__PROPERTIES);
 		}
-		return attributes;
+		return properties;
 	}
 
 	/**
@@ -160,8 +160,8 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		switch (featureID)
 		{
-			case UMLPackage.CLASS__ATTRIBUTES:
-				return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
+			case UMLPackage.CLASS__PROPERTIES:
+				return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
 			case UMLPackage.CLASS__OPERATIONS:
 				return ((InternalEList<?>)getOperations()).basicRemove(otherEnd, msgs);
 		}
@@ -180,8 +180,8 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 		{
 			case UMLPackage.CLASS__ABSTRACT:
 				return isAbstract();
-			case UMLPackage.CLASS__ATTRIBUTES:
-				return getAttributes();
+			case UMLPackage.CLASS__PROPERTIES:
+				return getProperties();
 			case UMLPackage.CLASS__OPERATIONS:
 				return getOperations();
 		}
@@ -202,9 +202,9 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 			case UMLPackage.CLASS__ABSTRACT:
 				setAbstract((Boolean)newValue);
 				return;
-			case UMLPackage.CLASS__ATTRIBUTES:
-				getAttributes().clear();
-				getAttributes().addAll((Collection<? extends Property>)newValue);
+			case UMLPackage.CLASS__PROPERTIES:
+				getProperties().clear();
+				getProperties().addAll((Collection<? extends Property>)newValue);
 				return;
 			case UMLPackage.CLASS__OPERATIONS:
 				getOperations().clear();
@@ -227,8 +227,8 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 			case UMLPackage.CLASS__ABSTRACT:
 				setAbstract(ABSTRACT_EDEFAULT);
 				return;
-			case UMLPackage.CLASS__ATTRIBUTES:
-				getAttributes().clear();
+			case UMLPackage.CLASS__PROPERTIES:
+				getProperties().clear();
 				return;
 			case UMLPackage.CLASS__OPERATIONS:
 				getOperations().clear();
@@ -249,8 +249,8 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 		{
 			case UMLPackage.CLASS__ABSTRACT:
 				return abstract_ != ABSTRACT_EDEFAULT;
-			case UMLPackage.CLASS__ATTRIBUTES:
-				return attributes != null && !attributes.isEmpty();
+			case UMLPackage.CLASS__PROPERTIES:
+				return properties != null && !properties.isEmpty();
 			case UMLPackage.CLASS__OPERATIONS:
 				return operations != null && !operations.isEmpty();
 		}

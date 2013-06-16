@@ -7,6 +7,8 @@ import uml.support.UmlPackageScalaSupport
 import relational.support.RelationalPackageScalaSupport
 import fr.unice.i3s.sigma.m2m.M2M
 import org.scalatest.junit.JUnitRunner
+import relational.RelationalPackage
+import uml.UMLPackage
 
 
 
@@ -18,13 +20,15 @@ class Uml2RelationalTest extends FunSuite with MustMatchers with UmlPackageScala
     val int = PrimitiveType(name = "int")
     val clazz = UmlClass(
       name = "A",
-      attributes = Seq(
+      properties = Seq(
         Property(name = "a", `type` = int, multi = false),
         Property(name = "b", `type` = int, multi = true)
       )
     )
 
     val trans = new Uml2Relational
+    trans.sourceMetaModels += UMLPackage.eINSTANCE
+    trans.targetMetaModels += RelationalPackage.eINSTANCE
     val res = trans.transform(clazz)
 
   }
