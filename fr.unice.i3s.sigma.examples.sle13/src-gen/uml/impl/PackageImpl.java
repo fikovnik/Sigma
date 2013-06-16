@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import uml.Classifier;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -60,7 +60,7 @@ public class PackageImpl extends ModelElementImpl implements uml.Package
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.PACKAGE;
+		return UMLPackage.Literals.PACKAGE;
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class PackageImpl extends ModelElementImpl implements uml.Package
 	{
 		if (ownedElements == null)
 		{
-			ownedElements = new EObjectContainmentEList<Classifier>(Classifier.class, this, UmlPackage.PACKAGE__OWNED_ELEMENTS);
+			ownedElements = new EObjectContainmentEList<Classifier>(Classifier.class, this, UMLPackage.PACKAGE__OWNED_ELEMENTS);
 		}
 		return ownedElements;
 	}
@@ -87,7 +87,7 @@ public class PackageImpl extends ModelElementImpl implements uml.Package
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PACKAGE__OWNED_ELEMENTS:
+			case UMLPackage.PACKAGE__OWNED_ELEMENTS:
 				return ((InternalEList<?>)getOwnedElements()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -103,7 +103,7 @@ public class PackageImpl extends ModelElementImpl implements uml.Package
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PACKAGE__OWNED_ELEMENTS:
+			case UMLPackage.PACKAGE__OWNED_ELEMENTS:
 				return getOwnedElements();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -120,7 +120,7 @@ public class PackageImpl extends ModelElementImpl implements uml.Package
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PACKAGE__OWNED_ELEMENTS:
+			case UMLPackage.PACKAGE__OWNED_ELEMENTS:
 				getOwnedElements().clear();
 				getOwnedElements().addAll((Collection<? extends Classifier>)newValue);
 				return;
@@ -138,7 +138,7 @@ public class PackageImpl extends ModelElementImpl implements uml.Package
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PACKAGE__OWNED_ELEMENTS:
+			case UMLPackage.PACKAGE__OWNED_ELEMENTS:
 				getOwnedElements().clear();
 				return;
 		}
@@ -155,7 +155,7 @@ public class PackageImpl extends ModelElementImpl implements uml.Package
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PACKAGE__OWNED_ELEMENTS:
+			case UMLPackage.PACKAGE__OWNED_ELEMENTS:
 				return ownedElements != null && !ownedElements.isEmpty();
 		}
 		return super.eIsSet(featureID);

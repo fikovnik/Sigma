@@ -16,17 +16,17 @@ import uml.Operation;
 import uml.PrimitiveType;
 import uml.Property;
 import uml.Stereotype;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see uml.UmlPackage
+ * @see uml.UMLPackage
  * @generated
  */
-public class UmlAdapterFactory extends AdapterFactoryImpl
+public class UMLAdapterFactory extends AdapterFactoryImpl
 {
 	/**
 	 * The cached model package.
@@ -34,7 +34,7 @@ public class UmlAdapterFactory extends AdapterFactoryImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static UmlPackage modelPackage;
+	protected static UMLPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -42,11 +42,11 @@ public class UmlAdapterFactory extends AdapterFactoryImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public UmlAdapterFactory()
+	public UMLAdapterFactory()
 	{
 		if (modelPackage == null)
 		{
-			modelPackage = UmlPackage.eINSTANCE;
+			modelPackage = UMLPackage.eINSTANCE;
 		}
 	}
 
@@ -78,8 +78,8 @@ public class UmlAdapterFactory extends AdapterFactoryImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected UmlSwitch<Adapter> modelSwitch =
-		new UmlSwitch<Adapter>()
+	protected UMLSwitch<Adapter> modelSwitch =
+		new UMLSwitch<Adapter>()
 		{
 			@Override
 			public Adapter caseModelElement(ModelElement object)
@@ -296,4 +296,4 @@ public class UmlAdapterFactory extends AdapterFactoryImpl
 		return null;
 	}
 
-} //UmlAdapterFactory
+} //UMLAdapterFactory

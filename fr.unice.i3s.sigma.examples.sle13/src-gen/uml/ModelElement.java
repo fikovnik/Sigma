@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see uml.UmlPackage#getModelElement()
+ * @see uml.UMLPackage#getModelElement()
  * @model abstract="true"
  * @generated
  */
@@ -35,7 +35,7 @@ public interface ModelElement extends EObject
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see uml.UmlPackage#getModelElement_Name()
+	 * @see uml.UMLPackage#getModelElement_Name()
 	 * @model required="true"
 	 * @generated
 	 */
@@ -61,7 +61,7 @@ public interface ModelElement extends EObject
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Stereotypes</em>' containment reference list.
-	 * @see uml.UmlPackage#getModelElement_Stereotypes()
+	 * @see uml.UMLPackage#getModelElement_Stereotypes()
 	 * @model containment="true"
 	 * @generated
 	 */

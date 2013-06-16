@@ -16,8 +16,8 @@ import uml.PrimitiveType;
 import uml.Property;
 import uml.ScopeKind;
 import uml.Stereotype;
-import uml.UmlFactory;
-import uml.UmlPackage;
+import uml.UMLFactory;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,7 +25,7 @@ import uml.UmlPackage;
  * <!-- end-user-doc -->
  * @generated
  */
-public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
+public class UMLFactoryImpl extends EFactoryImpl implements UMLFactory
 {
 	/**
 	 * Creates the default factory implementation.
@@ -33,21 +33,21 @@ public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static UmlFactory init()
+	public static UMLFactory init()
 	{
 		try
 		{
-			UmlFactory theUmlFactory = (UmlFactory)EPackage.Registry.INSTANCE.getEFactory("http://uml/1.0"); 
-			if (theUmlFactory != null)
+			UMLFactory theUMLFactory = (UMLFactory)EPackage.Registry.INSTANCE.getEFactory("http://uml/1.0"); 
+			if (theUMLFactory != null)
 			{
-				return theUmlFactory;
+				return theUMLFactory;
 			}
 		}
 		catch (Exception exception)
 		{
 			EcorePlugin.INSTANCE.log(exception);
 		}
-		return new UmlFactoryImpl();
+		return new UMLFactoryImpl();
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public UmlFactoryImpl()
+	public UMLFactoryImpl()
 	{
 		super();
 	}
@@ -71,12 +71,12 @@ public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
 	{
 		switch (eClass.getClassifierID())
 		{
-			case UmlPackage.STEREOTYPE: return createStereotype();
-			case UmlPackage.PACKAGE: return createPackage();
-			case UmlPackage.CLASS: return createClass();
-			case UmlPackage.PRIMITIVE_TYPE: return createPrimitiveType();
-			case UmlPackage.PROPERTY: return createProperty();
-			case UmlPackage.OPERATION: return createOperation();
+			case UMLPackage.STEREOTYPE: return createStereotype();
+			case UMLPackage.PACKAGE: return createPackage();
+			case UMLPackage.CLASS: return createClass();
+			case UMLPackage.PRIMITIVE_TYPE: return createPrimitiveType();
+			case UMLPackage.PROPERTY: return createProperty();
+			case UMLPackage.OPERATION: return createOperation();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -92,7 +92,7 @@ public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
 	{
 		switch (eDataType.getClassifierID())
 		{
-			case UmlPackage.SCOPE_KIND:
+			case UMLPackage.SCOPE_KIND:
 				return createScopeKindFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
@@ -109,7 +109,7 @@ public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
 	{
 		switch (eDataType.getClassifierID())
 		{
-			case UmlPackage.SCOPE_KIND:
+			case UMLPackage.SCOPE_KIND:
 				return convertScopeKindToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
@@ -209,9 +209,9 @@ public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public UmlPackage getUmlPackage()
+	public UMLPackage getUMLPackage()
 	{
-		return (UmlPackage)getEPackage();
+		return (UMLPackage)getEPackage();
 	}
 
 	/**
@@ -221,9 +221,9 @@ public class UmlFactoryImpl extends EFactoryImpl implements UmlFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static UmlPackage getPackage()
+	public static UMLPackage getPackage()
 	{
-		return UmlPackage.eINSTANCE;
+		return UMLPackage.eINSTANCE;
 	}
 
-} //UmlFactoryImpl
+} //UMLFactoryImpl

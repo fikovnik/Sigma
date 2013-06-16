@@ -11,7 +11,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import uml.Classifier;
 import uml.Operation;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -56,7 +56,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.OPERATION;
+		return UMLPackage.Literals.OPERATION;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 			if (returnType != oldReturnType)
 			{
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, UmlPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, UMLPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
 			}
 		}
 		return returnType;
@@ -99,7 +99,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 		Classifier oldReturnType = returnType;
 		returnType = newReturnType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, UmlPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
+			eNotify(new ENotificationImpl(this, Notification.SET, UMLPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case UmlPackage.OPERATION__RETURN_TYPE:
+			case UMLPackage.OPERATION__RETURN_TYPE:
 				if (resolve) return getReturnType();
 				return basicGetReturnType();
 		}
@@ -129,7 +129,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case UmlPackage.OPERATION__RETURN_TYPE:
+			case UMLPackage.OPERATION__RETURN_TYPE:
 				setReturnType((Classifier)newValue);
 				return;
 		}
@@ -146,7 +146,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case UmlPackage.OPERATION__RETURN_TYPE:
+			case UMLPackage.OPERATION__RETURN_TYPE:
 				setReturnType((Classifier)null);
 				return;
 		}
@@ -163,7 +163,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case UmlPackage.OPERATION__RETURN_TYPE:
+			case UMLPackage.OPERATION__RETURN_TYPE:
 				return returnType != null;
 		}
 		return super.eIsSet(featureID);

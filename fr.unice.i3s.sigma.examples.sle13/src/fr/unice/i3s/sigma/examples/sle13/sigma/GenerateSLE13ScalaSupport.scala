@@ -1,14 +1,8 @@
-package fr.unice.i3s.sigma.examples.sle13
+package fr.unice.i3s.sigma.examples.sle13.sigma
 
 import scala.collection.JavaConversions._
-import org.eclipse.emf.ecore.EPackage
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.resource.URIConverter
 import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
 import fr.unice.i3s.sigma.workflow.WorkflowApp
-import org.eclipse.emf.ecore.EObject
-import fr.unice.i3s.sigma.workflow.lib.ValidateModel
-import org.eclipse.emf.ecore.plugin.EcorePlugin
 import fr.unice.i3s.sigma.workflow.lib.GenerateEMFScalaSupport
 import fr.unice.i3s.sigma.workflow.lib.CleanDirectory
 import fr.unice.i3s.sigma.workflow.lib.GenerateEcore
@@ -22,7 +16,7 @@ object GenerateSLE13ScalaSupport extends WorkflowApp {
   val packageSuffix = ".support"
   val genModels = List(
     s"platform:/resource/$projectName/model/Library.genmodel",
-    //	  s"platform:/resource/$projectName/model/DB.genmodel",
+    s"platform:/resource/$projectName/model/Relational.genmodel",
     s"platform:/resource/$projectName/model/SimpleUML.genmodel"
   )
 
@@ -48,8 +42,8 @@ object GenerateSLE13ScalaSupport extends WorkflowApp {
       useEMFBuilder = true
       packageNameMapping = { _ + packageSuffix }
 
-      mapping("Class", "UMLClass")
-      mapping("Package", "UMLPackage")
+      mapping("Class", "UmlClass")
+      mapping("Package", "UmlPackage")
     }
   }
 

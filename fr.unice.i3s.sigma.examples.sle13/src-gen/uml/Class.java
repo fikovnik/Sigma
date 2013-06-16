@@ -18,7 +18,7 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see uml.UmlPackage#getClass_()
+ * @see uml.UMLPackage#getClass_()
  * @model
  * @generated
  */
@@ -34,7 +34,7 @@ public interface Class extends Classifier
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Abstract</em>' attribute.
 	 * @see #setAbstract(boolean)
-	 * @see uml.UmlPackage#getClass_Abstract()
+	 * @see uml.UMLPackage#getClass_Abstract()
 	 * @model required="true"
 	 * @generated
 	 */
@@ -60,7 +60,7 @@ public interface Class extends Classifier
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Attributes</em>' containment reference list.
-	 * @see uml.UmlPackage#getClass_Attributes()
+	 * @see uml.UMLPackage#getClass_Attributes()
 	 * @model containment="true"
 	 * @generated
 	 */
@@ -76,7 +76,7 @@ public interface Class extends Classifier
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Operations</em>' containment reference list.
-	 * @see uml.UmlPackage#getClass_Operations()
+	 * @see uml.UMLPackage#getClass_Operations()
 	 * @model containment="true"
 	 * @generated
 	 */

@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import uml.ModelElement;
 import uml.Stereotype;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -86,7 +86,7 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.MODEL_ELEMENT;
+		return UMLPackage.Literals.MODEL_ELEMENT;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, UmlPackage.MODEL_ELEMENT__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, UMLPackage.MODEL_ELEMENT__NAME, oldName, name));
 	}
 
 	/**
@@ -121,7 +121,7 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 	{
 		if (stereotypes == null)
 		{
-			stereotypes = new EObjectContainmentEList<Stereotype>(Stereotype.class, this, UmlPackage.MODEL_ELEMENT__STEREOTYPES);
+			stereotypes = new EObjectContainmentEList<Stereotype>(Stereotype.class, this, UMLPackage.MODEL_ELEMENT__STEREOTYPES);
 		}
 		return stereotypes;
 	}
@@ -136,7 +136,7 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 	{
 		switch (featureID)
 		{
-			case UmlPackage.MODEL_ELEMENT__STEREOTYPES:
+			case UMLPackage.MODEL_ELEMENT__STEREOTYPES:
 				return ((InternalEList<?>)getStereotypes()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -152,9 +152,9 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 	{
 		switch (featureID)
 		{
-			case UmlPackage.MODEL_ELEMENT__NAME:
+			case UMLPackage.MODEL_ELEMENT__NAME:
 				return getName();
-			case UmlPackage.MODEL_ELEMENT__STEREOTYPES:
+			case UMLPackage.MODEL_ELEMENT__STEREOTYPES:
 				return getStereotypes();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -171,10 +171,10 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 	{
 		switch (featureID)
 		{
-			case UmlPackage.MODEL_ELEMENT__NAME:
+			case UMLPackage.MODEL_ELEMENT__NAME:
 				setName((String)newValue);
 				return;
-			case UmlPackage.MODEL_ELEMENT__STEREOTYPES:
+			case UMLPackage.MODEL_ELEMENT__STEREOTYPES:
 				getStereotypes().clear();
 				getStereotypes().addAll((Collection<? extends Stereotype>)newValue);
 				return;
@@ -192,10 +192,10 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 	{
 		switch (featureID)
 		{
-			case UmlPackage.MODEL_ELEMENT__NAME:
+			case UMLPackage.MODEL_ELEMENT__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case UmlPackage.MODEL_ELEMENT__STEREOTYPES:
+			case UMLPackage.MODEL_ELEMENT__STEREOTYPES:
 				getStereotypes().clear();
 				return;
 		}
@@ -212,9 +212,9 @@ public abstract class ModelElementImpl extends EObjectImpl implements ModelEleme
 	{
 		switch (featureID)
 		{
-			case UmlPackage.MODEL_ELEMENT__NAME:
+			case UMLPackage.MODEL_ELEMENT__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case UmlPackage.MODEL_ELEMENT__STEREOTYPES:
+			case UMLPackage.MODEL_ELEMENT__STEREOTYPES:
 				return stereotypes != null && !stereotypes.isEmpty();
 		}
 		return super.eIsSet(featureID);

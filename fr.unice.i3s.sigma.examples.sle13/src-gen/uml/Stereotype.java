@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see uml.UmlPackage#getStereotype()
+ * @see uml.UMLPackage#getStereotype()
  * @model
  * @generated
  */
@@ -32,7 +32,7 @@ public interface Stereotype extends EObject
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see uml.UmlPackage#getStereotype_Name()
+	 * @see uml.UMLPackage#getStereotype_Name()
 	 * @model required="true"
 	 * @generated
 	 */

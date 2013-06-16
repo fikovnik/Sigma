@@ -15,7 +15,7 @@ package uml;
  * </ul>
  * </p>
  *
- * @see uml.UmlPackage#getOperation()
+ * @see uml.UMLPackage#getOperation()
  * @model
  * @generated
  */
@@ -31,7 +31,7 @@ public interface Operation extends Feature
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Return Type</em>' reference.
 	 * @see #setReturnType(Classifier)
-	 * @see uml.UmlPackage#getOperation_ReturnType()
+	 * @see uml.UMLPackage#getOperation_ReturnType()
 	 * @model required="true"
 	 * @generated
 	 */

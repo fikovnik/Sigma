@@ -14,7 +14,7 @@ import uml.Operation;
 import uml.PrimitiveType;
 import uml.Property;
 import uml.Stereotype;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -26,10 +26,10 @@ import uml.UmlPackage;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see uml.UmlPackage
+ * @see uml.UMLPackage
  * @generated
  */
-public class UmlSwitch<T> extends Switch<T>
+public class UMLSwitch<T> extends Switch<T>
 {
 	/**
 	 * The cached model package
@@ -37,7 +37,7 @@ public class UmlSwitch<T> extends Switch<T>
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static UmlPackage modelPackage;
+	protected static UMLPackage modelPackage;
 
 	/**
 	 * Creates an instance of the switch.
@@ -45,11 +45,11 @@ public class UmlSwitch<T> extends Switch<T>
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public UmlSwitch()
+	public UMLSwitch()
 	{
 		if (modelPackage == null)
 		{
-			modelPackage = UmlPackage.eINSTANCE;
+			modelPackage = UMLPackage.eINSTANCE;
 		}
 	}
 
@@ -79,21 +79,21 @@ public class UmlSwitch<T> extends Switch<T>
 	{
 		switch (classifierID)
 		{
-			case UmlPackage.MODEL_ELEMENT:
+			case UMLPackage.MODEL_ELEMENT:
 			{
 				ModelElement modelElement = (ModelElement)theEObject;
 				T result = caseModelElement(modelElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.STEREOTYPE:
+			case UMLPackage.STEREOTYPE:
 			{
 				Stereotype stereotype = (Stereotype)theEObject;
 				T result = caseStereotype(stereotype);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.PACKAGE:
+			case UMLPackage.PACKAGE:
 			{
 				uml.Package package_ = (uml.Package)theEObject;
 				T result = casePackage(package_);
@@ -101,7 +101,7 @@ public class UmlSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.CLASSIFIER:
+			case UMLPackage.CLASSIFIER:
 			{
 				Classifier classifier = (Classifier)theEObject;
 				T result = caseClassifier(classifier);
@@ -109,7 +109,7 @@ public class UmlSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.CLASS:
+			case UMLPackage.CLASS:
 			{
 				uml.Class class_ = (uml.Class)theEObject;
 				T result = caseClass(class_);
@@ -118,7 +118,7 @@ public class UmlSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.PRIMITIVE_TYPE:
+			case UMLPackage.PRIMITIVE_TYPE:
 			{
 				PrimitiveType primitiveType = (PrimitiveType)theEObject;
 				T result = casePrimitiveType(primitiveType);
@@ -127,7 +127,7 @@ public class UmlSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.FEATURE:
+			case UMLPackage.FEATURE:
 			{
 				Feature feature = (Feature)theEObject;
 				T result = caseFeature(feature);
@@ -135,7 +135,7 @@ public class UmlSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.PROPERTY:
+			case UMLPackage.PROPERTY:
 			{
 				Property property = (Property)theEObject;
 				T result = caseProperty(property);
@@ -144,7 +144,7 @@ public class UmlSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case UmlPackage.OPERATION:
+			case UMLPackage.OPERATION:
 			{
 				Operation operation = (Operation)theEObject;
 				T result = caseOperation(operation);
@@ -318,4 +318,4 @@ public class UmlSwitch<T> extends Switch<T>
 		return null;
 	}
 
-} //UmlSwitch
+} //UMLSwitch

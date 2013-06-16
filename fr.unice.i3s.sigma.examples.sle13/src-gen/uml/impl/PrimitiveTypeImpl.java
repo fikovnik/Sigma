@@ -5,7 +5,7 @@ package uml.impl;
 import org.eclipse.emf.ecore.EClass;
 
 import uml.PrimitiveType;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -36,7 +36,7 @@ public class PrimitiveTypeImpl extends ClassifierImpl implements PrimitiveType
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.PRIMITIVE_TYPE;
+		return UMLPackage.Literals.PRIMITIVE_TYPE;
 	}
 
 } //PrimitiveTypeImpl

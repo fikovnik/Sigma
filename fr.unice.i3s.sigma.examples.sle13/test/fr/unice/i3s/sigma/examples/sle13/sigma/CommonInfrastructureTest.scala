@@ -1,13 +1,12 @@
-package fr.unice.i3s.sigma.examples.sle13
+package fr.unice.i3s.sigma.examples.sle13.sigma
 
 import scala.collection.JavaConversions._
 import org.scalatest.FunSuite
 import library.support.LibraryPackageScalaSupport
 import org.scalatest.BeforeAndAfter
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.matchers.MustMatchers
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class CommonInfrastructureTest extends FunSuite with MustMatchers with BeforeAndAfter with LibraryPackageScalaSupport {

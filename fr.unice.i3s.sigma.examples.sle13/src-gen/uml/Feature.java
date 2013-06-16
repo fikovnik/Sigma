@@ -15,7 +15,7 @@ package uml;
  * </ul>
  * </p>
  *
- * @see uml.UmlPackage#getFeature()
+ * @see uml.UMLPackage#getFeature()
  * @model abstract="true"
  * @generated
  */
@@ -33,7 +33,7 @@ public interface Feature extends ModelElement
 	 * @return the value of the '<em>Owner Scope</em>' attribute.
 	 * @see uml.ScopeKind
 	 * @see #setOwnerScope(ScopeKind)
-	 * @see uml.UmlPackage#getFeature_OwnerScope()
+	 * @see uml.UMLPackage#getFeature_OwnerScope()
 	 * @model required="true"
 	 * @generated
 	 */

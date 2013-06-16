@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import uml.Feature;
 import uml.ScopeKind;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -65,7 +65,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.FEATURE;
+		return UMLPackage.Literals.FEATURE;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 		ScopeKind oldOwnerScope = ownerScope;
 		ownerScope = newOwnerScope == null ? OWNER_SCOPE_EDEFAULT : newOwnerScope;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, UmlPackage.FEATURE__OWNER_SCOPE, oldOwnerScope, ownerScope));
+			eNotify(new ENotificationImpl(this, Notification.SET, UMLPackage.FEATURE__OWNER_SCOPE, oldOwnerScope, ownerScope));
 	}
 
 	/**
@@ -101,7 +101,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case UmlPackage.FEATURE__OWNER_SCOPE:
+			case UMLPackage.FEATURE__OWNER_SCOPE:
 				return getOwnerScope();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -117,7 +117,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case UmlPackage.FEATURE__OWNER_SCOPE:
+			case UMLPackage.FEATURE__OWNER_SCOPE:
 				setOwnerScope((ScopeKind)newValue);
 				return;
 		}
@@ -134,7 +134,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case UmlPackage.FEATURE__OWNER_SCOPE:
+			case UMLPackage.FEATURE__OWNER_SCOPE:
 				setOwnerScope(OWNER_SCOPE_EDEFAULT);
 				return;
 		}
@@ -151,7 +151,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case UmlPackage.FEATURE__OWNER_SCOPE:
+			case UMLPackage.FEATURE__OWNER_SCOPE:
 				return ownerScope != OWNER_SCOPE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);

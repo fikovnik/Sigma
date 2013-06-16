@@ -4,14 +4,14 @@
     modelName="SimpleUML" importerID="org.eclipse.emf.importer.ecore" complianceLevel="6.0"
     copyrightFields="false">
   <foreignModel>SimpleUML.ecore</foreignModel>
-  <genPackages prefix="Uml" disposableProviderFactory="true" ecorePackage="SimpleUML.ecore#/">
+  <genPackages prefix="UML" disposableProviderFactory="true" ecorePackage="SimpleUML.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="SimpleUML.ecore#//ScopeKind">
       <genEnumLiterals ecoreEnumLiteral="SimpleUML.ecore#//ScopeKind/sk_instance"/>
       <genEnumLiterals ecoreEnumLiteral="SimpleUML.ecore#//ScopeKind/sk_classifier"/>
     </genEnums>
     <genClasses image="false" ecoreClass="SimpleUML.ecore#//ModelElement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SimpleUML.ecore#//ModelElement/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SimpleUML.ecore#//ModelElement/stereotype"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SimpleUML.ecore#//ModelElement/stereotypes"/>
     </genClasses>
     <genClasses ecoreClass="SimpleUML.ecore#//Stereotype">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SimpleUML.ecore#//Stereotype/name"/>

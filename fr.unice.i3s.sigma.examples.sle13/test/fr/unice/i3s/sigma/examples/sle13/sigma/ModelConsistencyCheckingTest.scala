@@ -1,80 +1,21 @@
-package fr.unice.i3s.sigma.examples.sle13
+package fr.unice.i3s.sigma.examples.sle13.sigma
 
 import fr.unice.i3s.sigma.validation.ValidationContext
 import uml.support.UmlPackageScalaSupport
 import uml.ScopeKind
-import fr.unice.i3s.sigma.validation.InvMethods
-import fr.unice.i3s.sigma.validation.Passed
-import language.postfixOps
 import fr.unice.i3s.sigma.validation.Error
 import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.MustMatchers
-import fr.unice.i3s.sigma.validation.InvBuilder
 import org.scalatest.FlatSpec
-
-class SingletonMethodBased extends ValidationContext with InvMethods
-  with UmlPackageScalaSupport {
-
-  type Self = UMLClass // context type, the type of self
-  // context guard
-  override def guard = {
-    self.stereotypes exists (_.name == "singleton")
-  }
-
-  def invHasGetInstance =
-    getGetInstanceOperation(self) != null
-
-  def invGetInstanceIsStatic = guardedBy {
-    self satisfies invHasGetInstance
-  } check {
-    val op = getGetInstanceOperation(self)
-    if (op.ownerScope == ScopeKind.SK_CLASSIFIER) Passed
-    else Error(s"${self.name}.getInstance must be static")
-      .quickFix(s"Change ${self.name}.getInstance to static") {
-        op.ownerScope = ScopeKind.SK_CLASSIFIER
-      }
-  }
-
-  def getGetInstanceOperation(c: UMLClass): Operation =
-    c.operations find (_.name == "getInstance") orNull
-}
-
-class SingletonBuilderBased extends ValidationContext with InvBuilder with UmlPackageScalaSupport {
-
-  type Self = UMLClass // context type, the type of self
-
-  // context guard
-  override def guard = {
-    self.stereotypes exists (_.name == "singleton")
-  }
-
-  constraint("HasGetInstance")
-    .check { getGetInstanceOperation(self) != null }
-
-  constraint("GetInstanceIsStatic")
-    .guardedBy { self satisfies "HasGetInstance" }
-    .check {
-      val op = getGetInstanceOperation(self)
-      if (op.ownerScope == ScopeKind.SK_CLASSIFIER) Passed
-      else Error(s"${self.name}.getInstance must be static")
-        .quickFix(s"Change ${self.name}.getInstance to static") {
-          op.ownerScope = ScopeKind.SK_CLASSIFIER
-        }
-    }
-
-  def getGetInstanceOperation(c: UMLClass): Operation =
-    c.operations find (_.name == "getInstance") orNull
-
-}
+import fr.unice.i3s.sigma.examples.sle13.SingletonBuilderBased
+import fr.unice.i3s.sigma.examples.sle13.SingletonMethodBased
+import org.scalatest.junit.JUnitRunner
 
 trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatchers ⇒
 
-  def singletonValidationContext(ctx: ValidationContext { type Self = UMLClass }) {
+  def singletonValidationContext(ctx: ValidationContext { type Self = UmlClass }) {
     it must "Check guard" in {
-      val clazz = UMLClass(name = "A")
+      val clazz = UmlClass(name = "A")
 
       val res = ctx.validate(clazz)
 
@@ -82,7 +23,7 @@ trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatche
     }
 
     it must "Pass on correct class" in {
-      val clazz = UMLClass(
+      val clazz = UmlClass(
         name = "A",
         stereotypes = Seq(
           Stereotype("singleton")
@@ -98,7 +39,7 @@ trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatche
     }
 
     it must "Fail on incorrect class" in {
-      val clazz = UMLClass(
+      val clazz = UmlClass(
         name = "A",
         stereotypes = Seq(
           Stereotype("singleton")
@@ -113,7 +54,7 @@ trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatche
     }
 
     it must "Fail and correct an incorrect class" in {
-      val clazz = UMLClass(
+      val clazz = UmlClass(
         name = "A",
         stereotypes = Seq(
           Stereotype("singleton")

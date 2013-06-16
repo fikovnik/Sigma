@@ -18,8 +18,8 @@ import uml.PrimitiveType;
 import uml.Property;
 import uml.ScopeKind;
 import uml.Stereotype;
-import uml.UmlFactory;
-import uml.UmlPackage;
+import uml.UMLFactory;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,7 +27,7 @@ import uml.UmlPackage;
  * <!-- end-user-doc -->
  * @generated
  */
-public class UmlPackageImpl extends EPackageImpl implements UmlPackage
+public class UMLPackageImpl extends EPackageImpl implements UMLPackage
 {
 	/**
 	 * <!-- begin-user-doc -->
@@ -110,13 +110,13 @@ public class UmlPackageImpl extends EPackageImpl implements UmlPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see uml.UmlPackage#eNS_URI
+	 * @see uml.UMLPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
-	private UmlPackageImpl()
+	private UMLPackageImpl()
 	{
-		super(eNS_URI, UmlFactory.eINSTANCE);
+		super(eNS_URI, UMLFactory.eINSTANCE);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class UmlPackageImpl extends EPackageImpl implements UmlPackage
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
-	 * <p>This method is used to initialize {@link UmlPackage#eINSTANCE} when that field is accessed.
+	 * <p>This method is used to initialize {@link UMLPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -138,28 +138,28 @@ public class UmlPackageImpl extends EPackageImpl implements UmlPackage
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static UmlPackage init()
+	public static UMLPackage init()
 	{
-		if (isInited) return (UmlPackage)EPackage.Registry.INSTANCE.getEPackage(UmlPackage.eNS_URI);
+		if (isInited) return (UMLPackage)EPackage.Registry.INSTANCE.getEPackage(UMLPackage.eNS_URI);
 
 		// Obtain or create and register package
-		UmlPackageImpl theUmlPackage = (UmlPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof UmlPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new UmlPackageImpl());
+		UMLPackageImpl theUMLPackage = (UMLPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof UMLPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new UMLPackageImpl());
 
 		isInited = true;
 
 		// Create package meta-data objects
-		theUmlPackage.createPackageContents();
+		theUMLPackage.createPackageContents();
 
 		// Initialize created meta-data
-		theUmlPackage.initializePackageContents();
+		theUMLPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
-		theUmlPackage.freeze();
+		theUMLPackage.freeze();
 
   
 		// Update the registry and return the package
-		EPackage.Registry.INSTANCE.put(UmlPackage.eNS_URI, theUmlPackage);
-		return theUmlPackage;
+		EPackage.Registry.INSTANCE.put(UMLPackage.eNS_URI, theUMLPackage);
+		return theUMLPackage;
 	}
 
 	/**
@@ -377,9 +377,9 @@ public class UmlPackageImpl extends EPackageImpl implements UmlPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public UmlFactory getUmlFactory()
+	public UMLFactory getUMLFactory()
 	{
-		return (UmlFactory)getEFactoryInstance();
+		return (UMLFactory)getEFactoryInstance();
 	}
 
 	/**
@@ -511,4 +511,4 @@ public class UmlPackageImpl extends EPackageImpl implements UmlPackage
 		createResource(eNS_URI);
 	}
 
-} //UmlPackageImpl
+} //UMLPackageImpl

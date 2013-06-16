@@ -5,7 +5,7 @@ package uml.impl;
 import org.eclipse.emf.ecore.EClass;
 
 import uml.Classifier;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -36,7 +36,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.CLASSIFIER;
+		return UMLPackage.Literals.CLASSIFIER;
 	}
 
 } //ClassifierImpl

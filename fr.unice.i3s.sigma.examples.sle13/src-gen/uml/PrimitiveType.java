@@ -9,7 +9,7 @@ package uml;
  * <!-- end-user-doc -->
  *
  *
- * @see uml.UmlPackage#getPrimitiveType()
+ * @see uml.UMLPackage#getPrimitiveType()
  * @model
  * @generated
  */

@@ -19,11 +19,11 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see uml.UmlFactory
+ * @see uml.UMLFactory
  * @model kind="package"
  * @generated
  */
-public interface UmlPackage extends EPackage
+public interface UMLPackage extends EPackage
 {
 	/**
 	 * The package name.
@@ -55,14 +55,14 @@ public interface UmlPackage extends EPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	UmlPackage eINSTANCE = uml.impl.UmlPackageImpl.init();
+	UMLPackage eINSTANCE = uml.impl.UMLPackageImpl.init();
 
 	/**
 	 * The meta object id for the '{@link uml.impl.ModelElementImpl <em>Model Element</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.ModelElementImpl
-	 * @see uml.impl.UmlPackageImpl#getModelElement()
+	 * @see uml.impl.UMLPackageImpl#getModelElement()
 	 * @generated
 	 */
 	int MODEL_ELEMENT = 0;
@@ -99,7 +99,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.StereotypeImpl
-	 * @see uml.impl.UmlPackageImpl#getStereotype()
+	 * @see uml.impl.UMLPackageImpl#getStereotype()
 	 * @generated
 	 */
 	int STEREOTYPE = 1;
@@ -127,7 +127,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.PackageImpl
-	 * @see uml.impl.UmlPackageImpl#getPackage()
+	 * @see uml.impl.UMLPackageImpl#getPackage()
 	 * @generated
 	 */
 	int PACKAGE = 2;
@@ -173,7 +173,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.ClassifierImpl
-	 * @see uml.impl.UmlPackageImpl#getClassifier()
+	 * @see uml.impl.UMLPackageImpl#getClassifier()
 	 * @generated
 	 */
 	int CLASSIFIER = 3;
@@ -210,7 +210,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.ClassImpl
-	 * @see uml.impl.UmlPackageImpl#getClass_()
+	 * @see uml.impl.UMLPackageImpl#getClass_()
 	 * @generated
 	 */
 	int CLASS = 4;
@@ -274,7 +274,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.PrimitiveTypeImpl
-	 * @see uml.impl.UmlPackageImpl#getPrimitiveType()
+	 * @see uml.impl.UMLPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
 	int PRIMITIVE_TYPE = 5;
@@ -311,7 +311,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.FeatureImpl
-	 * @see uml.impl.UmlPackageImpl#getFeature()
+	 * @see uml.impl.UMLPackageImpl#getFeature()
 	 * @generated
 	 */
 	int FEATURE = 6;
@@ -357,7 +357,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.PropertyImpl
-	 * @see uml.impl.UmlPackageImpl#getProperty()
+	 * @see uml.impl.UMLPackageImpl#getProperty()
 	 * @generated
 	 */
 	int PROPERTY = 7;
@@ -421,7 +421,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.impl.OperationImpl
-	 * @see uml.impl.UmlPackageImpl#getOperation()
+	 * @see uml.impl.UMLPackageImpl#getOperation()
 	 * @generated
 	 */
 	int OPERATION = 8;
@@ -476,7 +476,7 @@ public interface UmlPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see uml.ScopeKind
-	 * @see uml.impl.UmlPackageImpl#getScopeKind()
+	 * @see uml.impl.UMLPackageImpl#getScopeKind()
 	 * @generated
 	 */
 	int SCOPE_KIND = 9;
@@ -710,7 +710,7 @@ public interface UmlPackage extends EPackage
 	 * @return the factory that creates the instances of the model.
 	 * @generated
 	 */
-	UmlFactory getUmlFactory();
+	UMLFactory getUMLFactory();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -731,7 +731,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.ModelElementImpl
-		 * @see uml.impl.UmlPackageImpl#getModelElement()
+		 * @see uml.impl.UMLPackageImpl#getModelElement()
 		 * @generated
 		 */
 		EClass MODEL_ELEMENT = eINSTANCE.getModelElement();
@@ -757,7 +757,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.StereotypeImpl
-		 * @see uml.impl.UmlPackageImpl#getStereotype()
+		 * @see uml.impl.UMLPackageImpl#getStereotype()
 		 * @generated
 		 */
 		EClass STEREOTYPE = eINSTANCE.getStereotype();
@@ -775,7 +775,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.PackageImpl
-		 * @see uml.impl.UmlPackageImpl#getPackage()
+		 * @see uml.impl.UMLPackageImpl#getPackage()
 		 * @generated
 		 */
 		EClass PACKAGE = eINSTANCE.getPackage();
@@ -793,7 +793,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.ClassifierImpl
-		 * @see uml.impl.UmlPackageImpl#getClassifier()
+		 * @see uml.impl.UMLPackageImpl#getClassifier()
 		 * @generated
 		 */
 		EClass CLASSIFIER = eINSTANCE.getClassifier();
@@ -803,7 +803,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.ClassImpl
-		 * @see uml.impl.UmlPackageImpl#getClass_()
+		 * @see uml.impl.UMLPackageImpl#getClass_()
 		 * @generated
 		 */
 		EClass CLASS = eINSTANCE.getClass_();
@@ -837,7 +837,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.PrimitiveTypeImpl
-		 * @see uml.impl.UmlPackageImpl#getPrimitiveType()
+		 * @see uml.impl.UMLPackageImpl#getPrimitiveType()
 		 * @generated
 		 */
 		EClass PRIMITIVE_TYPE = eINSTANCE.getPrimitiveType();
@@ -847,7 +847,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.FeatureImpl
-		 * @see uml.impl.UmlPackageImpl#getFeature()
+		 * @see uml.impl.UMLPackageImpl#getFeature()
 		 * @generated
 		 */
 		EClass FEATURE = eINSTANCE.getFeature();
@@ -865,7 +865,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.PropertyImpl
-		 * @see uml.impl.UmlPackageImpl#getProperty()
+		 * @see uml.impl.UMLPackageImpl#getProperty()
 		 * @generated
 		 */
 		EClass PROPERTY = eINSTANCE.getProperty();
@@ -891,7 +891,7 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.impl.OperationImpl
-		 * @see uml.impl.UmlPackageImpl#getOperation()
+		 * @see uml.impl.UMLPackageImpl#getOperation()
 		 * @generated
 		 */
 		EClass OPERATION = eINSTANCE.getOperation();
@@ -909,11 +909,11 @@ public interface UmlPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see uml.ScopeKind
-		 * @see uml.impl.UmlPackageImpl#getScopeKind()
+		 * @see uml.impl.UMLPackageImpl#getScopeKind()
 		 * @generated
 		 */
 		EEnum SCOPE_KIND = eINSTANCE.getScopeKind();
 
 	}
 
-} //UmlPackage
+} //UMLPackage

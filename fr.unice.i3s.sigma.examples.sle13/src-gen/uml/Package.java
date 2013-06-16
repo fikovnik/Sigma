@@ -16,7 +16,7 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see uml.UmlPackage#getPackage()
+ * @see uml.UMLPackage#getPackage()
  * @model
  * @generated
  */
@@ -32,7 +32,7 @@ public interface Package extends ModelElement
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Owned Elements</em>' containment reference list.
-	 * @see uml.UmlPackage#getPackage_OwnedElements()
+	 * @see uml.UMLPackage#getPackage_OwnedElements()
 	 * @model containment="true"
 	 * @generated
 	 */

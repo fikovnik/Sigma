@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import uml.Operation;
 import uml.Property;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -96,7 +96,7 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.CLASS;
+		return UMLPackage.Literals.CLASS;
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 		boolean oldAbstract = abstract_;
 		abstract_ = newAbstract;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, UmlPackage.CLASS__ABSTRACT, oldAbstract, abstract_));
+			eNotify(new ENotificationImpl(this, Notification.SET, UMLPackage.CLASS__ABSTRACT, oldAbstract, abstract_));
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		if (attributes == null)
 		{
-			attributes = new EObjectContainmentEList<Property>(Property.class, this, UmlPackage.CLASS__ATTRIBUTES);
+			attributes = new EObjectContainmentEList<Property>(Property.class, this, UMLPackage.CLASS__ATTRIBUTES);
 		}
 		return attributes;
 	}
@@ -145,7 +145,7 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		if (operations == null)
 		{
-			operations = new EObjectContainmentEList<Operation>(Operation.class, this, UmlPackage.CLASS__OPERATIONS);
+			operations = new EObjectContainmentEList<Operation>(Operation.class, this, UMLPackage.CLASS__OPERATIONS);
 		}
 		return operations;
 	}
@@ -160,9 +160,9 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		switch (featureID)
 		{
-			case UmlPackage.CLASS__ATTRIBUTES:
+			case UMLPackage.CLASS__ATTRIBUTES:
 				return ((InternalEList<?>)getAttributes()).basicRemove(otherEnd, msgs);
-			case UmlPackage.CLASS__OPERATIONS:
+			case UMLPackage.CLASS__OPERATIONS:
 				return ((InternalEList<?>)getOperations()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -178,11 +178,11 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		switch (featureID)
 		{
-			case UmlPackage.CLASS__ABSTRACT:
+			case UMLPackage.CLASS__ABSTRACT:
 				return isAbstract();
-			case UmlPackage.CLASS__ATTRIBUTES:
+			case UMLPackage.CLASS__ATTRIBUTES:
 				return getAttributes();
-			case UmlPackage.CLASS__OPERATIONS:
+			case UMLPackage.CLASS__OPERATIONS:
 				return getOperations();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -199,14 +199,14 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		switch (featureID)
 		{
-			case UmlPackage.CLASS__ABSTRACT:
+			case UMLPackage.CLASS__ABSTRACT:
 				setAbstract((Boolean)newValue);
 				return;
-			case UmlPackage.CLASS__ATTRIBUTES:
+			case UMLPackage.CLASS__ATTRIBUTES:
 				getAttributes().clear();
 				getAttributes().addAll((Collection<? extends Property>)newValue);
 				return;
-			case UmlPackage.CLASS__OPERATIONS:
+			case UMLPackage.CLASS__OPERATIONS:
 				getOperations().clear();
 				getOperations().addAll((Collection<? extends Operation>)newValue);
 				return;
@@ -224,13 +224,13 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		switch (featureID)
 		{
-			case UmlPackage.CLASS__ABSTRACT:
+			case UMLPackage.CLASS__ABSTRACT:
 				setAbstract(ABSTRACT_EDEFAULT);
 				return;
-			case UmlPackage.CLASS__ATTRIBUTES:
+			case UMLPackage.CLASS__ATTRIBUTES:
 				getAttributes().clear();
 				return;
-			case UmlPackage.CLASS__OPERATIONS:
+			case UMLPackage.CLASS__OPERATIONS:
 				getOperations().clear();
 				return;
 		}
@@ -247,11 +247,11 @@ public class ClassImpl extends ClassifierImpl implements uml.Class
 	{
 		switch (featureID)
 		{
-			case UmlPackage.CLASS__ABSTRACT:
+			case UMLPackage.CLASS__ABSTRACT:
 				return abstract_ != ABSTRACT_EDEFAULT;
-			case UmlPackage.CLASS__ATTRIBUTES:
+			case UMLPackage.CLASS__ATTRIBUTES:
 				return attributes != null && !attributes.isEmpty();
-			case UmlPackage.CLASS__OPERATIONS:
+			case UMLPackage.CLASS__OPERATIONS:
 				return operations != null && !operations.isEmpty();
 		}
 		return super.eIsSet(featureID);

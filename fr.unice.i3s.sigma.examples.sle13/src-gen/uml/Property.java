@@ -16,7 +16,7 @@ package uml;
  * </ul>
  * </p>
  *
- * @see uml.UmlPackage#getProperty()
+ * @see uml.UMLPackage#getProperty()
  * @model
  * @generated
  */
@@ -32,7 +32,7 @@ public interface Property extends Feature
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Type</em>' reference.
 	 * @see #setType(Classifier)
-	 * @see uml.UmlPackage#getProperty_Type()
+	 * @see uml.UMLPackage#getProperty_Type()
 	 * @model required="true"
 	 * @generated
 	 */
@@ -58,7 +58,7 @@ public interface Property extends Feature
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Multi</em>' attribute.
 	 * @see #setMulti(boolean)
-	 * @see uml.UmlPackage#getProperty_Multi()
+	 * @see uml.UMLPackage#getProperty_Multi()
 	 * @model required="true"
 	 * @generated
 	 */

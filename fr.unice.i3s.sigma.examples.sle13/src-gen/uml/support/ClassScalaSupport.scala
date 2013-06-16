@@ -7,11 +7,11 @@ import uml.Property;
 import uml.Stereotype;
 
 trait ClassScalaSupport {
-  type UMLClass = uml.Class
+  type UmlClass = uml.Class
   
-  object UMLClass {
-    def apply(name: String = null, stereotypes: EList[Stereotype] = null, `abstract`: Boolean = false, attributes: EList[Property] = null, operations: EList[Operation] = null): UMLClass = {
-      val instance = UmlPackageScalaSupport.builder.create[UMLClass]
+  object UmlClass {
+    def apply(name: String = null, stereotypes: EList[Stereotype] = null, `abstract`: Boolean = false, attributes: EList[Property] = null, operations: EList[Operation] = null): UmlClass = {
+      val instance = UmlPackageScalaSupport.builder.create[UmlClass]
       
       if (name != null) instance.setName(name)
       if (stereotypes != null) instance.getStereotypes.addAll(stereotypes)
@@ -22,7 +22,7 @@ trait ClassScalaSupport {
       instance
     }
     
-    def unapply(that: UMLClass): Option[(String,EList[Stereotype],Boolean,EList[Property],EList[Operation])] =
+    def unapply(that: UmlClass): Option[(String,EList[Stereotype],Boolean,EList[Property],EList[Operation])] =
       Some((that.getName,that.getStereotypes,that.isAbstract,that.getAttributes,that.getOperations))
   }
   

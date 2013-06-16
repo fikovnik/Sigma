@@ -6,11 +6,11 @@ import uml.Classifier;
 import uml.Stereotype;
 
 trait PackageScalaSupport {
-  type UMLPackage = uml.Package
+  type UmlPackage = uml.Package
   
-  object UMLPackage {
-    def apply(name: String = null, stereotypes: EList[Stereotype] = null, ownedElements: EList[Classifier] = null): UMLPackage = {
-      val instance = UmlPackageScalaSupport.builder.create[UMLPackage]
+  object UmlPackage {
+    def apply(name: String = null, stereotypes: EList[Stereotype] = null, ownedElements: EList[Classifier] = null): UmlPackage = {
+      val instance = UmlPackageScalaSupport.builder.create[UmlPackage]
       
       if (name != null) instance.setName(name)
       if (stereotypes != null) instance.getStereotypes.addAll(stereotypes)
@@ -19,7 +19,7 @@ trait PackageScalaSupport {
       instance
     }
     
-    def unapply(that: UMLPackage): Option[(String,EList[Stereotype],EList[Classifier])] =
+    def unapply(that: UmlPackage): Option[(String,EList[Stereotype],EList[Classifier])] =
       Some((that.getName,that.getStereotypes,that.getOwnedElements))
   }
   

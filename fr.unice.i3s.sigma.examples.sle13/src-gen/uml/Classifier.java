@@ -9,7 +9,7 @@ package uml;
  * <!-- end-user-doc -->
  *
  *
- * @see uml.UmlPackage#getClassifier()
+ * @see uml.UMLPackage#getClassifier()
  * @model abstract="true"
  * @generated
  */

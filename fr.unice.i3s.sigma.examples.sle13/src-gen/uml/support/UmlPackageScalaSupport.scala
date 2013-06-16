@@ -3,7 +3,7 @@ package uml.support
 import fr.unice.i3s.sigma.support.EMFBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 trait UmlPackageScalaSupport
   extends ModelElementScalaSupport with
@@ -18,7 +18,7 @@ trait UmlPackageScalaSupport
   EMFScalaSupport
 
 object UmlPackageScalaSupport extends UmlPackageScalaSupport {
-  private[this] val pkg = UmlPackage.eINSTANCE
+  private[this] val pkg = UMLPackage.eINSTANCE
   
   val builder = new EMFBuilder(pkg)
 }

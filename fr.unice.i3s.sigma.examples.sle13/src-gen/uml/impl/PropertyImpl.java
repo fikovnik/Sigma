@@ -11,7 +11,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import uml.Classifier;
 import uml.Property;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -77,7 +77,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.PROPERTY;
+		return UMLPackage.Literals.PROPERTY;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 			if (type != oldType)
 			{
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, UmlPackage.PROPERTY__TYPE, oldType, type));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, UMLPackage.PROPERTY__TYPE, oldType, type));
 			}
 		}
 		return type;
@@ -120,7 +120,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 		Classifier oldType = type;
 		type = newType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, UmlPackage.PROPERTY__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, UMLPackage.PROPERTY__TYPE, oldType, type));
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 		boolean oldMulti = multi;
 		multi = newMulti;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, UmlPackage.PROPERTY__MULTI, oldMulti, multi));
+			eNotify(new ENotificationImpl(this, Notification.SET, UMLPackage.PROPERTY__MULTI, oldMulti, multi));
 	}
 
 	/**
@@ -156,10 +156,10 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PROPERTY__TYPE:
+			case UMLPackage.PROPERTY__TYPE:
 				if (resolve) return getType();
 				return basicGetType();
-			case UmlPackage.PROPERTY__MULTI:
+			case UMLPackage.PROPERTY__MULTI:
 				return isMulti();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -175,10 +175,10 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PROPERTY__TYPE:
+			case UMLPackage.PROPERTY__TYPE:
 				setType((Classifier)newValue);
 				return;
-			case UmlPackage.PROPERTY__MULTI:
+			case UMLPackage.PROPERTY__MULTI:
 				setMulti((Boolean)newValue);
 				return;
 		}
@@ -195,10 +195,10 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PROPERTY__TYPE:
+			case UMLPackage.PROPERTY__TYPE:
 				setType((Classifier)null);
 				return;
-			case UmlPackage.PROPERTY__MULTI:
+			case UMLPackage.PROPERTY__MULTI:
 				setMulti(MULTI_EDEFAULT);
 				return;
 		}
@@ -215,9 +215,9 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case UmlPackage.PROPERTY__TYPE:
+			case UMLPackage.PROPERTY__TYPE:
 				return type != null;
-			case UmlPackage.PROPERTY__MULTI:
+			case UMLPackage.PROPERTY__MULTI:
 				return multi != MULTI_EDEFAULT;
 		}
 		return super.eIsSet(featureID);

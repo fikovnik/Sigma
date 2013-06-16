@@ -9,10 +9,10 @@ import org.eclipse.emf.ecore.EFactory;
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
  * <!-- end-user-doc -->
- * @see uml.UmlPackage
+ * @see uml.UMLPackage
  * @generated
  */
-public interface UmlFactory extends EFactory
+public interface UMLFactory extends EFactory
 {
 	/**
 	 * The singleton instance of the factory.
@@ -20,7 +20,7 @@ public interface UmlFactory extends EFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	UmlFactory eINSTANCE = uml.impl.UmlFactoryImpl.init();
+	UMLFactory eINSTANCE = uml.impl.UMLFactoryImpl.init();
 
 	/**
 	 * Returns a new object of class '<em>Stereotype</em>'.
@@ -83,6 +83,6 @@ public interface UmlFactory extends EFactory
 	 * @return the package supported by this factory.
 	 * @generated
 	 */
-	UmlPackage getUmlPackage();
+	UMLPackage getUMLPackage();
 
-} //UmlFactory
+} //UMLFactory

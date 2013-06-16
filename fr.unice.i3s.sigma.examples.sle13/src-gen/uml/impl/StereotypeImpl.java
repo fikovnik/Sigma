@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import uml.Stereotype;
-import uml.UmlPackage;
+import uml.UMLPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -65,7 +65,7 @@ public class StereotypeImpl extends EObjectImpl implements Stereotype
 	@Override
 	protected EClass eStaticClass()
 	{
-		return UmlPackage.Literals.STEREOTYPE;
+		return UMLPackage.Literals.STEREOTYPE;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class StereotypeImpl extends EObjectImpl implements Stereotype
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, UmlPackage.STEREOTYPE__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, UMLPackage.STEREOTYPE__NAME, oldName, name));
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class StereotypeImpl extends EObjectImpl implements Stereotype
 	{
 		switch (featureID)
 		{
-			case UmlPackage.STEREOTYPE__NAME:
+			case UMLPackage.STEREOTYPE__NAME:
 				return getName();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -117,7 +117,7 @@ public class StereotypeImpl extends EObjectImpl implements Stereotype
 	{
 		switch (featureID)
 		{
-			case UmlPackage.STEREOTYPE__NAME:
+			case UMLPackage.STEREOTYPE__NAME:
 				setName((String)newValue);
 				return;
 		}
@@ -134,7 +134,7 @@ public class StereotypeImpl extends EObjectImpl implements Stereotype
 	{
 		switch (featureID)
 		{
-			case UmlPackage.STEREOTYPE__NAME:
+			case UMLPackage.STEREOTYPE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
 		}
@@ -151,7 +151,7 @@ public class StereotypeImpl extends EObjectImpl implements Stereotype
 	{
 		switch (featureID)
 		{
-			case UmlPackage.STEREOTYPE__NAME:
+			case UMLPackage.STEREOTYPE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 		}
 		return super.eIsSet(featureID);
