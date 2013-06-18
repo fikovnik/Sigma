@@ -1,0 +1,10 @@
+context Book {
+
+  constraint Unique {
+    
+    check : self.library.books.forAll(b | b <> self implies b.isbn <> self.isbn)
+
+    message : "Duplicate book" + self.name.trim + null
+    
+  }
+}

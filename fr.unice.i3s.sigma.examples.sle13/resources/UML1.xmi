@@ -4,7 +4,6 @@
     xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:uml="http://uml/1.0"
-    xsi:schemaLocation="http://uml/1.0 ../model/SimpleUML.ecore"
     name="pkg">
   <ownedElements
       xsi:type="uml:Class"
@@ -20,6 +19,7 @@
       name="B">
     <stereotypes
         name="singleton"/>
+    <operations/>
   </ownedElements>
   <ownedElements
       xsi:type="uml:Class"
@@ -30,5 +30,11 @@
         name="getInstance"
         ownerScope="sk_classifier"
         returnType="//@ownedElements.2"/>
+  </ownedElements>
+  <ownedElements
+      xsi:type="uml:PrimitiveType"
+      name="int">
+    <stereotypes
+        name="singleton"/>
   </ownedElements>
 </uml:Package>

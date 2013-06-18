@@ -1,20 +1,35 @@
 package fr.unice.i3s.sigma.util
 
 import java.io.Closeable
-import java.io.Writer
-import java.io.FileWriter
 import java.io.File
-import scala.collection.TraversableLike
-import scala.annotation.tailrec
-import com.google.common.io.Files.copy
-import scala.util.Try
-import scala.util.Success
+import java.io.FileWriter
+import java.io.Writer
+
+import scala.sys.process.ProcessLogger
+import scala.sys.process.stringSeqToProcess
+import scala.sys.process.stringToProcess
 import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
+import com.google.common.io.Files.copy
 
 object IOUtils {
 
   lazy val pathSep = System.getProperty("path.separator")
 
+  implicit class RichSigmaFile(that: File) {
+    def <<(in: Any): this.type = {
+      val fw = new FileWriter(that)
+      try {
+        fw.write(in.toString)
+      } finally {
+        fw.close 
+      }
+      this
+    }
+  }
+  
   object SystemExecutor extends Executor {
 
     import sys.process._

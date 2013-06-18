@@ -16,12 +16,10 @@ case class Uml2Java(cls: UmlClass) extends TextTemplate with UmlPackageScalaSupp
 
   def genOperation(o: Operation) =
     !s"public ${o.returnType.name} ${o.name}()" curlyIndent {
-      genOperationBody(o)
+      !s"""
+      // TODO: should be implemented
+      throw new UnsupportedOperationException("${o.name}");
+      """
     }
-
-  def genOperationBody(o: Operation) = !s"""
-   // TODO: should be implemented
-   throw new UnsupportedOperationException("${o.name}");
-   """
 
 }

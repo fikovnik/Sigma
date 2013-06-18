@@ -30,7 +30,15 @@
 						<configuration>
 							<artifacts>
 								<artifact>
+									<id>com.google.guava:guava:11.0.1</id>
+									<source>true</source>
+								</artifact>
+								<artifact>
 									<id>org.mockito:mockito-all:1.9.0</id>
+									<source>true</source>
+								</artifact>
+								<artifact>
+									<id>com.github.axel22:scalameter_2.10:0.3</id>
 									<source>true</source>
 								</artifact>
 								<artifact>

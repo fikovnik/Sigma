@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<relational:Table xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:relational="http://relational/1.0" name="A">
+  <columns name="Id" dataType="INT"/>
+</relational:Table>

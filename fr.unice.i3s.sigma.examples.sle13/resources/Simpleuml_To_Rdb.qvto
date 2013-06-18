@@ -1,0 +1,1890 @@
+/*
+ * The SimpleUML to RDB Sample demonstrates how to use QVT transformations for 
+ * transforming platform independent model to platform specific model. 
+ * 
+ * It also demonstrates the following basic features of QVT language: 
+ * helper queries, mapping guards, and resolution operations.
+ * 
+ * Sample model pim.simpleuml is included to be used as an input for the transformation.
+ */
+
+/*
+ * Two modeltypes are declared. The http NS URIs correspond to those used to register the 
+ * Ecore models in the environment. Alternatively, a workspace metamodel may be used 
+ * in conjunction with mappings defined in the project properties.
+ */
+modeltype UML uses 'http://www.eclipse.org/qvt/1.0.0/Operational/examples/simpleuml';
+modeltype RDB uses 'http://www.eclipse.org/qvt/1.0.0/Operational/examples/rdb';
+
+/*
+ * The transformation signature declares that a UML modeltype is required as input, while an RDB
+ * modeltype is produced as an output.  The UML modeltype is referenced as 'uml' throughout the 
+ * transformation definition, while no name is needed for the output RDB modeltype.  Note that OCL 
+ * type and namespace notation are used in operational QVT (: and :: respectively).
+ */
+transformation Simpleuml_To_Rdb(in uml : UML, out RDB);
+
+/*
+ * The main entry point of the transformation.  The 'uml' reference to the input UML modeltype 
+ * instance is used to collect all rootObjects() of type Model.  The rootObjects() operation 
+ * is available on all QVT Model objects (extents) and returns those objects found at the 
+ * root of the input model.  The [UML::Model] statement following the call to rootObjects() 
+ * is shorthand notation for the imperative select (xselect) construct where the condition is 
+ * a type expression, which effectively performs a oclIsKindOf(UML::Model) with type recasting 
+ * as a sequence.
+ *
+ * The invocation of the model2RDBModel() mapping is done using an -> operator, which is a 
+ * shorthand notation for the imperative collect (xcollect) construct.  Alternatively, it could
+ * be written as uml.rootObjects()[UML::Model]->xcollect(a | a.map model2RDBModel());
+ */
+main() {
+	uml.rootObjects()[UML::Model]->map model2RDBModel();
+}
+
+/*
+ * This mapping returns an RDB::Model instance from the UML::Model passed from main().  The name 
+ * attributes map directly using the OCL assignment operator.  The RDB Model has a collection 
+ * of schemas populated by the package2schemas() mapping.  The Sequence of RDB::Schema objects 
+ * that is returned by the mapping is converted into the required OrderedSet using the OCL operation 
+ * asOrderedSet().
+ *
+ * This mapping has no init or end section, leaving the body as an implicit population section.
+ */
+mapping UML::Model::model2RDBModel() : RDB::Model {
+	name := self.name;
+	schemas := self.map package2schemas()->asOrderedSet();
+}
+
+/*
+ * This mapping recursively invokes the package2schema() mapping to produce a Sequence of 
+ * RDB Schema objects from a UML Package and its subpackages.  Note the use of OCL union() 
+ * and flatten() operations to produce a single flattened Sequence of Schema objects.
+ *
+ * There is no population section in this mapping, but an init section that assigns the 
+ * Sequence of returned objects to the result.  Alternatively, the statement below could 
+ * have been used in the schemas assignment of the mapping above.
+ */
+mapping UML::Package::package2schemas() : Sequence(RDB::Schema) {
+	init {
+		result := self.map package2schema()->asSequence()->
+			union(self.getSubpackages()->map package2schemas()->flatten());
+	}
+}
+
+/*
+ * This mapping creates an RDB Schema object from a UML Package.  It includes a when clause to 
+ * verify the passed Package contains persistent classes.  Look below to see the logic employed
+ * within the hasPersistentClasses() query.
+ *
+ * The name attributes map directly, while the elements reference is populated with RDB Table 
+ * objects mapped from persistent UML Class objects using a map invocation and similar 
+ * shorthand notation used above.
+ */
+mapping UML::Package::package2schema() : RDB::Schema 
+	when { self.hasPersistentClasses() }
+{
+	name := self.name;
+	elements := self.ownedElements[UML::Class]->map persistentClass2table()->asOrderedSet()
+}
+
+/*
+ * This mapping produces an RDB Table object from a UML persistent Class object. The when clause
+ * uses the isPersistent() query below to see if the Class has a 'persistent' string as one of 
+ * its stereotype strings.
+ *
+ * Again, the name attributes map directly.  The Class is mapped to a set of TableColumn objects
+ * using the class2columns() mapping, the results of which are sorted by name using the OCL 
+ * sortedBy() operation.  The primaryKey is set using the class2primaryKey() mapping, while 
+ * foreignKeys are set using a resolveIn function.  This will allow us to resolve RDB ForeignKey 
+ * objects created using the relationshipAttribute2foreignKey() mapping for each of the Class 
+ * attributes. 
+ */
+mapping UML::Class::persistentClass2table() : RDB::Table 
+	when { self.isPersistent() }
+{
+	name := self.name;
+	columns := self.map class2columns(self)->sortedBy(name);
+	primaryKey := self.map class2primaryKey();
+	foreignKeys := self.attributes.resolveIn(
+					UML::Property::relationshipAttribute2foreignKey, 
+					RDB::constraints::ForeignKey)->asOrderedSet();
+}
+
+/*
+ * A PrimaryKey object is created from a Class by prefixing the name with 'PK' and resolving 
+ * one (the first) Table created from the Class in order to obtain its primary key columns 
+ * using a query.
+ */
+mapping UML::Class::class2primaryKey() : RDB::constraints::PrimaryKey {
+	name := 'PK' + self.name;
+	includedColumns := self.resolveoneIn(UML::Class::persistentClass2table, RDB::Table).getPrimaryKeyColumns()
+}
+
+/*
+ * This mapping will create an OrderedSet of RDB TableColumn objects from a UML Class object.
+ * Similar to package2schemas(), this mapping has no population section, but just an init 
+ * that assigns the result based on the union of type mappings from the Class and its
+ * generalizations (Class extends DataType).
+ *
+ * Note that this mapping is defined for type UML::Class and also takes a UML::Class named 
+ * targetClass as a parameter.  This pattern is used in several places within this
+ * transformation definition to account for how generalization in the UML model is 
+ * mapped to columns in the RDB model.  As properties and inherited properties are 
+ * flattened into columns, the combined use of 'self' and 'target' parameter represent a
+ * way to allow multiple copies of columns for a given property source, as subsequent
+ * mapping invocations retrieve the same resulting columns from the trace model. 
+ */
+mapping UML::Class::class2columns(targetClass: UML::Class) : OrderedSet(RDB::TableColumn) {
+	init {
+		result := self.map dataType2columns(targetClass)->
+			union(self.map generalizations2columns(targetClass))->asOrderedSet()
+	}	
+}
+
+/*
+ * For the passed DataType, an OrderedSet of TableColumn objects is created.  Again, the result
+ * is assigned within the init block to the union of several attribute to column mappings. 
+ */
+mapping UML::DataType::dataType2columns(in targetType : UML::DataType) : OrderedSet(RDB::TableColumn) {
+	init {
+		result := self.map primitiveAttributes2columns(targetType)->
+			union(self.map enumerationAttributes2columns(targetType))->
+			union(self.map relationshipAttributes2columns(targetType))->
+			union(self.map associationAttributes2columns(targetType))->asOrderedSet()
+	}
+}
+
+/*
+ * This mapping creates an OrderedSet of TableColumn objects from a DataType object.
+ * The mapping declares three input parameters, including a prefix string and primary key
+ * boolean.  
+ *
+ * The init section uses the result keyword with mapping invocation, as we've seen before.
+ * What's new in this mapping is the use of an object definition within a collect operation.
+ * Here, the OrderedSet of TableColumn objects returned from the dataType2columns() 
+ * mapping is filtered to select only those marked as primary keys, which in turn are
+ * used within the context of the collect where those matching the TableColumn created
+ * using object are returned.
+ */
+mapping UML::DataType::dataType2primaryKeyColumns(in prefix : String, in leaveIsPrimaryKey : Boolean, in targetType : UML::DataType) : OrderedSet(RDB::TableColumn) {
+	init {           
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+		result := self.map dataType2columns(self)->select(isPrimaryKey)->
+			collect(c | object RDB::TableColumn {
+				name := prefix + '_' + c.name;
+				domain := c.domain;
+				type := object RDB::datatypes::PrimitiveDataType {
+					name := c.type.name;
+				};
+				isPrimaryKey := leaveIsPrimaryKey
+			})->asOrderedSet();
+	}
+}
+
+/*
+ * This mapping returns an OrderedSet of TableColumn objects by invoking the 
+ * primitiveAttribute2column() mapping for each attribute of the DataType.
+ */
+mapping UML::DataType::primitiveAttributes2columns(in targetType: UML::DataType) : OrderedSet(RDB::TableColumn) {
+	init {
+		result := self.attributes->map primitiveAttribute2column(targetType)->asOrderedSet()
+	}
+}
+
+/*
+ * This mapping creates a TableColumn from a Property when the isPrimitive() query
+ * returns true.  The isPrimaryKey and name mappings are straightforward, while
+ * the type reference is created using the object keyword to create a new
+ * PrimitiveDataType with name initialized to the result of the query
+ * umlPrimitive2rdbPrimitive() with the type name passed as a parameter.
+ */
+mapping UML::Property::primitiveAttribute2column(in targetType: UML::DataType) : RDB::TableColumn 
+	when { self.isPrimitive() }
+{
+	isPrimaryKey := self.isPrimaryKey();
+	name := self.name;
+	type := object RDB::datatypes::PrimitiveDataType { name := umlPrimitive2rdbPrimitive(self.type.name); };
+}
+
+/*
+ * This mapping returns an OrderedSet of TableColumn objects by invoking the 
+ * enumerationAttribute2column() mapping for each attribute of the DataType.
+ */
+mapping UML::DataType::enumerationAttributes2columns(in targetType: UML::DataType) : OrderedSet(RDB::TableColumn) {
+	init {
+		result := self.attributes->map enumerationAttribute2column(targetType)->asOrderedSet()
+	}
+}
+
+/*
+ * This mapping creates a TableColumn from a Property when the isEnumeration() query
+ * returns true.  The isPrimaryKey and name mappings are straightforward, while
+ * the type reference is created using the object keyword to create a new
+ * PrimitiveDataType with name initialized to 'int'.
+ */
+mapping UML::Property::enumerationAttribute2column(in targetType: UML::DataType) : RDB::TableColumn 
+	when { self.isEnumeration() }
+{
+	isPrimaryKey := self.isPrimaryKey();	
+	name := self.name;
+	type := object RDB::datatypes::PrimitiveDataType { name := 'int'; };
+}
+
+/*
+ * This mapping creates an OrderedSet of TableColumn objects from relationship
+ * attributes.  The check for if the DataType is a relationship is performed
+ * in the when clause of the invoked relationshipAttribute2foreignKey mapping.
+ */
+mapping UML::DataType::relationshipAttributes2columns(in targetType: UML::DataType) : OrderedSet(RDB::TableColumn) {
+	init {
+		result := self.attributes->map relationshipAttribute2foreignKey(targetType)->
+			collect(includedColumns)->asOrderedSet();
+	}
+}
+
+/*
+ * This mapping creates a ForeignKey object from a DataType that returns true from 
+ * the isRelationship() query in the when clause.  The name is prefixed with 'FK'.
+ * The includedColumns collection is populated using the dataType2primaryKeyColumns()
+ * mapping on the Property type reference cast to DataType.
+ *
+ * The referredUC reference uses resolveoneIn, but with the late modifier.  This 
+ * causes the resolution to happen at the end of the transformation, thereby avoiding
+ * a second pass to resolve objects that may not have been created during execution
+ * at this point.
+ */
+mapping UML::Property::relationshipAttribute2foreignKey(in targetType: UML::DataType) : RDB::constraints::ForeignKey 
+	when { self.isRelationship() }
+{
+	name := 'FK' + self.name;
+	includedColumns := self.type.asDataType().map dataType2primaryKeyColumns(self.name, self.isIdentifying(), targetType);
+	referredUC := self.type.late resolveoneIn(UML::Class::class2primaryKey, RDB::constraints::PrimaryKey);
+}
+
+/*
+ * This mapping produces an OrderedSet of TableColumn objects from DataType attributes 
+ * that return true from the isAssociation() query. The TableColumn objects are created 
+ * using a call to the dataType2columns() mapping.
+ */
+mapping UML::DataType::associationAttributes2columns(targetType : UML::DataType) : OrderedSet(RDB::TableColumn) {
+	init {
+		result := self.attributes[isAssociation()]->
+			collect(type.asDataType()->map dataType2columns(targetType))->asOrderedSet()
+	}
+}
+
+/*
+ * This mapping returns an OrderedSet of TableColumn objects from a Class using the 
+ * generalizations of the class and the class2columns() mapping.
+ */
+mapping UML::Class::generalizations2columns(targetClass : UML::Class) : OrderedSet(RDB::TableColumn) {
+	init {
+		result := self.generalizations.general->map class2columns(targetClass)->flatten()->asOrderedSet();
+	}
+}
+
+/*
+ * This query returns an OrderedSet of Package objects from a Package's ownedElements
+ * collection that are of type UML::Package using shorthand xselect notation.
+ */
+query UML::Package::getSubpackages() : OrderedSet(UML::Package) {
+	return self.ownedElements[UML::Package]->asOrderedSet()
+}
+
+/*
+ * This query performs a type cast from a UML Type to a UML DataType.
+ */
+query UML::Type::asDataType() : UML::DataType {
+	return self.oclAsType(UML::DataType)
+}
+
+/*
+ * This query returns true if the list of string stereotypes includes one
+ * equal to 'primaryKey'.
+ */
+query UML::Property::isPrimaryKey() : Boolean {
+	return self.stereotype->includes('primaryKey')
+}
+
+/*
+ * This query returns true if the list of string stereotypes includes one
+ * equal to 'identifying'.
+ */
+query UML::Property::isIdentifying() : Boolean {
+	return self.stereotype->includes('identifying')
+}
+
+/*
+ * This query returns true if the type attribute of the Property conforms
+ * to the UML PrimitiveType.
+ */
+query UML::Property::isPrimitive() : Boolean {
+	return self.type.oclIsKindOf(UML::PrimitiveType)
+}
+
+/*
+ * This query returns true if the type attribute of the Property conforms
+ * to the UML Enumeration.
+ */
+query UML::Property::isEnumeration() : Boolean {
+	return self.type.oclIsKindOf(UML::Enumeration)
+}
+
+/*
+ * This query returns true if the type attribute of the Property conforms
+ * to the UML DataType and returns true from the isPersistent() query.
+ */
+query UML::Property::isRelationship() : Boolean {
+	return self.type.oclIsKindOf(UML::DataType) and self.type.isPersistent()
+}
+
+/*
+ * This query returns true if the type attribute of the Property conforms
+ * to the UML DataType and returns false from the isPersistent() query.
+ */
+query UML::Property::isAssociation() : Boolean {
+	return self.type.oclIsKindOf(UML::DataType) and not self.type.isPersistent()
+}
+
+/*
+ * This query returns an OrderedSet of TableColumn objects from those columns
+ * where isPrimaryKey returns true.
+ */
+query RDB::Table::getPrimaryKeyColumns() : OrderedSet(RDB::TableColumn) {
+	return self.columns->select(isPrimaryKey)
+}
+
+/*
+ * This query returns true if the list of string stereotypes includes one
+ * equal to 'persistent'.
+ */
+query UML::ModelElement::isPersistent() : Boolean {
+	return self.stereotype->includes('persistent')
+}
+
+/*
+ * This query examines the contents of a Package to determine if there exists
+ * at least one Class that returns true for the isPersistent() query.
+ */
+query UML::Package::hasPersistentClasses() : Boolean {
+	return self.ownedElements->exists(
+		let c : UML::Class = oclAsType(UML::Class) in 
+			c.oclIsUndefined() implies c.isPersistent())
+}
+
+/*
+ * This helper returns the RDB primitive string corresponding to the passed 
+ * UML primitive string.  This helper produces no side effects and could be 
+ * written as a query, alternatively.
+ */
+helper umlPrimitive2rdbPrimitive(in name : String) : String {
+	return if name = 'String' then 'varchar' else
+		if name = 'Boolean' then 'int' else
+			if name = 'Integer' then 'int' else
+				name
+			endif
+		endif
+	endif
+}

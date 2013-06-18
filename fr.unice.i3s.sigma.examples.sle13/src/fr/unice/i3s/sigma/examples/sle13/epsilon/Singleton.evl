@@ -3,7 +3,7 @@ context Class {
   guard : self.stereotypes->exists(s|s.name ="singleton")
 
   constraint HasGetInstance {
-    check : self.getGetInstanceOperation().isDefined()
+    check : self.name = "X" or self.getGetInstanceOperation().isDefined() 
     message : "Operation "+self.name+".getInstance is not defined"
   }
 

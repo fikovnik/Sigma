@@ -27,8 +27,6 @@ class Uml2RelationalTest extends FunSuite with MustMatchers with UmlPackageScala
     )
 
     val trans = new Uml2Relational
-    trans.sourceMetaModels += UMLPackage.eINSTANCE
-    trans.targetMetaModels += RelationalPackage.eINSTANCE
     val res = trans.transform(clazz)
 
   }
