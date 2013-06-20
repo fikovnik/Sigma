@@ -17,6 +17,7 @@ import fr.unice.i3s.sigma.validation.ValidationContextResult
 import fr.unice.i3s.sigma.validation.ValidationResult
 import uml.UMLPackage
 import fr.unice.i3s.sigma.examples.sle13.sigma.Uml2Java
+import fr.unice.i3s.sigma.examples.sle13.sigma.Uml2JavaInScala
 import fr.unice.i3s.sigma.examples.sle13.acceleo.main.Generate
 import org.eclipse.emf.common.util.BasicMonitor
 import java.util.Collections
@@ -83,6 +84,23 @@ class JavaM2T(val targetDir: File) extends PerformanceTest with UmlPackageScalaS
   override def toString = s"Java $targetDir"
 }
 
+class ScalaM2T(val targetDir: File) extends PerformanceTest with UmlPackageScalaSupport {
+  import IOUtils.RichSigmaFile
+
+  def execute(res: Resource) {
+    res.getAllContents foreach { e ⇒
+      if (e.isInstanceOf[UmlClass]) {
+        val cls = e.asInstanceOf[UmlClass]
+        val fw = new FileWriter(new File(targetDir, s"${cls.name}.java"))
+        fw.write(new Uml2JavaInScala(e.asInstanceOf[UmlClass]).generate)
+        fw.close()
+      }
+    }
+  }
+
+  override def toString = s"Java $targetDir"
+}
+
 class AcceleoM2T(val targetDir: File) extends PerformanceTest with UmlPackageScalaSupport {
   def execute(res: Resource) {
     val generator = new Generate(res.getContents.get(0), targetDir, Collections.emptyList())
@@ -93,29 +111,29 @@ class AcceleoM2T(val targetDir: File) extends PerformanceTest with UmlPackageSca
 }
 
 class EpsilonM2T(val targetDir: File) extends PerformanceTest with UmlPackageScalaSupport {
-	val ePackageUri = UMLPackage.eINSTANCE.getNsURI
-			val source = new File("src/fr/unice/i3s/sigma/examples/sle13/epsilon/Uml2Java.egl").toURI()
-			val factory = {
-		val f = new EglFileGeneratingTemplateFactory
-				f.setTemplateRoot(new File("src/fr/unice/i3s/sigma/examples/sle13/epsilon/").toURI.toString)
-				f.getContext().getFrameStack().put(Variable.createReadOnlyVariable("targetDir", targetDir.getAbsolutePath))
-				f
-	}
-	
-	val template = factory.load(source)
-			
-			def execute(resource: Resource) = {
-		val model = new InMemoryEmfModel("model", resource, ePackageUri);
-		factory.getContext.getModelRepository.addModel(model)
-		
-		template.process
-	}
-	
-	override def dispose {
-		factory.getContext().getModelRepository().dispose();
-	}
-	
-	override def toString = s"Epsilon $targetDir"
+  val ePackageUri = UMLPackage.eINSTANCE.getNsURI
+  val source = new File("src/fr/unice/i3s/sigma/examples/sle13/epsilon/Uml2Java.egl").toURI()
+  val factory = {
+    val f = new EglFileGeneratingTemplateFactory
+    f.setTemplateRoot(new File("src/fr/unice/i3s/sigma/examples/sle13/epsilon/").toURI.toString)
+    f.getContext().getFrameStack().put(Variable.createReadOnlyVariable("targetDir", targetDir.getAbsolutePath))
+    f
+  }
+
+  val template = factory.load(source)
+
+  def execute(resource: Resource) = {
+    val model = new InMemoryEmfModel("model", resource, ePackageUri);
+    factory.getContext.getModelRepository.addModel(model)
+
+    template.process
+  }
+
+  override def dispose {
+    factory.getContext().getModelRepository().dispose();
+  }
+
+  override def toString = s"Epsilon $targetDir"
 }
 
 class EpsilonM2T2(val targetDir: File) extends PerformanceTest with UmlPackageScalaSupport {
@@ -135,7 +153,7 @@ class EpsilonM2T2(val targetDir: File) extends PerformanceTest with UmlPackageSc
     //    val model = new InMemoryEmfModel("model", resource, ePackageUri);
     //    factory.getContext.getModelRepository.addModel(model)
     import IOUtils.RichSigmaFile
-   
+
     resource.getAllContents foreach { e ⇒
       e match {
         case cls: UmlClass ⇒ {
@@ -289,12 +307,13 @@ object Test2 extends App {
 
   //  val test = new EpsilonValidation
   for (i ← 0 until 20) {
-//            val test = new SigmaM2T(IOUtils.mkdtemp)
-//    val test = new AcceleoM2T(IOUtils.mkdtemp)
-            val test = new EpsilonM2T2(IOUtils.mkdtemp)
-    //    val test = new JavaM2T(IOUtils.mkdtemp)
+    //            val test = new SigmaM2T(IOUtils.mkdtemp)
+    //    val test = new AcceleoM2T(IOUtils.mkdtemp)
+    //            val test = new EpsilonM2T2(IOUtils.mkdtemp)
+        val test = new JavaM2T(IOUtils.mkdtemp)
+//    val test = new ScalaM2T(IOUtils.mkdtemp)
 
-//        println(s"$test")
+    //        println(s"$test")
     val start = System.currentTimeMillis
     test.execute(resource)
     val stop = System.currentTimeMillis - start

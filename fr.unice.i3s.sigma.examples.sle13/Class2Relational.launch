@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.m2m.atl.adt.launching.atlTransformation">
 <stringAttribute key="ATL File Name" value="/fr.unice.i3s.sigma.examples.sle13/src/fr/unice/i3s/sigma/examples/sle13/atl/Class2Relational.atl"/>
-<stringAttribute key="ATL VM" value="EMF-specific VM"/>
+<stringAttribute key="ATL VM" value="Regular VM"/>
 <stringAttribute key="ATL_COMPILER" value="atl2006"/>
 <booleanAttribute key="IS_REFINING" value="false"/>
 <mapAttribute key="Input">
@@ -23,9 +23,9 @@
 <mapEntry key="OPTION_CONTENT_TYPE" value="false"/>
 <mapEntry key="OPTION_DERIVED" value="true"/>
 <mapEntry key="allowInterModelReferences" value="false"/>
-<mapEntry key="printExecutionTime" value="true"/>
-<mapEntry key="step" value="false"/>
-<mapEntry key="supportUML2Stereotypes" value="false"/>
+<mapEntry key="disableAttributeHelperCache" value="false"/>
+<mapEntry key="disassemblyMode" value="false"/>
+<mapEntry key="stopInMain" value="false"/>
 </mapAttribute>
 <listAttribute key="OrderedInput">
 <listEntry value="IN"/>
@@ -42,5 +42,6 @@
 <mapEntry key="Relational" value="/fr.unice.i3s.sigma.examples.sle13/model/Relational.ecore"/>
 <mapEntry key="UML" value="/fr.unice.i3s.sigma.examples.sle13/model/SimpleUML.ecore"/>
 </mapAttribute>
+<stringAttribute key="Port" value="6060"/>
 <listAttribute key="Superimpose"/>
 </launchConfiguration>

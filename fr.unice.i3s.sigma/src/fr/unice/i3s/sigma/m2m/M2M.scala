@@ -46,8 +46,8 @@ trait M2M extends EMFScalaSupport with OverloadHack {
 
   // TODO: explore shapeless with HList
 
-  val sourceMetaModel: EPackage
-  val targetMetaModels: |∨|[EPackage, List[EPackage]]
+//  val sourceMetaModel: EPackage
+//  val targetMetaModels: |∨|[EPackage, List[EPackage]]
 
   // explore stuff like - for type safety i.e only EObjects
   // def ruleClass2Table = transform(cls: UmlClass, tab: Table, pkey: Column) {
@@ -83,7 +83,7 @@ trait M2M extends EMFScalaSupport with OverloadHack {
 
   }
 
-  def transform(source: EObject): Set[EObject] = {
+  def apply(source: EObject): Set[EObject] = {
     Set[EObject]()
     // iterate over all non lazy rules
     //    for (rule <- rules) {

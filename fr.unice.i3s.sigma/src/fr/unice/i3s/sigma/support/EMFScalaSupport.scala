@@ -83,6 +83,10 @@ trait EMFScalaSupport {
       that
     }
 
+    def is[B <: EObject : ClassTag]: Boolean ={
+      classTag[B].runtimeClass.isAssignableFrom(that.getClass)
+    }
+    
     def dump(out: PrintStream = System.out, indent: Int = 0) {
       out.println(" " * indent + that)
       for (e ← that.eContents) {

@@ -28,6 +28,8 @@ class CommonInfrastructureTest extends FunSuite with MustMatchers with BeforeAnd
       pkg.ownedElements
         .filter(e ⇒ e.stereotypes exists (s => s.name == "singleton"))
         .map(e ⇒ e.name)
+        
+//        pkg.ownedElements(1).abstract_ = true
 
     singletons must contain("A")
     singletons must contain("B")

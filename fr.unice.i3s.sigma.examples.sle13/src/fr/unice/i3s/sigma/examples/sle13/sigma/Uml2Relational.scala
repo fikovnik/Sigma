@@ -9,10 +9,7 @@ import relational.RelationalPackage
 
 class Uml2Relational extends M2M with RuleMethods
   with UmlPackageScalaSupport with RelationalPackageScalaSupport {
-
-  val sourceMetaModel = UMLPackage.eINSTANCE
-  val targetMetaModels = RelationalPackage.eINSTANCE
-    
+  
   def ruleClass2Table(cls: UmlClass, tab: Table, pkey: Column) {
     tab.name = cls.name;
     tab.columns += pkey
@@ -29,14 +26,25 @@ class Uml2Relational extends M2M with RuleMethods
   }
   
   def ruleProperty2Column2(prop: Property) = guardedBy {
-    !prop.multi
+    !prop.multi && prop.`type`.is[PrimitiveType]
   } transform {
     Column(prop.name, prop.`type`.name)
+  }
+
+  def ruleProperty2Column4(prop: Property) = guardedBy {
+	  !prop.multi && prop.`type`.isInstanceOf[PrimitiveType]
+  } transform {
+	  Column(prop.name, prop.`type`.name)
   }
 
   def ruleProperty2Column = partial[Property, Column] {
     case Property(name, _, _, type_ : PrimitiveType, false) => 
        Column(name, type_.name)
+  }
+  
+  def ruleProperty2Column3 = partial[Property, Column] {
+    case p: Property if !p.multi && p.`type`.is[PrimitiveType] => 
+       Column(p.name, p.`type`.name)
   }
 
   implicit val _ruleClass2Table = rule(ruleClass2Table)
