@@ -8,24 +8,24 @@ docs:
   - 
     title: Model Navigation and Modification
     url: model-navigation-and-modification.html
-    desc: The essential support provides a common ground that facilitates model navigation and modification operations.
-  - 
-    title: Model Validation
-    url: model-validation.html
-    desc: Model Validation support.
-  - 
-    title: Model to Model Transformation
-    url: model-to-model-transformation.html
-    desc: Model to Model Transformation support in Sigma.
-  - 
-    title: Model to Text Transformation
-    url: model-to-text-transformation.html
-    desc: Model to Text Transformation support in Sigma.
-  - 
-    title: Model Workflow Orchestration
-    url: model-workflow-orchestration.html
-    desc: Model Workflow Orchestration support in Sigma.
+    desc: The common infrastructure facilitating model navigation and modification operations.
   - 
     title: Model Delegates
     url: model-delegates.html
-    desc: Enrich EMF models by delegating the computation of derived features, operation bodies and validation of structural constraints.
+    desc: Support for implementing derived features and operation bodies through Scala delegates.
+  - 
+    title: Model Consistency Checking
+    url: model-consistency-checking.html
+    desc: Model Consistency Checking DSL.
+  - 
+    title: M2M Transformation
+    url: m2m-transformation.html
+    desc: Model-to-Model Transformation DSL.
+  - 
+    title: M2T Transformation
+    url: m2t-transformation.html
+    desc: Model-to-Text Transformation DSL.
+  - 
+    title: Model Workflow Orchestration
+    url: model-workflow-orchestration.html
+    desc: Model Workflow Orchestration DSL.

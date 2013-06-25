@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Model Validation
+title: Model Consistency Checking
 ---
 
 _TBW_
