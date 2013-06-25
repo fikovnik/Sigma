@@ -24,10 +24,11 @@ The Sigma project is our ongoing effort in exploring an alternative approach to 
 * Filip Křikava. [Enriching EMF Models with Scala (quick overview)](http://www.slideshare.net/krikava/enriching-emf-models-with-scala), EclipseCon'12 Europe Modeling Symposium, October 2012
 
 * Filip Křikava, Philippe Collet. [On the Use of an Internal DSL for Enriching EMF Models](http://www.slideshare.net/krikava/krikava-ocl12), OCL'12 Workshop, September 2012
-## Contact ##
-<a id="contact"></a>
 
-SIGMA is being developed by the [MODALIS](http://modalis.polytech.unice.fr/) team of [I3S Laboratory](http://www.i3s.unice.fr/I3S/).
+## Contact ##
+<a id="contact"> </a>
+
+SIGMA is being developed by the [MODALIS](http://modalis.polytech.unice.fr/) team in [I3S Laboratory](http://www.i3s.unice.fr/I3S/).
 
 For further information, please contact:
 
