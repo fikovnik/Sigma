@@ -18,6 +18,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getBooks <em>Books</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getLoans <em>Loans</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getMembers <em>Members</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getAuthors <em>Authors</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.Library#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
  *
@@ -106,19 +108,43 @@ public interface Library extends EObject
 	EList<Member> getMembers();
 
 	/**
+	 * Returns the value of the '<em><b>Authors</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.unice.i3s.sigma.examples.library.Author}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Authors</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Authors</em>' containment reference list.
+	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getLibrary_Authors()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<Author> getAuthors();
+
+	/**
+	 * Returns the value of the '<em><b>Categories</b></em>' containment reference list.
+	 * The list contents are of type {@link fr.unice.i3s.sigma.examples.library.Category}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Categories</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Categories</em>' containment reference list.
+	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getLibrary_Categories()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<Category> getCategories();
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @model
 	 * @generated
 	 */
 	Book getBookByName(String name);
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model required="true"
-	 * @generated
-	 */
-	String toString();
 
 } // Library

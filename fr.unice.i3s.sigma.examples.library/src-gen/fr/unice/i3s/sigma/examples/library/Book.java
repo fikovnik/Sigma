@@ -15,15 +15,16 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Book#getName <em>Name</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.Book#getAuthor <em>Author</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Book#getCopies <em>Copies</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Book#getLibrary <em>Library</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.Book#getLoans <em>Loans</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.Book#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
  *
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getBook()
- * @model annotation="http://www.eclipse.org/emf/2002/Ecore constraints='SufficientCopies AtLeastOneCopy'"
- *        annotation="http://www.i3s.unice.fr/Sigma SufficientCopies='' AtLeastOneCopy=''"
+ * @model
  * @generated
  */
 public interface Book extends EObject
@@ -53,6 +54,32 @@ public interface Book extends EObject
 	 * @generated
 	 */
 	void setName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Author</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Author</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Author</em>' reference.
+	 * @see #setAuthor(Author)
+	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getBook_Author()
+	 * @model required="true"
+	 * @generated
+	 */
+	Author getAuthor();
+
+	/**
+	 * Sets the value of the '{@link fr.unice.i3s.sigma.examples.library.Book#getAuthor <em>Author</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Author</em>' reference.
+	 * @see #getAuthor()
+	 * @generated
+	 */
+	void setAuthor(Author value);
 
 	/**
 	 * Returns the value of the '<em><b>Copies</b></em>' attribute.
@@ -123,6 +150,22 @@ public interface Book extends EObject
 	 * @generated
 	 */
 	EList<Loan> getLoans();
+
+	/**
+	 * Returns the value of the '<em><b>Categories</b></em>' reference list.
+	 * The list contents are of type {@link fr.unice.i3s.sigma.examples.library.Category}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Categories</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Categories</em>' reference list.
+	 * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getBook_Categories()
+	 * @model
+	 * @generated
+	 */
+	EList<Category> getCategories();
 
 	/**
 	 * <!-- begin-user-doc -->

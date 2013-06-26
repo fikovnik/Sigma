@@ -37,7 +37,17 @@ public enum MembershipType implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	EXCLUSIVE(1, "Exclusive", "Exclusive");
+	EXCLUSIVE(1, "Exclusive", "Exclusive"),
+
+	/**
+	 * The '<em><b>EEnum Literal0</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #EENUM_LITERAL0_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	EENUM_LITERAL0(2, "EEnumLiteral0", "EEnumLiteral0");
 
 	/**
 	 * The '<em><b>Standard</b></em>' literal value.
@@ -70,6 +80,21 @@ public enum MembershipType implements Enumerator
 	public static final int EXCLUSIVE_VALUE = 1;
 
 	/**
+	 * The '<em><b>EEnum Literal0</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>EEnum Literal0</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #EENUM_LITERAL0
+	 * @model name="EEnumLiteral0"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int EENUM_LITERAL0_VALUE = 2;
+
+	/**
 	 * An array of all the '<em><b>Membership Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -80,6 +105,7 @@ public enum MembershipType implements Enumerator
 		{
 			STANDARD,
 			EXCLUSIVE,
+			EENUM_LITERAL0,
 		};
 
 	/**
@@ -140,6 +166,7 @@ public enum MembershipType implements Enumerator
 		{
 			case STANDARD_VALUE: return STANDARD;
 			case EXCLUSIVE_VALUE: return EXCLUSIVE;
+			case EENUM_LITERAL0_VALUE: return EENUM_LITERAL0;
 		}
 		return null;
 	}

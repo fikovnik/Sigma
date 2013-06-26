@@ -32,6 +32,24 @@ public interface LibraryFactory extends EFactory
 	Library createLibrary();
 
 	/**
+	 * Returns a new object of class '<em>Category</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Category</em>'.
+	 * @generated
+	 */
+	Category createCategory();
+
+	/**
+	 * Returns a new object of class '<em>Author</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Author</em>'.
+	 * @generated
+	 */
+	Author createAuthor();
+
+	/**
 	 * Returns a new object of class '<em>Book</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

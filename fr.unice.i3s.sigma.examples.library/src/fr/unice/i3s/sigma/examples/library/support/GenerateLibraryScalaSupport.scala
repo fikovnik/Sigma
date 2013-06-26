@@ -6,10 +6,11 @@ import fr.unice.i3s.sigma.workflow.lib.CleanDirectory
 import fr.unice.i3s.sigma.workflow.lib.GenerateEcore
 import fr.unice.i3s.sigma.workflow.lib.GenerateEMFScalaSupport
 
-object GenerateScalaSupport extends WorkflowApp {
+object GenerateLibraryScalaSupport extends WorkflowApp {
 
   val projectName = "fr.unice.i3s.sigma.examples.library"
   val runtimeProject = s"../$projectName"
+  val src = s"$runtimeProject/src"
   val srcGen = s"$runtimeProject/src-gen"
 
   val packageSuffix = ".support"
@@ -24,13 +25,19 @@ object GenerateScalaSupport extends WorkflowApp {
     path = srcGen
   }
 
-  !new GenerateEcore {
-    genModelURI = ecoreModel
-  }
-
   !new GenerateEMFScalaSupport {
     baseDir = srcGen
     genModelURI = ecoreModel
     packageNameMapping = { _ + packageSuffix }
+    generateExtractors = true
+    generateDelegates = true
+    delegatesBaseDir = src
+    useEMFBuilder = true
+    useOption = true
+  }
+  
+  !new GenerateEcore {
+	  genModelURI = ecoreModel
+	  srcPath(src)
   }
 }

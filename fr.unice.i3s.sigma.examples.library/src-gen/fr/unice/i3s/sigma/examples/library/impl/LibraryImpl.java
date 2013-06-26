@@ -2,7 +2,9 @@
  */
 package fr.unice.i3s.sigma.examples.library.impl;
 
+import fr.unice.i3s.sigma.examples.library.Author;
 import fr.unice.i3s.sigma.examples.library.Book;
+import fr.unice.i3s.sigma.examples.library.Category;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
@@ -38,6 +40,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.LibraryImpl#getBooks <em>Books</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.LibraryImpl#getLoans <em>Loans</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.LibraryImpl#getMembers <em>Members</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.LibraryImpl#getAuthors <em>Authors</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.LibraryImpl#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
  *
@@ -94,6 +98,26 @@ public class LibraryImpl extends EObjectImpl implements Library
 	 * @ordered
 	 */
 	protected EList<Member> members;
+
+	/**
+	 * The cached value of the '{@link #getAuthors() <em>Authors</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAuthors()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Author> authors;
+
+	/**
+	 * The cached value of the '{@link #getCategories() <em>Categories</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategories()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Category> categories;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -186,11 +210,13 @@ public class LibraryImpl extends EObjectImpl implements Library
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Book getBookByName(String name)
+	public EList<Author> getAuthors()
 	{
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		if (authors == null)
+		{
+			authors = new EObjectContainmentEList<Author>(Author.class, this, LibraryPackage.LIBRARY__AUTHORS);
+		}
+		return authors;
 	}
 
 	/**
@@ -198,7 +224,21 @@ public class LibraryImpl extends EObjectImpl implements Library
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String toString()
+	public EList<Category> getCategories()
+	{
+		if (categories == null)
+		{
+			categories = new EObjectContainmentEList<Category>(Category.class, this, LibraryPackage.LIBRARY__CATEGORIES);
+		}
+		return categories;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Book getBookByName(String name)
 	{
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
@@ -240,6 +280,10 @@ public class LibraryImpl extends EObjectImpl implements Library
 				return ((InternalEList<?>)getLoans()).basicRemove(otherEnd, msgs);
 			case LibraryPackage.LIBRARY__MEMBERS:
 				return ((InternalEList<?>)getMembers()).basicRemove(otherEnd, msgs);
+			case LibraryPackage.LIBRARY__AUTHORS:
+				return ((InternalEList<?>)getAuthors()).basicRemove(otherEnd, msgs);
+			case LibraryPackage.LIBRARY__CATEGORIES:
+				return ((InternalEList<?>)getCategories()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -262,6 +306,10 @@ public class LibraryImpl extends EObjectImpl implements Library
 				return getLoans();
 			case LibraryPackage.LIBRARY__MEMBERS:
 				return getMembers();
+			case LibraryPackage.LIBRARY__AUTHORS:
+				return getAuthors();
+			case LibraryPackage.LIBRARY__CATEGORIES:
+				return getCategories();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -292,6 +340,14 @@ public class LibraryImpl extends EObjectImpl implements Library
 				getMembers().clear();
 				getMembers().addAll((Collection<? extends Member>)newValue);
 				return;
+			case LibraryPackage.LIBRARY__AUTHORS:
+				getAuthors().clear();
+				getAuthors().addAll((Collection<? extends Author>)newValue);
+				return;
+			case LibraryPackage.LIBRARY__CATEGORIES:
+				getCategories().clear();
+				getCategories().addAll((Collection<? extends Category>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -318,6 +374,12 @@ public class LibraryImpl extends EObjectImpl implements Library
 			case LibraryPackage.LIBRARY__MEMBERS:
 				getMembers().clear();
 				return;
+			case LibraryPackage.LIBRARY__AUTHORS:
+				getAuthors().clear();
+				return;
+			case LibraryPackage.LIBRARY__CATEGORIES:
+				getCategories().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -340,6 +402,10 @@ public class LibraryImpl extends EObjectImpl implements Library
 				return loans != null && !loans.isEmpty();
 			case LibraryPackage.LIBRARY__MEMBERS:
 				return members != null && !members.isEmpty();
+			case LibraryPackage.LIBRARY__AUTHORS:
+				return authors != null && !authors.isEmpty();
+			case LibraryPackage.LIBRARY__CATEGORIES:
+				return categories != null && !categories.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -356,10 +422,25 @@ public class LibraryImpl extends EObjectImpl implements Library
 		{
 			case LibraryPackage.LIBRARY___GET_BOOK_BY_NAME__STRING:
 				return getBookByName((String)arguments.get(0));
-			case LibraryPackage.LIBRARY___TO_STRING:
-				return toString();
 		}
 		return super.eInvoke(operationID, arguments);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString()
+	{
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (name: ");
+		result.append(name);
+		result.append(')');
+		return result.toString();
 	}
 
 } //LibraryImpl

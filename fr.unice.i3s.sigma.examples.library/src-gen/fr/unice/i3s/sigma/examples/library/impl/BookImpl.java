@@ -2,12 +2,16 @@
  */
 package fr.unice.i3s.sigma.examples.library.impl;
 
+import fr.unice.i3s.sigma.examples.library.Author;
 import fr.unice.i3s.sigma.examples.library.Book;
+import fr.unice.i3s.sigma.examples.library.Category;
 import fr.unice.i3s.sigma.examples.library.Library;
 import fr.unice.i3s.sigma.examples.library.LibraryPackage;
 import fr.unice.i3s.sigma.examples.library.Loan;
 
 import java.lang.reflect.InvocationTargetException;
+
+import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -20,6 +24,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
@@ -30,9 +35,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * The following features are implemented:
  * <ul>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl#getName <em>Name</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl#getAuthor <em>Author</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl#getCopies <em>Copies</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl#getLibrary <em>Library</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl#getLoans <em>Loans</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
  *
@@ -61,6 +68,16 @@ public class BookImpl extends EObjectImpl implements Book
 	protected String name = NAME_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getAuthor() <em>Author</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getAuthor()
+	 * @generated
+	 * @ordered
+	 */
+	protected Author author;
+
+	/**
 	 * The default value of the '{@link #getCopies() <em>Copies</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -79,6 +96,16 @@ public class BookImpl extends EObjectImpl implements Book
 	 * @ordered
 	 */
 	protected int copies = COPIES_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getCategories() <em>Categories</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategories()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Category> categories;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -122,6 +149,49 @@ public class BookImpl extends EObjectImpl implements Book
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, LibraryPackage.BOOK__NAME, oldName, name));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Author getAuthor()
+	{
+		if (author != null && author.eIsProxy())
+		{
+			InternalEObject oldAuthor = (InternalEObject)author;
+			author = (Author)eResolveProxy(oldAuthor);
+			if (author != oldAuthor)
+			{
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, LibraryPackage.BOOK__AUTHOR, oldAuthor, author));
+			}
+		}
+		return author;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Author basicGetAuthor()
+	{
+		return author;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setAuthor(Author newAuthor)
+	{
+		Author oldAuthor = author;
+		author = newAuthor;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, LibraryPackage.BOOK__AUTHOR, oldAuthor, author));
 	}
 
 	/**
@@ -211,6 +281,20 @@ public class BookImpl extends EObjectImpl implements Book
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<Category> getCategories()
+	{
+		if (categories == null)
+		{
+			categories = new EObjectResolvingEList<Category>(Category.class, this, LibraryPackage.BOOK__CATEGORIES);
+		}
+		return categories;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public boolean isAvailable()
 	{
 		// TODO: implement this method
@@ -280,12 +364,17 @@ public class BookImpl extends EObjectImpl implements Book
 		{
 			case LibraryPackage.BOOK__NAME:
 				return getName();
+			case LibraryPackage.BOOK__AUTHOR:
+				if (resolve) return getAuthor();
+				return basicGetAuthor();
 			case LibraryPackage.BOOK__COPIES:
 				return getCopies();
 			case LibraryPackage.BOOK__LIBRARY:
 				return getLibrary();
 			case LibraryPackage.BOOK__LOANS:
 				return getLoans();
+			case LibraryPackage.BOOK__CATEGORIES:
+				return getCategories();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -295,6 +384,7 @@ public class BookImpl extends EObjectImpl implements Book
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
@@ -303,11 +393,18 @@ public class BookImpl extends EObjectImpl implements Book
 			case LibraryPackage.BOOK__NAME:
 				setName((String)newValue);
 				return;
+			case LibraryPackage.BOOK__AUTHOR:
+				setAuthor((Author)newValue);
+				return;
 			case LibraryPackage.BOOK__COPIES:
 				setCopies((Integer)newValue);
 				return;
 			case LibraryPackage.BOOK__LIBRARY:
 				setLibrary((Library)newValue);
+				return;
+			case LibraryPackage.BOOK__CATEGORIES:
+				getCategories().clear();
+				getCategories().addAll((Collection<? extends Category>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -326,11 +423,17 @@ public class BookImpl extends EObjectImpl implements Book
 			case LibraryPackage.BOOK__NAME:
 				setName(NAME_EDEFAULT);
 				return;
+			case LibraryPackage.BOOK__AUTHOR:
+				setAuthor((Author)null);
+				return;
 			case LibraryPackage.BOOK__COPIES:
 				setCopies(COPIES_EDEFAULT);
 				return;
 			case LibraryPackage.BOOK__LIBRARY:
 				setLibrary((Library)null);
+				return;
+			case LibraryPackage.BOOK__CATEGORIES:
+				getCategories().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -348,12 +451,16 @@ public class BookImpl extends EObjectImpl implements Book
 		{
 			case LibraryPackage.BOOK__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case LibraryPackage.BOOK__AUTHOR:
+				return author != null;
 			case LibraryPackage.BOOK__COPIES:
 				return copies != COPIES_EDEFAULT;
 			case LibraryPackage.BOOK__LIBRARY:
 				return getLibrary() != null;
 			case LibraryPackage.BOOK__LOANS:
 				return !getLoans().isEmpty();
+			case LibraryPackage.BOOK__CATEGORIES:
+				return categories != null && !categories.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

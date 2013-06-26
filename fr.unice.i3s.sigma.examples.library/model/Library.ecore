@@ -2,21 +2,9 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="library" nsURI="http://www.i3s.unice.fr/sigma/examples/Library"
     nsPrefix="library">
-  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-    <details key="invocationDelegates" value="http://www.i3s.unice.fr/Sigma/Scala"/>
-    <details key="settingDelegates" value="http://www.i3s.unice.fr/Sigma/Scala"/>
-    <details key="validationDelegates" value="http://www.i3s.unice.fr/Sigma/Scala"/>
-  </eAnnotations>
-  <eAnnotations source="http://www.i3s.unice.fr/Sigma">
-    <details key="delegate" value="fr.unice.i3s.sigma.examples.library.delegate"/>
-  </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="Library">
     <eOperations name="getBookByName" eType="#//Book">
-      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
       <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
-    <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -26,52 +14,44 @@
         upperBound="-1" eType="#//Loan" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="members" ordered="false"
         upperBound="-1" eType="#//Member" containment="true" eOpposite="#//Member/library"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="authors" upperBound="-1"
+        eType="#//Author" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="categories" upperBound="-1"
+        eType="#//Category" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Category">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Author">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Book">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="SufficientCopies AtLeastOneCopy"/>
-    </eAnnotations>
-    <eAnnotations source="http://www.i3s.unice.fr/Sigma">
-      <details key="SufficientCopies" value=""/>
-      <details key="AtLeastOneCopy" value=""/>
-    </eAnnotations>
-    <eOperations name="isAvailable" ordered="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
-    </eOperations>
+    <eOperations name="isAvailable" ordered="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="author" lowerBound="1"
+        eType="#//Author"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="copies" ordered="false"
         lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="library" ordered="false"
         lowerBound="1" eType="#//Library" eOpposite="#//Library/books"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="loans" ordered="false"
         upperBound="-1" eType="#//Loan" changeable="false" volatile="true" transient="true"
-        derived="true">
-      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
-    </eStructuralFeatures>
+        derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="categories" upperBound="-1"
+        eType="#//Category"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Member">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
-      <details key="constraints" value="AtMostTwoLoans UniqueLoans"/>
-    </eAnnotations>
-    <eAnnotations source="http://www.i3s.unice.fr/Sigma">
-      <details key="AtMostTwoLoans" value=""/>
-      <details key="UniqueLoans" value=""/>
-    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="library" ordered="false"
         lowerBound="1" eType="#//Library" eOpposite="#//Library/members"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="loans" ordered="false"
         upperBound="-1" eType="#//Loan" changeable="false" volatile="true" transient="true"
-        derived="true">
-      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
-    </eStructuralFeatures>
+        derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="books" ordered="false"
         upperBound="-1" eType="#//Book" changeable="false" volatile="true" transient="true"
-        derived="true">
-      <eAnnotations source="http://www.i3s.unice.fr/Sigma"/>
-    </eStructuralFeatures>
+        derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="membershipType" lowerBound="1"
         eType="#//MembershipType"/>
   </eClassifiers>
@@ -85,6 +65,7 @@
   <eClassifiers xsi:type="ecore:EEnum" name="MembershipType">
     <eLiterals name="Standard"/>
     <eLiterals name="Exclusive" value="1"/>
+    <eLiterals name="EEnumLiteral0" value="2"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="Date" instanceClassName="java.util.Date">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

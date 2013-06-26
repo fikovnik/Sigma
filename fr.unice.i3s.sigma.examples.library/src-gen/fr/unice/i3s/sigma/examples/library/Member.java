@@ -23,8 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see fr.unice.i3s.sigma.examples.library.LibraryPackage#getMember()
- * @model annotation="http://www.eclipse.org/emf/2002/Ecore constraints='AtMostTwoLoans UniqueLoans'"
- *        annotation="http://www.i3s.unice.fr/Sigma AtMostTwoLoans='' UniqueLoans=''"
+ * @model
  * @generated
  */
 public interface Member extends EObject

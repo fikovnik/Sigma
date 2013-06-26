@@ -68,6 +68,8 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory
 		switch (eClass.getClassifierID())
 		{
 			case LibraryPackage.LIBRARY: return createLibrary();
+			case LibraryPackage.CATEGORY: return createCategory();
+			case LibraryPackage.AUTHOR: return createAuthor();
 			case LibraryPackage.BOOK: return createBook();
 			case LibraryPackage.MEMBER: return createMember();
 			case LibraryPackage.LOAN: return createLoan();
@@ -121,8 +123,30 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory
 	 */
 	public Library createLibrary()
 	{
-		LibraryImpl library = new LibraryImpl();
+		LibraryImplDelegate library = new LibraryImplDelegate();
 		return library;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Category createCategory()
+	{
+		CategoryImpl category = new CategoryImpl();
+		return category;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Author createAuthor()
+	{
+		AuthorImpl author = new AuthorImpl();
+		return author;
 	}
 
 	/**
@@ -132,7 +156,7 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory
 	 */
 	public Book createBook()
 	{
-		BookImpl book = new BookImpl();
+		BookImplDelegate book = new BookImplDelegate();
 		return book;
 	}
 
@@ -143,7 +167,7 @@ public class LibraryFactoryImpl extends EFactoryImpl implements LibraryFactory
 	 */
 	public Member createMember()
 	{
-		MemberImpl member = new MemberImpl();
+		MemberImplDelegate member = new MemberImplDelegate();
 		return member;
 	}
 

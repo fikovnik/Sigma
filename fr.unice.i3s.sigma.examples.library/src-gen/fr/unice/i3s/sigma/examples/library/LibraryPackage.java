@@ -24,8 +24,6 @@ import org.eclipse.emf.ecore.EReference;
  * <!-- end-user-doc -->
  * @see fr.unice.i3s.sigma.examples.library.LibraryFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/Ecore invocationDelegates='http://www.i3s.unice.fr/Sigma/Scala' settingDelegates='http://www.i3s.unice.fr/Sigma/Scala' validationDelegates='http://www.i3s.unice.fr/Sigma/Scala'"
- *        annotation="http://www.i3s.unice.fr/Sigma delegate='fr.unice.i3s.sigma.examples.library.delegate'"
  * @generated
  */
 public interface LibraryPackage extends EPackage
@@ -109,13 +107,31 @@ public interface LibraryPackage extends EPackage
 	int LIBRARY__MEMBERS = 3;
 
 	/**
+	 * The feature id for the '<em><b>Authors</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIBRARY__AUTHORS = 4;
+
+	/**
+	 * The feature id for the '<em><b>Categories</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LIBRARY__CATEGORIES = 5;
+
+	/**
 	 * The number of structural features of the '<em>Library</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LIBRARY_FEATURE_COUNT = 4;
+	int LIBRARY_FEATURE_COUNT = 6;
 
 	/**
 	 * The operation id for the '<em>Get Book By Name</em>' operation.
@@ -127,22 +143,87 @@ public interface LibraryPackage extends EPackage
 	int LIBRARY___GET_BOOK_BY_NAME__STRING = 0;
 
 	/**
-	 * The operation id for the '<em>To String</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LIBRARY___TO_STRING = 1;
-
-	/**
 	 * The number of operations of the '<em>Library</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LIBRARY_OPERATION_COUNT = 2;
+	int LIBRARY_OPERATION_COUNT = 1;
+
+	/**
+	 * The meta object id for the '{@link fr.unice.i3s.sigma.examples.library.impl.CategoryImpl <em>Category</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.unice.i3s.sigma.examples.library.impl.CategoryImpl
+	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getCategory()
+	 * @generated
+	 */
+	int CATEGORY = 1;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY__NAME = 0;
+
+	/**
+	 * The number of structural features of the '<em>Category</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY_FEATURE_COUNT = 1;
+
+	/**
+	 * The number of operations of the '<em>Category</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORY_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link fr.unice.i3s.sigma.examples.library.impl.AuthorImpl <em>Author</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.unice.i3s.sigma.examples.library.impl.AuthorImpl
+	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getAuthor()
+	 * @generated
+	 */
+	int AUTHOR = 2;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AUTHOR__NAME = 0;
+
+	/**
+	 * The number of structural features of the '<em>Author</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AUTHOR_FEATURE_COUNT = 1;
+
+	/**
+	 * The number of operations of the '<em>Author</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int AUTHOR_OPERATION_COUNT = 0;
 
 	/**
 	 * The meta object id for the '{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl <em>Book</em>}' class.
@@ -152,7 +233,7 @@ public interface LibraryPackage extends EPackage
 	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getBook()
 	 * @generated
 	 */
-	int BOOK = 1;
+	int BOOK = 3;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -164,13 +245,22 @@ public interface LibraryPackage extends EPackage
 	int BOOK__NAME = 0;
 
 	/**
+	 * The feature id for the '<em><b>Author</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BOOK__AUTHOR = 1;
+
+	/**
 	 * The feature id for the '<em><b>Copies</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOK__COPIES = 1;
+	int BOOK__COPIES = 2;
 
 	/**
 	 * The feature id for the '<em><b>Library</b></em>' container reference.
@@ -179,7 +269,7 @@ public interface LibraryPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BOOK__LIBRARY = 2;
+	int BOOK__LIBRARY = 3;
 
 	/**
 	 * The feature id for the '<em><b>Loans</b></em>' reference list.
@@ -188,7 +278,16 @@ public interface LibraryPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BOOK__LOANS = 3;
+	int BOOK__LOANS = 4;
+
+	/**
+	 * The feature id for the '<em><b>Categories</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BOOK__CATEGORIES = 5;
 
 	/**
 	 * The number of structural features of the '<em>Book</em>' class.
@@ -197,7 +296,7 @@ public interface LibraryPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BOOK_FEATURE_COUNT = 4;
+	int BOOK_FEATURE_COUNT = 6;
 
 	/**
 	 * The operation id for the '<em>Is Available</em>' operation.
@@ -225,7 +324,7 @@ public interface LibraryPackage extends EPackage
 	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getMember()
 	 * @generated
 	 */
-	int MEMBER = 2;
+	int MEMBER = 4;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -298,7 +397,7 @@ public interface LibraryPackage extends EPackage
 	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getLoan()
 	 * @generated
 	 */
-	int LOAN = 3;
+	int LOAN = 5;
 
 	/**
 	 * The feature id for the '<em><b>Book</b></em>' reference.
@@ -353,7 +452,7 @@ public interface LibraryPackage extends EPackage
 	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getMembershipType()
 	 * @generated
 	 */
-	int MEMBERSHIP_TYPE = 4;
+	int MEMBERSHIP_TYPE = 6;
 
 	/**
 	 * The meta object id for the '<em>Date</em>' data type.
@@ -363,7 +462,7 @@ public interface LibraryPackage extends EPackage
 	 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getDate()
 	 * @generated
 	 */
-	int DATE = 5;
+	int DATE = 7;
 
 
 	/**
@@ -421,6 +520,28 @@ public interface LibraryPackage extends EPackage
 	EReference getLibrary_Members();
 
 	/**
+	 * Returns the meta object for the containment reference list '{@link fr.unice.i3s.sigma.examples.library.Library#getAuthors <em>Authors</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Authors</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Library#getAuthors()
+	 * @see #getLibrary()
+	 * @generated
+	 */
+	EReference getLibrary_Authors();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.unice.i3s.sigma.examples.library.Library#getCategories <em>Categories</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Categories</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Library#getCategories()
+	 * @see #getLibrary()
+	 * @generated
+	 */
+	EReference getLibrary_Categories();
+
+	/**
 	 * Returns the meta object for the '{@link fr.unice.i3s.sigma.examples.library.Library#getBookByName(java.lang.String) <em>Get Book By Name</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -431,14 +552,46 @@ public interface LibraryPackage extends EPackage
 	EOperation getLibrary__GetBookByName__String();
 
 	/**
-	 * Returns the meta object for the '{@link fr.unice.i3s.sigma.examples.library.Library#toString() <em>To String</em>}' operation.
+	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.library.Category <em>Category</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>To String</em>' operation.
-	 * @see fr.unice.i3s.sigma.examples.library.Library#toString()
+	 * @return the meta object for class '<em>Category</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Category
 	 * @generated
 	 */
-	EOperation getLibrary__ToString();
+	EClass getCategory();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.unice.i3s.sigma.examples.library.Category#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Category#getName()
+	 * @see #getCategory()
+	 * @generated
+	 */
+	EAttribute getCategory_Name();
+
+	/**
+	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.library.Author <em>Author</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Author</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Author
+	 * @generated
+	 */
+	EClass getAuthor();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.unice.i3s.sigma.examples.library.Author#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Author#getName()
+	 * @see #getAuthor()
+	 * @generated
+	 */
+	EAttribute getAuthor_Name();
 
 	/**
 	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.library.Book <em>Book</em>}'.
@@ -460,6 +613,17 @@ public interface LibraryPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getBook_Name();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.unice.i3s.sigma.examples.library.Book#getAuthor <em>Author</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Author</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Book#getAuthor()
+	 * @see #getBook()
+	 * @generated
+	 */
+	EReference getBook_Author();
 
 	/**
 	 * Returns the meta object for the attribute '{@link fr.unice.i3s.sigma.examples.library.Book#getCopies <em>Copies</em>}'.
@@ -493,6 +657,17 @@ public interface LibraryPackage extends EPackage
 	 * @generated
 	 */
 	EReference getBook_Loans();
+
+	/**
+	 * Returns the meta object for the reference list '{@link fr.unice.i3s.sigma.examples.library.Book#getCategories <em>Categories</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Categories</em>'.
+	 * @see fr.unice.i3s.sigma.examples.library.Book#getCategories()
+	 * @see #getBook()
+	 * @generated
+	 */
+	EReference getBook_Categories();
 
 	/**
 	 * Returns the meta object for the '{@link fr.unice.i3s.sigma.examples.library.Book#isAvailable() <em>Is Available</em>}' operation.
@@ -700,6 +875,22 @@ public interface LibraryPackage extends EPackage
 		EReference LIBRARY__MEMBERS = eINSTANCE.getLibrary_Members();
 
 		/**
+		 * The meta object literal for the '<em><b>Authors</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LIBRARY__AUTHORS = eINSTANCE.getLibrary_Authors();
+
+		/**
+		 * The meta object literal for the '<em><b>Categories</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LIBRARY__CATEGORIES = eINSTANCE.getLibrary_Categories();
+
+		/**
 		 * The meta object literal for the '<em><b>Get Book By Name</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -708,12 +899,40 @@ public interface LibraryPackage extends EPackage
 		EOperation LIBRARY___GET_BOOK_BY_NAME__STRING = eINSTANCE.getLibrary__GetBookByName__String();
 
 		/**
-		 * The meta object literal for the '<em><b>To String</b></em>' operation.
+		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.library.impl.CategoryImpl <em>Category</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.unice.i3s.sigma.examples.library.impl.CategoryImpl
+		 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getCategory()
+		 * @generated
+		 */
+		EClass CATEGORY = eINSTANCE.getCategory();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation LIBRARY___TO_STRING = eINSTANCE.getLibrary__ToString();
+		EAttribute CATEGORY__NAME = eINSTANCE.getCategory_Name();
+
+		/**
+		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.library.impl.AuthorImpl <em>Author</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.unice.i3s.sigma.examples.library.impl.AuthorImpl
+		 * @see fr.unice.i3s.sigma.examples.library.impl.LibraryPackageImpl#getAuthor()
+		 * @generated
+		 */
+		EClass AUTHOR = eINSTANCE.getAuthor();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute AUTHOR__NAME = eINSTANCE.getAuthor_Name();
 
 		/**
 		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.library.impl.BookImpl <em>Book</em>}' class.
@@ -732,6 +951,14 @@ public interface LibraryPackage extends EPackage
 		 * @generated
 		 */
 		EAttribute BOOK__NAME = eINSTANCE.getBook_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Author</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BOOK__AUTHOR = eINSTANCE.getBook_Author();
 
 		/**
 		 * The meta object literal for the '<em><b>Copies</b></em>' attribute feature.
@@ -756,6 +983,14 @@ public interface LibraryPackage extends EPackage
 		 * @generated
 		 */
 		EReference BOOK__LOANS = eINSTANCE.getBook_Loans();
+
+		/**
+		 * The meta object literal for the '<em><b>Categories</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference BOOK__CATEGORIES = eINSTANCE.getBook_Categories();
 
 		/**
 		 * The meta object literal for the '<em><b>Is Available</b></em>' operation.
