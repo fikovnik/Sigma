@@ -18,7 +18,7 @@ trait BRule {
   type From <: EObject
   type To <: EObject
 
-  def apply(from: From): Option[To]
+  def apply(from: From): (Option[To], Seq[_ <: EObject])
   def isLazy: Boolean
   def canTransform(source: EObject): Boolean
 }
@@ -26,7 +26,7 @@ trait BRule {
 @implicitNotFound(msg = "No conversion rule between ${From} and ${To}.")
 trait Rule[-From <: EObject, +To <: EObject] {
 
-  def apply(from: From): Option[To]
+  def apply(from: From): (Option[To], Seq[_ <: EObject])
 
   def isLazy: Boolean
 
@@ -52,14 +52,13 @@ trait RuleMethods { this: M2M ⇒
 
   // TODO: generate all 22 rules
 
-
-  def rule[F <: EObject: ClassTag, T <: EObject: ClassTag, T2 <: EObject: ClassTag](delegate: (F, T, T2) ⇒ Unit) = {
+  def rule[F <: EObject: ClassTag, T <: EObject: ClassTag, T2 <: EObject: ClassTag](delegate: (F, T, T2) ⇒ Unit): Rule[F, T] = {
     val r = new RuleImpl[F, T](classTag[T2]) {
-      def apply(from: F): Option[T] = {
+      def apply(from: F): (Option[T], Seq[_ <: EObject]) = {
         val to = createTarget[T]
         val t2 = createTarget[T2]
         delegate(from, to, t2)
-        Some(to)
+        (Some(to), Seq(t2))
       }
     }
     rules += r
@@ -70,30 +69,15 @@ trait RuleMethods { this: M2M ⇒
 
   def rule[F <: EObject: ClassTag, T <: EObject: ClassTag](delegate: PartialFunction[F, T])(implicit o: Overloaded1) = {
     val r = new RuleImpl[F, T] {
-      def apply(from: F): Option[T] =
-        if (delegate.isDefinedAt(from)) Some(delegate(from))
-        else None
+      def apply(from: F): (Option[To], Seq[_ <: EObject]) =
+        if (delegate.isDefinedAt(from)) (Some(delegate(from)),Seq())
+        else (None, Seq())
     }
     rules += r
     r
   }
-}
 
-//object M2M {
-//  import language.experimental.macros
-//
-//  type M2MContext = Context { type PrefixType = RuleMethods }
-//
-//  def hello[F <: EObject, T <: EObject](delegate: (F, T) ⇒ Unit): Rule[F, F] = macro hello_impl[F, T]
-//
-//  def hello_impl[F <: EObject, T <: EObject](c: M2MContext)(delegate: c.Expr[(F, T) ⇒ Unit]): c.Expr[Rule[F, T]] = {
-//    import c.universe._
-//    val paramRep = show(delegate.tree)
-//    val paramRepTree = Literal(Constant(paramRep))
-//    val paramRepExpr = c.Expr[String](paramRepTree)
-//    reify { c.prefix.splice.rule2(paramRepExpr.splice, delegate.splice) }
-//  }
-//}
+}
 
 trait M2M extends EMFScalaSupport with OverloadHack with Logging {
 
@@ -166,26 +150,43 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
   }
 
   protected def transform[T <: EObject: ClassTag](source: T) = {
-    val result = collection.mutable.Set[EObject]()
 
-    for (rule ← rules if !rule.isLazy && rule.canTransform(source)) {
-      logger debug s"Executing $rule on $source"
-      // TODO: make type safe
-      result ++= rule(source.asInstanceOf[rule.From])
-    }
+//    def transform0[T <: EObject: ClassTag](source: T, rules: List[BRule]): Option[T] = {
+//      rules match {
+//        case Nil => None
+//        case rule :: xs ⇒
+//          logger debug s"Executing $rule on $source"
+//
+//          rule(source.asInstanceOf[rule.From]) match {
+//            case Some(target) => target
+//          }
+//
+//          logger debug s"Transformed $source to $targets"
+//
+//          targets
+//
+//        case None ⇒
+//          logger debug (s"No rule to convert ${classTag[T]}")
+//          Seq()
+//      }
+//    }
+    
+//    rules find { x ⇒ !x.isLazy && x.canTransform(source) }
+    
+    
+   Seq[EObject]()
 
-    result
   }
 
   implicit class EObjectM2MSupport[A <: EObject](that: A) {
-    def unary_~[B >: Null <: EObject](implicit r: Rule[A, B]): B = r(that).orNull
+    def unary_~[B >: Null <: EObject](implicit r: Rule[A, B]): B = r(that)._1.orNull
   }
 
   implicit class EListM2MSupport[A <: EObject](that: EList[A]) {
     def unary_~[B <: EObject](implicit r: Rule[A, B]) = {
-      val targets = that map (r(_))
-      targets collect {
-        case Some(t) ⇒ t
+      val result = that map (r(_))
+      result collect {
+        case (Some(target),_) ⇒ target
       }
     }
   }

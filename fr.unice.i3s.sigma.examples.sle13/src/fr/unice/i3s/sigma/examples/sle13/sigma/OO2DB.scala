@@ -21,7 +21,6 @@ class OO2DB extends M2M with RuleMethods
     pkey.dataType = "Int"
   }
   
-  @Lazy
   def ruleProperty2Column = partial[Property, Column] {
     case Property(_, name, _, type_ : PrimitiveType, false) ⇒
       Column(name, type_.name)
@@ -42,5 +41,5 @@ class OO2DB extends M2M with RuleMethods
 
   implicit val _ruleClass2Table = rule(ruleClass2Table _)
   implicit val _ruleProperty2Column = rule(ruleProperty2Column)
-
+  
 }
