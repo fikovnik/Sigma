@@ -59,9 +59,6 @@ class GenerateEcore extends WorkflowTask with Logging {
   protected var generateEditor: Boolean = false
 
   @BeanProperty
-  protected var generateDelegates: Boolean = false
-
-  @BeanProperty
   protected var instanceDelegateNameMapper: (String, String) ⇒ Option[String] = defaultInstanceDelegateNameMapper
 
   private val srcPaths: Buffer[String] = Buffer[String]()

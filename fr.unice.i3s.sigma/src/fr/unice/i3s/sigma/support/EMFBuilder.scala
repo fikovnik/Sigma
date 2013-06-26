@@ -111,6 +111,7 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
                   val clazz = obj.getClass
 
                   for (proxy ← proxies.filter(_.proxy.getClass == clazz)) {
+                    // try the proxy
                     proxy.getter() match {
                       case Some(value) ⇒ {
                         // remove the proxy first otherwise it will be infinite recursion
@@ -146,10 +147,6 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
     }
   }
 
-  def build[T <: EObject: ClassTag](configs: (T ⇒ Any)*): T = {
-    configure(create[T], configs: _*)
-  }
-
   def create[T <: EObject: ClassTag]: T = {
     val clazz = classTag[T].runtimeClass
     val classifier = pkg.getEClassifier(clazz.getSimpleName)
@@ -173,18 +170,5 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
 
     instance
 
-  }
-
-  protected def setNotDefault[T](setter: (T) ⇒ Unit, value: T, default: T) {
-    if (value != default) setter(value)
-  }
-
-  protected def setNotEmpty[T](target: EList[T], source: EList[T]) {
-    if (source != null && !source.isEmpty) target ++= source
-  }
-
-  protected def configure[T](target: T, configs: (T ⇒ Any)*): T = {
-    configs.foreach(cfg ⇒ cfg(target))
-    target
   }
 }

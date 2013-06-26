@@ -1,41 +1,45 @@
 package fr.unice.i3s.sigma.workflow.lib
 
-import scala.collection.JavaConversions._
 import java.io.File
+import scala.collection.JavaConversions._
+import scala.collection.mutable.Buffer
+import scala.reflect.ClassTag
+import scala.reflect.classTag
+import org.eclipse.emf.codegen.ecore.genmodel.GenBase
 import org.eclipse.emf.codegen.ecore.genmodel.GenClass
+import org.eclipse.emf.codegen.ecore.genmodel.GenDataType
 import org.eclipse.emf.codegen.ecore.genmodel.GenFeature
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel
+import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
 import org.eclipse.emf.codegen.ecore.genmodel.GenPackage
+import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
+import org.eclipse.emf.codegen.ecore.genmodel.util.GenModelUtil
 import org.eclipse.emf.codegen.util.ImportManager
 import org.eclipse.emf.common.util.URI
-import fr.unice.i3s.sigma.util.EMFUtils
-import fr.unice.i3s.sigma.util.IOUtils.using
-import fr.unice.i3s.sigma.m2t.TextTemplate
-import fr.unice.i3s.sigma.workflow.WorkflowTask
-import com.typesafe.scalalogging.log4j.Logging
 import org.eclipse.emf.ecore.EcorePackage
-import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
+import com.typesafe.scalalogging.log4j.Logging
+import fr.unice.i3s.sigma.m2t.TextTemplate
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
-import org.eclipse.emf.codegen.ecore.genmodel.GenTypedElement
-import fr.unice.i3s.sigma.support.AutoContainment
+import fr.unice.i3s.sigma.util.EMFUtils
+import fr.unice.i3s.sigma.util.IOUtils.using
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
-import scala.collection.mutable.Buffer
-import org.eclipse.emf.codegen.ecore.genmodel.util.GenModelUtil
-import org.eclipse.emf.codegen.ecore.genmodel.GenBase
-import org.eclipse.emf.codegen.ecore.genmodel.GenDataType
-import scala.reflect.{ classTag, ClassTag }
+import fr.unice.i3s.sigma.workflow.WorkflowTask
+import fr.unice.i3s.sigma.support.genmodel.GenModelPackageScalaSupport
+import org.eclipse.emf.codegen.util.ImportManager
+import fr.unice.i3s.sigma.support.EMFProxyBuilder
 
-object GenModelScalaSupport {
+protected object GenModelUtils {
   val ScalaKeywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
 }
 
-trait GenModelScalaSupport extends EMFScalaSupport {
+protected trait GenModelUtils extends GenModelPackageScalaSupport {
 
-  import GenModelScalaSupport._
+  import GenModelUtils._
 
   protected def checkName(name: String) = {
-    if (ScalaKeywords contains name) s"`$name`"
+    // the space after _ is mandatory otherwise Scala compiler will complain
+    if (ScalaKeywords contains name) name + "_ "
     else name
   }
 
@@ -62,61 +66,43 @@ trait GenModelScalaSupport extends EMFScalaSupport {
   }
 
   implicit class ImportManagerEx(that: ImportManager) {
+    def importName(name: String) = that.getImportedName(name, true)
     def importName[T: ClassTag] = {
       that.getImportedName(classTag[T].runtimeClass.getName, true)
     }
   }
 
-  implicit class GenFeatureEx(that: GenFeature) {
-    def genClass = that.getGenClass
-    def name = that.getName
-    def scalaName = checkName(that.getName)
-    def scalaType = typeName(that)
-    def defaultValue = that.getStaticDefaultValue
-    def setter = {
-      if (that.many) s"${that.getter}.addAll"
-      else s"set${that.getAccessorName}"
-    }
-    def getter = that.getGetAccessor
-    def required = that.getEcoreFeature.isRequired
-    def many = that.getEcoreFeature.isMany
-    def changeable = that.isSet
-  }
-
-  implicit class GenDataTypeEx(that: GenDataType) {
-    def name = that.getName
-    def classifierAccessorName = that.getClassifierAccessorName
-  }
-
-  implicit class GenModelEx(that: GenModel) {
-    def usedGenPackages = that.getUsedGenPackages
-    def genPackages = that.getGenPackages
-    def importManager = that.getImportManager
-    def importManager_=(value: ImportManager) = that.setImportManager(value)
-
-  }
-  //  implicit class GenBase(that: GenBase) {
-  //  }
-
   implicit class GenPackageEx(that: GenPackage) {
-    def basePackage = that.getBasePackage
-    def packageName = that.getPackageName
-    def importedPackageInterfaceName = that.getImportedPackageInterfaceName
-    def genModel = that.getGenModel
-    def genClasses = that.getGenClasses
-    def genDataTypes = that.getGenDataTypes
-    def qualifiedFactoryInterfaceName = that.getQualifiedFactoryInterfaceName
+    def emfBuilderName = s"_${that.prefix.toLowerCase}Builder"
+  }
+
+  implicit class GenFeatureEx(that: GenFeature) {
+    def scalaName = checkName(that.getName)
+    def scalaNameWithoutSpace = {
+      val name = scalaName
+      if (name.endsWith("_ ")) name.dropRight(1)
+      else name
+    }
+    def scalaType = typeName(that)
+  }
+
+  implicit class GenBaseEx(that: GenBase) {
+    def excludeFromConstructor = {
+      Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "excludeFromConstructor")) match {
+        case Some(x) ⇒ x.toBoolean
+        case None ⇒ false
+      }
+    }
+
+    def excludeFromExtractor = {
+      Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "excludeFromExtractor")) match {
+        case Some(x) ⇒ x.toBoolean
+        case None ⇒ false
+      }
+    }
   }
 
   implicit class GenClassEx(that: GenClass) {
-    def genModel = that.getGenModel
-    def name = that.getName
-    def genPackage = that.getGenPackage
-    def allGenFeatures = that.getAllGenFeatures
-    def genFeatures = that.getGenFeatures
-    def importedInterfaceName = that.getImportedInterfaceName
-    def qualifiedInterfaceName = that.getQualifiedInterfaceName
-
     // TODO: rename to generateConstructor
     def generateApply = {
       Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "generateApply")) match {
@@ -129,6 +115,7 @@ trait GenModelScalaSupport extends EMFScalaSupport {
       Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "extraCompanionObjectCode"))
     }
   }
+
 }
 
 // we do not have to worry much about this class since it will
@@ -138,23 +125,35 @@ case class EClassScalaSupportTemplate(
   pkgName: String,
   clazzSupportName: String,
   pkgSupportName: String,
+  generateExtractors: Boolean,
   useOption: Boolean,
   useEMFBuilder: Boolean,
-  mappings: Map[String, String] = Map.empty) extends TextTemplate with Logging with GenModelScalaSupport {
+  mappings: Map[String, String] = Map.empty) extends TextTemplate with Logging with GenModelUtils {
 
-  implicit class GenClassMapping(that: GenClass) {
+  implicit class GenClassScalaName(that: GenClass) {
     def scalaName = {
       mappings.get(that.name) match {
         case Some(name) ⇒ name
         case None ⇒
           val name = that.importedInterfaceName
+          // if there is a conflict with some std Java names
+          // it will use full-qualified name
           if (name.contains(".")) {
-            val pkgName = that.genPackage.packageName.map { _.toUpper }
-            val alias = pkgName + that.name
-            logger.warn(s"Class name: ${that.name} conflicts with an already imported class (likely default import). It will be aliased to ${alias}.")
-            alias
+            logger.warn(s"Class name: ${that.name} conflicts with an already imported class (likely default import). Consider adding a mapping.")
+            that.name
           } else name
       }
+    }
+    // TODO: rename to generateConstructor
+    def generateApply = {
+      Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "generateApply")) match {
+        case Some(x) ⇒ x.toBoolean
+        case None ⇒ true
+      }
+    }
+
+    def extraCompanionObjectCode = {
+      Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "extraCompanionObjectCode"))
     }
   }
 
@@ -181,7 +180,7 @@ case class EClassScalaSupportTemplate(
 
   protected def renderScalaSupportTrait {
     // the scala support trait
-    !s"trait $clazzSupportName" curlyIndent {
+    !s"trait $clazzSupportName extends ${importManager.importName[EMFScalaSupport]}" curlyIndent {
       renderTypeDecl(clazz)
 
       !endl
@@ -199,47 +198,63 @@ case class EClassScalaSupportTemplate(
   }
 
   protected def renderImplicitClass(clazz: GenClass) {
-    !s"implicit class $clazzSupportName(that: ${clazz.importedInterfaceName})" curlyIndent {
-      clazz.genFeatures foreach renderFeatureSupport
+    if (!clazz.genFeatures.isEmpty) {
+      !s"implicit class $clazzSupportName(that: ${clazz.importedInterfaceName})" curlyIndent {
+        clazz.genFeatures foreach renderFeatureSupport
+      }
     }
   }
 
   protected def renderCompanionObject(clazz: GenClass) = {
+    if (useEMFBuilder) {
+      !s"protected implicit val _${clazz.scalaName.toLowerCase}ProxyBuilder = new ${importManager.importName[EMFProxyBuilder[_]]}[${clazz.scalaName}](${pkgSupportName}.${clazz.genPackage.emfBuilderName})"
+      !endl
+    }
     !s"object ${clazz.scalaName}" curlyIndent {
-      if (clazz.generateApply) renderConstructor(clazz) << endl
-      if (clazz.generateExtractor) renderExtractor(clazz)
+      if (clazz.generateApply) {
+        renderConstructor(clazz)
+        !endl
+      }
+      if (generateExtractors && !clazz.excludeFromExtractor) renderExtractor(clazz)
 
       !clazz.extraCompanionObjectCode.getOrElse("")
     }
   }
 
   protected def renderExtractor(clazz: GenClass) = {
-    val features = clazz.allGenFeatures.filter(_.generateExtractor)
+    val features = clazz.allGenFeatures.filter(!_.excludeFromExtractor)
       .map { f ⇒ (f.getter -> f.scalaType) }
 
-    val types = features map (_._2) mkString (",")
-    val names = features map ("that." + _._1) mkString (",")
+    require(features.size <= 22, s"The number of features of ${clazz.name} has to be <= 22, but it is ${features.size}")
 
-    !s"def unapply(that: ${clazz.scalaName}): Option[($types)] =" indent {
-      !s"Some(($names))"
+    if (features.size > 1) {
+      val types = features map (_._2) mkString (",")
+      val names = features map ("that." + _._1) mkString (",")
+
+      !s"def unapply(that: ${clazz.scalaName}): Option[($types)] =" indent {
+        !s"Some(($names))"
+      }
     }
-
   }
 
   protected def renderConstructor(clazz: GenClass) = {
     val features = clazz.allGenFeatures filter { f ⇒
-      !f.isDerived &&
+      !f.excludeFromConstructor &&
+        !f.isReferenceType &&
+        !f.isDerived &&
         f.isChangeable &&
-        f.isBidirectional implies !f.isContainer
+        (f.isBidirectional implies !f.isContainer)
     }
 
     val featureParams = features map { f ⇒
       s"${f.scalaName}: ${f.scalaType} = ${f.defaultValue}"
     }
 
+    require(features.size <= 22, s"The number of features of ${clazz.name} has to be <= 22, but it is ${features.size}")
+
     !s"def apply(${featureParams mkString (", ")}): ${clazz.scalaName} =" curlyIndent {
       if (useEMFBuilder) {
-        !s"val instance = $pkgSupportName.builder.create[${clazz.scalaName}]" << endl
+        !s"val instance = $pkgSupportName.${clazz.genPackage.emfBuilderName}.create[${clazz.scalaName}]" << endl
       } else {
         !s"val instance = ${clazz.genPackage.qualifiedFactoryInterfaceName}.eINSTANCE.create${clazz.name}" << endl
       }
@@ -272,32 +287,58 @@ case class EClassScalaSupportTemplate(
   }
 
   protected def renderFeatureSetter(f: GenFeature) = {
-    // for setters we do not need to escape scala keywords
-    val name = f.name
-    !s"def ${name}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
+    !s"def ${f.scalaNameWithoutSpace}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
+
     // a proxy setter for all non-containable references
-    if (!f.isContains && f.isReferenceType && !f.isListType) {
-      !s"def ${name}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
-        !s"that.${f.setter}($pkgSupportName.builder.ref(value))"
+    if (useEMFBuilder &&
+      !f.isContains &&
+      f.isReferenceType &&
+      !f.isListType) {
+      !s"def ${f.scalaNameWithoutSpace}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
+        !s"that.${f.setter}($pkgSupportName.${f.genPackage.emfBuilderName}.ref(value))"
       }
     }
   }
 
-  implicit class GenBaseEx(that: GenBase) {
-    def generateExtractor = {
-      Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "excludeFromExtractors")) match {
-        case Some(x) ⇒ x.toBoolean
-        case None ⇒ true
-      }
+}
+
+case class DelegateTemplate(
+  clazz: GenClass,
+  clazzDelegateImplName: String,
+  pkgName: String,
+  pkgSupportName: String) extends TextTemplate with GenModelUtils {
+
+  val importManager = new ImportManager(pkgName, clazzDelegateImplName)
+  clazz.genModel.importManager = importManager
+
+  val clazzDelegateName = s"${clazz.importedInterfaceName}Delegate"
+
+  override def render {
+    !s"package ${pkgName}"
+
+    // mark imports
+    val imports = out.startSection
+
+    !endl
+    !s"class $clazzDelegateImplName extends ${clazz.importedClassName} with $clazzDelegateName"
+
+    !endl
+    !s"trait $clazzDelegateName extends ${clazz.importedInterfaceName} with ${importManager.importName(pkgSupportName)}" curlyIndent {
+      // TODO: generate stubs for derived features and operation bodies
     }
+
+    // output imports
+    imports << importManager.computeSortedImports() << endl << endl
   }
+
 }
 
 case class EPackageScalaSupportTemplate(
   pkg: GenPackage,
   pkgName: String,
   pkgSupportName: String,
-  skipTypes: List[String] = Nil) extends TextTemplate with GenModelScalaSupport {
+  useEMFBuilder: Boolean,
+  skipTypes: List[String] = Nil) extends TextTemplate with GenModelUtils {
 
   val importManager = new ImportManager(pkgName, pkgSupportName)
   pkg.genModel.importManager = importManager
@@ -335,7 +376,10 @@ case class EPackageScalaSupportTemplate(
     !s"object $pkgSupportName extends $pkgSupportName" curlyIndent {
       // get the package  
       !s"private[this] val pkg = ${pkg.importedPackageInterfaceName}.eINSTANCE" << endl
-      !s"val builder = new ${importManager.importName[EMFBuilder[_]]}(pkg)" << endl
+      if (useEMFBuilder) {
+        // TODO: externalize
+        !s"protected[support] val ${pkg.emfBuilderName} = new ${importManager.importName[EMFBuilder[_]]}(pkg)" << endl
+      }
 
       // constants for all data types
       pkg.genDataTypes foreach renderDataType("pkg") _
@@ -358,7 +402,7 @@ object GenerateEMFScalaSupport {
 
 }
 
-class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelScalaSupport {
+class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelUtils {
 
   // call the companion's object static block
   GenerateEMFScalaSupport
@@ -372,6 +416,10 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelSca
   protected var packageNameMapping: String ⇒ String = _
 
   protected var generateExtractors: Boolean = false
+
+  protected var generateDelegates: Boolean = false
+  protected var delegatesBaseDir: File = _
+  protected def delegatesBaseDir_=(v: String): Unit = delegatesBaseDir = new File(v)
 
   protected var useOption: Boolean = false
   protected var useEMFBuilder: Boolean = false
@@ -392,6 +440,8 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelSca
   def doExecute {
     logger.info("Generating EMF Scala Support for " + genModelURI)
 
+    require(generateDelegates implies delegatesBaseDir.isDirectory, "generateDelegates option implies delegatesBaseDir option")
+
     val genModel = EMFUtils.IO.load[GenModel](genModelURI)
     genModel.reconcile()
 
@@ -403,24 +453,42 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelSca
 
     for (pkg ← genModel.genPackages) {
 
-      val pkgName = packageNameMapping(Option(pkg.basePackage).map(_ + ".").getOrElse("") + pkg.packageName)
+      val basePkg = Option(pkg.basePackage).map(_ + ".").getOrElse("") + pkg.packageName
+      val pkgName = packageNameMapping(basePkg)
       val dir = (baseDir /: pkgName.split('.'))(new File(_, _))
       checkDir(dir)
 
-      val pkgSupportName = pkg.packageName.capitalize + "PackageScalaSupport"
+      val pkgSupportName = pkg.prefix + "PackageScalaSupport"
       using(new File(dir, pkgSupportName + ".scala")) { f ⇒
         logger debug s"Generated package support for ${pkg.packageName}"
-        EPackageScalaSupportTemplate(pkg, pkgName, pkgSupportName, skipTypes.toList) >> f
+        EPackageScalaSupportTemplate(pkg, pkgName, pkgSupportName, useEMFBuilder, skipTypes.toList) >> f
       }
 
       for (clazz ← pkg.genClasses if !(skipTypes contains clazz.name)) {
         val clazzSupportName = clazz.name + "ScalaSupport"
         using(new File(dir, clazzSupportName + ".scala")) { f ⇒
           logger debug s"Generated class support for ${clazz.name}"
-          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName, pkgSupportName, useOption, useEMFBuilder, mappings.toMap) >> f
+          EClassScalaSupportTemplate(clazz, pkgName, clazzSupportName, pkgSupportName, generateExtractors, useOption, useEMFBuilder, mappings.toMap) >> f
+        }
+
+        if (generateDelegates &&
+          (clazz.genFeatures.exists(_.isDerived) || clazz.genOperations.nonEmpty)) {
+          val implPkg = basePkg + "." + pkg.classPackageSuffix
+          val clazzDelegateImplName = clazz.importedClassName + "Delegate"
+          val delegatesDir = (delegatesBaseDir /: implPkg.split('.'))(new File(_, _))
+          checkDir(delegatesDir)
+
+          val clazzFile = new File(delegatesDir, clazzDelegateImplName + ".scala")
+          if (!clazzFile.exists) {
+            using(clazzFile) { f ⇒
+              logger debug s"Generated delegeate for ${clazz.name}"
+              DelegateTemplate(clazz, clazzDelegateImplName, implPkg, s"$pkgName.$pkgSupportName") >> f
+            }
+          } else {
+            logger debug s"Delegeate for ${clazz.name} already exists - skipping"
+          }
         }
       }
-
     }
   }
 

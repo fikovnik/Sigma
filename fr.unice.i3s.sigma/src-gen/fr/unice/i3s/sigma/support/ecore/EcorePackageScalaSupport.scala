@@ -1,12 +1,37 @@
 package fr.unice.i3s.sigma.support.ecore
 
+import fr.unice.i3s.sigma.support.EMFBuilder;
+import fr.unice.i3s.sigma.support.EMFScalaSupport;
+
 import org.eclipse.emf.ecore.EcorePackage;
 
 trait EcorePackageScalaSupport
-  extends EAttributeScalaSupport with EAnnotationScalaSupport with EClassScalaSupport with EClassifierScalaSupport with EDataTypeScalaSupport with EEnumScalaSupport with EEnumLiteralScalaSupport with EFactoryScalaSupport with EModelElementScalaSupport with ENamedElementScalaSupport with EObjectScalaSupport with EOperationScalaSupport with EPackageScalaSupport with EParameterScalaSupport with EReferenceScalaSupport with EStructuralFeatureScalaSupport with ETypedElementScalaSupport with EGenericTypeScalaSupport with ETypeParameterScalaSupport {
+  extends EAttributeScalaSupport with
+  EAnnotationScalaSupport with
+  EClassScalaSupport with
+  EClassifierScalaSupport with
+  EDataTypeScalaSupport with
+  EEnumScalaSupport with
+  EEnumLiteralScalaSupport with
+  EFactoryScalaSupport with
+  EModelElementScalaSupport with
+  ENamedElementScalaSupport with
+  EObjectScalaSupport with
+  EOperationScalaSupport with
+  EPackageScalaSupport with
+  EParameterScalaSupport with
+  EReferenceScalaSupport with
+  EStructuralFeatureScalaSupport with
+  ETypedElementScalaSupport with
+  EGenericTypeScalaSupport with
+  ETypeParameterScalaSupport with
+  EMFScalaSupport
 
+object EcorePackageScalaSupport extends EcorePackageScalaSupport {
   private[this] val pkg = EcorePackage.eINSTANCE
-
+  
+  protected[support] val _ecoreBuilder = new EMFBuilder(pkg)
+  
   val EBigDecimal = pkg.getEBigDecimal
   val EBigInteger = pkg.getEBigInteger
   val EBoolean = pkg.getEBoolean
@@ -40,7 +65,4 @@ trait EcorePackageScalaSupport
   val EString = pkg.getEString
   val ETreeIterator = pkg.getETreeIterator
   val EInvocationTargetException = pkg.getEInvocationTargetException
-
 }
-
-object EcorePackageScalaSupport extends EcorePackageScalaSupport

@@ -1,6 +1,5 @@
 package fr.unice.i3s.sigma.support
 
-import scala.collection.JavaConversions._
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.util.EcoreUtil
@@ -19,11 +18,23 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.common.notify.impl.AdapterImpl
 import org.eclipse.emf.common.util.EList
+import scala.collection.SeqLike
+import scala.collection.IterableLike
 
 trait EMFScalaSupport {
 
+  implicit def eMapAsScalaMap[A, B](a: EMap[A, B]): scala.collection.mutable.Map[A, B] =
+    scala.collection.JavaConversions.mapAsScalaMap(a.map())
+
+  implicit def asScalaBuffer[A](that: EList[A]): Buffer[A] =
+    scala.collection.JavaConversions.asScalaBuffer(that)
+  implicit def asEList[T](that: Buffer[T]) = new DelegatingEList(that)
+  implicit def asEList[T](that: Seq[T]) = new DelegatingEList(that.toBuffer)
+
   // TODO: rewrite the Diagnostics to be nomads
   implicit class RichSigmaDiagnostic(that: Diagnostic) {
+    import collection.JavaConversions._
+    
     private val SEVERITIES = Map(
       Diagnostic.OK -> "OK",
       Diagnostic.INFO -> "INFO",
@@ -32,7 +43,7 @@ trait EMFScalaSupport {
       Diagnostic.CANCEL -> "CANCEL")
 
     def flatten: List[Diagnostic] = {
-      that.getChildren.toList match {
+      that.getChildren toList match {
         case Nil ⇒ that :: Nil
         case e ⇒ e.flatMap(_.flatten).toList
       }
@@ -83,10 +94,10 @@ trait EMFScalaSupport {
       that
     }
 
-    def is[B <: EObject : ClassTag]: Boolean ={
+    def is[B <: EObject: ClassTag]: Boolean = {
       classTag[B].runtimeClass.isAssignableFrom(that.getClass)
     }
-    
+
     def dump(out: PrintStream = System.out, indent: Int = 0) {
       out.println(" " * indent + that)
       for (e ← that.eContents) {
@@ -124,7 +135,7 @@ trait EMFScalaSupport {
   /**
    * Includes some of the missing collection operations that are present in OCL
    */
-  implicit class RichSigmaList[A](that: List[A]) {
+  implicit class RichSigmaSeq[A](that: Seq[A]) {
     def unique = {
       that.distinct.lengthCompare(that.length) == 0
     }
@@ -136,6 +147,26 @@ trait EMFScalaSupport {
     def includesAll[B](b: GenTraversableOnce[B]) = {
       b.forall(that.contains(_))
     }
+
+    // TODO: transitive closure
+  }
+
+  implicit class RichSigmaEList[A <: EObject : ClassTag](that: EList[A]) {
+    def +==(elem: A): A = {
+      that.add(elem)
+      elem
+    }
+
+    def ++==[B <: A](elems: Seq[B]): Seq[B] = {
+      that.addAll(elems)
+      elems
+    }
+    
+    def +=(elem: A) = that.add(elem)
+    
+    def +=(elem: => Option[A])(implicit proxyBuilder: EMFProxyBuilder[A]) {
+	  that.add(proxyBuilder(elem))
+    }
   }
 
   implicit class RichSigmaBoolean(that: Boolean) {
@@ -143,21 +174,6 @@ trait EMFScalaSupport {
       !that || b
     }
   }
-
-  //  // conversion between EMF collections
-  //  implicit def eListAsScalaImmutableList[A](a: EList[A]): List[A] =
-  //    asScalaBuffer(a).toList
-  //
-  //  implicit def scalaListAsEList[A](a: List[A]): EList[A] =
-  //    new DelegatingEList(a)
-
-  implicit def eMapAsScalaMap[A, B](a: EMap[A, B]): scala.collection.mutable.Map[A, B] =
-    mapAsScalaMap(a.map())
-
-  implicit def asScalaBuffer[A](that: EList[A]): Buffer[A] =
-    scala.collection.JavaConversions.asScalaBuffer(that)
-  implicit def asEList[T](that: Buffer[T]) = new DelegatingEList(that)
-  implicit def asEList[T](that: Seq[T]) = new DelegatingEList(that.toBuffer)
 }
 
 object EMFScalaSupport extends EMFScalaSupport
