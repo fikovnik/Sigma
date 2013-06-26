@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'ISO-8859-1' ?>
 <asm version="1.0" name="0">
 	<cp>
-		<constant value="Class2Relational"/>
+		<constant value="Class2DB"/>
 		<constant value="links"/>
 		<constant value="NTransientLinkSet;"/>
 		<constant value="col"/>
@@ -48,7 +48,7 @@
 		<constant value="A.__applyClass2Table(NTransientLink;):V"/>
 		<constant value="__matchClass2Table"/>
 		<constant value="Class"/>
-		<constant value="UML"/>
+		<constant value="OO"/>
 		<constant value="IN"/>
 		<constant value="MMOF!Classifier;.allInstancesFrom(S):QJ"/>
 		<constant value="TransientLink"/>
@@ -57,7 +57,7 @@
 		<constant value="NTransientLink;.addSourceElement(SJ):V"/>
 		<constant value="tab"/>
 		<constant value="Table"/>
-		<constant value="Relational"/>
+		<constant value="DB"/>
 		<constant value="NTransientLink;.addTargetElement(SJ):V"/>
 		<constant value="pkey"/>
 		<constant value="Column"/>

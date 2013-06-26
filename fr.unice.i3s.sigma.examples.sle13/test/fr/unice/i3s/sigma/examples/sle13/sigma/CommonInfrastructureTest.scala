@@ -1,89 +1,81 @@
 package fr.unice.i3s.sigma.examples.sle13.sigma
 
-import scala.collection.JavaConversions._
 import org.scalatest.FunSuite
-import library.support.LibraryPackageScalaSupport
 import org.scalatest.BeforeAndAfter
 import org.junit.runner.RunWith
 import org.scalatest.matchers.MustMatchers
 import org.scalatest.junit.JUnitRunner
-import uml.support.UmlPackageScalaSupport
 import scala.collection.mutable.Buffer
+import oo.Package
+import oo.support.OOPackageScalaSupport
+import fr.unice.i3s.sigma.support.EMFProxyBuilder
 
 @RunWith(classOf[JUnitRunner])
-class CommonInfrastructureTest extends FunSuite with MustMatchers with BeforeAndAfter with UmlPackageScalaSupport {
+class CommonInfrastructureTest extends FunSuite with MustMatchers with BeforeAndAfter with OOPackageScalaSupport {
 
-  var pkg: UmlPackage = _
+  var pkg: Package = _
 
   before {
-    pkg = UmlPackage()
-    pkg.ownedElements += UmlClass(name = "A", stereotypes = Seq(Stereotype("singleton")))
-    pkg.ownedElements += UmlClass(name = "B", stereotypes = Seq(Stereotype("singleton")), operations = Seq(Operation("op1")))
-    pkg.ownedElements += UmlClass(name = "C")
+    pkg = Package()
 
+    val singleton = pkg.ownedStereotypes +== Stereotype("singleton")
+
+    pkg.ownedElements += Class(name = "A", stereotypes = Seq(singleton))
+    pkg.ownedElements += Class(name = "B", stereotypes = Seq(singleton), features = Seq(Operation(name = "op1")))
+    pkg.ownedElements += Class(name = "C")
   }
 
   test("Select names of singletons") {
     val singletons =
       pkg.ownedElements
-        .filter(e ⇒ e.stereotypes exists (s => s.name == "singleton"))
+        .filter(e ⇒ e.stereotypes exists (s ⇒ s.name == "singleton"))
         .map(e ⇒ e.name)
-        
-//        pkg.ownedElements(1).abstract_ = true
 
     singletons must contain("A")
     singletons must contain("B")
     singletons must not(contain("C"))
   }
 
-  test("Select names and number op class operations") {
-    val res =
-      pkg.ownedElements collect {
-        case UmlClass(name, Seq(Stereotype("singleton")),_,_,_) =>  
-        case UmlClass(name,_,_,_,ops) ⇒ (name -> ops.size)
-      }
+  test("Select name of all operations") {
+    val res = pkg.ownedElements collect {
+      case x: Class ⇒ x.operations map (_.name)
+    }
 
-    res must be === (Buffer(("A" -> 0),("B" -> 1),("C" -> 0)))
+    res must be(Seq(Seq(), Seq("op1"), Seq()))
   }
-//  }
-//
-//  test("Book constructor") {
-//    // Scala support named arguments in method calls
-//    val sicp = Book(name = "SICP", author = Author("H. Abelson"))
-//    sicp.pages = 683 // Scala setter
-//
-//    sicp.name must be("SICP")
-//    sicp.author.name must be("H. Abelson")
-//    sicp.pages must be(683)
-//  }
-//
-//  test("Delayed init") {
-//    val sicp = Book(name = "SICP") initLater { e ⇒
-//      e.pages = 683
-//    }
-//
-//    sicp.pages must be(0)
-//
-//    library.catalog += sicp //adds to library and executes initLater
-//
-//    sicp.pages must be(683)
-//  }
-//
-//  test("Lazy proxy resolution") {
-//    val sicp = Book(name = "SICP")
-//    // following expression creates a new Book proxy instance
-//    // using the book additional setter that accepts Option
-//    sicp.author = library.authors.find(_.name == "H. Abelson")
-//    // ...
-//
-//    sicp.author.eIsProxy must be(true)
-//
-//    library.authors += Author(name = "H. Abelson")
-//
-//    sicp.author.name must be("H. Abelson")
-//
-//    // sicp author proxy gets resolved
-//    assert(sicp.author.name == "H. Abelson")
-//  }
+
+  test("Construct a class") {
+    val cls = Class(name = "MyClass")
+    cls.stereotypes += Stereotype(name = "singleton")
+    cls.features += Operation(name = "getInstance", returnType = cls)
+
+    cls.name must be("MyClass")
+    cls.stereotypes must have size (1)
+    cls.features must have size (1)
+  }
+
+  test("Delayed init") {
+    val cls = Class() initLater { x ⇒
+      x.name = "MyClass"
+    }
+
+    cls.name must be(null)
+
+    pkg.ownedElements += cls //adds to package and executes initLater
+
+    cls.name must be("MyClass")
+  }
+  
+  test("Lazy proxy resolution") {
+    val cls = Class(name = "MyClass")
+    cls.stereotypes += pkg.ownedStereotypes.find(_.name == "transient")
+
+    cls.stereotypes(0).eIsProxy must be(true)
+
+    pkg.ownedStereotypes += Stereotype(name = "transient")
+    
+    cls.stereotypes(0).eIsProxy must be(false)
+    cls.stereotypes(0).name must be("transient")
+  }
 
 }

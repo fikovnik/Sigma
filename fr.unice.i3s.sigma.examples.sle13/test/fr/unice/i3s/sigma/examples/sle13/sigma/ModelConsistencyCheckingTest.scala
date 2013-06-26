@@ -1,8 +1,6 @@
 package fr.unice.i3s.sigma.examples.sle13.sigma
 
 import fr.unice.i3s.sigma.validation.ValidationContext
-import uml.support.UmlPackageScalaSupport
-import uml.ScopeKind
 import fr.unice.i3s.sigma.validation.Error
 import org.junit.runner.RunWith
 import org.scalatest.matchers.MustMatchers
@@ -10,12 +8,14 @@ import org.scalatest.FlatSpec
 import fr.unice.i3s.sigma.examples.sle13.SingletonBuilderBased
 import fr.unice.i3s.sigma.examples.sle13.SingletonMethodBased
 import org.scalatest.junit.JUnitRunner
+import oo.support.OOPackageScalaSupport
+import oo.ScopeKind
 
-trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatchers ⇒
+trait SingletonSpec { this: FlatSpec with OOPackageScalaSupport with MustMatchers ⇒
 
-  def singletonValidationContext(ctx: ValidationContext { type Self = UmlClass }) {
+  def singletonValidationContext(ctx: ValidationContext { type Self = Class }) {
     it must "Check guard" in {
-      val clazz = UmlClass(name = "A")
+      val clazz = Class(name = "A")
 
       val res = ctx.validate(clazz)
 
@@ -23,12 +23,12 @@ trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatche
     }
 
     it must "Pass on correct class" in {
-      val clazz = UmlClass(
+      val clazz = Class(
         name = "A",
         stereotypes = Seq(
           Stereotype("singleton")
         ),
-        operations = Seq(
+        features = Seq(
           Operation(name = "getInstance", ownerScope = ScopeKind.SK_CLASSIFIER)
         )
       )
@@ -39,7 +39,7 @@ trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatche
     }
 
     it must "Fail on incorrect class" in {
-      val clazz = UmlClass(
+      val clazz = Class(
         name = "A",
         stereotypes = Seq(
           Stereotype("singleton")
@@ -54,12 +54,12 @@ trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatche
     }
 
     it must "Fail and correct an incorrect class" in {
-      val clazz = UmlClass(
+      val clazz = Class(
         name = "A",
         stereotypes = Seq(
           Stereotype("singleton")
         ),
-        operations = Seq(
+        features = Seq(
           Operation(name = "getInstance")
         )
       )
@@ -93,7 +93,7 @@ trait SingletonSpec { this: FlatSpec with UmlPackageScalaSupport with MustMatche
 }
 
 @RunWith(classOf[JUnitRunner])
-class ModelValidationTest extends FlatSpec with MustMatchers with UmlPackageScalaSupport
+class ModelValidationTest extends FlatSpec with MustMatchers with OOPackageScalaSupport
   with SingletonSpec {
 
   "Method based validation context" must behave like singletonValidationContext(new SingletonMethodBased)

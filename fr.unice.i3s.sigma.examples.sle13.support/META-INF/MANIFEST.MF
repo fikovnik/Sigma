@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Support
+Bundle-SymbolicName: fr.unice.i3s.sigma.examples.sle13.support
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: fr.unice.i3s.sigma;bundle-version="1.0.0",
+ org.scala-ide.scala.library;bundle-version="2.10.1"

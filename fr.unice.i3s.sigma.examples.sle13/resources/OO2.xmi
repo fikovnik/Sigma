@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ASCII"?>
+<oo:Package
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:oo="http://oo/1.0">
+  <ownedElements
+      xsi:type="oo:PrimitiveType"
+      name="int"/>
+  <ownedElements
+      xsi:type="oo:Class"
+      name="A">
+    <features
+        xsi:type="oo:Property"
+        name="p1"
+        type="//@ownedElements.0"/>
+    <features
+        xsi:type="oo:Property"
+        name="p2"
+        type="//@ownedElements.0"/>
+  </ownedElements>
+  <ownedElements
+      xsi:type="oo:Class"
+      name="B">
+    <features
+        xsi:type="oo:Property"
+        name="p1"
+        type="//@ownedElements.0"/>
+    <features
+        xsi:type="oo:Property"
+        name="p2"
+        type="//@ownedElements.0"/>
+  </ownedElements>
+</oo:Package>

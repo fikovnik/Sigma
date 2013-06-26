@@ -3,17 +3,17 @@ package fr.unice.i3s.sigma.examples.sle13
 import fr.unice.i3s.sigma.validation.ValidationContext
 import fr.unice.i3s.sigma.validation.InvMethods
 import fr.unice.i3s.sigma.validation.InvBuilder
-import uml.support.UmlPackageScalaSupport
-import uml.ScopeKind
 import fr.unice.i3s.sigma.validation.Passed
 import fr.unice.i3s.sigma.validation.Error
 import scala.reflect.ClassTag
+import oo.support.OOPackageScalaSupport
+import oo.ScopeKind
 
 class SingletonMethodBased extends ValidationContext with InvMethods
-  with UmlPackageScalaSupport {
+  with OOPackageScalaSupport {
 
   // define the context type, the type of self
-  type Self = UmlClass
+  type Self = Class
   implicit val selfTag: ClassTag[Self] = implicitly
   
   // context guard
@@ -35,14 +35,14 @@ class SingletonMethodBased extends ValidationContext with InvMethods
       }
   }
 
-  def getGetInstanceOperation(c: UmlClass): Operation =
+  def getGetInstanceOperation(c: Class): Operation =
     c.operations find (_.name == "getInstance") orNull
 }
 
-class SingletonBuilderBased extends ValidationContext with InvBuilder with UmlPackageScalaSupport {
+class SingletonBuilderBased extends ValidationContext with InvBuilder with OOPackageScalaSupport {
 
   // define the context type, the type of self
-  type Self = UmlClass
+  type Self = Class
   implicit val selfTag: ClassTag[Self] = implicitly
 
   // context guard
@@ -64,7 +64,7 @@ class SingletonBuilderBased extends ValidationContext with InvBuilder with UmlPa
         }
     }
 
-  def getGetInstanceOperation(c: UmlClass): Operation =
+  def getGetInstanceOperation(c: Class): Operation =
     c.operations find (_.name == "getInstance") orNull
 
 }

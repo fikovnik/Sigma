@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ASCII"?>
-<uml:Package
+<oo:Package
     xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:uml="http://uml/1.0"
+    xmlns:oo="http://oo/1.0"
     name="pkg">
   <ownedElements
-      xsi:type="uml:Class"
+      xsi:type="oo:Class"
       name="A">
     <stereotypes
         name="singleton"/>
@@ -15,14 +15,14 @@
         returnType="//@ownedElements.0"/>
   </ownedElements>
   <ownedElements
-      xsi:type="uml:Class"
+      xsi:type="oo:Class"
       name="B">
     <stereotypes
         name="singleton"/>
     <operations/>
   </ownedElements>
   <ownedElements
-      xsi:type="uml:Class"
+      xsi:type="oo:Class"
       name="C">
     <stereotypes
         name="singleton"/>
@@ -32,9 +32,9 @@
         returnType="//@ownedElements.2"/>
   </ownedElements>
   <ownedElements
-      xsi:type="uml:PrimitiveType"
+      xsi:type="oo:PrimitiveType"
       name="int">
     <stereotypes
         name="singleton"/>
   </ownedElements>
-</uml:Package>
+</oo:Package>

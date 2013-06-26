@@ -22,5 +22,5 @@
 	</parent>
 	
 	<artifactId>fr.unice.i3s.sigma.examples.library</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-test-plugin</packaging>
 </project>

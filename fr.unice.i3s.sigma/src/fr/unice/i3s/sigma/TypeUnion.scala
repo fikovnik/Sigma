@@ -8,8 +8,9 @@ package fr.unice.i3s.sigma
 object TypeUnion {
 
   private type ¬[A] = A ⇒ Nothing
-  type ∨[T, U] = ¬[¬[T] with ¬[U]]
   private type ¬¬[A] = ¬[¬[A]]
+  
+  type ∨[T, U] = ¬[¬[T] with ¬[U]]
 
   /**
    * Disjunct union type that can be used to form union types such as:

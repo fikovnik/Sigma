@@ -147,6 +147,14 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
     }
   }
 
+  def canCreate[T <: EObject: ClassTag]: Boolean = {
+    val clazz = classTag[T].runtimeClass
+    pkg.getEClassifier(clazz.getSimpleName) match {
+      case _: EClass => true
+      case _ => false
+    }
+  }
+  
   def create[T <: EObject: ClassTag]: T = {
     val clazz = classTag[T].runtimeClass
     val classifier = pkg.getEClassifier(clazz.getSimpleName)
