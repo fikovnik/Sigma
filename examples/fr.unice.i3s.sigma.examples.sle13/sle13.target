@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+
+<target name="SLE13" sequenceNumber="10">
+<locations>
+<location path="${eclipse_home}" type="Profile"/>
+<location path="${project_loc:/fr.unice.i3s.sigma.releng.p2}/target/repository" type="Directory"/>
+</locations>
+<environment>
+<os>macosx</os>
+<ws>cocoa</ws>
+<arch>x86_64</arch>
+<nl>en_US</nl>
+</environment>
+</target>
