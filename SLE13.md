@@ -178,6 +178,6 @@ The idea behind a _pure_ Scala implementation (no implicit conversions) is to ge
 
 ### Sample results
 
-Following are the running times in milliseconds for 20 runs each transforming 500 classes with 50 methods. Like other micro-benchmarking, these results are only informative.
+Following are the running times in milliseconds for 20 runs each transforming 500 classes with 100 methods. Like other micro-benchmarking, these results are only informative.
 
 <iframe width="100%" height="630" frameborder="0" src="https://docs.google.com/spreadsheet/pub?key=0AgXBNlEmVc-kdDFRWlFtRXg4OHFBSlUzNXM2ZmhqWUE&single=true&gid=0&output=html&widget=true" />
