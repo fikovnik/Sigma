@@ -1,0 +1,26 @@
+context Class {
+
+  guard : self.stereotypes->exists(s|s.name ="singleton")
+
+  constraint HasGetInstance {
+    check : self.getGetInstanceOperation().isDefined() 
+    message : "Operation "+self.name+".getInstance is not defined"
+  }
+
+  constraint GetInstanceIsStatic {
+    guard : self.satisfies("HasGetInstance") 
+    check : self.getGetInstanceOperation().ownerScope = ScopeKind#sk_classifier
+    message : self.name + ".getInstance must be static"
+    fix {
+      title : "Change " + self.name + ".getInstance to static"
+      
+      do {
+        self.getGetInstanceOperation().ownerScope := ScopeKind#sk_classifier;
+      }
+    }
+  }
+}
+
+operation Class getGetInstanceOperation() : Operation {
+  return self.operations->select(o|o.name = "getInstance").first();
+}

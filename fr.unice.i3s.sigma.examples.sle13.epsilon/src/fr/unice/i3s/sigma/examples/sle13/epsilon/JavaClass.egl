@@ -1,0 +1,8 @@
+public class [%=cls.name %] {
+[% for (o in cls.operations) { %]
+    public [%=o.returnType.name %] [%=o.name %]() {
+      // TODO: should be implemented
+      throw new UnsupportedOperationException("[%=o.name %]");      
+    }
+[% } %]
+}

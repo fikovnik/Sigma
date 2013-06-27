@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject
 import org.junit.Test
 import oo.support.OOPackageScalaSupport
 import db.support.DBPackageScalaSupport
+import fr.unice.i3s.sigma.util.EMFUtils
 
 
 //class OO2DBTest extends UmlPackageScalaSupport 
@@ -30,6 +31,8 @@ import db.support.DBPackageScalaSupport
 @RunWith(classOf[JUnitRunner])
 class OO2DBTest extends FunSuite with MustMatchers with OOPackageScalaSupport with DBPackageScalaSupport {
 
+  EMFUtils.IO.registerDefaultFactories
+  
   test("Simple test") {
 
     val int = PrimitiveType(name = "int")

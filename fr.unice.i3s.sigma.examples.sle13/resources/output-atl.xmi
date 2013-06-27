@@ -6,4 +6,12 @@
   <db:Table name="B">
     <columns name="Id" dataType="INT"/>
   </db:Table>
+  <db:Column name="p1" dataType="int"/>
+  <db:Column name="Id2" dataType="INT"/>
+  <db:Column name="p2" dataType="int"/>
+  <db:Column name="Id2" dataType="INT"/>
+  <db:Column name="p1" dataType="int"/>
+  <db:Column name="Id2" dataType="INT"/>
+  <db:Column name="p2" dataType="int"/>
+  <db:Column name="Id2" dataType="INT"/>
 </xmi:XMI>
