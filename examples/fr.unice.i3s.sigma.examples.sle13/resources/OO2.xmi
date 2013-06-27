@@ -24,11 +24,11 @@
       name="B">
     <features
         xsi:type="oo:Property"
-        name="p1"
+        name="p3"
         type="//@ownedElements.0"/>
     <features
         xsi:type="oo:Property"
-        name="p2"
+        name="p4"
         type="//@ownedElements.0"/>
   </ownedElements>
 </oo:Package>

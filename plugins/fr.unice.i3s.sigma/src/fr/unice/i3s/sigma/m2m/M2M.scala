@@ -17,108 +17,343 @@ import scala.util.DynamicVariable
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.common.util.URI
+import java.lang.reflect.Method
+import org.apache.commons.lang3.reflect.TypeUtils
+import java.lang.reflect.ParameterizedType
 
-trait BRule {
-  type From <: EObject
-  type To <: EObject
-
-  def apply(from: From): (Option[To], Seq[_ <: EObject])
+trait TransformationRule {
+  def apply(source: EObject): Option[Seq[EObject]]
+  def isApplicable(source: EObject): Boolean
   def isLazy: Boolean
-  def canTransform(source: EObject): Boolean
-}
-
-@implicitNotFound(msg = "No conversion rule between ${From} and ${To}.")
-trait Rule[-From <: EObject, +To <: EObject] {
-
-  def apply(from: From): (Option[To], Seq[_ <: EObject])
-
-  def isLazy: Boolean
-
-  def canTransform(source: EObject): Boolean
-
+  def name: String
 }
 
 trait RuleMethods { this: M2M with Logging ⇒
 
-  // TODO: use partial functions by default
-  def partial[F, T](perform: PartialFunction[F, T]) = perform
+  // TODO: move to M2M
+  abstract class BasicRule(val name: String, val isLazy: Boolean) extends TransformationRule with Logging {
 
-  // TODO: generate all 22 rules
+    protected def shouldTransfrorm = true
+    protected def doApply(source: EObject): Option[Seq[EObject]]
 
-  def rule[F <: EObject: ClassTag, T <: EObject: ClassTag, T2 <: EObject: ClassTag](delegate: (F, T, T2) ⇒ Unit): Rule[F, T] = {
-    val r = new RuleImpl[F, T](classTag[T2]) {
-      def apply(from: F): (Option[T], Seq[_ <: EObject]) = {
-        if (shouldExecute(from)) {
-          logger debug s"Executing $this on $from"
+    def apply(source: EObject): Option[Seq[EObject]] = {
+      assert(isApplicable(source))
 
-          val to = createTarget[T]
-          val t2 = createTarget[T2]
-          
-          currentResource.value.getContents += to
-          currentResource.value.getContents += t2
-          
-          delegate(from, to, t2)
+      logger debug s"[$name]: Executing on $source"
 
-          traceLog += (to -> this)
-          traceLog += (t2 -> this)
-          
-          logger debug s"Executed $this, transformed to $to, $t2"
+      // check
+      if (shouldTransfrorm) {
+        // execute
+        doApply(source) match {
+          case Some(targets) ⇒
+            // add container-less eobjects into resource
+            resource.getContents ++= targets filter (_.eContainer == null)
 
-          (Some(to), Seq(t2))
-        } else {
-          (None, Seq())
+            // add to trace log
+            traceLog ++= targets map (source -> (this, _))
+
+            logger debug s"[$name]: Transformed $source -> $targets"
+
+            Some(targets)
+          case None ⇒
+            logger debug s"[$name]: Did not transform $source"
+
+            None
         }
+      } else {
+        logger debug s"Rule $name should not execute on $source"
+        None
       }
     }
-    rules += r
-    r
-  }
 
-  // TODO: multirule
-
-  def rule[F <: EObject: ClassTag, T <: EObject: ClassTag](delegate: PartialFunction[F, T])(implicit o: Overloaded1) = {
-    val r = new RuleImpl[F, T] {
-      def apply(from: F): (Option[To], Seq[_ <: EObject]) =
-        if (shouldExecute(from) && delegate.isDefinedAt(from)) {
-          logger debug s"Executing $this on $from"
-          val to = delegate(from)
-          traceLog += (to -> this)
-          logger debug s"Executed $this, transformed to $to"
-          (Some(to), Seq())
-        } else (None, Seq())
+    protected def traceForSource(source: EObject): Option[EObject] = {
+      traceLog.get(source) match {
+        case Some((rule, target)) if rule == this ⇒ Some(target)
+        case None ⇒ None
+      }
     }
-    rules += r
-    r
   }
+
+  abstract class MethodBasedRule(
+    name: String,
+    isLazy: Boolean,
+    isUnique: Boolean,
+    underlying: Method,
+    sourceClass: Class[_],
+    targetClasses: Seq[Class[_]]) extends BasicRule(name, isLazy) {
+
+    override def isApplicable(source: EObject) = sourceClass.isAssignableFrom(source.getClass)
+
+    override def shouldTransfrorm = true
+
+    override def doApply(source: EObject): Option[Seq[EObject]] = {
+
+      traceForSource(source) match {
+        case Some(target) if isLazy implies isUnique ⇒
+          // regular matched rule && unique lazy rules always return the same
+          Some(Seq(target))
+        case _ ⇒
+          // transform
+          doTransform(source)
+      }
+    }
+
+    protected def doTransform(source: EObject): Option[Seq[EObject]]
+
+    override def toString = {
+      var prefix = if (isLazy) "Lazy" else ""
+      prefix = if (isUnique) "Unique" else ""
+
+      s"${prefix}MethodRule $name: ${sourceClass.getSimpleName} -> ${targetClasses map (_.getSimpleName) mkString (", ")}"
+    }
+  }
+
+  class RegularRule(
+    name: String,
+    isLazy: Boolean,
+    isUnique: Boolean,
+    underlying: Method,
+    sourceClass: Class[_],
+    targetClasses: Seq[Class[_]]) extends MethodBasedRule(name, isLazy, isUnique, underlying, sourceClass, targetClasses) {
+
+    protected def doTransform(source: EObject): Option[Seq[EObject]] = {
+      // 1. create targets
+      val targets = targetClasses map { x ⇒ createEObject(x.getName) }
+      val args = source +: targets
+
+      // 2. invoke method
+      underlying.invoke(RuleMethods.this, args: _*) match {
+        // null will be the result of invoking (...)Unit
+        case null | Some(_: Unit) ⇒ Some(targets)
+        case None ⇒ None
+        case x ⇒ sys.error(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source")
+      }
+    }
+
+    override def toString = "Regular" + super.toString
+  }
+
+  class ExplicitTargetRule(
+    name: String,
+    isLazy: Boolean,
+    isUnique: Boolean,
+    underlying: Method,
+    sourceClass: Class[_],
+    targetClass: Class[_]) extends MethodBasedRule(name, isLazy, isUnique, underlying, sourceClass, Seq(targetClass)) {
+
+    protected def doTransform(source: EObject): Option[Seq[EObject]] = {
+
+      // 1. invoke method
+      underlying.invoke(RuleMethods.this, source) match {
+        case target: EObject ⇒ Some(Seq(target))
+        case Some(target: EObject) ⇒ Some(Seq(target))
+        case None ⇒ None
+        case x ⇒ sys.error(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source")
+      }
+    }
+
+    override def toString = "ExplicitTarget" + super.toString
+  }
+
+  class PartialRule(
+    name: String,
+    isLazy: Boolean,
+    isUnique: Boolean,
+    underlying: Method,
+    sourceClass: Class[_],
+    targetClass: Class[_]) extends MethodBasedRule(name, isLazy, isUnique, underlying, sourceClass, Seq(targetClass)) {
+
+    protected def doTransform(source: EObject): Option[Seq[EObject]] = {
+
+      // 1. invoke method
+      underlying.invoke(RuleMethods.this) match {
+        // TODO: make type safe?
+        case pfce: PartialFunction[EObject, EObject] ⇒
+          if (pfce.isDefinedAt(source)) {
+            Some(Seq(pfce(source)))
+          } else {
+            None
+          }
+        case x ⇒ sys.error(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source")
+      }
+
+    }
+
+    override def toString = "ExplicitTarget" + super.toString
+  }
+
+  def loadRules = {
+    val ruleMethodPrefix = "rule"
+
+    def isLazyRule(method: Method) = method.isAnnotationPresent(classOf[Lazy])
+    def isUniqueRule(method: Method) = method.isAnnotationPresent(classOf[Unique])
+
+    object PartialRuleMethod {
+      def unapply(method: Method): Option[(String, Boolean, Boolean, Class[_], Class[_])] = {
+        if ( // must start with prefix
+        method.getName.startsWith(ruleMethodPrefix) &&
+          // longer than prefix
+          method.getName.size > ruleMethodPrefix.size &&
+          // ()PartialFunction[A,B]
+          // TODO: check for A and B are EObject
+          method.getReturnType.isAssignableFrom(classOf[PartialFunction[_, _]]) &&
+          // zero argument
+          method.getParameterTypes.size == 0) {
+
+          val name = method.getName.drop(ruleMethodPrefix.size)
+
+          // TODO: check for EObject
+          val typeArgs = TypeUtils.getTypeArguments(method.getGenericReturnType.asInstanceOf[ParameterizedType])
+          val source = typeArgs.get(classOf[PartialFunction[_, _]].getTypeParameters()(0)).asInstanceOf[Class[_]]
+          val target = typeArgs.get(classOf[PartialFunction[_, _]].getTypeParameters()(1)).asInstanceOf[Class[_]]
+
+          Some((name, isLazyRule(method), isUniqueRule(method), source, target))
+        } else None
+      }
+    }
+
+    object ExplicitTargetRuleMethod {
+      def unapply(method: Method): Option[(String, Boolean, Boolean, Class[_], Class[_])] = {
+        if ( // must start with prefix
+        method.getName.startsWith(ruleMethodPrefix) &&
+          // longer than prefix
+          method.getName.size > ruleMethodPrefix.size &&
+          (
+            // either (S)T1
+            method.getReturnType.isAssignableFrom(classOf[EObject]) ||
+            // or (S)Option[T1]
+            // TODO: better check for Option[EObject]
+            method.getReturnType.isAssignableFrom(classOf[Option[EObject]])
+          ) &&
+            // one argument
+            method.getParameterTypes.size == 1) {
+
+          val name = method.getName.drop(ruleMethodPrefix.size)
+
+          val source = method.getParameterTypes()(0)
+
+          val typeArgs = TypeUtils.getTypeArguments(method.getGenericReturnType.asInstanceOf[ParameterizedType])
+          val target = typeArgs.values.iterator.next.asInstanceOf[Class[_]]
+
+          Some((name, isLazyRule(method), isUniqueRule(method), source, target))
+        } else None
+      }
+    }
+
+    object RegularRuleMethod {
+
+      def unapply(method: Method): Option[(String, Boolean, Boolean, Class[_], Seq[Class[_]])] = {
+
+        if ( // must start with prefix
+        method.getName.startsWith(ruleMethodPrefix) &&
+          // longer than prefix
+          method.getName.size > ruleMethodPrefix.size &&
+          (
+            // either (...)Unit
+            method.getReturnType.isAssignableFrom(classOf[Unit]) ||
+            // or (...)Option[Unit]
+            // TODO: better check for Option[Unit]
+            method.getReturnType.isAssignableFrom(classOf[Option[Unit]])
+          ) &&
+            // at least 2 args
+            method.getParameterTypes.size >= 2) {
+
+          val name = method.getName.drop(ruleMethodPrefix.size)
+
+          val source = method.getParameterTypes()(0)
+          // TODO: check for EObject
+          val targets = method.getParameterTypes drop 1
+          // TODO: check for EObjects
+
+          Some((name, isLazyRule(method), isUniqueRule(method), source, targets))
+        } else None
+      }
+    }
+
+    getClass.getMethods.toSeq collect {
+
+      // regular rule (S,T1,...,Tn)Unit or (T1,...,Tn)Option[Unit]
+      case method @ RegularRuleMethod(name, isLazy, isUnique, source, targets) ⇒
+        val rule = new RegularRule(name, isLazy, isUnique, method, source, targets)
+        logger debug s"Registered rule: $rule"
+        rule
+
+      // rule (S)T1 or (S)Option[T1]
+      case method @ ExplicitTargetRuleMethod(name, isLazy, isUnique, source, target) ⇒
+        val rule = new ExplicitTargetRule(name, isLazy, isUnique, method, source, target)
+        logger debug s"Registered rule: $rule"
+        rule
+
+      // partial rule ()PartialFunction[S,T1]  
+      case method @ PartialRuleMethod(name, isLazy, isUnique, source, target) ⇒
+        val rule = new PartialRule(name, isLazy, isUnique, method, source, target)
+        logger debug s"Registered rule: $rule"
+        rule
+
+    }
+  }
+
+  // TODO: use partial functions by default
+  def partial[F, T](perform: PartialFunction[F, T]) = perform
 
 }
 
 trait M2M extends EMFScalaSupport with OverloadHack with Logging {
-
-  protected[m2m] val traceLog = new collection.mutable.HashMap[EObject, BRule]
-
-  protected[m2m] val currentResource = new DynamicVariable[Resource](null)
-
-  //  val sourceMetaModel: EPackage
+  type TraceLog = collection.mutable.HashMap[EObject, (TransformationRule, EObject)]
+  
   val targetMetaModels: Seq[EPackage]
-  lazy val targetBuilders = targetMetaModels map (new EMFBuilder(_))
 
-  // TODO: make type safe using type tags
-  //  import TypeUnion._
-  //  val targetMetaModels: |∨|[EPackage, Seq[EPackage]]
-  //  lazy val targetBuilders = targetMetaModels match {
-  //    case x: EPackage ⇒ Seq(new EMFBuilder(x))
-  //    case xs: Seq[EPackage] ⇒ xs map (new EMFBuilder(_))
-  //  }
+  private val session = new DynamicVariable[(Resource, TraceLog)](null)
 
-  protected def createTarget[T <: EObject: ClassTag]: T = {
+  protected[m2m] lazy val targetBuilders = targetMetaModels map (new EMFBuilder(_))
+
+  protected[m2m] def traceLog = session.value._2 
+  protected[m2m] def resource = session.value._1
+
+  protected[m2m] def createEObject(name: String) = {
     val target = targetBuilders collectFirst {
-      case builder if builder.canCreate[T] ⇒ builder.create[T]
+      case builder if builder.canCreate(name) ⇒ builder.create(name)
     }
 
-    require(target.isDefined, s"Unable to create target EClass: ${classTag[T]}")
+    require(target.isDefined, s"Unable to create target EClass: $name")
 
     target.get
+  }
+
+  protected[m2m] def loadRules: Seq[TransformationRule]
+
+  private lazy val rules: Seq[TransformationRule] = loadRules
+
+  protected[m2m] def createNewResource =
+    new ResourceSetImpl().createResource(URI.createURI("transfromation"))
+
+  def apply(source: EObject): EList[EObject] = {
+    val res = createNewResource
+    val tl = new TraceLog 
+
+    session.withValue((res,tl)) {
+      transform(source)
+    }
+
+    res.getContents
+  }
+
+  protected[m2m] def transformOne(source: EObject, lazyRules: Boolean = false) = {
+    logger debug s"Transforming $source"
+
+    rules find { x ⇒ (x.isLazy implies lazyRules) && x.isApplicable(source) } match {
+      case Some(rule) ⇒
+        rule(source)
+      case None ⇒
+        logger debug (s"No rule to convert ${source.getClass.getSimpleName}")
+        None
+    }
+  }
+
+  protected[m2m] def transform(source: EObject) {
+    transformOne(source)
+
+    for (elem ← source.eContents) transform(elem)
   }
 
   def guardedBy[T](g: ⇒ Boolean) = g
@@ -133,77 +368,19 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
     }
   }
 
-  val rules = ListBuffer[BRule]()
+  implicit class EObjectM2MSupport(that: EObject) {
 
-  abstract class RuleImpl[F <: EObject: ClassTag, T <: EObject: ClassTag](additional: ClassTag[_ <: EObject]*) extends Rule[F, T] with BRule {
-
-    type From = F
-    type To = T
-
-    val fromTag = classTag[From]
-    val toTag = classTag[To]
-
-    def isLazy: Boolean = {
-      // TODO: support for lazy rules
-      false
+    def unary_~[B >: Null <: EObject]: B = transformOne(that, true) match {
+      case Some(targets) ⇒ targets(0).asInstanceOf[B]
+      case None ⇒ null
     }
-
-    def canTransform(source: EObject): Boolean = {
-      fromTag.runtimeClass.isAssignableFrom(source.getClass)
-    }
-
-    def shouldExecute(from: F) = {
-      traceLog.get(from) match {
-        case Some(rule) if rule == this ⇒ false
-        case _ ⇒ true
-      }
-    }
-
-    override def toString = s"Rule ${fromTag.runtimeClass.getSimpleName} -> ${toTag.runtimeClass.getSimpleName}"
   }
 
-  protected def createNewResource =
-    new ResourceSetImpl().createResource(URI.createURI("transfromation"))
-
-  def apply(source: EObject): EList[EObject] = {
-    val resource = createNewResource
-
-    currentResource.withValue(resource) {
-      transform(source)
-    }
-
-    resource.getContents
-  }
-
-  protected def transform[T <: EObject: ClassTag](source: T) {
-    logger debug s"Transforming $source"
-
-    val result = rules find { x ⇒ !x.isLazy && x.canTransform(source) } match {
-      case Some(rule) ⇒
-
-        val targets = rule(source.asInstanceOf[rule.From]) match {
-          case (Some(target), xs) ⇒ target +: xs
-          case _ ⇒ Seq()
-        }
-
-        targets
-      case None ⇒
-        logger debug (s"No rule to convert ${classTag[T]}")
-        Seq()
-    }
-
-    for (elem ← source.eContents) transform(elem)
-  }
-
-  implicit class EObjectM2MSupport[A <: EObject](that: A) {
-    def unary_~[B >: Null <: EObject](implicit r: Rule[A, B]): B = r(that)._1.orNull
-  }
-
-  implicit class EListM2MSupport[A <: EObject](that: EList[A]) {
-    def unary_~[B <: EObject](implicit r: Rule[A, B]) = {
-      val result = that map (r(_))
+  implicit class EListM2MSupport(that: EList[_ <: EObject]) {
+    def unary_~[B <: EObject] = {
+      val result = that map (transformOne(_, true))
       result collect {
-        case (Some(target), _) ⇒ target
+        case Some(targets) ⇒ targets(0).asInstanceOf[B]
       }
     }
   }

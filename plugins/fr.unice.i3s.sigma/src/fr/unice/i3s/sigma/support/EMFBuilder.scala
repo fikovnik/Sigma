@@ -147,28 +147,37 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
     }
   }
 
-  def canCreate[T <: EObject: ClassTag]: Boolean = {
-    val clazz = classTag[T].runtimeClass
-    pkg.getEClassifier(clazz.getSimpleName) match {
-      case _: EClass => true
-      case _ => false
+  private def packageAndClassName(name: String): (String, String) = {
+    require(name.length > 0)
+
+    val (pkgName, classNameWithDot) = name.splitAt(name.lastIndexOf("."))
+    val className = if (classNameWithDot(0) == '.') classNameWithDot.drop(1) else classNameWithDot
+
+    (pkgName, className)
+  }
+
+  def canCreate(name: String): Boolean = {
+    val (pkgName, className) = packageAndClassName(name)
+
+    if (pkg.getClass.getPackage.getName != pkgName) false
+
+    pkg.getEClassifier(className) match {
+      case _: EClass ⇒ true
+      case _ ⇒ false
     }
   }
-  
-  def create[T <: EObject: ClassTag]: T = {
-    val clazz = classTag[T].runtimeClass
-    val classifier = pkg.getEClassifier(clazz.getSimpleName)
 
-    require(classifier != null,
-      s"Unable to find EClass $clazz in package ${pkg.getNsURI}")
+  def create(name: String) = {
+    assert(canCreate(name))
+
+    val (pkgName, className) = packageAndClassName(name)
+    val classifier = pkg.getEClassifier(className)
+
+    assert(classifier != null, s"Unable to find EClass $name in package ${pkg.getNsURI}")
 
     val instance = classifier match {
-      case c: EClass ⇒
-        // this is necessary as we will never be able to do static type safety
-        // as along as EMF will not provide generic version of EFactory.create()
-        factory.create(c).asInstanceOf[T]
-      case _ ⇒ throw new IllegalArgumentException(
-        s"EClassifier $clazz is not an EClass")
+      case c: EClass ⇒ factory.create(c)
+      case _ ⇒ throw new IllegalArgumentException(s"EClassifier $name is not an EClass")
     }
 
     // attach proxy resolution adapter
@@ -177,6 +186,14 @@ class EMFBuilder[P <: EPackage](val pkg: P) {
     instance.eAdapters += PostponeContentInitializerAdapter
 
     instance
+  }
 
+  def canCreate[T <: EObject: ClassTag]: Boolean =
+    canCreate(classTag[T].runtimeClass.getName)
+
+  def create[T <: EObject: ClassTag]: T = {
+    // this is necessary as we will never be able to do static type safety
+    // as along as EMF will not provide generic version of EFactory.create()
+    create(classTag[T].runtimeClass.getName).asInstanceOf[T]
   }
 }
