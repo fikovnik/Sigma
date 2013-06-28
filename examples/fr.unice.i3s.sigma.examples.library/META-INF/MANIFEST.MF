@@ -14,5 +14,5 @@ Export-Package: fr.unice.i3s.sigma.examples.library,
 Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  fr.unice.i3s.sigma;bundle-version="1.0.0",
  org.scalatest;bundle-version="2.0.0",
- org.junit;bundle-version="4.10.0"
+ org.junit;bundle-version="4.8.0"
 Bundle-ActivationPolicy: lazy

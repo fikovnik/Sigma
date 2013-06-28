@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Epsilon
+Bundle-Name: %pluginName
 Bundle-SymbolicName: fr.unice.i3s.sigma.examples.sle13.epsilon
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.epsilon.emc.emf,
  org.eclipse.epsilon.evl.emf.validation;bundle-version="1.0.0",
  fr.unice.i3s.sigma.examples.sle13;bundle-version="1.0.0",
  com.google.guava;bundle-version="11.0.1"
+Bundle-Vendor: %providerName

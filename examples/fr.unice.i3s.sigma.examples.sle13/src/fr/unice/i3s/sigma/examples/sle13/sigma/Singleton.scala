@@ -8,6 +8,7 @@ import fr.unice.i3s.sigma.validation.ValidationContext
 import oo.ScopeKind
 import oo.support.OOPackageScalaSupport
 import fr.unice.i3s.sigma.validation.InvBuilder
+import scala.language.postfixOps
 
 class SingletonMethodBased extends ValidationContext with InvMethods with OOPackageScalaSupport {
 

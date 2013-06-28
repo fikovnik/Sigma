@@ -16,24 +16,31 @@
 		<scala-maven-plugin-version>3.1.0</scala-maven-plugin-version>
 
 		<!-- repositories -->
-		<p2.google-guava>http://guava-osgi.googlecode.com/svn/trunk/repository/</p2.google-guava>
+		
+		<!-- this is the one which is build manually -->
+		<p2.sigma-3rdparty>file://${basedir}/../../releng/fr.unice.i3s.sigma.releng.p2/target/repository/</p2.sigma-3rdparty>
+		<!-- regular repositories -->
 		<p2.scala-ide>http://download.scala-ide.org/sdk/e37/scala210/dev/site</p2.scala-ide>
-		<p2.eclipse-indigo>http://download.eclipse.org/releases/indigo/</p2.eclipse-indigo>
+		<!-- <p2.eclipse-juno>http://download.eclipse.org/releases/juno/</p2.eclipse-juno> -->
+		<p2.eclipse-juno>http://download.eclipse.org/releases/indigo/</p2.eclipse-juno>
 		<p2.eclipse-emf>http://download.eclipse.org/modeling/emf/emf/updates/releases/</p2.eclipse-emf>
 		<p2.eclipse-uml>http://download.eclipse.org/modeling/mdt/uml2/updates/releases/</p2.eclipse-uml>
 		<p2.eclipse-swtbot>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</p2.eclipse-swtbot>
 	</properties>
 
 	<modules>
-		<module>../fr.unice.i3s.sigma</module>
-		<module>../fr.unice.i3s.sigma.examples.library</module>
-		<module>../fr.unice.i3s.sigma.examples.uml</module>
-		<module>../fr.unice.i3s.sigma.examples.uml.tests</module>
-		<module>../fr.unice.i3s.sigma.feature</module>
-		<module>../fr.unice.i3s.sigma.tests</module>
-        <module>../fr.unice.i3s.sigma.docgen</module>
- 		<module>../fr.unice.i3s.sigma.docgen.tests</module>
-		<module>../fr.unice.i3s.sigma.site</module>
+		<module>../../plugins/fr.unice.i3s.sigma</module>
+        <module>../../plugins/fr.unice.i3s.sigma.docgen</module>
+        
+		<module>../../tests/fr.unice.i3s.sigma.tests</module>
+ 		<module>../../tests/fr.unice.i3s.sigma.docgen.tests</module>
+ 		
+		<module>../../features/fr.unice.i3s.sigma.feature</module>
+		
+		<module>../../examples/fr.unice.i3s.sigma.examples.library</module>
+		<module>../../examples/fr.unice.i3s.sigma.examples.uml</module>
+		
+		<module>../../releng/fr.unice.i3s.sigma.site</module>
 	</modules>
 
 	<repositories>
@@ -41,13 +48,7 @@
 			<id>sigma-external</id>
 			<name>SIGMA External p2 repository</name>
 			<layout>p2</layout>
-			<url>file://${basedir}/../fr.unice.i3s.sigma.releng.p2/target/repository/</url>
-		</repository>
-		<repository>
-			<id>google-guava</id>
-			<name>Google Guava repository</name>
-			<layout>p2</layout>
-			<url>${p2.google-guava}</url>
+			<url>${p2.sigma-3rdparty}</url>
 		</repository>
 		<repository>
 			<id>scala-ide</id>
@@ -56,12 +57,12 @@
 			<url>${p2.scala-ide}</url>
 		</repository>
 		<repository>
-			<id>eclipse-indigo</id>
-			<name>Eclipse Indigo repository</name>
+			<id>eclipse-juno</id>
+			<name>Eclipse Juno repository</name>
 			<layout>p2</layout>
-			<url>${p2.eclipse-indigo}</url>
+			<url>${p2.eclipse-juno}</url>
 		</repository>
-		<repository>
+ 		<repository>
 			<id>eclipse-emf</id>
 			<name>Eclipse EMF repository</name>
 			<layout>p2</layout>

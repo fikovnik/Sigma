@@ -1,22 +1,22 @@
 package fr.unice.i3s.sigma.m2m.experimental
 
 import scala.annotation.implicitNotFound
-import org.eclipse.emf.common.util.EList
-import scala.reflect.{ classTag, ClassTag }
-import org.eclipse.emf.ecore.EObject
-import fr.unice.i3s.sigma.support.EMFScalaSupport
-import fr.unice.i3s.sigma.internal.OverloadHack
-import scala.collection.mutable.LinkedList
-import scala.collection.mutable.ListBuffer
-import org.eclipse.emf.ecore.EPackage
-import fr.unice.i3s.sigma.TypeUnion
-import fr.unice.i3s.sigma.support.EMFBuilder
-import com.typesafe.scalalogging.log4j.Logging
-import scala.reflect.macros.Context
+import scala.reflect.ClassTag
+import scala.reflect.classTag
 import scala.util.DynamicVariable
+
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import org.eclipse.emf.common.util.URI
+
+import com.typesafe.scalalogging.log4j.Logging
+
+import fr.unice.i3s.sigma.OverloadHack
+import fr.unice.i3s.sigma.support.EMFBuilder
+import fr.unice.i3s.sigma.support.EMFScalaSupport
 
 trait RuleMethods { this: M2M with Logging ⇒
 

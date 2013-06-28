@@ -4,11 +4,7 @@
 <!--
 -->
 
-<plugin
-      name="%pluginName"
-      id="fr.unice.i3s.sigma.examples.sle13"
-      version="1.0.0"
-      provider-name="%providerName">
+<plugin>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package

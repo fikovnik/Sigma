@@ -43,7 +43,7 @@ trait EMFScalaSupport {
       Diagnostic.CANCEL -> "CANCEL")
 
     def flatten: List[Diagnostic] = {
-      that.getChildren toList match {
+      that.getChildren.toList match {
         case Nil ⇒ that :: Nil
         case e ⇒ e.flatMap(_.flatten).toList
       }

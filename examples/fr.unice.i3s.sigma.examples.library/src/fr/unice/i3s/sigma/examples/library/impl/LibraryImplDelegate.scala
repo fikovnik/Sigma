@@ -12,7 +12,7 @@ trait LibraryDelegate extends Library with LibraryPackageScalaSupport {
   override def getBookByName(name: String) = {
     require(name != null)
     
-    this.books find (_.name == name) orNull
+    this.books.find (_.name == name).orNull
   }
   
 }
