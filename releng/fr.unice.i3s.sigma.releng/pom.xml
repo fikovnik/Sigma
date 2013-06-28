@@ -10,10 +10,10 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.16.0</tycho-version>
-		<tycho-extras-version>0.16.0</tycho-extras-version>
-		<scala-version>2.10.0</scala-version>
-		<scala-maven-plugin-version>3.1.0</scala-maven-plugin-version>
+		<tycho-version>0.18.0</tycho-version>
+		<tycho-extras-version>0.18.0</tycho-extras-version>
+		<scala-version>2.10.2</scala-version>
+		<scala-maven-plugin-version>3.1.5</scala-maven-plugin-version>
 
 		<!-- repositories -->
 		
