@@ -3,9 +3,9 @@ layout: docs
 title: Model-to-Model Transformation
 ---
 
-Inspired by [ETL](http://www.eclipse.org/epsilon/doc/etl/) and [ATL](http://www.eclipse.org/atl/), Sigma provide a dedicated internal DSL that combines imperative features with declarative rule-based execution scheme into a hybrid M2M transformation language.
+Inspired by [ETL](http://www.eclipse.org/epsilon/doc/etl/) and [ATL](http://www.eclipse.org/atl/), Sigma provide a dedicated internal DSL that combines imperative features with declarative rule-based execution scheme into a hybrid M2M transformation language. Currently, the M2M transformation is a proof of concept on how a hybrid M2T transformation can be achieved in Scala internal DSL.
 
-Currently, there are two flavors of the M2M transformation DSL:
+There are two flavors of the M2M transformation DSL:
 
 - Reflection-based - using reflection to execute the transformation rules.
 - ( _experimental_ ) Type-safe - using regular method invocation to execute the transformation.
