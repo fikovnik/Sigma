@@ -21,58 +21,7 @@ import java.lang.reflect.Method
 import org.apache.commons.lang3.reflect.TypeUtils
 import java.lang.reflect.ParameterizedType
 
-trait TransformationRule {
-  def apply(source: EObject): Option[Seq[EObject]]
-  def isApplicable(source: EObject): Boolean
-  def isLazy: Boolean
-  def name: String
-}
-
 trait RuleMethods { this: M2M with Logging ⇒
-
-  // TODO: move to M2M
-  abstract class BasicRule(val name: String, val isLazy: Boolean) extends TransformationRule with Logging {
-
-    protected def shouldTransfrorm = true
-    protected def doApply(source: EObject): Option[Seq[EObject]]
-
-    def apply(source: EObject): Option[Seq[EObject]] = {
-      assert(isApplicable(source))
-
-      logger debug s"[$name]: Executing on $source"
-
-      // check
-      if (shouldTransfrorm) {
-        // execute
-        doApply(source) match {
-          case Some(targets) ⇒
-            // add container-less eobjects into resource
-            resource.getContents ++= targets filter (_.eContainer == null)
-
-            // add to trace log
-            traceLog ++= targets map (source -> (this, _))
-
-            logger debug s"[$name]: Transformed $source -> $targets"
-
-            Some(targets)
-          case None ⇒
-            logger debug s"[$name]: Did not transform $source"
-
-            None
-        }
-      } else {
-        logger debug s"Rule $name should not execute on $source"
-        None
-      }
-    }
-
-    protected def traceForSource(source: EObject): Option[EObject] = {
-      traceLog.get(source) match {
-        case Some((rule, target)) if rule == this ⇒ Some(target)
-        case None ⇒ None
-      }
-    }
-  }
 
   abstract class MethodBasedRule(
     name: String,
@@ -296,18 +245,84 @@ trait RuleMethods { this: M2M with Logging ⇒
   // TODO: use partial functions by default
   def partial[F, T](perform: PartialFunction[F, T]) = perform
 
+  implicit class EObjectM2MSupport(that: EObject) {
+    def unary_~[B >: Null <: EObject]: B = transformOne(that, true) match {
+      case Some(targets) ⇒ targets(0).asInstanceOf[B]
+      case None ⇒ null
+    }
+  }
+
+  implicit class EListM2MSupport(that: EList[_ <: EObject]) {
+    def unary_~[B <: EObject] = {
+      val result = that map (transformOne(_, true))
+      result collect {
+        case Some(targets) ⇒ targets(0).asInstanceOf[B]
+      }
+    }
+  }
 }
 
 trait M2M extends EMFScalaSupport with OverloadHack with Logging {
+
+  trait TransformationRule {
+    def apply(source: EObject): Option[Seq[EObject]]
+    def isApplicable(source: EObject): Boolean
+    def isLazy: Boolean
+    def name: String
+  }
+
+  abstract class BasicRule(val name: String, val isLazy: Boolean) extends TransformationRule with Logging {
+
+    protected def shouldTransfrorm = true
+    protected def doApply(source: EObject): Option[Seq[EObject]]
+
+    def apply(source: EObject): Option[Seq[EObject]] = {
+      assert(isApplicable(source))
+
+      logger debug s"[$name]: Executing on $source"
+
+      // check
+      if (shouldTransfrorm) {
+        // execute
+        doApply(source) match {
+          case Some(targets) ⇒
+            // add container-less eobjects into resource
+            resource.getContents ++= targets filter (_.eContainer == null)
+
+            // add to trace log
+            traceLog ++= targets map (source -> (this, _))
+
+            logger debug s"[$name]: Transformed $source -> $targets"
+
+            Some(targets)
+          case None ⇒
+            logger debug s"[$name]: Did not transform $source"
+
+            None
+        }
+      } else {
+        logger debug s"Rule $name should not execute on $source"
+        None
+      }
+    }
+
+    protected def traceForSource(source: EObject): Option[EObject] = {
+      traceLog.get(source) match {
+        case Some((rule, target)) if rule == this ⇒ Some(target)
+        case None ⇒ None
+      }
+    }
+  }
+
   type TraceLog = collection.mutable.HashMap[EObject, (TransformationRule, EObject)]
-  
+
   val targetMetaModels: Seq[EPackage]
 
   private val session = new DynamicVariable[(Resource, TraceLog)](null)
 
   protected[m2m] lazy val targetBuilders = targetMetaModels map (new EMFBuilder(_))
 
-  protected[m2m] def traceLog = session.value._2 
+  protected[m2m] def traceLog = session.value._2
   protected[m2m] def resource = session.value._1
 
   protected[m2m] def createEObject(name: String) = {
@@ -329,19 +344,23 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
 
   def apply(source: EObject): EList[EObject] = {
     val res = createNewResource
-    val tl = new TraceLog 
+    val tl = new TraceLog
 
-    session.withValue((res,tl)) {
+    session.withValue((res, tl)) {
       transform(source)
     }
 
     res.getContents
   }
 
-  protected[m2m] def transformOne(source: EObject, lazyRules: Boolean = false) = {
+  protected[m2m] def transformOne(source: EObject, lazyRules: Boolean = true, rule: Option[TransformationRule] = None) = {
     logger debug s"Transforming $source"
 
-    rules find { x ⇒ (x.isLazy implies lazyRules) && x.isApplicable(source) } match {
+    val ruleToUse = rule orElse {
+      rules find { x ⇒ (x.isLazy implies lazyRules) && x.isApplicable(source) }
+    }
+
+    ruleToUse match {
       case Some(rule) ⇒
         rule(source)
       case None ⇒
@@ -367,22 +386,4 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
       }
     }
   }
-
-  implicit class EObjectM2MSupport(that: EObject) {
-
-    def unary_~[B >: Null <: EObject]: B = transformOne(that, true) match {
-      case Some(targets) ⇒ targets(0).asInstanceOf[B]
-      case None ⇒ null
-    }
-  }
-
-  implicit class EListM2MSupport(that: EList[_ <: EObject]) {
-    def unary_~[B <: EObject] = {
-      val result = that map (transformOne(_, true))
-      result collect {
-        case Some(targets) ⇒ targets(0).asInstanceOf[B]
-      }
-    }
-  }
-
 }
