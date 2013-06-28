@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
- org.scala-lang.scala-reflect;bundle-version="2.10.0";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.7.0";visibility:=reexport,
  org.eclipse.emf.ecore;bundle-version="2.7.0";visibility:=reexport,
  com.google.guava;bundle-version="11.0.1",

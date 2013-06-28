@@ -57,11 +57,6 @@
 									<source>true</source>
 								</artifact>
 								<artifact>
-									<id>org.scala-lang:scala-reflect:${scala-version}</id>
-									<source>true</source>
-									<transitive>false</transitive>
-								</artifact>								
-								<artifact>
 									<id>org.scalatest:scalatest_2.10:2.0.M5b</id>
 									<source>true</source>
 									<transitive>false</transitive>
