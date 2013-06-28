@@ -1,16 +1,13 @@
 package fr.unice.i3s.sigma.docgen.common
 
-import scala.collection.JavaConversions._
 import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
-import org.scalatest.matchers.MustMatchers
-import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
-import fr.unice.i3s.sigma.support.EMFScalaSupport
-import fr.unice.i3s.sigma.support.ecore.EcoreAssignments._
-import fr.unice.i3s.sigma.support.ecore.EcoreBuilder._
-import scala.collection.mutable.Buffer
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.matchers.MustMatchers
+
 import fr.unice.i3s.sigma.m2t.TextTemplateTesting
+import fr.unice.i3s.sigma.support.EMFScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 
 @RunWith(classOf[JUnitRunner])
 class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
@@ -20,8 +17,8 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
   "ClassDiagram" must "must render a generalization" in {
 
     val classA = EClass(name = "A")
-    val classB = EClass(name = "B", eSuperTypes = Buffer(classA))
-    pkg.eClassifiers += (classA, classB)
+    val classB = EClass(name = "B", eSuperTypes = Seq(classA))
+    pkg.eClassifiers ++= Seq(classA, classB)
 
     val diag = new ClassDiagram with TextTemplateTesting {
       rootElement = pkg
@@ -44,7 +41,6 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
     }
     diag.renderDataType(dataTypeA)
 
-    println(diag.partial)
     diag.partial must be ===
       """|MyPackage__A [
          |  label =  <
@@ -68,7 +64,7 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
 
   it must "must render an enum" in {
 
-    val enumA = EEnum(name = "A", eLiterals = Buffer(EEnumLiteral(name = "ValueA"), EEnumLiteral(name = "ValueB")))
+    val enumA = EEnum(name = "A", eLiterals = Seq(EEnumLiteral(name = "ValueA"), EEnumLiteral(name = "ValueB")))
     pkg.eClassifiers += enumA
 
     val diag = new ClassDiagram with TextTemplateTesting {

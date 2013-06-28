@@ -6,8 +6,6 @@ import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
 import org.eclipse.core.runtime.jobs.IJobChangeEvent
 import org.eclipse.core.runtime.jobs.JobChangeAdapter
-import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.EcorePackage
 import org.eclipse.emf.ecore.util.EcoreUtil.Copier
 import org.eclipse.jface.dialogs.IDialogConstants
@@ -26,7 +24,6 @@ import fr.unice.i3s.sigma.ui.util.SWTUtils
 import fr.unice.i3s.sigma.docgen.graphviz.ui.GraphvizDiagnostics
 import org.eclipse.swt.widgets.Shell
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
-import fr.unice.i3s.sigma.support.ecore.EcoreBuilder
 
 class ExportClassDiagramHandler extends AbstractHandler with EcorePackageScalaSupport {
 
@@ -57,7 +54,7 @@ class ExportClassDiagramHandler extends AbstractHandler with EcorePackageScalaSu
 
       case _ ⇒ {
         val copier = new Copier(true, true)
-        val pkg = EcoreBuilder.EPackage()
+        val pkg = EPackage()
 
         pkg.eClassifiers ++= items.collect {
           case e: EClass ⇒

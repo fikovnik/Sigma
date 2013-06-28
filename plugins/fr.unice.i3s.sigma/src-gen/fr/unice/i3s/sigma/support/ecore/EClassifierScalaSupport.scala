@@ -5,6 +5,7 @@ import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.ETypeParameter;
@@ -15,14 +16,16 @@ trait EClassifierScalaSupport extends EMFScalaSupport {
   protected implicit val _eclassifierProxyBuilder = new EMFProxyBuilder[EClassifier](EcorePackageScalaSupport._ecoreBuilder)
   
   object EClassifier {
-    def apply(name: String = null, instanceClassName: String = null, instanceTypeName: String = null): EClassifier = {
-      val instance = EcorePackageScalaSupport._ecoreBuilder.create[EClassifier]
+    def apply(eAnnotations: EList[EAnnotation] = null, name: String = null, instanceClassName: String = null, instanceTypeName: String = null, eTypeParameters: EList[ETypeParameter] = null): EClassifier = {
+      val _instance = EcorePackageScalaSupport._ecoreBuilder.create[EClassifier]
       
-      if (name != null) instance.setName(name)
-      if (instanceClassName != null) instance.setInstanceClassName(instanceClassName)
-      if (instanceTypeName != null) instance.setInstanceTypeName(instanceTypeName)
+      if (eAnnotations != null) _instance.getEAnnotations.addAll(eAnnotations)
+      if (name != null) _instance.setName(name)
+      if (instanceClassName != null) _instance.setInstanceClassName(instanceClassName)
+      if (instanceTypeName != null) _instance.setInstanceTypeName(instanceTypeName)
+      if (eTypeParameters != null) _instance.getETypeParameters.addAll(eTypeParameters)
       
-      instance
+      _instance
     }
   }
   

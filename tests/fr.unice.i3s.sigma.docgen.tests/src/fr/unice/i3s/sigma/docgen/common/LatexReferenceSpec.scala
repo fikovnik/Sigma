@@ -6,27 +6,24 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.EMFScalaSupport
-import fr.unice.i3s.sigma.support.AutoContainment._
-import fr.unice.i3s.sigma.support.EMFBuilder._
-import fr.unice.i3s.sigma.support.ecore.EcoreBuilder._
-import fr.unice.i3s.sigma.support.ecore.EcoreAssignments._
 import fr.unice.i3s.sigma.m2t.TextTemplateTesting
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 @RunWith(classOf[JUnitRunner])
 class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
 
+  import EcorePackageScalaSupport.{EString, EInt}
+  
   "LatexReference" must "generate class attribute reference" in {
 
     val clazz = EClass(name = "MyClass")
     EcoreUtil.setDocumentation(clazz, "My Class documentation")
 
-    clazz.eStructuralFeatures {
-      EAttribute(name = "attr1", eType = EString, lowerBound = 1, upperBound = 1) init { a ⇒
-        EcoreUtil.setDocumentation(a, "attr1 documentation")
-      }
-      EAttribute(name = "attr2", eType = EString, lowerBound = 1, upperBound = -1)
+    clazz.eStructuralFeatures += EAttribute(name = "attr1", eType = EString, lowerBound = 1, upperBound = 1) init { a ⇒
+      EcoreUtil.setDocumentation(a, "attr1 documentation")
     }
+    clazz.eStructuralFeatures +=
+      EAttribute(name = "attr2", eType = EString, lowerBound = 1, upperBound = -1)
 
     val ref = new LatexReference with TextTemplateTesting
 
@@ -56,16 +53,12 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
 
     val clazz = EClass(name = "MyClass")
     EcoreUtil.setDocumentation(clazz, "My Class documentation")
+    
+    clazz.eOperations += EOperation(name = "op1", eType = EString, lowerBound = 1, upperBound = 1) init { x ⇒
+      EcoreUtil.setDocumentation(x, "op1 documentation")
 
-    clazz.eOperations {
-      EOperation(name = "op1", eType = EString, lowerBound = 1, upperBound = 1) init { a ⇒
-        EcoreUtil.setDocumentation(a, "op1 documentation")
-
-        a eParameters {
-          EParameter(name = "a", eType = EInt, lowerBound = 1, upperBound = 1)
-          EParameter(name = "b", eType = EString, lowerBound = 1, upperBound = 1)
-        }
-      }
+      x.eParameters += EParameter(name = "a", eType = EInt, lowerBound = 1, upperBound = 1)
+      x.eParameters += EParameter(name = "b", eType = EString, lowerBound = 1, upperBound = 1)
     }
 
     val ref = new LatexReference with TextTemplateTesting

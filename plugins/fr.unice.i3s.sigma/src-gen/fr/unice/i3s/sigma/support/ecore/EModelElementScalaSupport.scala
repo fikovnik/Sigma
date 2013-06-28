@@ -14,7 +14,13 @@ trait EModelElementScalaSupport extends EMFScalaSupport {
   protected implicit val _emodelelementProxyBuilder = new EMFProxyBuilder[EModelElement](EcorePackageScalaSupport._ecoreBuilder)
   
   object EModelElement {
-  
+    def apply(eAnnotations: EList[EAnnotation] = null): EModelElement = {
+      val _instance = EcorePackageScalaSupport._ecoreBuilder.create[EModelElement]
+      
+      if (eAnnotations != null) _instance.getEAnnotations.addAll(eAnnotations)
+      
+      _instance
+    }
   }
   
   implicit class EModelElementScalaSupport(that: EModelElement) {
