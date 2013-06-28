@@ -30,16 +30,16 @@
 
 	<modules>
 		<module>../../plugins/fr.unice.i3s.sigma</module>
-        <module>../../plugins/fr.unice.i3s.sigma.docgen</module>
-        
+		<module>../../plugins/fr.unice.i3s.sigma.docgen</module>
+
 		<module>../../tests/fr.unice.i3s.sigma.tests</module>
- 		<module>../../tests/fr.unice.i3s.sigma.docgen.tests</module>
- 		
+		<module>../../tests/fr.unice.i3s.sigma.docgen.tests</module>
+
 		<module>../../features/fr.unice.i3s.sigma.feature</module>
-		
+
 		<module>../../examples/fr.unice.i3s.sigma.examples.library</module>
 		<module>../../examples/fr.unice.i3s.sigma.examples.uml</module>
-		
+
 		<module>../../releng/fr.unice.i3s.sigma.site</module>
 	</modules>
 
