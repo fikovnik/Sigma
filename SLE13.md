@@ -3,7 +3,7 @@ layout: standalone
 title: SLE 2013 Companion Webpage
 ---
 
-This pages contains additional material accompanying the paper _"Exploring Internal Domain-Specific Languages for Model Manipulation"_ for [SLE'13](http://planet-sl.org/sle2013/) conference. All Sigma related code is in the SLE13 branch.
+This pages contains additional material accompanying the paper _"Exploring Internal Domain-Specific Languages for Model Manipulation"_ for [SLE'13](http://planet-sl.org/sle2013/) conference. All Sigma related code is in the [SLE13](https://github.com/fikovnik/Sigma/tree/feature/SLE13) branch. The code listed in the paper is available in the [fr.unice.i3s.sigma.examples.sle13](https://github.com/fikovnik/Sigma/tree/feature/SLE13/examples/fr.unice.i3s.sigma.examples.sle13) project.
 
 ## Models
 
@@ -15,7 +15,7 @@ This pages contains additional material accompanying the paper _"Exploring Inter
 
 ![DB Ecore Model](images/SLE13/DB.ecorediag.png "DB Ecore Model")
 
-## M2T Micro-benchmarking
+## M2T Micro-Benchmarking
 
 The example on which we run a sample micro benchmarks was inspired by the example from [Acceleo tutorial](http://wiki.eclipse.org/Acceleo/Getting_Started#Generating_java_beans).
 
