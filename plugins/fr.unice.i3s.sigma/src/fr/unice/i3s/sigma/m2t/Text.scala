@@ -1,7 +1,6 @@
 package fr.unice.i3s.sigma.m2t
 
 import scala.annotation.tailrec
-import scala.collection.mutable.Buffer
 import scala.util.DynamicVariable
 import java.io.Writer
 import java.io.File
@@ -9,6 +8,9 @@ import java.io.OutputStream
 import java.io.OutputStreamWriter
 import com.google.common.base.Charsets
 import scala.collection.mutable.Stack
+
+import TextSection._
+import scala.collection.mutable.ListBuffer
 
 /**
  * This class is not thread safe.
@@ -29,23 +31,21 @@ object TextSection {
   val endlc = endl.charAt(0)
 }
 
-import TextSection._
-
 abstract class TextSection[T <: TextSection[T]] {
 
   /** The buffer to which the append with add text */
   private[this] var buffer = new StringBuilder
-  private[this] val marks = Buffer[(Int, TextSection[T])]()
+  private[this] val marks = ListBuffer[(Int, TextSection[T])]()
   protected[this] val decorators = new Stack[Decorator]
 
   protected def createSection: T
 
-  protected def deleteRight(chars: Int) = {
+  protected[m2t] def deleteRight(chars: Int) = {
     if (buffer.size >= chars) {
       buffer.delete(buffer.size - chars, buffer.size)
     }
   }
-
+  
   def append(text: String): this.type = {
     val decorator: Decorator = decorators match {
       case Stack() ⇒ identity
@@ -95,8 +95,7 @@ abstract class TextSection[T <: TextSection[T]] {
     }
 
     buffer.toString
-
-  }
+  }  
 }
 
 /**
@@ -198,5 +197,5 @@ case class Text(
     decorators push Decorators.stripWhitespace(defaultIndent, relaxedNewLines)
   }
 
-  override def createSection: Text = new Text
+  override protected[m2t] def createSection: Text = new Text(stripWhitespace, relaxedNewLines, indent)
 }
