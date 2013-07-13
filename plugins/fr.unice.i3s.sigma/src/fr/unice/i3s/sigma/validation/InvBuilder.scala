@@ -4,8 +4,8 @@ trait InvBuilder { this: ValidationContext ⇒
 
   trait ConstraintBuilder {
     def guardedBy(thunk: ⇒ Boolean): ConstraintBuilder
-    def check(thunk: ⇒ ValidationResult): StructuralConstraint
-    def check(thunk: ⇒ Boolean)(implicit o: Overloaded1): StructuralConstraint
+    def check(thunk: ⇒ ValidationResult): Invariant
+    def check(thunk: ⇒ Boolean)(implicit o: Overloaded1): Invariant
   }
 
   private class ConstraintBuilderImpl(val name: String) extends ConstraintBuilder {
@@ -26,6 +26,7 @@ trait InvBuilder { this: ValidationContext ⇒
         Cancelled
       }
     }
+    
     def check(thunk: ⇒ Boolean)(implicit o: Overloaded1) = build { () ⇒
       if (guard()) {
         toValidationResult(name, thunk)
@@ -35,7 +36,7 @@ trait InvBuilder { this: ValidationContext ⇒
     }
 
     private def build(check: Check) = {
-      new StructuralConstraint(name, check) {}
+      new Invariant(name, check) {}
     }
   }
 

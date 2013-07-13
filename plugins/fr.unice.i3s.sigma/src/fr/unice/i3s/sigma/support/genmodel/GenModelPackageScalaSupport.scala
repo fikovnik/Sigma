@@ -14,7 +14,10 @@ trait GenModelPackageScalaSupport extends EMFScalaSupport {
     def genClass = that.getGenClass
     def genPackage = that.getGenPackage
     def name = that.getName
-    def defaultValue = that.getStaticDefaultValue
+    def defaultValue = {
+      if (that.many) "null"
+      else that.getStaticDefaultValue
+    }
     def setter = {
       if (that.many) s"${that.getter}.addAll"
       else s"set${that.getAccessorName}"

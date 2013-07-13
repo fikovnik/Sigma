@@ -126,6 +126,11 @@ trait EMFScalaSupport {
     }
 
     def copy = EcoreUtil.copy(that)
+    
+    def container[T <: EObject : ClassTag](): T = that match {
+      case x: T => x
+      case _ => throw new IllegalArgumentException(s"The eContainer of $that is ${that.eContainer.getClass} not ${classTag[T].runtimeClass}")
+    }
   }
 
   /**

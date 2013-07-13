@@ -220,6 +220,8 @@ trait RuleMethods { this: M2M with Logging ⇒
       }
     }
 
+    // TODO: make sure that there is no duplication (Source->Target)
+    
     getClass.getMethods.toSeq collect {
 
       // regular rule (S,T1,...,Tn)Unit or (T1,...,Tn)Option[Unit]
@@ -317,7 +319,8 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
 
   type TraceLog = collection.mutable.HashMap[EObject, (TransformationRule, EObject)]
 
-  val targetMetaModels: Seq[EPackage]
+  // TODO: allow either single package or a sequence of packages
+  val targetMetaModels: Traversable[EPackage]
 
   private val session = new DynamicVariable[(Resource, TraceLog)](null)
 

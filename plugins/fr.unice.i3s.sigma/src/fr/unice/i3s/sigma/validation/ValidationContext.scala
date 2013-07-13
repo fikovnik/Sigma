@@ -31,21 +31,22 @@ private[validation] trait SelfVariable {
 
 trait ValidationContext extends SelfVariable with Guardable with OverloadHack {
   override type Self >: Null <: EObject
+
   type Check = () ⇒ ValidationResult
 
-  implicit val selfTag: ClassTag[Self]
-
-  private val _constraints = Buffer[StructuralConstraint]()
+  private val _constraints = Buffer[Invariant]()
+  
+  protected val name: String = getClass.getSimpleName
 
   def guard: Boolean = true
 
-  def constraints: List[StructuralConstraint] = _constraints.toList
+  def constraints: List[Invariant] = _constraints.toList
 
   def validate(instance: Self): ValidationContextResult = {
     withSelf(instance) {
       val validations = if (guard) {
         constraints map { inv ⇒
-          (inv.name -> inv.validate(instance))
+          (inv.name -> inv(instance))
         }
       } else {
         Map.empty
@@ -61,12 +62,12 @@ trait ValidationContext extends SelfVariable with Guardable with OverloadHack {
     }
   }
 
-  override def toString = s"Validation context ${getClass.getSimpleName} for $selfTag: " +
+  override def toString = s"Validation context $name" +
     constraints.map(_.name).mkString(", ")
 
   // helpers
 
-  protected[validation] def registerConstraint(inv: StructuralConstraint) = {
+  def registerInvariant(inv: Invariant) = {
     require(inv != null, "Constraint name must not be null")
     require(!constraints.exists { _.name == inv.name }, s"A constraint ${inv.name} has been already defined")
 
@@ -78,23 +79,24 @@ trait ValidationContext extends SelfVariable with Guardable with OverloadHack {
     else Error(s"The `$name` constraint is violated on `$self`")
   }
 
-  case class StructuralConstraint(name: String, check: Check) extends SelfVariable {
-    type Self = ValidationContext#Self
+  case class Invariant(name: String, check: Check) extends ((Self) => ValidationResult) with SelfVariable {
 
+    type Self = ValidationContext.this.Self
+    
     // TODO: is this possible to replace this with AutoContainment
-    registerConstraint(StructuralConstraint.this)
+    registerInvariant(Invariant.this)
 
-    def validate(instance: Self): ValidationResult = {
+    def apply(instance: Self): ValidationResult = {
       withSelf(instance) { check() }
     }
 
-    override def toString = s"Constraint $name for $selfTag"
+    override def toString = s"Constraint $name"
   }
 
   implicit class Satisfiable(that: Self) {
     def satisfies(name: String): Boolean = {
       constraints.find { _.name == name } match {
-        case Some(inv) ⇒ inv.validate(that) == Passed
+        case Some(inv) ⇒ inv(that) == Passed
         case None ⇒ throw new RuntimeException(s"Unresolvable constraint dependency from $this to `$name` that does not exists in context $this")
       }
     }

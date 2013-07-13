@@ -60,7 +60,7 @@ class CommonInfrastructureSpec extends FlatSpec with MustMatchers with BeforeAnd
     // the author setter is overloaded
     // this expression is using the Option[Author] version
     // it will create EMF proxy
-    sicp.author = library.authors.find(_.name == "H. Abelson")
+    sicp.author = library.authors find (_.name == "H. Abelson")
     sicp.author.eIsProxy must be(true)
 
     // when we add author the proxy will be resolved

@@ -29,7 +29,7 @@ trait InvMethods { this: ValidationContext ⇒
         }
       }
 
-      new StructuralConstraint(name, check)
+      new Invariant(name, check)
     }
 
     methods

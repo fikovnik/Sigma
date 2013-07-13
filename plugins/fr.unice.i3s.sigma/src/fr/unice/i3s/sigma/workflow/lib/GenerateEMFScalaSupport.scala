@@ -313,7 +313,7 @@ case class EClassScalaSupportTemplate(
       !f.isContains &&
       f.isReferenceType &&
       !f.isListType) {
-      !s"def ${f.scalaNameWithoutSpace}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
+      !s"def ${f.scalaNameWithoutSpace}_=(value: => ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
         !s"that.${f.setter}($pkgSupportName.${f.genPackage.emfBuilderName}.ref(value))"
       }
     }

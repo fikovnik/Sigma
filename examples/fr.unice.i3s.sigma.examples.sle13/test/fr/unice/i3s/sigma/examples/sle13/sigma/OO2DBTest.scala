@@ -46,8 +46,9 @@ class OO2DBTest extends FunSuite with MustMatchers with OOPackageScalaSupport wi
 
     val db = Buffer[EObject]()
     val classes = Buffer(clazz)
-    for (c <- classes) db ++= new ExperimentalOO2DB().apply(c)
-//    for (c <- classes) db ++= new OO2DB().apply(c)
+//  val oo2db = new ExperimentalOO2DB()
+    val oo2db = new OO2DB()
+    for (c <- classes) db ++= oo2db(c)
 
     db foreach (_.dump())
   }

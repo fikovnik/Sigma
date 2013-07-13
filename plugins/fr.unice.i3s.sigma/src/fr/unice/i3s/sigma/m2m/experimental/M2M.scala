@@ -134,7 +134,6 @@ trait RuleMethods { this: M2M with Logging ⇒
 
   implicit class EObjectM2MSupport[A <: EObject: ClassTag](that: A) {
     def unary_~[B >: Null <: EObject](implicit rule: Rule[A, B]): B = transformOne(that, rule) match {
-      // TODO: make type-safe
       case Some(targets) ⇒ targets._1
       case None ⇒ null
     }
@@ -142,7 +141,6 @@ trait RuleMethods { this: M2M with Logging ⇒
 
   implicit class EListM2MSupport[A <: EObject: ClassTag](that: EList[A]) {
     def unary_~[B <: EObject](implicit rule: Rule[A, B]) = {
-      // TODO: make type-safe
       val result = that map (transformOne(_, rule))
       result collect {
         case Some(targets) ⇒ targets._1
