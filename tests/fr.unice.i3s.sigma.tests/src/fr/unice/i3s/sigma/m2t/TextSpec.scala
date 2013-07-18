@@ -4,114 +4,116 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.MustMatchers
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-
 import java.io.StringWriter
+import fr.unice.i3s.sigma.test.scalatest.M2TMatchers
 
 @RunWith(classOf[JUnitRunner])
-class TextSpec extends FlatSpec with MustMatchers {
+class TextSpec extends FlatSpec with MustMatchers with M2TMatchers {
 
-  // TODO: where to put this so it can be accessed everywhere?
-  val endl = System.getProperty("line.separator")
+  val endl = Text.endl
 
-  "Text" must "append simple text" in {
+  "Text" must "append simple t" in {
 
-    val text = Text()
-    text append "hello world"
-    text.toString must be === "hello world"
+    val t = Text()
+    
+    t append "hello world"
+    
+    t.toString must be === "hello world"
   }
+  
 
   it must "support sections" in {
 
-    val text = Text()
-    text append "a"
-    val sub1 = text.startSection
+    val t = Text()
+    t append "a"
+    val sub1 = t.startSection
     sub1 append "b"
     val sub2 = sub1.startSection
     sub2 append "c"
-    text append "f"
+    t append "f"
     sub1 append "e"
     sub2 append "d"
 
-    text.toString must be === "abcdef"
+    t.toString must be === "abcdef"
   }
 
   it must "support many section" in {
 
-    val text = Text()
-    text.startSection append "a"
-    text.startSection append "b"
-    text.startSection append "c"
-    text.startSection append "d"
-    text.startSection append "e"
-    text.startSection append "f"
+    val t = Text()
+    t.startSection append "a"
+    t.startSection append "b"
+    t.startSection append "c"
+    t.startSection append "d"
+    t.startSection append "e"
+    t.startSection append "f"
 
-    text.toString must be === "abcdef"
+    t.toString must be === "abcdef"
   }
 
   it must "support decorators" in {
-    val text = Text()
+    val t = Text()
     val d1: Decorator = s ⇒ s"($s)"
     val d2: Decorator = s ⇒ s"[$s]"
     val d3: Decorator = s ⇒ s"{$s}"
 
-    (text withDecorator d1) {
-      text append "a"
-      text append "b"
+    (t withDecorator d1) {
+      t append "a"
+      t append "b"
 
-      (text withDecorator d2) {
+      (t withDecorator d2) {
 
-        text append "c"
+        t append "c"
 
-        (text withDecorator d3) {
-          text append "d"
+        (t withDecorator d3) {
+          t append "d"
         }
       }
     }
 
-    text.toString must be === "(a)(b)([c])([{d}])"
+    t.toString must be === "(a)(b)([c])([{d}])"
   }
 
   it must "support block decorators" in {
-    val text = Text()
+    val t = Text()
     val d1: Decorator = s ⇒ s"($s)"
     val d2: Decorator = s ⇒ s"[$s]"
     val d3: Decorator = s ⇒ s"{$s}"
 
-    text.withBlockDecorator(d1) {
-      text append "a"
-      text append "b"
+    t.withBlockDecorator(d1) {
+      t append "a"
+      t append "b"
 
-      text.withBlockDecorator(d2) {
-        text append "c"
+      t.withBlockDecorator(d2) {
+        t append "c"
 
-        text.withBlockDecorator(d3) {
-          text append "d"
+        t.withBlockDecorator(d3) {
+          t append "d"
         }
       }
     }
 
-    text.toString must be === "(ab[c{d}])"
+    t.toString must be === "(ab[c{d}])"
   }
 
   it must "support indent" in {
-    val text = Text()
-    text << "test"
-    text indent {
-      text << "indent"
-      text << "indent2" << endl << "indent3"
-      text indent {
-        text << "indent4" << endl << "indent5"
-        text.indentBy(1) {
-          text << "indent6"
+    val t = Text()
+    t << "test"
+    t indent {
+      t << "indent"
+      t << "indent2" << endl << "indent3"
+      t indent {
+        t << "indent4" << endl << "indent5"
+        t.indentBy(1) {
+          t << "indent6"
         }
       }
-      text << endl
-      text << "indent7"
+      t << endl
+      t << "indent7"
     }
-    text << endl
-    text << "test"
+    t << endl
+    t << "test"
 
-    text.toString must be ===
+    t.toString must be ===
       """|test
            |  indentindent2
            |  indent3
@@ -123,32 +125,32 @@ class TextSpec extends FlatSpec with MustMatchers {
   }
 
   it must "output to writer" in {
-    val text = Text()
+    val t = Text()
     val out = new StringWriter
-    text << "a" >> out
+    t << "a" >> out
 
     out.toString must be === "a"
   }
 
   it must "indent with brackets" in {
-    val text = Text()
+    val t = Text()
 
-    text << "test" curlyIndent {
-      text << "indent1" curlyIndent {
-        text << "indent2" squareIndent {
-          text << "indent3"
+    t << "test" curlyIndent {
+      t << "indent1" curlyIndent {
+        t << "indent2" squareIndent {
+          t << "indent3"
         }
-        text angleIndent {
-          text << "indent4"
+        t angleIndent {
+          t << "indent4"
         }
       }
-      text parenIndent {
-        text << "indent5"
+      t parenIndent {
+        t << "indent5"
       }
     }
-    text << "test"
+    t << "test"
 
-    text.toString must be ===
+    t.toString must be (text(
       """|test {
  		 |  indent1 {
 		 |    indent2 [
@@ -159,88 +161,88 @@ class TextSpec extends FlatSpec with MustMatchers {
 		 |  } (
 		 |    indent5
 		 |  )
-		 |}test""".stripMargin
+		 |}test""".stripMargin))
   }
 
   it must "strip spaces" in {
-    val text = new Text(stripWhitespace = true)
+    val t = new Text(stripWhitespace = true)
 
-    text << """
-      some text
-      some text
-        some text
-          some text
-      some text
+    t << """
+      some t
+      some t
+        some t
+          some t
+      some t
       """
 
-    text indent {
-      text << """
-        indent text
-          indent text
-            indent text
-        indent text
+    t indent {
+      t << """
+        indent t
+          indent t
+            indent t
+        indent t
         """
     }
 
-    text.toString must be ===
-      """|some text
-   		 |some text
-  		 |  some text
-  		 |    some text
-  		 |some text
-           |  indent text
-           |    indent text
-           |      indent text
-           |  indent text""".stripMargin
+    t.toString must be ===
+      """|some t
+   		 |some t
+  		 |  some t
+  		 |    some t
+  		 |some t
+           |  indent t
+           |    indent t
+           |      indent t
+           |  indent t""".stripMargin
 
   }
 
   it must "strip spaces not considering empty lines" in {
-    val text = new Text(stripWhitespace = true, indent = 4)
+    val t = new Text(stripWhitespace = true, defaultIndent = 4)
 
-    text << """
-	   text1
-	   text2
+    t << """
+	   t1
+	   t2
 	
-	   text3
-		 text4
+	   t3
+		 t4
     
-		 text5
-	   text6
+		 t5
+	   t6
                
-	   text7
+	   t7
 	   """
 
-    text.toString must be ===
-      """|text1
- 		 |text2
+    t.toString must be ===
+      """|t1
+ 		 |t2
 		 |
-		 |text3
-		 |  text4
+		 |t3
+		 |  t4
          |
-         |  text5
-         |text6
+         |  t5
+         |t6
          |
-         |text7""".stripMargin
+         |t7""".stripMargin
 
   }
 
   it must "relaxed whitespace test" in {
-    val text = new Text(stripWhitespace = true, relaxedNewLines = true, indent = 2)
+    val t = new Text(stripWhitespace = true, relaxedNewLines = true, defaultIndent = 2)
 
-    text << "class A" curlyIndent {
-      text << """
+    t << "class A" curlyIndent {
+      t << """
       val a = 1
       val b = 1
       """
     }
 
-    text.toString must be ===
+    t.toString must be (text(
       """|class A {
   		 |  val a = 1
    		 |  val b = 1
    		 |}
-         |""".stripMargin
+         |""".stripMargin))
 
   }
 

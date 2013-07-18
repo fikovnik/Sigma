@@ -2,7 +2,7 @@ package fr.unice.i3s.sigma.test.scalatest
 
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.MatchResult
-import fr.unice.i3s.sigma.m2t.M2TTest
+import fr.unice.i3s.sigma.m2t.TextTemplateTesting
 import fr.unice.i3s.sigma.m2t.Text
 
 trait M2TMatchers {

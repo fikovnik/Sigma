@@ -18,7 +18,7 @@ import org.eclipse.emf.codegen.util.ImportManager
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EcorePackage
 import com.typesafe.scalalogging.log4j.Logging
-import fr.unice.i3s.sigma.m2t.TextTemplate
+import fr.unice.i3s.sigma.m2t.StaticTextTemplate
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.util.EMFUtils
@@ -122,7 +122,7 @@ case class EClassScalaSupportTemplate(
   generateExtractors: Boolean,
   useOption: Boolean,
   useEMFBuilder: Boolean,
-  mappings: Map[String, String] = Map.empty) extends TextTemplate with Logging with GenModelUtils {
+  mappings: Map[String, String] = Map.empty) extends StaticTextTemplate with Logging with GenModelUtils {
 
   // TODO: move this to the util class
   implicit class GenFeatureScalaName(that: GenFeature) {
@@ -170,7 +170,7 @@ case class EClassScalaSupportTemplate(
   val importManager = new ImportManager(pkgName, clazzSupportName)
   clazz.genModel.importManager = importManager
 
-  override def render {
+  def execute {
     !s"package $pkgName"
 
     // mark imports
@@ -325,14 +325,14 @@ case class DelegateTemplate(
   clazz: GenClass,
   clazzDelegateImplName: String,
   pkgName: String,
-  pkgSupportName: String) extends TextTemplate with GenModelUtils {
+  pkgSupportName: String) extends StaticTextTemplate with GenModelUtils {
 
   val importManager = new ImportManager(pkgName, clazzDelegateImplName)
   clazz.genModel.importManager = importManager
 
   val clazzDelegateName = s"${clazz.importedInterfaceName}Delegate"
 
-  override def render {
+  def execute {
     !s"package ${pkgName}"
 
     // mark imports
@@ -357,12 +357,12 @@ case class EPackageScalaSupportTemplate(
   pkgName: String,
   pkgSupportName: String,
   useEMFBuilder: Boolean,
-  skipTypes: List[String] = Nil) extends TextTemplate with GenModelUtils {
+  skipTypes: List[String] = Nil) extends StaticTextTemplate with GenModelUtils {
 
   val importManager = new ImportManager(pkgName, pkgSupportName)
   pkg.genModel.importManager = importManager
 
-  override def render {
+  def execute {
     !s"package $pkgName"
 
     // mark imports

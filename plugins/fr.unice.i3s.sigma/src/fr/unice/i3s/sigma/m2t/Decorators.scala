@@ -1,9 +1,9 @@
 package fr.unice.i3s.sigma.m2t
 
-import TextSection._
-
 object Decorators {
 
+  import Text._
+  
   def indentText(num: Int) = (text: String) ⇒ {
     val prefix = " " * num
     val nls = text.count(_ == endlc)
@@ -13,7 +13,7 @@ object Decorators {
       // the problem is that otherwise we might have eaten the last endl:
       // scala> "a\nb\nc\n".split("\n")
       // res2: Array[String] = Array(a, b, c)
-      // this line is unindented!
+      // the last line is unindented!
       if (nls + 1 != lines.size) endl else ""
     )
   }

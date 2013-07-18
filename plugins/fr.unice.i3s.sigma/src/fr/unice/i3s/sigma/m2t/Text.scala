@@ -9,10 +9,10 @@ import java.io.OutputStreamWriter
 import com.google.common.base.Charsets
 import scala.collection.mutable.Stack
 
-import TextSection._
 import scala.collection.mutable.ListBuffer
 
 /**
+ *
  * This class is not thread safe.
  *
  * <i>Implementation note</i>
@@ -25,13 +25,7 @@ import scala.collection.mutable.ListBuffer
  * <li>http://www.scala-lang.org/node/11964</li>
  * </ul>
  */
-
-object TextSection {
-  val endl = System.getProperty("line.separator")
-  val endlc = endl.charAt(0)
-}
-
-abstract class TextSection[T <: TextSection[T]] {
+protected[this] abstract class TextSection[T <: TextSection[T]] {
 
   /** The buffer to which the append with add text */
   private[this] var buffer = new StringBuilder
@@ -40,12 +34,13 @@ abstract class TextSection[T <: TextSection[T]] {
 
   protected def createSection: T
 
-  protected[m2t] def deleteRight(chars: Int) = {
+  protected[m2t] def deleteRight(chars: Int): this.type = {
     if (buffer.size >= chars) {
       buffer.delete(buffer.size - chars, buffer.size)
     }
+    this
   }
-  
+
   def append(text: String): this.type = {
     val decorator: Decorator = decorators match {
       case Stack() ⇒ identity
@@ -95,7 +90,7 @@ abstract class TextSection[T <: TextSection[T]] {
     }
 
     buffer.toString
-  }  
+  }
 }
 
 /**
@@ -116,23 +111,40 @@ trait TextOutput {
   def >>(out: OutputStream): this.type = output(out)
 }
 
-trait TextAdditions { this: Text ⇒
+object Text {
+  val endl = System.getProperty("line.separator")
+  val endlc = endl.charAt(0)
 
-  private[this] var _defaultIndent: Int = 2
+  def apply(
+    stripWhitespace: Boolean = false,
+    relaxedNewLines: Boolean = false,
+    defaultIndent: Int = 2) = new Text(stripWhitespace, relaxedNewLines, defaultIndent)
+}
 
-  def defaultIndent = _defaultIndent
-  def defaultIndent_=(value: Int) = {
-    require(value > 0)
-    _defaultIndent = value
+class Text(
+  stripWhitespace: Boolean = false,
+  relaxedNewLines: Boolean = false,
+  defaultIndent: Int = 2)
+
+  extends TextSection[Text]
+  with TextOutput {
+
+  import Text._
+
+  if (relaxedNewLines) {
+    decorators push Decorators.relaxedNewLines
+  }
+  if (stripWhitespace) {
+    decorators push Decorators.stripWhitespace(defaultIndent, relaxedNewLines)
   }
 
   def <<(text: String): this.type = append(text)
-
+  
   def indentBy(num: Int)(block: ⇒ Unit): this.type = {
     if (!relaxedNewLines) {
       append(endl)
     }
-
+    
     withBlockDecorator(Decorators.indentText(num))(block)
 
     this
@@ -142,13 +154,22 @@ trait TextAdditions { this: Text ⇒
 
   def surroundWith(begin: String, end: String)(block: ⇒ Unit): this.type = {
     if (relaxedNewLines) {
-      // remove the last new line
       deleteRight(1)
-      withBlockDecorator(Decorators.surroundText(begin + endl, end + endl))(block)
-    } else {
-      withBlockDecorator(Decorators.surroundText(begin, endl + end))(block)
     }
+
+    append(begin)
+
+    block
+
+    if (!relaxedNewLines) {
+      append(endl)
+    }
+
+    append(end)
+
+    this
   }
+
 
   def curlyIndent(block: ⇒ Unit): this.type = {
     surroundWith(" {", "}") {
@@ -174,28 +195,5 @@ trait TextAdditions { this: Text ⇒
     }
   }
 
-  def stripWhitespace(block: ⇒ Unit): this.type = {
-    withDecorator(Decorators.stripWhitespace(defaultIndent))(block)
-  }
-}
-
-case class Text(
-  stripWhitespace: Boolean = false,
-  relaxedNewLines: Boolean = false,
-  indent: Int = 2)
-
-  extends TextSection[Text]
-  with TextAdditions
-  with TextOutput {
-
-  this.defaultIndent = indent
-
-  if (relaxedNewLines) {
-    decorators push Decorators.relaxedNewLines
-  }
-  if (stripWhitespace) {
-    decorators push Decorators.stripWhitespace(defaultIndent, relaxedNewLines)
-  }
-
-  override protected[m2t] def createSection: Text = new Text(stripWhitespace, relaxedNewLines, indent)
+  override protected[m2t] def createSection: Text = new Text(stripWhitespace, relaxedNewLines, defaultIndent)
 }
