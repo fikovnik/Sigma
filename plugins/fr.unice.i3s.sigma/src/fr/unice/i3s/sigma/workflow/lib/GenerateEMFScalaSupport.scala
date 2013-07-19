@@ -170,7 +170,7 @@ case class EClassScalaSupportTemplate(
 
   def execute {
     !s"package $pkgName"
-
+    
     // mark imports
     val imports = startSection()
 
@@ -183,7 +183,7 @@ case class EClassScalaSupportTemplate(
     renderScalaSupportObject
 
     // output imports
-    imports << importManager.computeSortedImports() << endl
+    imports << importManager.computeSortedImports()
   }
 
   protected def renderScalaSupportTrait {
@@ -337,15 +337,17 @@ case class DelegateTemplate(
     val imports = startSection()
 
     !endl
+    
     !s"class $clazzDelegateImplName extends ${clazz.importedClassName} with $clazzDelegateName"
 
     !endl
+    
     !s"trait $clazzDelegateName extends ${clazz.importedInterfaceName} with ${importManager.importName(pkgSupportName)}" curlyIndent {
       // TODO: generate stubs for derived features and operation bodies
     }
 
     // output imports
-    imports << importManager.computeSortedImports() << endl << endl
+    imports << importManager.computeSortedImports()
   }
 
 }
@@ -366,6 +368,8 @@ case class EPackageScalaSupportTemplate(
     // mark imports
     val imports = startSection()
 
+    !endl
+    
     renderScalaPackageSupportTrait
 
     !endl
@@ -373,7 +377,7 @@ case class EPackageScalaSupportTemplate(
     renderScalaPackageSupportObject
 
     // output imports
-    imports << importManager.computeSortedImports() << endl << endl
+    imports << importManager.computeSortedImports()
   }
 
   def renderScalaPackageSupportTrait {

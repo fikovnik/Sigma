@@ -20,6 +20,16 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     d3("a") must be(text("[(a)]"))
   }
 
+  "StripWhitespaceDecorator" must "correctly handle multiline text with relaxed newlines" in {
+    // \nimport fr.unice.i3s.sigma.support.EMFProxyBuilder;\nimport fr.unice.i3s.sigma.support.EMFScalaSupport;\n\nimport org.eclipse.emf.common.util.EList;\n\nimport org.eclipse.emf.ecore.EAnnotation;\nimport org.eclipse.emf.ecore.EAttribute;\nimport org.eclipse.emf.ecore.EClassifier;\nimport org.eclipse.emf.ecore.EDataType;\nimport org.eclipse.emf.ecore.EGenericType;
+    val str = "\na\nb\nc"
+    Decorators.stripWhitespace(2, true)(str) must be (text(
+        """|
+           |a
+           |b
+           |c""".stripMargin))
+  }
+  
   "Text" must "append simple t" in {
 
     val t = Text()
@@ -434,8 +444,8 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
    		 |  d
          |  b
    		 |}""".stripMargin))    
-  }
-
+  } 
+  
   it must "respect section decorators in multiple nested forked sections" in {
     val t = new Text(defaultIndent = 2)
     

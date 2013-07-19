@@ -30,7 +30,7 @@ trait EFactoryScalaSupport extends EMFScalaSupport {
   implicit class EFactoryScalaSupport(that: EFactory) {
     def ePackage: EPackage = that.getEPackage
     def ePackage_=(value: EPackage): Unit = that.setEPackage(value)
-    def ePackage_=(value: ⇒ Option[EPackage]): Unit =
+    def ePackage_=(value: => Option[EPackage]): Unit =
       that.setEPackage(EcorePackageScalaSupport._ecoreBuilder.ref(value))
   }
 }

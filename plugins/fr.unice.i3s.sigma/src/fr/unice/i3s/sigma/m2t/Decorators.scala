@@ -3,7 +3,7 @@ package fr.unice.i3s.sigma.m2t
 object Decorators {
 
   import Text._
-  
+
   def indentText(num: Int) = (text: String) ⇒ {
     val prefix = " " * num
     val nls = text.count(_ == endlc)
@@ -17,9 +17,9 @@ object Decorators {
       if (nls + 1 != lines.size) endl else ""
     )
   }
-  
-  def identity: Decorator = (str: String) => str
-  
+
+  def identity: Decorator = (str: String) ⇒ str
+
   def surroundText(str: String): Decorator =
     surroundText(str, str)
 
@@ -46,18 +46,17 @@ object Decorators {
       // expand tabs
       // split
 
-      if (!lines.isEmpty) {
-        // how shall we treat the last line in block like?
-        // """
-        // bla bla bla
-        // """
-        // if keepNewLine == true we add a new line
-        var addNL = false
-        // longest whitespace prefix of non-empty lines
-        val prefix = lines
-          .filter(!_.trim.isEmpty)
-          .map(_.segmentLength(_.isWhitespace, 0))
-          .min
+      // if keepNewLine == true we add a new line
+      var addNL = false
+      // longest whitespace prefix of non-empty lines
+      val prefix = lines
+        .filter(!_.trim.isEmpty)
+        .map(_.segmentLength(_.isWhitespace, 0))
+        .min
+
+      if (prefix == 0) {
+        text
+      } else {
 
         // is the input from the following like scala block:
         // """
@@ -79,8 +78,6 @@ object Decorators {
 
         // drop prefix it and concatenate
         (lines map { _.drop(prefix) } mkString (endl)) + (if (addNL) endl else "")
-      } else {
-        ""
       }
     }
   }

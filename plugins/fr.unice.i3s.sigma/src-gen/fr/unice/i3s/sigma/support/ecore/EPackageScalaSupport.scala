@@ -40,7 +40,7 @@ trait EPackageScalaSupport extends EMFScalaSupport {
     def nsPrefix_=(value: String): Unit = that.setNsPrefix(value)
     def eFactoryInstance: EFactory = that.getEFactoryInstance
     def eFactoryInstance_=(value: EFactory): Unit = that.setEFactoryInstance(value)
-    def eFactoryInstance_=(value: ⇒ Option[EFactory]): Unit =
+    def eFactoryInstance_=(value: => Option[EFactory]): Unit =
       that.setEFactoryInstance(EcorePackageScalaSupport._ecoreBuilder.ref(value))
     def eClassifiers: EList[EClassifier] = that.getEClassifiers
     def eSubpackages: EList[EPackage] = that.getESubpackages

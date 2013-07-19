@@ -39,11 +39,11 @@ trait EGenericTypeScalaSupport extends EMFScalaSupport {
     def eLowerBound_=(value: EGenericType): Unit = that.setELowerBound(value)
     def eTypeParameter: ETypeParameter = that.getETypeParameter
     def eTypeParameter_=(value: ETypeParameter): Unit = that.setETypeParameter(value)
-    def eTypeParameter_=(value: ⇒ Option[ETypeParameter]): Unit =
+    def eTypeParameter_=(value: => Option[ETypeParameter]): Unit =
       that.setETypeParameter(EcorePackageScalaSupport._ecoreBuilder.ref(value))
     def eClassifier: EClassifier = that.getEClassifier
     def eClassifier_=(value: EClassifier): Unit = that.setEClassifier(value)
-    def eClassifier_=(value: ⇒ Option[EClassifier]): Unit =
+    def eClassifier_=(value: => Option[EClassifier]): Unit =
       that.setEClassifier(EcorePackageScalaSupport._ecoreBuilder.ref(value))
   }
 }

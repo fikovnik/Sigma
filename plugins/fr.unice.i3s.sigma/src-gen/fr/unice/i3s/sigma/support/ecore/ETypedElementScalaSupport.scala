@@ -47,7 +47,7 @@ trait ETypedElementScalaSupport extends EMFScalaSupport {
     def required: Boolean = that.isRequired
     def eType: EClassifier = that.getEType
     def eType_=(value: EClassifier): Unit = that.setEType(value)
-    def eType_=(value: ⇒ Option[EClassifier]): Unit =
+    def eType_=(value: => Option[EClassifier]): Unit =
       that.setEType(EcorePackageScalaSupport._ecoreBuilder.ref(value))
     def eGenericType: EGenericType = that.getEGenericType
     def eGenericType_=(value: EGenericType): Unit = that.setEGenericType(value)

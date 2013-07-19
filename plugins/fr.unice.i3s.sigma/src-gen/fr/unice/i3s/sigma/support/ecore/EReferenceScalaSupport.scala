@@ -54,7 +54,7 @@ trait EReferenceScalaSupport extends EMFScalaSupport {
     def resolveProxies_=(value: Boolean): Unit = that.setResolveProxies(value)
     def eOpposite: EReference = that.getEOpposite
     def eOpposite_=(value: EReference): Unit = that.setEOpposite(value)
-    def eOpposite_=(value: ⇒ Option[EReference]): Unit =
+    def eOpposite_=(value: => Option[EReference]): Unit =
       that.setEOpposite(EcorePackageScalaSupport._ecoreBuilder.ref(value))
     def eReferenceType: EClass = that.getEReferenceType
     def eKeys: EList[EAttribute] = that.getEKeys

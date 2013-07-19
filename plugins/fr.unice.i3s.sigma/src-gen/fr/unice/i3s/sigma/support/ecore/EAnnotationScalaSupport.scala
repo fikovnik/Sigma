@@ -37,7 +37,7 @@ trait EAnnotationScalaSupport extends EMFScalaSupport {
     def details: EMap[String, String] = that.getDetails
     def eModelElement: EModelElement = that.getEModelElement
     def eModelElement_=(value: EModelElement): Unit = that.setEModelElement(value)
-    def eModelElement_=(value: ⇒ Option[EModelElement]): Unit =
+    def eModelElement_=(value: => Option[EModelElement]): Unit =
       that.setEModelElement(EcorePackageScalaSupport._ecoreBuilder.ref(value))
     def contents: EList[EObject] = that.getContents
     def references: EList[EObject] = that.getReferences
