@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ARGS=""
-if [ $# -eq 1 ]; then
+if [ $# -eq 0 ]; then
   ARGS="install"
 else
   ARGS=$@
