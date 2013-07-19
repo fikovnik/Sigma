@@ -5,9 +5,9 @@ import org.scalatest.matchers.MatchResult
 import fr.unice.i3s.sigma.m2t.TextTemplateTesting
 import fr.unice.i3s.sigma.m2t.Text
 
-trait M2TMatchers {
+trait TextMatchers {
   
-  class M2TMatcher(target: String) extends BeMatcher[AnyRef] {
+  class TextMatcher(target: String) extends BeMatcher[AnyRef] {
     def apply(source: AnyRef) =
       
       // TODO: use https://code.google.com/p/java-diff-utils to create a diff
@@ -18,8 +18,8 @@ trait M2TMatchers {
         s"'${source.toString}' was '$target'")
   }
 
-  def text(target: String) = new M2TMatcher(target)
+  def text(target: String) = new TextMatcher(target)
 }  
 
 
-object M2TMatchers extends M2TMatchers
+object TextMatchers extends TextMatchers

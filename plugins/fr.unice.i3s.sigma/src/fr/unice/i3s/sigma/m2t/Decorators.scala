@@ -17,7 +17,9 @@ object Decorators {
       if (nls + 1 != lines.size) endl else ""
     )
   }
-
+  
+  def identity: Decorator = (str: String) => str
+  
   def surroundText(str: String): Decorator =
     surroundText(str, str)
 

@@ -4,9 +4,9 @@ abstract class StaticTextTemplate(
   stripWhitespace: Boolean = true,
   relaxedNewLines: Boolean = true)
 
-  extends AbstractTextTemplate(stripWhitespace, relaxedNewLines) {
+  extends AbstractTextTemplate(stripWhitespace, relaxedNewLines) with TextOutput {
 
-  protected val out: Text = new Text(stripWhitespace, relaxedNewLines)
+  protected[m2t] val out: Text = new Text(stripWhitespace, relaxedNewLines)
 
   override lazy val toString = {
     execute

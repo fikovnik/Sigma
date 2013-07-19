@@ -20,6 +20,7 @@ import org.eclipse.emf.common.notify.impl.AdapterImpl
 import org.eclipse.emf.common.util.EList
 import scala.collection.SeqLike
 import scala.collection.IterableLike
+import fr.unice.i3s.sigma.m2t.TextOutput
 
 trait EMFScalaSupport {
 
@@ -175,6 +176,10 @@ trait EMFScalaSupport {
       !that || b
     }
   }
+  
+  implicit class RichSigmaStriung(that: String) extends TextOutput {
+    
+  } 
 }
 
 object EMFScalaSupport extends EMFScalaSupport

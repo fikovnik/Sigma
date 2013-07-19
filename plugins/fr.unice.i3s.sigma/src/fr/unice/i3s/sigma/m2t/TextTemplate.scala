@@ -17,7 +17,7 @@ abstract class TextTemplate(
 
   /** Returns the given source instance that is being transformed */
   protected def source: M2TSource = base.value._1
-  protected def out: Text = base.value._2
+  protected[m2t] def out: Text = base.value._2
 
   // transformation context
   protected[m2t] val base = new DynamicVariable[(M2TSource, Text)](null)
@@ -34,17 +34,12 @@ abstract class TextTemplate(
 
     res
   }
-
+  
   /**
    * Executes {{{block}}} with {{{section}}} as a current section
    */
-  def withSection(section: Text)(block: ⇒ Any) {
+  protected def withSection(section: Text)(block: ⇒ Any) {
     base.withValue((source, section))(block)
   }
-
-  /**
-   * Starts a new section
-   */
-  protected def startSection = out.startSection
 
 }

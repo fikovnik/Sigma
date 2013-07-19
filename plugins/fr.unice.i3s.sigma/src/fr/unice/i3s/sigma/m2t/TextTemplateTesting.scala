@@ -9,11 +9,11 @@ trait TextTemplateTesting { this: TextTemplate ⇒
 
   override def source: M2TSource = base.value._1
   /** Sets new transformation context to be the given source and a new text */
-  def source_=(value: M2TSource) = base.value = (source, new Text(stripWhitespace, relaxedNewLines))
+  def source_=(value: M2TSource) = base.value = (value, new Text(stripWhitespace, relaxedNewLines))
 
   /** Executes block with a new transformation context using given source as the transformation source */
-  def withSource(source: M2TSource)(block: ⇒ Unit): Unit = {
-    base.withValue(source, new Text(stripWhitespace, relaxedNewLines)) {
+  def withSource(value: M2TSource)(block: ⇒ Unit): Unit = {
+    base.withValue(value, new Text(stripWhitespace, relaxedNewLines)) {
       block
     }
   }

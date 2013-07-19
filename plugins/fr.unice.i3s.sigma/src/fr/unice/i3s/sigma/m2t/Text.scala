@@ -25,90 +25,138 @@ import scala.collection.mutable.ListBuffer
  * <li>http://www.scala-lang.org/node/11964</li>
  * </ul>
  */
-protected[this] abstract class TextSection[T <: TextSection[T]] {
+protected[this] abstract class TextSection[T <: TextSection[T]](
+  appendDecorator: Decorator,
+  sectionDecorator: Decorator) {
 
   /** The buffer to which the append with add text */
-  private[this] var buffer = new StringBuilder
-  private[this] val marks = ListBuffer[(Int, TextSection[T])]()
-  protected[this] val decorators = new Stack[Decorator]
+  private[this] val buffer = new ListBuffer[String]
+  private[this] var left: Option[TextSection[T]] = None
+  private[this] var right: Option[TextSection[T]] = None
+  private[this] var curr: this.type = this
 
-  protected def createSection: T
+  protected[this] def createSection(
+    appendDecorator: Decorator,
+    sectionDecorator: Decorator): T
 
   protected[m2t] def deleteRight(chars: Int): this.type = {
-    if (buffer.size >= chars) {
-      buffer.delete(buffer.size - chars, buffer.size)
+    right match {
+      case Some(r) ⇒ r.deleteRight(chars)
+      case None ⇒
+        require(buffer.nonEmpty)
+        val last = buffer.last
+        require(last.length - chars >= 0)
+
+        buffer(buffer.size - 1) = last dropRight chars
     }
+
     this
   }
 
   def append(text: String): this.type = {
-    val decorator: Decorator = decorators match {
-      case Stack() ⇒ identity
-      case _ ⇒ decorators reduceLeft (_ andThen _)
+    right match {
+      case Some(r) ⇒ r append text
+      case None ⇒ buffer += text
     }
 
-    buffer append decorator(text)
+    this
+  }
+
+  def startSection(): T = startSection(Decorators.identity, Decorators.identity)
+
+  def startSection(
+    extraAppendDecorator: Decorator,
+    extraSectionDecorator: Decorator): T = {
+
+    right match {
+      case Some(r) ⇒ r.startSection(extraAppendDecorator, extraSectionDecorator)
+      case None ⇒
+        // create a new section
+        val section = createSection(
+          (extraAppendDecorator andThen appendDecorator),
+          // do not copy the section decorator
+          (extraSectionDecorator))
+        left = Some(section)
+        // continue with the same section
+        right = Some(createSection(appendDecorator, Decorators.identity))
+        section
+    }
+
+    // TODO: no this since we return the new section instead
+  }
+
+  def withSection(section: TextSection[T])(block: ⇒ Any): this.type = {
+    right match {
+      case Some(r) ⇒ r.withSection(section)(block)
+      case None ⇒
+        // do not copy the section decorator for this one since it will be
+        // automatically inherited
+        val next = Some(createSection(appendDecorator, Decorators.identity))
+        right = Some(section)
+        block
+        left = right
+        right = next
+    }
+
     this
   }
 
   def withDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    decorators push decorator
-
-    try block
-    finally decorators.pop
-
+    right match {
+      case Some(r) ⇒ r.withDecorator(decorator)(block)
+      case None ⇒
+        val section = createSection((decorator andThen appendDecorator), sectionDecorator)
+        withSection(section)(block)
+    }
     this
   }
 
-  def withBlockDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    val newBuffer = new StringBuilder
-    val oldBuffer = buffer
-
-    buffer = newBuffer
-    try block
-    finally buffer = oldBuffer
-
-    buffer append decorator(newBuffer.toString)
-
+  def withSectionDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
+    right match {
+      case Some(r) ⇒ r.withSectionDecorator(decorator)(block)
+      case None ⇒
+        // section decorators are not composeable since they need to be applied 
+        // individually at the end of the merged section
+        val section = createSection(appendDecorator, decorator)
+        withSection(section)(block)
+    }
     this
-  }
-
-  def startSection: T = {
-    val section = createSection
-    marks += ((buffer.length, section))
-    section
   }
 
   override def toString = {
-    var offset = 0
+    val sb = new StringBuffer
 
-    for ((index, section) ← marks) {
-      val text = section.toString
-
-      buffer insert (index + offset, text)
-      offset += text.length
+    val thisText = buffer map appendDecorator mkString ""
+    if (thisText.nonEmpty) {
+      sb append thisText
     }
 
-    buffer.toString
+    val leftText = left match {
+      case Some(l) ⇒ l.toString
+      case None ⇒ ""
+    }
+
+    if (leftText.nonEmpty) {
+      sb append leftText
+    }
+
+    val rightText = right match {
+      case Some(r) ⇒ r.toString
+      case None ⇒ ""
+    }
+
+    if (rightText.nonEmpty) {
+      sb append rightText
+    }
+
+    val text = sb.toString
+    if (text.nonEmpty) {
+      val decorated = sectionDecorator(text)
+      decorated		  
+    } else {
+      ""
+    }
   }
-}
-
-/**
- * Provides some convenient methods for outputting text into streams and writers.
- * The text is taken from the {{{#toString}}} method of the class where this trait is mixed in.
- */
-trait TextOutput {
-  def output(out: Writer): this.type = {
-    out append (toString)
-    out.flush
-    this
-  }
-
-  def output(out: OutputStream): this.type =
-    output(new OutputStreamWriter(out, Charsets.UTF_8))
-
-  def >>(out: Writer): this.type = output(out)
-  def >>(out: OutputStream): this.type = output(out)
 }
 
 object Text {
@@ -122,30 +170,55 @@ object Text {
 }
 
 class Text(
-  stripWhitespace: Boolean = false,
-  relaxedNewLines: Boolean = false,
-  defaultIndent: Int = 2)
+  appendDecorator: Decorator,
+  sectionDecorator: Decorator,
+  stripWhitespace: Boolean,
+  relaxedNewLines: Boolean,
+  defaultIndent: Int)
 
-  extends TextSection[Text]
+  extends TextSection[Text](appendDecorator, sectionDecorator)
   with TextOutput {
+
+  def this(stripWhitespace: Boolean = false,
+    relaxedNewLines: Boolean = false,
+    defaultIndent: Int = 2) {
+
+    this(
+      // append decorator
+      Decorators.identity,
+      // block decorator
+      Decorators.identity,
+      stripWhitespace,
+      relaxedNewLines,
+      defaultIndent)
+  }
 
   import Text._
 
-  if (relaxedNewLines) {
-    decorators push Decorators.relaxedNewLines
-  }
-  if (stripWhitespace) {
-    decorators push Decorators.stripWhitespace(defaultIndent, relaxedNewLines)
+  override def append(str: String) = {
+    var text = str
+
+    text = {
+      if (stripWhitespace) Decorators.stripWhitespace(defaultIndent, relaxedNewLines)(str)
+      else str
+    }
+
+    text = {
+      if (relaxedNewLines) Decorators.relaxedNewLines(text)
+      else text
+    }
+
+    super.append(text)
   }
 
   def <<(text: String): this.type = append(text)
-  
+
   def indentBy(num: Int)(block: ⇒ Unit): this.type = {
     if (!relaxedNewLines) {
       append(endl)
     }
-    
-    withBlockDecorator(Decorators.indentText(num))(block)
+
+    withSectionDecorator(Decorators.indentText(num))(block)
 
     this
   }
@@ -169,7 +242,6 @@ class Text(
 
     this
   }
-
 
   def curlyIndent(block: ⇒ Unit): this.type = {
     surroundWith(" {", "}") {
@@ -195,5 +267,11 @@ class Text(
     }
   }
 
-  override protected[m2t] def createSection: Text = new Text(stripWhitespace, relaxedNewLines, defaultIndent)
+  override protected[this] def createSection(
+    appendDecorator: Decorator,
+    sectionDecorator: Decorator): Text = {
+
+    new Text(appendDecorator, sectionDecorator, stripWhitespace, relaxedNewLines, defaultIndent)
+  }
+
 }

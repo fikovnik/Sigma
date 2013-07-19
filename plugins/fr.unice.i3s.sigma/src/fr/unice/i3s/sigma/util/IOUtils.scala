@@ -24,12 +24,12 @@ object IOUtils {
       try {
         fw.write(in.toString)
       } finally {
-        fw.close 
+        fw.close
       }
       this
     }
   }
-  
+
   object SystemExecutor extends Executor {
 
     import sys.process._
@@ -101,10 +101,13 @@ object IOUtils {
     f
   }
 
-  def using[B](file: File)(f: Writer ⇒ B): B = using(new FileWriter(file))(f)
+  def using[B](file: File)(fun: Writer ⇒ B): B = using(new FileWriter(file))(fun)
 
-  def using[A <: Closeable, B](input: A)(f: A ⇒ B): B = {
-    try { f(input) } finally { input.close() }
+  def using[A <: Closeable, B](input: A)(fun: A ⇒ B): B = {
+    require(input != null)
+    
+    try fun(input)
+    finally input.close()
   }
 
   sealed trait FileVisitResult

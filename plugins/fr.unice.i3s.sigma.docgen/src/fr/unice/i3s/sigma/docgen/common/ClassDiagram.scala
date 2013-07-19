@@ -14,9 +14,9 @@ import fr.unice.i3s.sigma.TypeUnion._
 
 class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScalaSupport {
 
-  protected var rootElement: EObject = _
-
-  override def render {
+  type M2TSource = EPackage
+  
+  protected def execute {
     !"digraph G" curlyIndent {
       // preface
       !"""
@@ -41,7 +41,7 @@ class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScal
       !endl << endl
 
       // FIXME: use type unions [T: (EPackage |∨| EClassifier)#λ]
-      rootElement match {
+      source match {
         case e: EClass ⇒ {
           renderClass(e, "lightgrey")
 

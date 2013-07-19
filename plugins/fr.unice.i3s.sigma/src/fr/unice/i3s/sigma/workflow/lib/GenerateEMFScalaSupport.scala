@@ -112,8 +112,6 @@ protected trait GenModelUtils extends GenModelPackageScalaSupport {
 
 }
 
-// we do not have to worry much about this class since it will
-// get replaced by a Type macro later
 case class EClassScalaSupportTemplate(
   clazz: GenClass,
   pkgName: String,
@@ -174,7 +172,7 @@ case class EClassScalaSupportTemplate(
     !s"package $pkgName"
 
     // mark imports
-    val imports = out.startSection
+    val imports = startSection()
 
     !endl
 
@@ -336,7 +334,7 @@ case class DelegateTemplate(
     !s"package ${pkgName}"
 
     // mark imports
-    val imports = out.startSection
+    val imports = startSection()
 
     !endl
     !s"class $clazzDelegateImplName extends ${clazz.importedClassName} with $clazzDelegateName"
@@ -366,7 +364,7 @@ case class EPackageScalaSupportTemplate(
     !s"package $pkgName"
 
     // mark imports
-    val imports = out.startSection
+    val imports = startSection()
 
     renderScalaPackageSupportTrait
 

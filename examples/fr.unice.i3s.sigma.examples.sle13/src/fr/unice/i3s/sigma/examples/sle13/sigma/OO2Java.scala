@@ -1,17 +1,17 @@
 package fr.unice.i3s.sigma.examples.sle13.sigma
 
-import fr.unice.i3s.sigma.m2t.M2T
 import oo.support.OOPackageScalaSupport
+import fr.unice.i3s.sigma.m2t.TextTemplate
 
-class OO2Java extends M2T with OOPackageScalaSupport { 
-  type Root = Class // input type for this transformation
+class OO2Java extends TextTemplate with OOPackageScalaSupport { 
+  type M2TSource = Class // input type for this transformation
   
   // main template
-  def render =
-    !s"public class ${root.name}" curlyIndent {
+  protected def execute =
+    !s"public class ${source.name}" curlyIndent {
       !endl // extra new line
    
-      for (o <- root.operations) {
+      for (o <- source.operations) {
         genOperation(o) // call to another template
         !endl // extra new line
       }
