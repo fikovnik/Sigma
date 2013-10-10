@@ -1,16 +1,17 @@
 package fr.unice.i3s.sigma.m2t
 
-import scala.annotation.tailrec
-import scala.collection.mutable.Buffer
-import scala.util.DynamicVariable
-import java.io.Writer
-import java.io.File
-import java.io.OutputStream
-import java.io.OutputStreamWriter
-import com.google.common.base.Charsets
-import scala.collection.mutable.Stack
+import scala.collection.mutable.ListBuffer
+
+object TextSection {
+
+  sealed trait Command
+  case class Append(str: String) extends Command
+  case class DropRight(chars: Int) extends Command
+
+}
 
 /**
+ *
  * This class is not thread safe.
  *
  * <i>Implementation note</i>
@@ -23,108 +24,177 @@ import scala.collection.mutable.Stack
  * <li>http://www.scala-lang.org/node/11964</li>
  * </ul>
  */
+protected[this] abstract class TextSection[T <: TextSection[T]](
+  private val appendDecorator: Decorator,
+  private val sectionDecorator: Decorator) {
 
-object TextSection {
-  val endl = System.getProperty("line.separator")
-  val endlc = endl.charAt(0)
-}
+  /** The command buffer */
+  private val commands = new ListBuffer[TextSection.Command]
+  
+  /** The left section - processed after commands and before the right section */
+  private var left: Option[TextSection[T]] = None
+  /** The right section - processed after left section */
+  private var right: Option[TextSection[T]] = None
+  
+  /** Pointer to the most right part - the current text section */
+  private var curr: TextSection[T] = this
 
-import TextSection._
+  protected[this] def createSection(
+    appendDecorator: Decorator,
+    sectionDecorator: Decorator): T
 
-abstract class TextSection[T <: TextSection[T]] {
-
-  /** The buffer to which the append with add text */
-  private[this] var buffer = new StringBuilder
-  private[this] val marks = Buffer[(Int, TextSection[T])]()
-  protected[this] val decorators = new Stack[Decorator]
-
-  protected def createSection: T
-
-  protected def deleteRight(chars: Int) = {
-    if (buffer.size >= chars) {
-      buffer.delete(buffer.size - chars, buffer.size)
-    }
+  protected[m2t] def deleteRight(chars: Int): this.type = {
+	curr.commands += TextSection.DropRight(chars)	  
+    this
   }
 
   def append(text: String): this.type = {
-    val decorator: Decorator = decorators match {
-      case Stack() ⇒ identity
-      case _ ⇒ decorators reduceLeft (_ andThen _)
-    }
+    curr.commands += TextSection.Append(text)
+    this
+  }
 
-    buffer append decorator(text)
+  def startSection(): T = startSection(Decorators.identity, Decorators.identity)
+
+  def startSection(
+    extraAppendDecorator: Decorator,
+    extraSectionDecorator: Decorator): T = {
+
+    // create a new section
+    val section = createSection(
+      (extraAppendDecorator andThen curr.appendDecorator),
+      // do not copy the section decorator
+      (extraSectionDecorator))
+
+    // next section to continue with
+    val next = createSection(curr.appendDecorator, Decorators.identity)
+
+    curr.left = Some(section)
+    curr.right = Some(next)
+    curr = next
+    section
+  }
+
+  def withSection(section: TextSection[T])(block: ⇒ Any): this.type = {
+
+    // creates new section that will follow the given one in the tree
+    // note: section decorator is not copied since it will be
+    // automatically inherited
+    val next = createSection(curr.appendDecorator, Decorators.identity)
+    curr.right = Some(section)
+    val prev = curr
+    curr = section
+
+    block
+
+    prev.left = prev.right
+    prev.right = Some(next)
+    curr = next
+
     this
   }
 
   def withDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    decorators push decorator
-
-    try block
-    finally decorators.pop
-
+    val section = createSection((decorator andThen curr.appendDecorator), curr.sectionDecorator)
+    withSection(section)(block)
     this
   }
 
-  def withBlockDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    val newBuffer = new StringBuilder
-    val oldBuffer = buffer
-
-    buffer = newBuffer
-    try block
-    finally buffer = oldBuffer
-
-    buffer append decorator(newBuffer.toString)
-
+  def withSectionDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
+    val section = createSection(curr.appendDecorator, decorator)
+    withSection(section)(block)
     this
   }
-
-  def startSection: T = {
-    val section = createSection
-    marks += ((buffer.length, section))
-    section
-  }
+  
+  protected def processCommands(sb: StringBuilder) {
+    for (cmd ← commands) cmd match {
+      case TextSection.Append(str) ⇒ sb append appendDecorator(str)
+      case TextSection.DropRight(chars) ⇒ sb delete (sb.size - chars, sb.size)
+    }
+  } 
 
   override def toString = {
-    var offset = 0
+    val sb = new StringBuilder
 
-    for ((index, section) ← marks) {
-      val text = section.toString
+    processCommands(sb)
 
-      buffer insert (index + offset, text)
-      offset += text.length
+    val leftText = left match {
+      case Some(l) ⇒ l.toString
+      case None ⇒ ""
     }
 
-    buffer.toString
+    if (leftText.nonEmpty) {
+      sb append leftText
+    }
 
+    val rightText = right match {
+      case Some(r) ⇒ r.toString
+      case None ⇒ ""
+    }
+
+    if (rightText.nonEmpty) {
+      sb append rightText
+    }
+
+    val text = sb.toString
+    if (text.nonEmpty) {
+      val decorated = sectionDecorator(text)
+      decorated
+    } else {
+      ""
+    }
   }
 }
 
-/**
- * Provides some convenient methods for outputting text into streams and writers.
- * The text is taken from the {{{#toString}}} method of the class where this trait is mixed in.
- */
-trait TextOutput {
-  def output(out: Writer): this.type = {
-    out append (toString)
-    out.flush
-    this
-  }
+object Text {
+  val endl = System.getProperty("line.separator")
+  val endlc = endl.charAt(0)
 
-  def output(out: OutputStream): this.type =
-    output(new OutputStreamWriter(out, Charsets.UTF_8))
-
-  def >>(out: Writer): this.type = output(out)
-  def >>(out: OutputStream): this.type = output(out)
+  def apply(
+    stripWhitespace: Boolean = false,
+    relaxedNewLines: Boolean = false,
+    defaultIndent: Int = 2) = new Text(stripWhitespace, relaxedNewLines, defaultIndent)
 }
 
-trait TextAdditions { this: Text ⇒
+class Text(
+  appendDecorator: Decorator,
+  sectionDecorator: Decorator,
+  stripWhitespace: Boolean,
+  relaxedNewLines: Boolean,
+  defaultIndent: Int)
 
-  private[this] var _defaultIndent: Int = 2
+  extends TextSection[Text](appendDecorator, sectionDecorator)
+  with TextOutputting {
 
-  def defaultIndent = _defaultIndent
-  def defaultIndent_=(value: Int) = {
-    require(value > 0)
-    _defaultIndent = value
+  def this(stripWhitespace: Boolean = false,
+    relaxedNewLines: Boolean = false,
+    defaultIndent: Int = 2) {
+
+    this(
+      // append decorator
+      Decorators.identity,
+      // block decorator
+      Decorators.identity,
+      stripWhitespace,
+      relaxedNewLines,
+      defaultIndent)
+  }
+
+  import Text._
+
+  override def append(str: String) = {
+    var text = str
+
+    text = {
+      if (stripWhitespace) Decorators.stripWhitespace(defaultIndent, relaxedNewLines)(str)
+      else str
+    }
+
+    text = {
+      if (relaxedNewLines) Decorators.relaxedNewLines(text)
+      else text
+    }
+
+    super.append(text)
   }
 
   def <<(text: String): this.type = append(text)
@@ -134,7 +204,7 @@ trait TextAdditions { this: Text ⇒
       append(endl)
     }
 
-    withBlockDecorator(Decorators.indentText(num))(block)
+    withSectionDecorator(Decorators.indentText(num))(block)
 
     this
   }
@@ -143,12 +213,20 @@ trait TextAdditions { this: Text ⇒
 
   def surroundWith(begin: String, end: String)(block: ⇒ Unit): this.type = {
     if (relaxedNewLines) {
-      // remove the last new line
       deleteRight(1)
-      withBlockDecorator(Decorators.surroundText(begin + endl, end + endl))(block)
-    } else {
-      withBlockDecorator(Decorators.surroundText(begin, endl + end))(block)
     }
+
+    append(begin)
+
+    block
+
+    if (!relaxedNewLines) {
+      append(endl)
+    }
+
+    append(end)
+
+    this
   }
 
   def curlyIndent(block: ⇒ Unit): this.type = {
@@ -175,28 +253,11 @@ trait TextAdditions { this: Text ⇒
     }
   }
 
-  def stripWhitespace(block: ⇒ Unit): this.type = {
-    withDecorator(Decorators.stripWhitespace(defaultIndent))(block)
-  }
-}
+  override protected[this] def createSection(
+    appendDecorator: Decorator,
+    sectionDecorator: Decorator): Text = {
 
-case class Text(
-  stripWhitespace: Boolean = false,
-  relaxedNewLines: Boolean = false,
-  indent: Int = 2)
-
-  extends TextSection[Text]
-  with TextAdditions
-  with TextOutput {
-
-  this.defaultIndent = indent
-
-  if (relaxedNewLines) {
-    decorators push Decorators.relaxedNewLines
-  }
-  if (stripWhitespace) {
-    decorators push Decorators.stripWhitespace(defaultIndent, relaxedNewLines)
+    new Text(appendDecorator, sectionDecorator, stripWhitespace, relaxedNewLines, defaultIndent)
   }
 
-  override def createSection: Text = new Text
 }

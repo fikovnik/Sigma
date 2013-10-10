@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: fr.unice.i3s.sigma.examples.sle13.support
+Bundle-SymbolicName: fr.unice.i3s.sigma.examples.pl14.support
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: fr.unice.i3s.sigma;bundle-version="1.0.0",

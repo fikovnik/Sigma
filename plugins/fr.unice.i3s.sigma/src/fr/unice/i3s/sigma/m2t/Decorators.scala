@@ -1,9 +1,11 @@
 package fr.unice.i3s.sigma.m2t
 
-import TextSection._
+import Text._
 
 object Decorators {
 
+  def identity: Decorator = (str: String) ⇒ str  
+  
   def indentText(num: Int) = (text: String) ⇒ {
     val prefix = " " * num
     val nls = text.count(_ == endlc)

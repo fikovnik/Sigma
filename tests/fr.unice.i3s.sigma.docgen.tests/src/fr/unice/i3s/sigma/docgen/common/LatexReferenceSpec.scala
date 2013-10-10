@@ -8,15 +8,18 @@ import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.m2t.TextTemplateTesting
 import org.eclipse.emf.ecore.util.EcoreUtil
+import fr.unice.i3s.sigma.test.scalatest.TextMatchers
 
 @RunWith(classOf[JUnitRunner])
-class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
+class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport with TextMatchers {
 
   import EcorePackageScalaSupport.{EString, EInt}
   
   "LatexReference" must "generate class attribute reference" in {
 
+	val pkg = EPackage(name = "")
     val clazz = EClass(name = "MyClass")
+    pkg.eClassifiers += clazz
     EcoreUtil.setDocumentation(clazz, "My Class documentation")
 
     clazz.eStructuralFeatures += EAttribute(name = "attr1", eType = EString, lowerBound = 1, upperBound = 1) init { a ⇒
@@ -26,10 +29,11 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
       EAttribute(name = "attr2", eType = EString, lowerBound = 1, upperBound = -1)
 
     val ref = new LatexReference with TextTemplateTesting
+    ref.source = pkg
 
     ref.genClassReference(clazz)
 
-    ref.partial must be ===
+    ref must be (text(
       """|\subsection*{Class: MyClass}
          |\label{sec:EClassRef_MyClass}
          |\paragraph*{Documentation}
@@ -46,12 +50,15 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
          |    \bottomrule
          |  \end{tabularx}
          |\end{center}
-         |""".stripMargin
+         |""".stripMargin))
   }
 
   "LatexReference" must "generate class operation reference" in {
 
+	val pkg = EPackage(name = "")
     val clazz = EClass(name = "MyClass")
+    pkg.eClassifiers += clazz
+    
     EcoreUtil.setDocumentation(clazz, "My Class documentation")
     
     clazz.eOperations += EOperation(name = "op1", eType = EString, lowerBound = 1, upperBound = 1) init { x ⇒
@@ -62,10 +69,11 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
     }
 
     val ref = new LatexReference with TextTemplateTesting
+    ref.source = pkg
 
     ref.genClassReference(clazz)
 
-    ref.partial must be ===
+    ref must be (text(
       """|\subsection*{Class: MyClass}
     	 |\label{sec:EClassRef_MyClass}
 		 |\paragraph*{Documentation}
@@ -81,7 +89,7 @@ class LatexReferenceSpec extends FlatSpec with MustMatchers with EcorePackageSca
          |    \bottomrule
          |  \end{tabularx}
          |\end{center}
-         |""".stripMargin
+         |""".stripMargin))
   }
 
 }

@@ -1,27 +1,45 @@
 package fr.unice.i3s.sigma.m2t
 
+import org.eclipse.emf.ecore.EObject
+import scala.util.DynamicVariable
+
+/**
+ * Base class for M2T transformations
+ */
 abstract class TextTemplate(
-  stripWhitespace: Boolean = true,
-  relaxedNewLines: Boolean = true) extends TextOutput {
+  val stripWhitespace: Boolean = true,
+  val relaxedNewLines: Boolean = true)
 
-  implicit class TextTemplateString(that: String) {
-    def unary_! = out << that
-    def quoted = Decorators.surroundText("\"")(that)
-    def singleQuoted = Decorators.surroundText("'")(that)
+  extends AbstractTextTemplate(stripWhitespace, relaxedNewLines) {
+
+  /** Type of the source object to be transformed */
+  type M2TSource >: Null
+
+  /** Returns the given source instance that is being transformed */
+  protected def source: M2TSource = base.value._1
+  protected[m2t] def out: Text = base.value._2
+
+  // transformation context
+  protected[m2t] val base = new DynamicVariable[(M2TSource, Text)](null)
+
+  /**
+   * Transformation entry point
+   */
+  def transform(source: M2TSource): String = {
+    val res = base.withValue(
+      (source, new Text(stripWhitespace, relaxedNewLines))) {
+        execute
+        out.toString
+      }
+
+    res
   }
-
-  protected val endl = TextSection.endl
-  protected val out: Text = new Text(stripWhitespace, relaxedNewLines)
-  //  protected var rendered: Boolean = false
-
-  protected def render: Unit
-
-  override lazy val toString = {
-    //    if (rendered) {
-    //      render
-    //    }
-    render
-    out.toString
+  
+  /**
+   * Executes {{{block}}} with {{{section}}} as a current section
+   */
+  protected def withSection(section: Text)(block: ⇒ Any) {
+    base.withValue((source, section))(block)
   }
 
 }

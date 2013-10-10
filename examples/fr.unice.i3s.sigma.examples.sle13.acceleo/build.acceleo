@@ -18,7 +18,7 @@
         <acceleoCompiler 
             sourceFolder="${target.folder}"
             outputFolder="${target.folder}"
-            dependencies="${target.folder}/../../fr.unice.i3s.sigma.examples.sle13;${target.folder}/../../fr.unice.i3s.sigma;"
+            dependencies="${target.folder}/../../fr.unice.i3s.sigma.examples.pl14;${target.folder}/../../fr.unice.i3s.sigma;"
             binaryResource="false"
             packagesToRegister="">
         </acceleoCompiler>

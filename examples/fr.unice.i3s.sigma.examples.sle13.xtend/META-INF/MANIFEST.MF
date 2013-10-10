@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Xtend
+Bundle-SymbolicName: fr.unice.i3s.sigma.examples.pl14.xtend
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: fr.unice.i3s.sigma.examples.pl14;bundle-version="1.0.0",
+ org.eclipse.xtend.lib,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.emf.ecore;bundle-version="2.9.0"
+

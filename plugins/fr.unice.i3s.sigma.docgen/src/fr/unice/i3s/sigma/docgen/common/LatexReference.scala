@@ -44,8 +44,8 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
 
   import LatexReference._
 
-  protected var rootPackage: EPackage = _
-
+  type M2TSource = EPackage
+  
   protected var generateMaster: Boolean = true
 
   protected var topSection: LatexSection = Chapter
@@ -59,7 +59,7 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
   protected def classDiagramMap_=(v: ENamedElement ⇒ (String, String)): Unit =
     classDiagramMap = Option(v)
 
-  def render = {
+  protected def execute = {
 
     if (generateMaster) {
       genMasterFile
@@ -171,7 +171,7 @@ class LatexReference extends TextTemplate with EcoreDocUtils with EcorePackageSc
 
     !topSection(topSectionName, topSectionLabel)
     !"\\clearpage"
-    genPackageRefernce(rootPackage)
+    genPackageRefernce(source)
 
   }
 

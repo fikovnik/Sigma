@@ -18,7 +18,7 @@ import org.eclipse.emf.codegen.util.ImportManager
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EcorePackage
 import com.typesafe.scalalogging.log4j.Logging
-import fr.unice.i3s.sigma.m2t.TextTemplate
+import fr.unice.i3s.sigma.m2t.StaticTextTemplate
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.util.EMFUtils
@@ -78,6 +78,12 @@ protected trait GenModelUtils extends GenModelPackageScalaSupport {
 
   implicit class GenFeatureEx(that: GenFeature) {
     def scalaType = typeName(that)
+    def genProxySetter = {
+      Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "genProxySetter")) match {
+        case Some(x) ⇒ x.toBoolean
+        case None ⇒ true
+      }
+    }
   }
 
   implicit class GenBaseEx(that: GenBase) {
@@ -112,8 +118,6 @@ protected trait GenModelUtils extends GenModelPackageScalaSupport {
 
 }
 
-// we do not have to worry much about this class since it will
-// get replaced by a Type macro later
 case class EClassScalaSupportTemplate(
   clazz: GenClass,
   pkgName: String,
@@ -122,7 +126,7 @@ case class EClassScalaSupportTemplate(
   generateExtractors: Boolean,
   useOption: Boolean,
   useEMFBuilder: Boolean,
-  mappings: Map[String, String] = Map.empty) extends TextTemplate with Logging with GenModelUtils {
+  mappings: Map[String, String] = Map.empty) extends StaticTextTemplate with Logging with GenModelUtils {
 
   // TODO: move this to the util class
   implicit class GenFeatureScalaName(that: GenFeature) {
@@ -132,7 +136,7 @@ case class EClassScalaSupportTemplate(
         case None ⇒ checkName(that.getName)
       }
     }
-    
+
     def scalaNameWithoutSpace = {
       val name = scalaName
       if (name.endsWith("_ ")) name.dropRight(1)
@@ -170,11 +174,11 @@ case class EClassScalaSupportTemplate(
   val importManager = new ImportManager(pkgName, clazzSupportName)
   clazz.genModel.importManager = importManager
 
-  override def render {
+  override def execute {
     !s"package $pkgName"
 
     // mark imports
-    val imports = out.startSection
+    val imports = startSection()
 
     !endl
 
@@ -216,12 +220,12 @@ case class EClassScalaSupportTemplate(
   }
 
   protected def renderCompanionObject(clazz: GenClass) = {
-    if (useEMFBuilder) {
+    if (useEMFBuilder && !clazz.isAbstract) {
       !s"protected implicit val _${clazz.scalaName.toLowerCase}ProxyBuilder = new ${importManager.importName[EMFProxyBuilder[_]]}[${clazz.scalaName}](${pkgSupportName}.${clazz.genPackage.emfBuilderName})"
       !endl
     }
     !s"object ${clazz.scalaName}" curlyIndent {
-      if (clazz.generateApply) {
+      if (clazz.generateApply && !clazz.isAbstract) {
         renderConstructor(clazz)
         !endl
       }
@@ -235,7 +239,7 @@ case class EClassScalaSupportTemplate(
     val features = clazz.allGenFeatures.filter(!_.excludeFromExtractor)
       .map { f ⇒ (f.getter -> f.scalaType) }
 
-    if (features.size > 1 && features.size <= 22) {
+    if (features.size >= 1 && features.size <= 22) {
       val types = features map (_._2) mkString (",")
       val names = features map ("that." + _._1) mkString (",")
 
@@ -310,6 +314,7 @@ case class EClassScalaSupportTemplate(
 
     // a proxy setter for all non-containable references
     if (useEMFBuilder &&
+      f.genProxySetter &&
       !f.isContains &&
       f.isReferenceType &&
       !f.isListType) {
@@ -325,23 +330,25 @@ case class DelegateTemplate(
   clazz: GenClass,
   clazzDelegateImplName: String,
   pkgName: String,
-  pkgSupportName: String) extends TextTemplate with GenModelUtils {
+  pkgSupportName: String) extends StaticTextTemplate with GenModelUtils {
 
   val importManager = new ImportManager(pkgName, clazzDelegateImplName)
   clazz.genModel.importManager = importManager
 
   val clazzDelegateName = s"${clazz.importedInterfaceName}Delegate"
 
-  override def render {
+  override def execute {
     !s"package ${pkgName}"
 
     // mark imports
-    val imports = out.startSection
+    val imports = startSection()
 
     !endl
+
     !s"class $clazzDelegateImplName extends ${clazz.importedClassName} with $clazzDelegateName"
 
     !endl
+
     !s"trait $clazzDelegateName extends ${clazz.importedInterfaceName} with ${importManager.importName(pkgSupportName)}" curlyIndent {
       // TODO: generate stubs for derived features and operation bodies
     }
@@ -357,16 +364,16 @@ case class EPackageScalaSupportTemplate(
   pkgName: String,
   pkgSupportName: String,
   useEMFBuilder: Boolean,
-  skipTypes: List[String] = Nil) extends TextTemplate with GenModelUtils {
+  skipTypes: List[String] = Nil) extends StaticTextTemplate with GenModelUtils {
 
   val importManager = new ImportManager(pkgName, pkgSupportName)
   pkg.genModel.importManager = importManager
 
-  override def render {
+  override def execute {
     !s"package $pkgName"
 
     // mark imports
-    val imports = out.startSection
+    val imports = startSection()
 
     renderScalaPackageSupportTrait
 

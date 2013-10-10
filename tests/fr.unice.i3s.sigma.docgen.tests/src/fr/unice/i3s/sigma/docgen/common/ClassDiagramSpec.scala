@@ -4,13 +4,13 @@ import org.junit.runner.RunWith
 import org.scalatest.FlatSpec
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.MustMatchers
-
 import fr.unice.i3s.sigma.m2t.TextTemplateTesting
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.test.scalatest.TextMatchers
 
 @RunWith(classOf[JUnitRunner])
-class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport {
+class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScalaSupport with EMFScalaSupport with TextMatchers {
 
   val pkg = EPackage(name = "MyPackage", nsURI = "http://mypkg", nsPrefix = "my")
 
@@ -20,13 +20,12 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
     val classB = EClass(name = "B", eSuperTypes = Seq(classA))
     pkg.eClassifiers ++= Seq(classA, classB)
 
-    val diag = new ClassDiagram with TextTemplateTesting {
-      rootElement = pkg
-    }
+    val diag = new ClassDiagram with TextTemplateTesting
+    diag.source = pkg
     diag.renderGeneralization(classB, classA)
 
     // actually we only need to check the first row
-    diag.partial.split("\n").head must be ===
+    diag.toString.split("\n").head must be ===
       "MyPackage__A:port -> MyPackage__B:port ["
 
   }
@@ -36,12 +35,11 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
     val dataTypeA = EDataType(name = "A", instanceClassName = "java.util.A")
     pkg.eClassifiers += dataTypeA
 
-    val diag = new ClassDiagram with TextTemplateTesting {
-      rootElement = pkg
-    }
+    val diag = new ClassDiagram with TextTemplateTesting
+    diag.source = pkg
     diag.renderDataType(dataTypeA)
 
-    diag.partial must be ===
+    diag must be (text(
       """|MyPackage__A [
          |  label =  <
 		 |    <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
@@ -59,7 +57,7 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
 		 |    </TABLE>
 		 |  >
 		 |]
-         |""".stripMargin
+         |""".stripMargin))
   }
 
   it must "must render an enum" in {
@@ -67,12 +65,11 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
     val enumA = EEnum(name = "A", eLiterals = Seq(EEnumLiteral(name = "ValueA"), EEnumLiteral(name = "ValueB")))
     pkg.eClassifiers += enumA
 
-    val diag = new ClassDiagram with TextTemplateTesting {
-      rootElement = pkg
-    }
+    val diag = new ClassDiagram with TextTemplateTesting
+    diag.source = pkg
     diag.renderEnum(enumA)
 
-    diag.partial must be ===
+    diag must be (text(
       """|MyPackage__A [
          |  label =  <
   		 |    <TABLE bgcolor="white" border="0" cellspacing="0" cellpadding="0" cellborder="0" port="port">
@@ -91,7 +88,7 @@ class ClassDiagramSpec extends FlatSpec with MustMatchers with EcorePackageScala
   		 |    </TABLE>
   		 |  >
   		 |]
-         |""".stripMargin
+         |""".stripMargin))
   }
 
 }

@@ -16,7 +16,7 @@ abstract class M2T(
   // TODO: rename to Self and use the SelfVariable trait
   type Root >: Null <: EObject
 
-  final protected val endl = TextSection.endl
+  final protected val endl = Text.endl
   
   private val base = new DynamicVariable[(Root, Text)](null)
   protected def root: Root = base.value._1

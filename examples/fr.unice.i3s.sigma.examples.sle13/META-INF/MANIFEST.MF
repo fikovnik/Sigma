@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: fr.unice.i3s.sigma.examples.sle13;singleton:=true
+Bundle-SymbolicName: fr.unice.i3s.sigma.examples.pl14;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
@@ -14,5 +14,5 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  com.google.guava;bundle-version="11.0.1",
  org.eclipse.emf.ecore.xmi;bundle-version="2.8.1"
 Bundle-ActivationPolicy: lazy
-Export-Package: fr.unice.i3s.sigma.examples.sle13.benchmark,
+Export-Package: fr.unice.i3s.sigma.examples.pl14.benchmark,
  oo
