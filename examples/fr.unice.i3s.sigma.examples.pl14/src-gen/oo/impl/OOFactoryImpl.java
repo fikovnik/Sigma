@@ -37,7 +37,7 @@ public class OOFactoryImpl extends EFactoryImpl implements OOFactory
 	{
 		try
 		{
-			OOFactory theOOFactory = (OOFactory)EPackage.Registry.INSTANCE.getEFactory("http://oo/1.0"); 
+			OOFactory theOOFactory = (OOFactory)EPackage.Registry.INSTANCE.getEFactory(OOPackage.eNS_URI);
 			if (theOOFactory != null)
 			{
 				return theOOFactory;

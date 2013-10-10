@@ -1,9 +1,8 @@
 package db.support
-
 import db.Column;
 
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
-import fr.unice.i3s.sigma.support.EMFScalaSupport;
+
 
 trait ColumnScalaSupport extends EMFScalaSupport {
   type Column = db.Column
@@ -12,12 +11,12 @@ trait ColumnScalaSupport extends EMFScalaSupport {
   
   object Column {
     def apply(name: String = null, dataType: String = null): Column = {
-      val instance = DBPackageScalaSupport._dbBuilder.create[Column]
+      val _instance = DBPackageScalaSupport._dbBuilder.create[Column]
       
-      if (name != null) instance.setName(name)
-      if (dataType != null) instance.setDataType(dataType)
+      if (name != null) _instance.setName(name)
+      if (dataType != null) _instance.setDataType(dataType)
       
-      instance
+      _instance
     }
     
     def unapply(that: Column): Option[(String,String)] =

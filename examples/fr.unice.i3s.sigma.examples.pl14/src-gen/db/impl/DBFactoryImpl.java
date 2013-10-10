@@ -30,7 +30,7 @@ public class DBFactoryImpl extends EFactoryImpl implements DBFactory
 	{
 		try
 		{
-			DBFactory theDBFactory = (DBFactory)EPackage.Registry.INSTANCE.getEFactory("http://db/1.0"); 
+			DBFactory theDBFactory = (DBFactory)EPackage.Registry.INSTANCE.getEFactory(DBPackage.eNS_URI);
 			if (theDBFactory != null)
 			{
 				return theDBFactory;

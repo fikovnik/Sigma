@@ -1,5 +1,4 @@
 package oo.support
-
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
@@ -8,7 +7,7 @@ import oo.Operation;
 import oo.Property;
 import oo.Stereotype;
 
-import org.eclipse.emf.common.util.EList;
+
 
 trait ClassScalaSupport extends EMFScalaSupport {
   type Class = oo.Class
@@ -17,14 +16,14 @@ trait ClassScalaSupport extends EMFScalaSupport {
   
   object Class {
     def apply(stereotypes: EList[Stereotype] = null, name: String = null, abstract_ : Boolean = false, features: EList[Feature] = null): Class = {
-      val instance = OOPackageScalaSupport._ooBuilder.create[Class]
+      val _instance = OOPackageScalaSupport._ooBuilder.create[Class]
       
-      if (stereotypes != null) instance.getStereotypes.addAll(stereotypes)
-      if (name != null) instance.setName(name)
-      if (abstract_  != false) instance.setAbstract(abstract_ )
-      if (features != null) instance.getFeatures.addAll(features)
+      if (stereotypes != null) _instance.getStereotypes.addAll(stereotypes)
+      if (name != null) _instance.setName(name)
+      if (abstract_  != false) _instance.setAbstract(abstract_ )
+      if (features != null) _instance.getFeatures.addAll(features)
       
-      instance
+      _instance
     }
     
     def unapply(that: Class): Option[(EList[Stereotype],String,Boolean,EList[Property],EList[Operation],EList[Feature])] =

@@ -1,12 +1,11 @@
 package oo.support
-
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
 import oo.PrimitiveType;
 import oo.Stereotype;
 
-import org.eclipse.emf.common.util.EList;
+
 
 trait PrimitiveTypeScalaSupport extends EMFScalaSupport {
   type PrimitiveType = oo.PrimitiveType
@@ -15,12 +14,12 @@ trait PrimitiveTypeScalaSupport extends EMFScalaSupport {
   
   object PrimitiveType {
     def apply(stereotypes: EList[Stereotype] = null, name: String = null): PrimitiveType = {
-      val instance = OOPackageScalaSupport._ooBuilder.create[PrimitiveType]
+      val _instance = OOPackageScalaSupport._ooBuilder.create[PrimitiveType]
       
-      if (stereotypes != null) instance.getStereotypes.addAll(stereotypes)
-      if (name != null) instance.setName(name)
+      if (stereotypes != null) _instance.getStereotypes.addAll(stereotypes)
+      if (name != null) _instance.setName(name)
       
-      instance
+      _instance
     }
     
     def unapply(that: PrimitiveType): Option[(EList[Stereotype],String)] =

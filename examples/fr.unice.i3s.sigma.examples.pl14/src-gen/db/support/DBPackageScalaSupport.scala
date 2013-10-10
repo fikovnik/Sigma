@@ -1,9 +1,8 @@
 package db.support
-
 import db.DBPackage;
 
 import fr.unice.i3s.sigma.support.EMFBuilder;
-import fr.unice.i3s.sigma.support.EMFScalaSupport;
+
 
 trait DBPackageScalaSupport
   extends TableScalaSupport with

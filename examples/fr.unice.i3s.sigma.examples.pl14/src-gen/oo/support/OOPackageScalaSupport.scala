@@ -1,9 +1,8 @@
 package oo.support
-
 import fr.unice.i3s.sigma.support.EMFBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
-import oo.OOPackage;
+
 
 trait OOPackageScalaSupport
   extends ModelElementScalaSupport with

@@ -1,5 +1,4 @@
 package oo.support
-
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
@@ -10,7 +9,7 @@ import oo.Stereotype;
 
 import org.eclipse.emf.common.util.EList;
 
-import scala.Option;
+
 
 trait PropertyScalaSupport extends EMFScalaSupport {
   type Property = oo.Property
@@ -19,15 +18,15 @@ trait PropertyScalaSupport extends EMFScalaSupport {
   
   object Property {
     def apply(stereotypes: EList[Stereotype] = null, name: String = null, ownerScope: ScopeKind = ScopeKind.SK_INSTANCE, type_ : Classifier = null, multi: Boolean = false): Property = {
-      val instance = OOPackageScalaSupport._ooBuilder.create[Property]
+      val _instance = OOPackageScalaSupport._ooBuilder.create[Property]
       
-      if (stereotypes != null) instance.getStereotypes.addAll(stereotypes)
-      if (name != null) instance.setName(name)
-      if (ownerScope != ScopeKind.SK_INSTANCE) instance.setOwnerScope(ownerScope)
-      if (type_  != null) instance.setType(type_ )
-      if (multi != false) instance.setMulti(multi)
+      if (stereotypes != null) _instance.getStereotypes.addAll(stereotypes)
+      if (name != null) _instance.setName(name)
+      if (ownerScope != ScopeKind.SK_INSTANCE) _instance.setOwnerScope(ownerScope)
+      if (type_  != null) _instance.setType(type_ )
+      if (multi != false) _instance.setMulti(multi)
       
-      instance
+      _instance
     }
     
     def unapply(that: Property): Option[(EList[Stereotype],String,ScopeKind,Classifier,Boolean)] =
