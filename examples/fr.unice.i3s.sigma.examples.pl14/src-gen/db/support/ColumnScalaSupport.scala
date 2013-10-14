@@ -1,8 +1,9 @@
 package db.support
+
 import db.Column;
 
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
-
+import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
 trait ColumnScalaSupport extends EMFScalaSupport {
   type Column = db.Column

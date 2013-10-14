@@ -1,11 +1,12 @@
 package oo.support
+
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
 import oo.Classifier;
 import oo.Stereotype;
 
-
+import org.eclipse.emf.common.util.EList;
 
 trait PackageScalaSupport extends EMFScalaSupport {
   type Package = oo.Package

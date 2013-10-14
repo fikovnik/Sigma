@@ -1,8 +1,9 @@
 package oo.support
+
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
-
+import oo.Stereotype;
 
 trait StereotypeScalaSupport extends EMFScalaSupport {
   type Stereotype = oo.Stereotype

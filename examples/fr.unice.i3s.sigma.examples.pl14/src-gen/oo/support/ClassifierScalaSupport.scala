@@ -1,10 +1,11 @@
 package oo.support
+
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
 import oo.Classifier;
 import oo.Stereotype;
 
-
+import org.eclipse.emf.common.util.EList;
 
 trait ClassifierScalaSupport extends EMFScalaSupport {
   type Classifier = oo.Classifier

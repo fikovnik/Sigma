@@ -502,4 +502,16 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
 
   }
 
+  "StripWhitespaceDecorator" must "correctly handle multiline text with relaxed newlines" in {
+    // NOTE: the problem has been found while woring with EMF import manager
+    // the last line of the following append would be lost
+    // \nimport fr.unice.i3s.sigma.support.EMFProxyBuilder;\nimport fr.unice.i3s.sigma.support.EMFScalaSupport;\n\nimport org.eclipse.emf.common.util.EList;\n\nimport org.eclipse.emf.ecore.EAnnotation;\nimport org.eclipse.emf.ecore.EAttribute;\nimport org.eclipse.emf.ecore.EClassifier;\nimport org.eclipse.emf.ecore.EDataType;\nimport org.eclipse.emf.ecore.EGenericType;
+    val str = "\na\nb\nc"
+    Decorators.stripWhitespace(2, true)(str) must be(text(
+      """|
+         |a
+         |b
+         |c""".stripMargin))
+  }
+
 }

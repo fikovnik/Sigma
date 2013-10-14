@@ -1,11 +1,12 @@
 package oo.support
+
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
 import oo.Feature;
 import oo.ScopeKind;
 import oo.Stereotype;
 
-
+import org.eclipse.emf.common.util.EList;
 
 trait FeatureScalaSupport extends EMFScalaSupport {
   type Feature = oo.Feature

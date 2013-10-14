@@ -1,4 +1,5 @@
 package oo.support
+
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
@@ -7,7 +8,7 @@ import oo.Operation;
 import oo.Property;
 import oo.Stereotype;
 
-
+import org.eclipse.emf.common.util.EList;
 
 trait ClassScalaSupport extends EMFScalaSupport {
   type Class = oo.Class

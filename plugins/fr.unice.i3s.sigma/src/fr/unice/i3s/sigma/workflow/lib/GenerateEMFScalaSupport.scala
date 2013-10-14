@@ -189,7 +189,7 @@ case class EClassScalaSupportTemplate(
     renderScalaSupportObject
 
     // output imports
-    imports << importManager.computeSortedImports() << endl
+    imports << importManager.computeSortedImports()
   }
 
   protected def renderScalaSupportTrait {
@@ -354,7 +354,7 @@ case class DelegateTemplate(
     }
 
     // output imports
-    imports << importManager.computeSortedImports() << endl << endl
+    imports << importManager.computeSortedImports()
   }
 
 }

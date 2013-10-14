@@ -1,10 +1,11 @@
 package oo.support
+
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
 import oo.ModelElement;
 import oo.Stereotype;
 
-
+import org.eclipse.emf.common.util.EList;
 
 trait ModelElementScalaSupport extends EMFScalaSupport {
   type ModelElement = oo.ModelElement

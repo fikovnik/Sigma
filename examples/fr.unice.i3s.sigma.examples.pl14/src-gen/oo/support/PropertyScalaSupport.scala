@@ -1,4 +1,5 @@
 package oo.support
+
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
@@ -9,7 +10,7 @@ import oo.Stereotype;
 
 import org.eclipse.emf.common.util.EList;
 
-
+import scala.Option;
 
 trait PropertyScalaSupport extends EMFScalaSupport {
   type Property = oo.Property

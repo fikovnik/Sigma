@@ -1,11 +1,12 @@
 package db.support
+
 import db.Column;
 import db.Table;
 
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
 
-
+import org.eclipse.emf.common.util.EList;
 
 trait TableScalaSupport extends EMFScalaSupport {
   type Table = db.Table
