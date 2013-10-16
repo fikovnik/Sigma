@@ -25,8 +25,8 @@ public class OO2JavaModelGenerator implements ResourceGenerator {
 	}
 
 	public OO2JavaModelGenerator() {
-		this(500, 100, 100);
-//		this(250, 1000, 1000);
+//		this(500, 100, 100);
+		this(250, 1000, 1000);
 	}
 
 	public OO2JavaModelGenerator(int classes, int methods, int properties) {

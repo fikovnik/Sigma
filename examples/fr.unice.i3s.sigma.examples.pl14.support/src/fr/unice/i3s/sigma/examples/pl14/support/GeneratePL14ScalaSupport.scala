@@ -7,7 +7,7 @@ import fr.unice.i3s.sigma.workflow.lib.GenerateEMFScalaSupport
 import fr.unice.i3s.sigma.workflow.lib.CleanDirectory
 import fr.unice.i3s.sigma.workflow.lib.GenerateEcore
 
-object GenerateSLE13ScalaSupport extends WorkflowApp {
+object GeneratePL14ScalaSupport extends WorkflowApp {
 
   val projectName = "fr.unice.i3s.sigma.examples.pl14"
   val runtimeProject = s"../$projectName"

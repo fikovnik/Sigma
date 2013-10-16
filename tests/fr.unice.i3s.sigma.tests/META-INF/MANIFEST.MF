@@ -12,5 +12,4 @@ Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
  org.scalatest;bundle-version="2.0.0",
  org.mockito.mockito-all;bundle-version="1.9.0",
  fr.unice.i3s.sigma;bundle-version="1.0.0"
-Bundle-Activator: fr.unice.i3s.sigma.Activator
 Bundle-ActivationPolicy: lazy
