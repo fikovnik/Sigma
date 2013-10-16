@@ -35,8 +35,27 @@ protected[this] abstract class TextSection[T <: TextSection[T]](
     appendDecorator: Decorator,
     sectionDecorator: Decorator): T
 
+  protected[m2t] def currBufferSize = curr.buffer.size
+
   protected[m2t] def deleteRight(chars: Int): this.type = {
-    curr.buffer delete (buffer.size - chars, buffer.size)
+    val target = if (curr.buffer.size > 0) {
+      curr
+    } else if (right.isDefined) {
+      // the current section does not contain any text => find the section right before it
+      // find the last section
+      def find(sec: TextSection[T]): TextSection[T] = sec.right match {
+        case Some(r) if r == curr ⇒ sec
+        case Some(r) ⇒ find(r)
+        case None ⇒ sys.error("Invalid text section tree")
+      }
+
+      find(this)
+    } else {
+      throw new StringIndexOutOfBoundsException
+    }
+
+    target.buffer delete (target.buffer.size - chars, target.buffer.size)
+
     this
   }
 
@@ -97,23 +116,12 @@ protected[this] abstract class TextSection[T <: TextSection[T]](
     this
   }
 
-  override def toString = {
+  override def toString: String = {
     // new string builder with the current node
     val sb = new StringBuilder(buffer.toString)
 
-    left match {
-      case Some(sec) ⇒
-        val text = sec.toString
-        sb append text
-      case None ⇒
-    }
-
-    right match {
-      case Some(sec) ⇒
-        val text = sec.toString
-        sb append text
-      case None ⇒
-    }
+    left foreach (sb append _.toString)
+    right foreach (sb append _.toString)
 
     val text = sb.toString
     if (text.nonEmpty) {
@@ -192,7 +200,7 @@ class Text(
   def indent(block: ⇒ Unit): this.type = indentBy(defaultIndent)(block)
 
   def surroundWith(begin: String, end: String)(block: ⇒ Unit): this.type = {
-    if (relaxedNewLines) {
+    if (relaxedNewLines && currBufferSize > 0) {
       deleteRight(1)
     }
 

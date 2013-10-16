@@ -36,6 +36,17 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     t deleteRight 1
     t must be(text("hell"))
   }
+  
+  it must "delete right characters in correct section" in {
+
+    val t = Text()
+    t << "hello"
+    val sub = t.startSection()
+    sub << " boy!!"
+    t deleteRight 1
+    sub deleteRight 1
+    t must be(text("hell boy!"))
+  }
 
   it must "support sections" in {
 
