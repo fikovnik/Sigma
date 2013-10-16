@@ -29,22 +29,22 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     t must be(text("hello world"))
   }
 
-  it must "delete right characters" in {
+  it must "drop right characters" in {
 
     val t = Text()
     t << "hello"
-    t deleteRight 1
+    t dropRight 1
     t must be(text("hell"))
   }
   
-  it must "delete right characters in correct section" in {
+  it must "drop right characters in correct section" in {
 
     val t = Text()
     t << "hello"
     val sub = t.startSection()
     sub << " boy!!"
-    t deleteRight 1
-    sub deleteRight 1
+    t dropRight 1
+    sub dropRight 1
     t must be(text("hell boy!"))
   }
 

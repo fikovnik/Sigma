@@ -37,7 +37,7 @@ protected[this] abstract class TextSection[T <: TextSection[T]](
 
   protected[m2t] def currBufferSize = curr.buffer.size
 
-  protected[m2t] def deleteRight(chars: Int): this.type = {
+  def dropRight(chars: Int): this.type = {
     val target = if (curr.buffer.size > 0) {
       curr
     } else if (right.isDefined) {
@@ -201,7 +201,7 @@ class Text(
 
   def surroundWith(begin: String, end: String)(block: ⇒ Unit): this.type = {
     if (relaxedNewLines && currBufferSize > 0) {
-      deleteRight(1)
+      dropRight(1)
     }
 
     append(begin)
