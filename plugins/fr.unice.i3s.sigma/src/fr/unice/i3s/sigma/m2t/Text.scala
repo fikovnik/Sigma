@@ -2,14 +2,6 @@ package fr.unice.i3s.sigma.m2t
 
 import scala.collection.mutable.ListBuffer
 
-object TextSection {
-
-  sealed trait Command
-  case class Append(str: String) extends Command
-  case class DropRight(chars: Int) extends Command
-
-}
-
 /**
  *
  * This class is not thread safe.
@@ -28,14 +20,14 @@ protected[this] abstract class TextSection[T <: TextSection[T]](
   private val appendDecorator: Decorator,
   private val sectionDecorator: Decorator) {
 
-  /** The command buffer */
-  private val commands = new ListBuffer[TextSection.Command]
-  
+  /** The section buffer */
+  private val buffer = new StringBuilder
+
   /** The left section - processed after commands and before the right section */
   private var left: Option[TextSection[T]] = None
   /** The right section - processed after left section */
   private var right: Option[TextSection[T]] = None
-  
+
   /** Pointer to the most right part - the current text section */
   private var curr: TextSection[T] = this
 
@@ -44,12 +36,12 @@ protected[this] abstract class TextSection[T <: TextSection[T]](
     sectionDecorator: Decorator): T
 
   protected[m2t] def deleteRight(chars: Int): this.type = {
-	curr.commands += TextSection.DropRight(chars)	  
+    curr.buffer delete (buffer.size - chars, buffer.size)
     this
   }
 
   def append(text: String): this.type = {
-    curr.commands += TextSection.Append(text)
+    curr.buffer append curr.appendDecorator(text)
     this
   }
 
@@ -104,35 +96,23 @@ protected[this] abstract class TextSection[T <: TextSection[T]](
     withSection(section)(block)
     this
   }
-  
-  protected def processCommands(sb: StringBuilder) {
-    for (cmd ← commands) cmd match {
-      case TextSection.Append(str) ⇒ sb append appendDecorator(str)
-      case TextSection.DropRight(chars) ⇒ sb delete (sb.size - chars, sb.size)
-    }
-  } 
 
   override def toString = {
-    val sb = new StringBuilder
+    // new string builder with the current node
+    val sb = new StringBuilder(buffer.toString)
 
-    processCommands(sb)
-
-    val leftText = left match {
-      case Some(l) ⇒ l.toString
-      case None ⇒ ""
+    left match {
+      case Some(sec) ⇒
+        val text = sec.toString
+        sb append text
+      case None ⇒
     }
 
-    if (leftText.nonEmpty) {
-      sb append leftText
-    }
-
-    val rightText = right match {
-      case Some(r) ⇒ r.toString
-      case None ⇒ ""
-    }
-
-    if (rightText.nonEmpty) {
-      sb append rightText
+    right match {
+      case Some(sec) ⇒
+        val text = sec.toString
+        sb append text
+      case None ⇒
     }
 
     val text = sb.toString

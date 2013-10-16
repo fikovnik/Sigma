@@ -52,19 +52,6 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     t must be(text("abcdef"))
   }
 
-  it must "support many section" in {
-
-    val t = Text()
-    t.startSection() append "a"
-    t.startSection() append "b"
-    t.startSection() append "c"
-    t.startSection() append "d"
-    t.startSection() append "e"
-    t.startSection() append "f"
-
-    t must be(text("abcdef"))
-  }
-
   it must "allow simple decorator" in {
     val t = Text()
     val d: Decorator = s ⇒ s"($s)"
