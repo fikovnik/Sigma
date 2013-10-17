@@ -8,7 +8,7 @@ Documentation can be found on the [project website](http://fikovnik.net/Sigma/).
 
 ## Building ##
 
-To build Sigma do the following:
+Sigma is built by maven (tested with version 3.0.5). To make a build do the following:
 
 1. Build Sigma dependencies (only need to be done once)
 
@@ -16,7 +16,7 @@ To build Sigma do the following:
 
 1. Build Sigma
 
-    `./build.sh -o install`
+    `./build.sh install`
 
     This will also launch UI tests so make sure that you don't touch mouse
 or keyboard while the build is running.
