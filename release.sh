@@ -17,7 +17,7 @@ if [ $# -ne 1 ]; then
 	exit 1
 fi
 
-source="fr.unice.i3s.sigma.site/target/repository/"
+source="releng/fr.unice.i3s.sigma.site/target/repository/"
 target="$BASEDIR/$1"
 
 echo "Uploading $source to $HOST:$target:"

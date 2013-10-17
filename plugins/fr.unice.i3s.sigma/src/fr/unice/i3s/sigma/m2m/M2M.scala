@@ -255,6 +255,15 @@ trait RuleMethods { this: M2M with Logging ⇒
     }
   }
 
+  implicit class TraversableM2MSupport(that: Traversable[_ <: EObject]) {
+    def unary_~[B <: EObject] = {
+      val result = that map (transformOne(_, true))
+      result collect {
+        case Some(targets) ⇒ targets(0).asInstanceOf[B]
+      }
+    }
+  }
+
   implicit class EListM2MSupport(that: EList[_ <: EObject]) {
     def unary_~[B <: EObject] = {
       val result = that map (transformOne(_, true))

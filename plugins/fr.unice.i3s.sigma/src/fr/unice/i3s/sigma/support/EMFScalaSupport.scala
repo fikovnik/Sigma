@@ -20,7 +20,7 @@ import org.eclipse.emf.common.notify.impl.AdapterImpl
 import org.eclipse.emf.common.util.EList
 import scala.collection.SeqLike
 import scala.collection.IterableLike
-import fr.unice.i3s.sigma.m2t.TextOutput
+import fr.unice.i3s.sigma.m2t.TextOutputting
 
 trait EMFScalaSupport {
 
@@ -35,7 +35,7 @@ trait EMFScalaSupport {
   // TODO: rewrite the Diagnostics to be nomads
   implicit class RichSigmaDiagnostic(that: Diagnostic) {
     import collection.JavaConversions._
-    
+
     private val SEVERITIES = Map(
       Diagnostic.OK -> "OK",
       Diagnostic.INFO -> "INFO",
@@ -127,11 +127,6 @@ trait EMFScalaSupport {
     }
 
     def copy = EcoreUtil.copy(that)
-    
-    def container[T <: EObject : ClassTag](): T = that match {
-      case x: T => x
-      case _ => throw new IllegalArgumentException(s"The eContainer of $that is ${that.eContainer.getClass} not ${classTag[T].runtimeClass}")
-    }
   }
 
   /**
@@ -153,8 +148,8 @@ trait EMFScalaSupport {
     // TODO: transitive closure
   }
 
-  implicit class RichSigmaEList[A <: EObject : ClassTag](that: EList[A]) {
-    def +==(elem: A): A = {
+  implicit class RichSigmaEList[A <: EObject](that: EList[A]) {
+    def +==[B <: A](elem: B): B = {
       that.add(elem)
       elem
     }
@@ -163,11 +158,11 @@ trait EMFScalaSupport {
       that.addAll(elems)
       elems
     }
-    
+
     def +=(elem: A) = that.add(elem)
-    
-    def +=(elem: => Option[A])(implicit proxyBuilder: EMFProxyBuilder[A]) {
-	  that.add(proxyBuilder(elem))
+
+    def +=(elem: ⇒ Option[A])(implicit proxyBuilder: EMFProxyBuilder[A]) {
+      that.add(proxyBuilder(elem))
     }
   }
 
@@ -177,9 +172,11 @@ trait EMFScalaSupport {
     }
   }
   
-  implicit class RichSigmaStriung(that: String) extends TextOutput {
+    
+  implicit class RichSigmaString(that: String) extends TextOutputting {
     
   } 
+
 }
 
 object EMFScalaSupport extends EMFScalaSupport

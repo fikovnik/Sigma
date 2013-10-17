@@ -5,7 +5,7 @@ abstract class AbstractTextTemplate(
   relaxedNewLines: Boolean) {
 
   implicit class TextTemplateString(that: String) {
-    def unary_! = out << that
+    def unary_! = out append that
     def quoted = Decorators.surroundText("\"")(that)
     def singleQuoted = Decorators.surroundText("'")(that)
   }

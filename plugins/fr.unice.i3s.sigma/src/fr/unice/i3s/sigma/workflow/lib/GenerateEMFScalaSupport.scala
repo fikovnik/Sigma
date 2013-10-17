@@ -78,6 +78,12 @@ protected trait GenModelUtils extends GenModelPackageScalaSupport {
 
   implicit class GenFeatureEx(that: GenFeature) {
     def scalaType = typeName(that)
+    def genProxySetter = {
+      Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "genProxySetter")) match {
+        case Some(x) ⇒ x.toBoolean
+        case None ⇒ true
+      }
+    }
   }
 
   implicit class GenBaseEx(that: GenBase) {
@@ -130,7 +136,7 @@ case class EClassScalaSupportTemplate(
         case None ⇒ checkName(that.getName)
       }
     }
-    
+
     def scalaNameWithoutSpace = {
       val name = scalaName
       if (name.endsWith("_ ")) name.dropRight(1)
@@ -168,9 +174,9 @@ case class EClassScalaSupportTemplate(
   val importManager = new ImportManager(pkgName, clazzSupportName)
   clazz.genModel.importManager = importManager
 
-  def execute {
+  override def execute {
     !s"package $pkgName"
-    
+
     // mark imports
     val imports = startSection()
 
@@ -214,12 +220,12 @@ case class EClassScalaSupportTemplate(
   }
 
   protected def renderCompanionObject(clazz: GenClass) = {
-    if (useEMFBuilder) {
+    if (useEMFBuilder && !clazz.isAbstract) {
       !s"protected implicit val _${clazz.scalaName.toLowerCase}ProxyBuilder = new ${importManager.importName[EMFProxyBuilder[_]]}[${clazz.scalaName}](${pkgSupportName}.${clazz.genPackage.emfBuilderName})"
       !endl
     }
     !s"object ${clazz.scalaName}" curlyIndent {
-      if (clazz.generateApply) {
+      if (clazz.generateApply && !clazz.isAbstract) {
         renderConstructor(clazz)
         !endl
       }
@@ -233,7 +239,7 @@ case class EClassScalaSupportTemplate(
     val features = clazz.allGenFeatures.filter(!_.excludeFromExtractor)
       .map { f ⇒ (f.getter -> f.scalaType) }
 
-    if (features.size > 1 && features.size <= 22) {
+    if (features.size >= 1 && features.size <= 22) {
       val types = features map (_._2) mkString (",")
       val names = features map ("that." + _._1) mkString (",")
 
@@ -308,10 +314,11 @@ case class EClassScalaSupportTemplate(
 
     // a proxy setter for all non-containable references
     if (useEMFBuilder &&
+      f.genProxySetter &&
       !f.isContains &&
       f.isReferenceType &&
       !f.isListType) {
-      !s"def ${f.scalaNameWithoutSpace}_=(value: => ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
+      !s"def ${f.scalaNameWithoutSpace}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
         !s"that.${f.setter}($pkgSupportName.${f.genPackage.emfBuilderName}.ref(value))"
       }
     }
@@ -330,18 +337,18 @@ case class DelegateTemplate(
 
   val clazzDelegateName = s"${clazz.importedInterfaceName}Delegate"
 
-  def execute {
+  override def execute {
     !s"package ${pkgName}"
 
     // mark imports
     val imports = startSection()
 
     !endl
-    
+
     !s"class $clazzDelegateImplName extends ${clazz.importedClassName} with $clazzDelegateName"
 
     !endl
-    
+
     !s"trait $clazzDelegateName extends ${clazz.importedInterfaceName} with ${importManager.importName(pkgSupportName)}" curlyIndent {
       // TODO: generate stubs for derived features and operation bodies
     }
@@ -362,14 +369,12 @@ case class EPackageScalaSupportTemplate(
   val importManager = new ImportManager(pkgName, pkgSupportName)
   pkg.genModel.importManager = importManager
 
-  def execute {
+  override def execute {
     !s"package $pkgName"
 
     // mark imports
     val imports = startSection()
 
-    !endl
-    
     renderScalaPackageSupportTrait
 
     !endl
@@ -377,7 +382,7 @@ case class EPackageScalaSupportTemplate(
     renderScalaPackageSupportObject
 
     // output imports
-    imports << importManager.computeSortedImports()
+    imports << importManager.computeSortedImports() << endl << endl
   }
 
   def renderScalaPackageSupportTrait {

@@ -1,14 +1,5 @@
 package fr.unice.i3s.sigma.m2t
 
-import scala.annotation.tailrec
-import scala.util.DynamicVariable
-import java.io.Writer
-import java.io.File
-import java.io.OutputStream
-import java.io.OutputStreamWriter
-import com.google.common.base.Charsets
-import scala.collection.mutable.Stack
-
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -26,39 +17,50 @@ import scala.collection.mutable.ListBuffer
  * </ul>
  */
 protected[this] abstract class TextSection[T <: TextSection[T]](
-  appendDecorator: Decorator,
-  sectionDecorator: Decorator) {
+  private val appendDecorator: Decorator,
+  private val sectionDecorator: Decorator) {
 
-  /** The buffer to which the append with add text */
-  private[this] val buffer = new ListBuffer[String]
-  private[this] var left: Option[TextSection[T]] = None
-  private[this] var right: Option[TextSection[T]] = None
-  private[this] var curr: this.type = this
+  /** The section buffer */
+  private val buffer = new StringBuilder
+
+  /** The left section - processed after commands and before the right section */
+  private var left: Option[TextSection[T]] = None
+  /** The right section - processed after left section */
+  private var right: Option[TextSection[T]] = None
+
+  /** Pointer to the most right part - the current text section */
+  private var curr: TextSection[T] = this
 
   protected[this] def createSection(
     appendDecorator: Decorator,
     sectionDecorator: Decorator): T
 
-  protected[m2t] def deleteRight(chars: Int): this.type = {
-    right match {
-      case Some(r) ⇒ r.deleteRight(chars)
-      case None ⇒
-        require(buffer.nonEmpty)
-        val last = buffer.last
-        require(last.length - chars >= 0)
+  protected[m2t] def currBufferSize = curr.buffer.size
 
-        buffer(buffer.size - 1) = last dropRight chars
+  def dropRight(chars: Int): this.type = {
+    val target = if (curr.buffer.size > 0) {
+      curr
+    } else if (right.isDefined) {
+      // the current section does not contain any text => find the section right before it
+      // find the last section
+      def find(sec: TextSection[T]): TextSection[T] = sec.right match {
+        case Some(r) if r == curr ⇒ sec
+        case Some(r) ⇒ find(r)
+        case None ⇒ sys.error("Invalid text section tree")
+      }
+
+      find(this)
+    } else {
+      throw new StringIndexOutOfBoundsException
     }
+
+    target.buffer delete (target.buffer.size - chars, target.buffer.size)
 
     this
   }
 
   def append(text: String): this.type = {
-    right match {
-      case Some(r) ⇒ r append text
-      case None ⇒ buffer += text
-    }
-
+    curr.buffer append curr.appendDecorator(text)
     this
   }
 
@@ -68,91 +70,63 @@ protected[this] abstract class TextSection[T <: TextSection[T]](
     extraAppendDecorator: Decorator,
     extraSectionDecorator: Decorator): T = {
 
-    right match {
-      case Some(r) ⇒ r.startSection(extraAppendDecorator, extraSectionDecorator)
-      case None ⇒
-        // create a new section
-        val section = createSection(
-          (extraAppendDecorator andThen appendDecorator),
-          // do not copy the section decorator
-          (extraSectionDecorator))
-        left = Some(section)
-        // continue with the same section
-        right = Some(createSection(appendDecorator, Decorators.identity))
-        section
-    }
+    // create a new section
+    val section = createSection(
+      (extraAppendDecorator andThen curr.appendDecorator),
+      // do not copy the section decorator
+      (extraSectionDecorator))
 
-    // TODO: no this since we return the new section instead
+    // next section to continue with
+    val next = createSection(curr.appendDecorator, Decorators.identity)
+
+    curr.left = Some(section)
+    curr.right = Some(next)
+    curr = next
+    section
   }
 
   def withSection(section: TextSection[T])(block: ⇒ Any): this.type = {
-    right match {
-      case Some(r) ⇒ r.withSection(section)(block)
-      case None ⇒
-        // do not copy the section decorator for this one since it will be
-        // automatically inherited
-        val next = Some(createSection(appendDecorator, Decorators.identity))
-        right = Some(section)
-        block
-        left = right
-        right = next
-    }
+
+    // creates new section that will follow the given one in the tree
+    // note: section decorator is not copied since it will be
+    // automatically inherited
+    val next = createSection(curr.appendDecorator, Decorators.identity)
+    curr.right = Some(section)
+    val prev = curr
+    curr = section
+
+    block
+
+    prev.left = prev.right
+    prev.right = Some(next)
+    curr = next
 
     this
   }
 
   def withDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    right match {
-      case Some(r) ⇒ r.withDecorator(decorator)(block)
-      case None ⇒
-        val section = createSection((decorator andThen appendDecorator), sectionDecorator)
-        withSection(section)(block)
-    }
+    val section = createSection((decorator andThen curr.appendDecorator), curr.sectionDecorator)
+    withSection(section)(block)
     this
   }
 
   def withSectionDecorator(decorator: Decorator)(block: ⇒ Unit): this.type = {
-    right match {
-      case Some(r) ⇒ r.withSectionDecorator(decorator)(block)
-      case None ⇒
-        // section decorators are not composeable since they need to be applied 
-        // individually at the end of the merged section
-        val section = createSection(appendDecorator, decorator)
-        withSection(section)(block)
-    }
+    val section = createSection(curr.appendDecorator, decorator)
+    withSection(section)(block)
     this
   }
 
-  override def toString = {
-    val sb = new StringBuffer
+  override def toString: String = {
+    // new string builder with the current node
+    val sb = new StringBuilder(buffer.toString)
 
-    val thisText = buffer map appendDecorator mkString ""
-    if (thisText.nonEmpty) {
-      sb append thisText
-    }
-
-    val leftText = left match {
-      case Some(l) ⇒ l.toString
-      case None ⇒ ""
-    }
-
-    if (leftText.nonEmpty) {
-      sb append leftText
-    }
-
-    val rightText = right match {
-      case Some(r) ⇒ r.toString
-      case None ⇒ ""
-    }
-
-    if (rightText.nonEmpty) {
-      sb append rightText
-    }
+    left foreach (sb append _.toString)
+    right foreach (sb append _.toString)
 
     val text = sb.toString
     if (text.nonEmpty) {
       val decorated = sectionDecorator(text)
-      decorated		  
+      decorated
     } else {
       ""
     }
@@ -177,7 +151,7 @@ class Text(
   defaultIndent: Int)
 
   extends TextSection[Text](appendDecorator, sectionDecorator)
-  with TextOutput {
+  with TextOutputting {
 
   def this(stripWhitespace: Boolean = false,
     relaxedNewLines: Boolean = false,
@@ -226,8 +200,8 @@ class Text(
   def indent(block: ⇒ Unit): this.type = indentBy(defaultIndent)(block)
 
   def surroundWith(begin: String, end: String)(block: ⇒ Unit): this.type = {
-    if (relaxedNewLines) {
-      deleteRight(1)
+    if (relaxedNewLines && currBufferSize > 0) {
+      dropRight(1)
     }
 
     append(begin)

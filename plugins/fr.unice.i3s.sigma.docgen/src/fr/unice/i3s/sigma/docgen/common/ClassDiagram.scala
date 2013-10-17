@@ -15,7 +15,7 @@ import fr.unice.i3s.sigma.TypeUnion._
 class ClassDiagram extends TextTemplate with EcoreDocUtils with EcorePackageScalaSupport {
 
   type M2TSource = EPackage
-  
+
   protected def execute {
     !"digraph G" curlyIndent {
       // preface

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.unice.i3s.sigma.examples.pl14/src-gen" modelPluginID="fr.unice.i3s.sigma.examples.pl14"
+    modelName="OO" importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0"
+    copyrightFields="false">
+  <foreignModel>OO.ecore</foreignModel>
+  <genPackages prefix="OO" disposableProviderFactory="true" ecorePackage="OO.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="OO.ecore#//ScopeKind">
+      <genEnumLiterals ecoreEnumLiteral="OO.ecore#//ScopeKind/sk_instance"/>
+      <genEnumLiterals ecoreEnumLiteral="OO.ecore#//ScopeKind/sk_classifier"/>
+    </genEnums>
+    <genClasses image="false" ecoreClass="OO.ecore#//ModelElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OO.ecore#//ModelElement/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OO.ecore#//ModelElement/stereotypes"/>
+    </genClasses>
+    <genClasses ecoreClass="OO.ecore#//Stereotype">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OO.ecore#//Stereotype/name"/>
+    </genClasses>
+    <genClasses ecoreClass="OO.ecore#//Package">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OO.ecore#//Package/ownedElements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OO.ecore#//Package/ownedStereotypes"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="OO.ecore#//Classifier"/>
+    <genClasses ecoreClass="OO.ecore#//Class">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OO.ecore#//Class/abstract"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference OO.ecore#//Class/properties"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference OO.ecore#//Class/operations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OO.ecore#//Class/features">
+        <genAnnotations source="http://www.i3s.unice.fr/Sigma">
+          <details key="excludeFromExtractors" value="true"/>
+        </genAnnotations>
+      </genFeatures>
+    </genClasses>
+    <genClasses ecoreClass="OO.ecore#//PrimitiveType"/>
+    <genClasses image="false" ecoreClass="OO.ecore#//Feature">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OO.ecore#//Feature/ownerScope"/>
+    </genClasses>
+    <genClasses ecoreClass="OO.ecore#//Property">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OO.ecore#//Property/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OO.ecore#//Property/multi"/>
+    </genClasses>
+    <genClasses ecoreClass="OO.ecore#//Operation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OO.ecore#//Operation/returnType"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

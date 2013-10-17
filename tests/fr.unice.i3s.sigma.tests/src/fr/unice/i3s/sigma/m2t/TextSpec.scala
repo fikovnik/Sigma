@@ -20,16 +20,6 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     d3("a") must be(text("[(a)]"))
   }
 
-  "StripWhitespaceDecorator" must "correctly handle multiline text with relaxed newlines" in {
-    // \nimport fr.unice.i3s.sigma.support.EMFProxyBuilder;\nimport fr.unice.i3s.sigma.support.EMFScalaSupport;\n\nimport org.eclipse.emf.common.util.EList;\n\nimport org.eclipse.emf.ecore.EAnnotation;\nimport org.eclipse.emf.ecore.EAttribute;\nimport org.eclipse.emf.ecore.EClassifier;\nimport org.eclipse.emf.ecore.EDataType;\nimport org.eclipse.emf.ecore.EGenericType;
-    val str = "\na\nb\nc"
-    Decorators.stripWhitespace(2, true)(str) must be (text(
-        """|
-           |a
-           |b
-           |c""".stripMargin))
-  }
-  
   "Text" must "append simple t" in {
 
     val t = Text()
@@ -39,11 +29,23 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     t must be(text("hello world"))
   }
 
-  it must "delete right characters" in {
+  it must "drop right characters" in {
+
     val t = Text()
     t << "hello"
-    t deleteRight 1
-    t must be (text("hell"))
+    t dropRight 1
+    t must be(text("hell"))
+  }
+  
+  it must "drop right characters in correct section" in {
+
+    val t = Text()
+    t << "hello"
+    val sub = t.startSection()
+    sub << " boy!!"
+    t dropRight 1
+    sub dropRight 1
+    t must be(text("hell boy!"))
   }
 
   it must "support sections" in {
@@ -57,19 +59,6 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     t append "f"
     sub1 append "e"
     sub2 append "d"
-
-    t must be(text("abcdef"))
-  }
-
-  it must "support many section" in {
-
-    val t = Text()
-    t.startSection() append "a"
-    t.startSection() append "b"
-    t.startSection() append "c"
-    t.startSection() append "d"
-    t.startSection() append "e"
-    t.startSection() append "f"
 
     t must be(text("abcdef"))
   }
@@ -95,14 +84,14 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     val d2: Decorator = s ⇒ s"[$s]"
 
     t.withDecorator(d1) {
+      t append "a"
       t.withDecorator(d2) {
-        t append "a"
         t append "bc"
-        t append "d"
       }
+      t append "d"
     }
 
-    t must be(text("([a])([bc])([d])"))
+    t must be(text("(a)([bc])(d)"))
 
   }
 
@@ -194,7 +183,7 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
 
     t must be(text(
       """|a
-         |  bc""".stripMargin))
+           |  bc""".stripMargin))
   }
 
   it must "allow multiple indent section without adding new line" in {
@@ -211,8 +200,8 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
 
     t must be(text(
       """|a
-         |  b
-         |    cd""".stripMargin))
+           |  b
+           |    cd""".stripMargin))
   }
 
   it must "indent section" in {
@@ -227,8 +216,8 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
 
     t must be(text(
       """|a
-         |  b
-         |c""".stripMargin))
+           |  b
+           |c""".stripMargin))
   }
 
   it must "allow multiple indented section" in {
@@ -253,11 +242,11 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
 
     t must be(text(
       """|a
-         |  bc
-         |    de
-         |    fg
-         |  h
-         |i""".stripMargin))
+           |  bc
+           |    de
+           |    fg
+           |  h
+           |i""".stripMargin))
   }
 
   it must "allow mutliple indents" in {
@@ -284,13 +273,13 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
 
     t must be(text(
       """|a
-         |  bc
-         |  d
-         |    e
-         |    f
-         |     g
-         |  h
-         |i""".stripMargin))
+           |  bc
+           |  d
+           |    e
+           |    f
+           |     g
+           |  h
+           |i""".stripMargin))
   }
 
   it must "output to writer" in {
@@ -321,24 +310,24 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
 
     t.toString must be(text(
       """|test {
- 		 |  indent1 {
-		 |    indent2 [
-		 |      indent3
-		 |    ] <
-		 |      indent4
-		 |    >
-		 |  } (
-		 |    indent5
-		 |  )
-		 |}test""".stripMargin))
+   		 |  indent1 {
+  		 |    indent2 [
+  		 |      indent3
+  		 |    ] <
+  		 |      indent4
+  		 |    >
+  		 |  } (
+  		 |    indent5
+  		 |  )
+  		 |}test""".stripMargin))
   }
 
   it must "strip spaces on multiline strings" in {
     val t = new Text(stripWhitespace = true)
 
     t << """
-      a
-      """
+        a
+        """
 
     t must be(text("a"))
   }
@@ -347,87 +336,86 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     val t = new Text(stripWhitespace = true)
 
     t << """
-      a
-      b
-        c
-        d
-      e
-      """
+        a
+        b
+          c
+          d
+        e
+        """
 
     t must be(text(
       """|a
-           |b
-           |  c
-           |  d
-           |e""".stripMargin))
+             |b
+             |  c
+             |  d
+             |e""".stripMargin))
   }
 
   it must "strip spaces" in {
     val t = new Text(stripWhitespace = true)
 
     t << """
-      some t
-      some t
+        some t
         some t
           some t
-      some t
-      """
+            some t
+        some t
+        """
 
     t indent {
       t << """
-        indent t
           indent t
             indent t
-        indent t
-        """
+              indent t
+          indent t
+          """
     }
 
     t must be(text(
       """|some t
-   		 |some t
-  		 |  some t
-  		 |    some t
-  		 |some t
-         |  indent t
-         |    indent t
-         |      indent t
-         |  indent t""".stripMargin))
+     		 |some t
+    		 |  some t
+    		 |    some t
+    		 |some t
+           |  indent t
+           |    indent t
+           |      indent t
+           |  indent t""".stripMargin))
   }
 
   it must "strip spaces not considering empty lines" in {
     val t = new Text(stripWhitespace = true, defaultIndent = 4)
 
     t << """
-	   t1
-	   t2
-	
-	   t3
-		 t4
-    
-		 t5
-	   t6
-               
-	   t7
-	   """
+  	   t1
+  	   t2
+  	
+  	   t3
+  		 t4
+      
+  		 t5
+  	   t6
+                 
+  	   t7
+  	   """
 
     t must be(text(
       """|t1
- 		 |t2
-		 |
-		 |t3
-		 |  t4
-         |
-         |  t5
-         |t6
-         |
-         |t7""".stripMargin))
+   		 |t2
+  		 |
+  		 |t3
+  		 |  t4
+           |
+           |  t5
+           |t6
+           |
+           |t7""".stripMargin))
 
   }
 
-  
   it must "respect section decorators in forked sections" in {
     val t = new Text(defaultIndent = 2)
-    
+
     var sec: Text = null
     t << "a" curlyIndent {
       sec = t.startSection()
@@ -437,18 +425,18 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     sec << "c"
     sec << endl
     sec << "d"
-    
+
     t must be(text(
       """|a {
-  		 |  c
-   		 |  d
-         |  b
-   		 |}""".stripMargin))    
-  } 
-  
+    		 |  c
+     		 |  d
+           |  b
+     		 |}""".stripMargin))
+  }
+
   it must "respect section decorators in multiple nested forked sections" in {
     val t = new Text(defaultIndent = 2)
-    
+
     var sec1: Text = null
     var sec2: Text = null
     var sec3: Text = null
@@ -475,11 +463,11 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
     sec3 << "j"
     sec3 << endl
     sec3 << "k"
-    
+
     t must be(text(
       """|a {
-  		 |  f
-   		 |  g
+    	 |  f
+     	 |  g
          |  b {
          |    h
          |    ic {
@@ -487,27 +475,41 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
          |      ke
          |    }
          |  }
-   		 |}""".stripMargin))    
+     	 |}""".stripMargin))
   }
-  
-  
+
   it must "relaxed whitespace test" in {
-    val t = new Text(stripWhitespace = true, relaxedNewLines = true, defaultIndent = 2)
+    val t = new Text(
+      stripWhitespace = true,
+      relaxedNewLines = true,
+      defaultIndent = 2)
 
     t << "class A" curlyIndent {
       t << """
-      val a = 1
-      val b = 1
-      """
+        val a = 1
+        val b = 1
+        """
     }
 
     t must be(text(
       """|class A {
-  		 |  val a = 1
-   		 |  val b = 1
-   		 |}
+    	 |  val a = 1
+     	 |  val b = 1
+     	 |}
          |""".stripMargin))
 
+  }
+
+  "StripWhitespaceDecorator" must "correctly handle multiline text with relaxed newlines" in {
+    // NOTE: the problem has been found while woring with EMF import manager
+    // the last line of the following append would be lost
+    // \nimport fr.unice.i3s.sigma.support.EMFProxyBuilder;\nimport fr.unice.i3s.sigma.support.EMFScalaSupport;\n\nimport org.eclipse.emf.common.util.EList;\n\nimport org.eclipse.emf.ecore.EAnnotation;\nimport org.eclipse.emf.ecore.EAttribute;\nimport org.eclipse.emf.ecore.EClassifier;\nimport org.eclipse.emf.ecore.EDataType;\nimport org.eclipse.emf.ecore.EGenericType;
+    val str = "\na\nb\nc"
+    Decorators.stripWhitespace(2, true)(str) must be(text(
+      """|
+         |a
+         |b
+         |c""".stripMargin))
   }
 
 }
