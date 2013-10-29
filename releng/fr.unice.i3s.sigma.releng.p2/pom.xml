@@ -38,7 +38,7 @@
 									<source>true</source>
 								</artifact>
 								<artifact>
-									<id>com.github.axel22:scalameter_2.10:0.3</id>
+									<id>com.github.axel22:scalameter_2.10:0.4-M2</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
@@ -51,6 +51,12 @@
 								<artifact>
 									<id>org.apache.logging.log4j:log4j-core:2.0-beta3</id>
 									<source>true</source>
+									<override>true</override>
+									<instructions>
+										<!-- the osgi bundle from apache is full of dependencies: jackson, jms (geronimo) -->
+            							<Import-Package>*;resolution:=optional</Import-Package>
+            							<Export-Package>*</Export-Package>
+        							</instructions>
 								</artifact>
 								<artifact>
 									<id>org.apache.commons:commons-lang3:3.1</id>

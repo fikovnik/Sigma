@@ -23,7 +23,6 @@
 		<p2.scala-ide>http://download.scala-ide.org/sdk/e37/scala210/dev/site</p2.scala-ide>
 		<!-- <p2.eclipse-juno>http://download.eclipse.org/releases/juno/</p2.eclipse-juno> -->
 		<p2.eclipse-juno>http://download.eclipse.org/releases/indigo/</p2.eclipse-juno>
-		<p2.eclipse-emf>http://download.eclipse.org/modeling/emf/emf/updates/releases/</p2.eclipse-emf>
 		<p2.eclipse-uml>http://download.eclipse.org/modeling/mdt/uml2/updates/releases/</p2.eclipse-uml>
 		<p2.eclipse-swtbot>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</p2.eclipse-swtbot>
 	</properties>
@@ -51,7 +50,7 @@
 			<url>${p2.sigma-3rdparty}</url>
 		</repository>
 		<repository>
-			<id>scala-ide</id>
+			<id>scala-ide-e38</id>
 			<name>Scala IDE repository</name>
 			<layout>p2</layout>
 			<url>${p2.scala-ide}</url>
@@ -61,12 +60,6 @@
 			<name>Eclipse Juno repository</name>
 			<layout>p2</layout>
 			<url>${p2.eclipse-juno}</url>
-		</repository>
-		<repository>
-			<id>eclipse-emf</id>
-			<name>Eclipse EMF repository</name>
-			<layout>p2</layout>
-			<url>${p2.eclipse-emf}</url>
 		</repository>
 		<repository>
 			<id>eclipse-uml</id>
