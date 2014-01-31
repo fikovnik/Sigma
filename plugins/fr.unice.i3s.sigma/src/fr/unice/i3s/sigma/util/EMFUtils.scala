@@ -33,10 +33,10 @@ object EMFUtils {
       }
     }
 
-    def loadFromFile[T <: EObject](file: File, resolveAll: Boolean = true): (T, ResourceSet) = {
+    def loadFromFile[T <: EObject: ClassTag](file: File, resolveAll: Boolean = true): T = {
 
       val uri = URI.createFileURI(file.getAbsolutePath())
-      load(uri, resolveAll)
+      load(uri, resolveAll) 
     }
 
     def saveToFile(root: EObject, file: File) {
