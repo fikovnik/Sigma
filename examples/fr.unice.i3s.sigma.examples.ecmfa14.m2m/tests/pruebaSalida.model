@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Relational:Schema xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Relational="http://Relational/1.0" name="Test1">
+  <tables name="Marca" primaryKey="//@tables.0/@candidateKey.0">
+    <candidateKey name="Codigo_Marca_CK">
+      <attributes href="default.xmi#/0/@nodes.0/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Codigo_Marca" domain="//@domains.1"/>
+    <attributes name="Nombre" domain="//@domains.0"/>
+  </tables>
+  <tables name="Modelo" primaryKey="//@tables.1/@candidateKey.0">
+    <candidateKey name="Codigo_Modelo_CK">
+      <attributes href="default.xmi#/0/@nodes.1/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Codigo_Modelo" domain="//@domains.1"/>
+    <attributes name="Nombre" domain="//@domains.0"/>
+    <attributes name="Codigo_Marca_pertenece1" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.1/@attributes.2" name="Marca_pertenece1_FK" referencedTable="//@tables.0"/>
+  </tables>
+  <tables name="Coches" primaryKey="//@tables.2/@candidateKey.0">
+    <candidateKey name="Cod_Coches_CK">
+      <attributes href="default.xmi#/0/@nodes.3/@attributes.0"/>
+    </candidateKey>
+    <candidateKey name="Matricula_CK">
+      <attributes href="default.xmi#/0/@nodes.3/@attributes.2"/>
+    </candidateKey>
+    <candidateKey name="NBastidor_CK">
+      <attributes href="default.xmi#/0/@nodes.3/@attributes.1"/>
+    </candidateKey>
+    <attributes name="Cod_Coches" domain="//@domains.1"/>
+    <attributes name="NBastidor" domain="//@domains.1"/>
+    <attributes name="Matricula" domain="//@domains.0"/>
+    <attributes name="Precio" domain="//@domains.1"/>
+    <attributes name="Codigo_Modelo_pertenece2" domain="//@domains.1"/>
+    <attributes name="Cod_Concesionario_oferta" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.2/@attributes.4" name="Modelo_pertenece2_FK" referencedTable="//@tables.1"/>
+    <foreignKey attributes="//@tables.2/@attributes.5" name="Concesionarios_oferta_FK" referencedTable="//@tables.12"/>
+  </tables>
+  <tables name="Km0" primaryKey="//@tables.3/@candidateKey.0">
+    <candidateKey attributes="//@tables.3/@attributes.1" name="Km0_CK"/>
+    <attributes name="FechaMatriculacion" domain="//@domains.2"/>
+    <attributes name="Cod_Coches" domain="//@domains.1"/>
+    <attributes name="Cod_Pack_incluye" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.3/@attributes.2" name="Pack_incluye_FK" referencedTable="//@tables.8"/>
+  </tables>
+  <tables name="Usados" primaryKey="//@tables.4/@candidateKey.0">
+    <candidateKey attributes="//@tables.4/@attributes.2" name="Usados_CK"/>
+    <attributes name="Kilometros" domain="//@domains.1"/>
+    <attributes name="FechaCirculacion" domain="//@domains.2"/>
+    <attributes name="Cod_Coches" domain="//@domains.1"/>
+  </tables>
+  <tables name="Estado" primaryKey="//@tables.5/@candidateKey.0">
+    <candidateKey name="Cod_Estado_CK">
+      <attributes href="default.xmi#/0/@nodes.9/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Cod_Estado" domain="//@domains.1"/>
+    <attributes name="Descripcion" nullable="true" domain="//@domains.0"/>
+    <attributes name="Cod_Coches_tiene" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.5/@attributes.2" name="Usados_tiene_FK" referencedTable="//@tables.4"/>
+  </tables>
+  <tables name="Caracteristicas" primaryKey="//@tables.6/@candidateKey.0">
+    <candidateKey name="Cod_Caracter&#xed;sticas_CK">
+      <attributes href="default.xmi#/0/@nodes.11/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Cod_Caracter&#xed;sticas" domain="//@domains.1"/>
+    <attributes name="Valor" type="Derivate" domain="//@domains.1"/>
+    <attributes name="Codigo_Modelo_tiene2" domain="//@domains.1"/>
+    <attributes name="Cod_TipoCaracter&#xed;sticas_pertence3" domain="//@domains.1"/>
+    <attributes name="Cod_Pack_A&#xf1;ade" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.6/@attributes.2" name="Modelo_tiene2_FK" referencedTable="//@tables.1"/>
+    <foreignKey attributes="//@tables.6/@attributes.3" name="TipoCaracteristicas_pertence3_FK" referencedTable="//@tables.7"/>
+    <foreignKey attributes="//@tables.6/@attributes.4" name="Pack_A&#xf1;ade_FK" referencedTable="//@tables.8"/>
+  </tables>
+  <tables name="TipoCaracteristicas" primaryKey="//@tables.7/@candidateKey.0">
+    <candidateKey name="Cod_TipoCaracter&#xed;sticas">
+      <attributes href="default.xmi#/0/@nodes.12/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Cod_TipoCaracter&#xed;sticas" domain="//@domains.1"/>
+    <attributes name="Descripcion" nullable="true" domain="//@domains.0"/>
+  </tables>
+  <tables name="Pack" primaryKey="//@tables.8/@candidateKey.0">
+    <candidateKey name="Cod_Pack">
+      <attributes href="default.xmi#/0/@nodes.14/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Cod_Pack" domain="//@domains.1"/>
+    <attributes name="Nombre" domain="//@domains.0"/>
+    <attributes name="Precio" domain="//@domains.1"/>
+  </tables>
+  <tables name="Compra" primaryKey="//@tables.9/@candidateKey.0">
+    <candidateKey name="Cod_Compra_CK">
+      <attributes href="default.xmi#/0/@nodes.20/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Cod_Compra" domain="//@domains.1"/>
+    <attributes name="Descripci&#xf3;n" domain="//@domains.0"/>
+    <attributes name="Cod_Compra_es_adquirido" nullable="true" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.9/@attributes.2" name="Compra_es_adquirido_FK" referencedTable="//@tables.9"/>
+  </tables>
+  <tables name="Clientes" primaryKey="//@tables.10/@candidateKey.0">
+    <candidateKey name="Cod_Cliente_CK">
+      <attributes href="default.xmi#/0/@nodes.22/@attributes.0"/>
+    </candidateKey>
+    <candidateKey name="Documento_CK">
+      <attributes href="default.xmi#/0/@nodes.22/@attributes.1"/>
+      <attributes href="default.xmi#/0/@nodes.22/@attributes.2"/>
+    </candidateKey>
+    <attributes name="Cod_Cliente" domain="//@domains.1"/>
+    <attributes name="NDocumento" domain="//@domains.1"/>
+    <attributes name="TipoDocumento" domain="//@domains.3"/>
+    <attributes name="Nombre" domain="//@domains.0"/>
+    <attributes name="Apellido1" domain="//@domains.0"/>
+    <attributes name="Apellido2" nullable="true" domain="//@domains.0"/>
+    <attributes name="Calle" domain="//@domains.0"/>
+    <attributes name="N&#xfa;mero" domain="//@domains.1"/>
+    <attributes name="Ciudad" domain="//@domains.0"/>
+    <attributes name="Cod_Compra_hace" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.10/@attributes.9" name="Compra_hace_FK" referencedTable="//@tables.9"/>
+  </tables>
+  <tables name="Pruebas" primaryKey="//@tables.11/@candidateKey.0">
+    <candidateKey name="Cod_Pruebas_CK">
+      <attributes href="default.xmi#/0/@nodes.23/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Cod_Pruebas" domain="//@domains.1"/>
+    <attributes name="FechaRegistro" domain="//@domains.2"/>
+    <attributes name="FechaPrueba" domain="//@domains.2"/>
+    <attributes name="HoraPrueba" domain="//@domains.2"/>
+    <attributes name="Cod_Coches_utiliza" domain="//@domains.1"/>
+    <attributes name="Cod_Cliente_solicita" domain="//@domains.1"/>
+    <attributes name="Cod_Personal_acompa&#xf1;a" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.11/@attributes.4" name="Coches_utiliza_FK" referencedTable="//@tables.2"/>
+    <foreignKey attributes="//@tables.11/@attributes.5" name="Clientes_solicita_FK" referencedTable="//@tables.10"/>
+    <foreignKey attributes="//@tables.11/@attributes.6" name="Comercial_acompa&#xf1;a_FK" referencedTable="//@tables.16"/>
+  </tables>
+  <tables name="Concesionarios" primaryKey="//@tables.12/@candidateKey.0">
+    <candidateKey name="Cod_Concesionario_CK">
+      <attributes href="default.xmi#/0/@nodes.25/@attributes.0"/>
+    </candidateKey>
+    <attributes name="Cod_Concesionario" domain="//@domains.1"/>
+    <attributes name="Nombre" domain="//@domains.0"/>
+    <attributes name="Correo" nullable="true" domain="//@domains.0"/>
+    <attributes name="Calle" domain="//@domains.0"/>
+    <attributes name="Numero" domain="//@domains.1"/>
+    <attributes name="Ciudad" domain="//@domains.0"/>
+  </tables>
+  <tables name="Horario" primaryKey="//@tables.13/@candidateKey.1">
+    <candidateKey name="Cod_Horario">
+      <attributes href="default.xmi#/0/@nodes.26/@attributes.0"/>
+      <attributes href="default.xmi#/0/@nodes.26/@attributes.1"/>
+    </candidateKey>
+    <candidateKey name="Horario_WE_CK">
+      <attributes href="#//@tables.13/@attributes.4"/>
+      <attributes href="default.xmi#/0/@nodes.26/@attributes.0"/>
+      <attributes href="default.xmi#/0/@nodes.26/@attributes.1"/>
+    </candidateKey>
+    <attributes name="dia" domain="//@domains.2"/>
+    <attributes name="turno" domain="//@domains.1"/>
+    <attributes name="HoraAbrir" domain="//@domains.2"/>
+    <attributes name="HoraCerrar" domain="//@domains.2"/>
+    <attributes name="Cod_Concesionario" domain="//@domains.1"/>
+  </tables>
+  <tables name="Personal" primaryKey="//@tables.14/@candidateKey.0">
+    <candidateKey name="Cod_Personal_CK">
+      <attributes href="default.xmi#/0/@nodes.28/@attributes.0"/>
+    </candidateKey>
+    <candidateKey name="Documento_CK">
+      <attributes href="default.xmi#/0/@nodes.28/@attributes.1"/>
+      <attributes href="default.xmi#/0/@nodes.28/@attributes.2"/>
+    </candidateKey>
+    <attributes name="Cod_Personal" domain="//@domains.1"/>
+    <attributes name="TipoDocumento" domain="//@domains.3"/>
+    <attributes name="NDocumento" domain="//@domains.1"/>
+    <attributes name="Nombre" domain="//@domains.0"/>
+    <attributes name="Apellido1" domain="//@domains.0"/>
+    <attributes name="Apellido2" nullable="true" domain="//@domains.0"/>
+    <attributes name="Correo" domain="//@domains.0"/>
+    <attributes name="tipo" domain="//@domains.0"/>
+    <attributes name="Cod_Concesionario_tiene4" domain="//@domains.1"/>
+    <attributes name="Cod_Personal_subordinado" domain="//@domains.1"/>
+    <foreignKey attributes="//@tables.14/@attributes.8" name="Concesionarios_tiene4_FK" referencedTable="//@tables.12"/>
+    <foreignKey attributes="//@tables.14/@attributes.9" name="Personal_jefe_FK" referencedTable="//@tables.14"/>
+  </tables>
+  <tables name="Tecnico" primaryKey="//@tables.15/@candidateKey.0">
+    <candidateKey attributes="//@tables.15/@attributes.0" name="Tecnico_CK"/>
+    <attributes name="Cod_Personal" domain="//@domains.1"/>
+  </tables>
+  <tables name="Comercial" primaryKey="//@tables.16/@candidateKey.0">
+    <candidateKey attributes="//@tables.16/@attributes.0" name="Comercial_CK"/>
+    <attributes name="Cod_Personal" domain="//@domains.1"/>
+  </tables>
+  <tables name="Clientes_Telefono" primaryKey="//@tables.17/@candidateKey.0">
+    <candidateKey attributes="//@tables.17/@attributes.0 //@tables.17/@attributes.1" name="Clientes_Telefono_CK"/>
+    <attributes name="Cod_Cliente" domain="//@domains.1"/>
+    <attributes name="Telefono" domain="//@domains.1" multiplicity="5"/>
+    <foreignKey attributes="//@tables.17/@attributes.0" name="Clientes_Telefono_FK" referencedTable="//@tables.10"/>
+  </tables>
+  <tables name="Concesionarios_Telefono" primaryKey="//@tables.18/@candidateKey.0">
+    <candidateKey attributes="//@tables.18/@attributes.0 //@tables.18/@attributes.1" name="Concesionarios_Telefono_CK"/>
+    <attributes name="Cod_Concesionario" domain="//@domains.1"/>
+    <attributes name="Telefono" domain="//@domains.1" multiplicity="4"/>
+    <foreignKey attributes="//@tables.18/@attributes.0" name="Concesionarios_Telefono_FK" referencedTable="//@tables.12"/>
+  </tables>
+  <tables name="Personal_Telefono" primaryKey="//@tables.19/@candidateKey.0">
+    <candidateKey attributes="//@tables.19/@attributes.0 //@tables.19/@attributes.1" name="Personal_Telefono_CK"/>
+    <attributes name="Cod_Personal" domain="//@domains.1"/>
+    <attributes name="Telefono" domain="//@domains.1" multiplicity="5"/>
+    <foreignKey attributes="//@tables.19/@attributes.0" name="Personal_Telefono_FK" referencedTable="//@tables.14"/>
+  </tables>
+  <domains xsi:type="Relational:PrimitiveType" name="VARCHAR(25)"/>
+  <domains xsi:type="Relational:PrimitiveType" name="INT"/>
+  <domains xsi:type="Relational:PrimitiveType" name="DateTime"/>
+  <domains xsi:type="Relational:EnumerationType" name="TipoDocumento">
+    <literals name="DNI"/>
+    <literals name="Pasaporte"/>
+    <literals name="Tarjeta_Extranjero"/>
+  </domains>
+  <constraints name="Trigger" description="CREATE TRIGGER Km0_Usados_exclusive ON Km0&#xA;AFTER INSERT, UPDATE&#xA;AS BEGIN&#xA;&#xA;IF (SELECT count(*) FROM Usados t, inserted i&#xA;WHERE t.Cod_Coches = i.Cod_Coches) > 0&#xA;BEGIN &#xA;RAISERROR ('The pk exists in another table', 16, 1)&#xA;ROLLBACK TRANSACTION&#xA;RETURN&#xA;END&#x9;&#xA;END&#xA;GO&#xA;"/>
+  <constraints name="Trigger" description="CREATE TRIGGER Usados_Km0_exclusive ON Usados&#xA;AFTER INSERT, UPDATE&#xA;AS BEGIN&#xA;&#xA;IF (SELECT count(*) FROM Km0 t, inserted i&#xA;WHERE t.Cod_Coches = i.Cod_Coches) > 0&#xA;BEGIN &#xA;RAISERROR ('The pk exists in another table', 16, 1)&#xA;ROLLBACK TRANSACTION&#xA;RETURN&#xA;END&#x9;&#xA;END&#xA;GO&#xA;"/>
+  <constraints name="Trigger" description="CREATE TRIGGER Coches_total ON Coches&#xA;AFTER INSERT, UPDATE&#xA;AS BEGIN&#xA;BEGIN &#xA;RAISERROR ('Do not insert rows in the supertype. Insert them in the corresponding subtype.', 16, 1)&#xA;ROLLBACK TRANSACTION&#xA;RETURN&#xA;END&#x9;&#xA;END&#xA;GO&#xA;"/>
+  <constraints name="Trigger" description="CREATE TRIGGER Personal_total ON Personal&#xA;AFTER INSERT, UPDATE&#xA;AS BEGIN&#xA;BEGIN &#xA;RAISERROR ('Do not insert rows in the supertype. Insert them in the corresponding subtype.', 16, 1)&#xA;ROLLBACK TRANSACTION&#xA;RETURN&#xA;END&#x9;&#xA;END&#xA;GO&#xA;"/>
+  <constraints name="Trigger" description="CREATE TRIGGER Clientes_Telefono_maximum ON Clientes_Telefono&#xA;AFTER INSERT, UPDATE&#xA;AS BEGIN&#xA;&#xA;IF (SELECT count(*) FROM Clientes_Telefono t, inserted i&#xA;WHERE t.Clientes_Telefono_CK = i.Clientes_Telefono_CK) > 5&#xA;BEGIN &#xA;RAISERROR ('The number of rows is bigger than the limit', 16, 1)&#xA;ROLLBACK TRANSACTION&#xA;RETURN&#xA;END&#x9;&#xA;END&#xA;GO&#xA;"/>
+  <constraints name="Trigger" description="CREATE TRIGGER Concesionarios_Telefono_maximum ON Concesionarios_Telefono&#xA;AFTER INSERT, UPDATE&#xA;AS BEGIN&#xA;&#xA;IF (SELECT count(*) FROM Concesionarios_Telefono t, inserted i&#xA;WHERE t.Concesionarios_Telefono_CK = i.Concesionarios_Telefono_CK) > 4&#xA;BEGIN &#xA;RAISERROR ('The number of rows is bigger than the limit', 16, 1)&#xA;ROLLBACK TRANSACTION&#xA;RETURN&#xA;END&#x9;&#xA;END&#xA;GO&#xA;"/>
+  <constraints name="Trigger" description="CREATE TRIGGER Personal_Telefono_maximum ON Personal_Telefono&#xA;AFTER INSERT, UPDATE&#xA;AS BEGIN&#xA;&#xA;IF (SELECT count(*) FROM Personal_Telefono t, inserted i&#xA;WHERE t.Personal_Telefono_CK = i.Personal_Telefono_CK) > 5&#xA;BEGIN &#xA;RAISERROR ('The number of rows is bigger than the limit', 16, 1)&#xA;ROLLBACK TRANSACTION&#xA;RETURN&#xA;END&#x9;&#xA;END&#xA;GO&#xA;"/>
+</Relational:Schema>
