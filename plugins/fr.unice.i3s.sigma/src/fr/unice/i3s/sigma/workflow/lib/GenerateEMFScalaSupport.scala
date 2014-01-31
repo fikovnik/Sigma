@@ -28,6 +28,7 @@ import fr.unice.i3s.sigma.workflow.WorkflowTask
 import fr.unice.i3s.sigma.support.genmodel.GenModelPackageScalaSupport
 import org.eclipse.emf.codegen.util.ImportManager
 import fr.unice.i3s.sigma.support.EMFProxyBuilder
+import scala.collection.mutable.ArrayBuffer
 
 protected object GenModelUtils {
   val ScalaKeywords = List("abstract", "case", "do", "else", "finally", "for", "import", "lazy", "object", "override", "return", "sealed", "trait", "try", "var", "while", "catch", "class", "extends", "false", "forSome", "if", "match", "new", "package", "private", "super", "this", "true", "type", "with", "yield", "def", "final", "implicit", "null", "protected", "throw", "val")
@@ -115,23 +116,13 @@ protected trait GenModelUtils extends GenModelPackageScalaSupport {
       Option(GenModelUtil.getAnnotation(that, "http://www.i3s.unice.fr/Sigma", "extraCompanionObjectCode"))
     }
   }
-
 }
 
-case class EClassScalaSupportTemplate(
-  clazz: GenClass,
-  pkgName: String,
-  clazzSupportName: String,
-  pkgSupportName: String,
-  generateExtractors: Boolean,
-  useOption: Boolean,
-  useEMFBuilder: Boolean,
-  mappings: Map[String, String] = Map.empty) extends StaticTextTemplate with Logging with GenModelUtils {
-
+trait GenModelNameUtils extends GenModelPackageScalaSupport {
   // TODO: move this to the util class
   implicit class GenFeatureScalaName(that: GenFeature) {
     def scalaName = {
-      mappings.get(s"${that.genClass.name}.${that.name}") match {
+      mapping(s"${that.genClass.name}.${that.name}") match {
         case Some(name) ⇒ name
         case None ⇒ checkName(that.getName)
       }
@@ -143,6 +134,22 @@ case class EClassScalaSupportTemplate(
       else name
     }
   }
+
+  protected def mapping(name: String): Option[String]
+  protected def checkName(name: String): String
+}
+
+case class EClassScalaSupportTemplate(
+  clazz: GenClass,
+  pkgName: String,
+  clazzSupportName: String,
+  pkgSupportName: String,
+  generateExtractors: Boolean,
+  useOption: Boolean,
+  useEMFBuilder: Boolean,
+  mappings: Map[String, String] = Map.empty) extends StaticTextTemplate with Logging with GenModelUtils with GenModelNameUtils {
+
+  def mapping(name: String) = mappings.get(name)
 
   implicit class GenClassScalaName(that: GenClass) {
     def scalaName = {
@@ -200,23 +207,11 @@ case class EClassScalaSupportTemplate(
       !endl
 
       renderCompanionObject(clazz)
-
-      !endl
-
-      renderImplicitClass(clazz)
     }
   }
 
   protected def renderScalaSupportObject {
     !s"object $clazzSupportName extends $clazzSupportName"
-  }
-
-  protected def renderImplicitClass(clazz: GenClass) {
-    if (!clazz.genFeatures.isEmpty) {
-      !s"implicit class $clazzSupportName(that: ${clazz.importedInterfaceName})" curlyIndent {
-        clazz.genFeatures foreach renderFeatureSupport
-      }
-    }
   }
 
   protected def renderCompanionObject(clazz: GenClass) = {
@@ -294,36 +289,6 @@ case class EClassScalaSupportTemplate(
   protected def renderTypeDecl(clazz: GenClass) {
     !s"type ${clazz.scalaName} = ${clazz.qualifiedInterfaceName}"
   }
-
-  protected def renderFeatureSupport(f: GenFeature) = {
-    renderFeatureGetter(f)
-    if (f.changeable) renderFeatureSetter(f)
-  }
-
-  protected def renderFeatureGetter(f: GenFeature) = {
-    if (useOption && !f.required && !f.many) {
-      val option = importManager.importName[Option[_]]
-      !s"def ${f.scalaName}: $option[${f.scalaType}] = $option(that.${f.getter})"
-    } else {
-      !s"def ${f.scalaName}: ${f.scalaType} = that.${f.getter}"
-    }
-  }
-
-  protected def renderFeatureSetter(f: GenFeature) = {
-    !s"def ${f.scalaNameWithoutSpace}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
-
-    // a proxy setter for all non-containable references
-    if (useEMFBuilder &&
-      f.genProxySetter &&
-      !f.isContains &&
-      f.isReferenceType &&
-      !f.isListType) {
-      !s"def ${f.scalaNameWithoutSpace}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
-        !s"that.${f.setter}($pkgSupportName.${f.genPackage.emfBuilderName}.ref(value))"
-      }
-    }
-  }
-
 }
 
 case class DelegateTemplate(
@@ -363,8 +328,13 @@ case class EPackageScalaSupportTemplate(
   pkg: GenPackage,
   pkgName: String,
   pkgSupportName: String,
+  useOption: Boolean,
+  useSeparateNamespace: Boolean,
   useEMFBuilder: Boolean,
-  skipTypes: List[String] = Nil) extends StaticTextTemplate with GenModelUtils {
+  skipTypes: List[String] = Nil,
+  mappings: Map[String, String] = Map.empty) extends StaticTextTemplate with GenModelUtils with GenModelNameUtils {
+
+  override def mapping(name: String) = mappings get name
 
   val importManager = new ImportManager(pkgName, pkgSupportName)
   pkg.genModel.importManager = importManager
@@ -387,14 +357,78 @@ case class EPackageScalaSupportTemplate(
 
   def renderScalaPackageSupportTrait {
     !s"trait $pkgSupportName" indent {
-      val traits = pkg.genClasses
-        .filter { c ⇒ !(skipTypes contains c.name) }
-        .map { _.name + "ScalaSupport" }
+      val traits = if (useSeparateNamespace) {
+        ArrayBuffer[String]()
+      } else {
+        pkg.genClasses
+          .filter { c ⇒ !(skipTypes contains c.name) }
+          .map { _.name + "ScalaSupport" }
+      }
 
       // always include EMFScalaSupport
       traits += importManager.importName[EMFScalaSupport]
 
-      !traits.mkString("extends ", " with" + endl, "")
+      // implicits
+      !traits.mkString("extends ", " with" + endl, "") curlyIndent {
+        !endl
+
+        for (cls ← pkg.genClasses) {
+          renderImplicitClass(cls)
+          !endl
+        }
+
+        // separate namespace package
+        if (useSeparateNamespace) {
+          val pkgTraits = pkg.genClasses
+            .filter { c ⇒ !(skipTypes contains c.name) }
+            .map { _.name + "ScalaSupport" }
+            .mkString("extends ", " with" + endl + "  ", "")
+
+          !endl
+          
+          !s"object _${pkg.packageName} $pkgTraits" curlyIndent {
+            // get the package  
+            !s"val ePackage = ${pkg.importedPackageInterfaceName}.eINSTANCE" << endl
+          }
+        }
+      }
+    }
+  }
+
+  protected def renderImplicitClass(clazz: GenClass) {
+    if (!clazz.genFeatures.isEmpty) {
+      !s"implicit class ${clazz.name}2Sigma(that: ${clazz.importedInterfaceName})" curlyIndent {
+        clazz.genFeatures foreach renderFeatureSupport
+      }
+    }
+  }
+
+  protected def renderFeatureSupport(f: GenFeature) = {
+    renderFeatureGetter(f)
+    if (f.changeable) renderFeatureSetter(f)
+  }
+
+  protected def renderFeatureGetter(f: GenFeature) = {
+    if (useOption && !f.required && !f.many) {
+      val option = importManager.importName[Option[_]]
+      !s"def ${f.scalaName}: $option[${f.scalaType}] = $option(that.${f.getter})"
+    } else {
+      !s"def ${f.scalaName}: ${f.scalaType} = that.${f.getter}"
+    }
+  }
+
+  protected def renderFeatureSetter(f: GenFeature) = {
+    !s"def ${f.scalaNameWithoutSpace}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
+
+    // a proxy setter for all non-containable references
+    if (useEMFBuilder &&
+      f.genProxySetter &&
+      !f.isContains &&
+      f.isReferenceType &&
+      !f.isListType) {
+      !s"def ${f.scalaNameWithoutSpace}_=(value: ⇒ ${importManager.importName[Option[_]]}[${f.scalaType}]): Unit =" indent {
+        !s"that.${f.setter}($pkgSupportName.${f.genPackage.emfBuilderName}.ref(value))"
+      }
     }
   }
 
@@ -447,6 +481,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelUti
   protected var delegatesBaseDir: File = _
   protected def delegatesBaseDir_=(v: String): Unit = delegatesBaseDir = new File(v)
 
+  protected var useSeparateNamespace: Boolean = false
   protected var useOption: Boolean = false
   protected var useEMFBuilder: Boolean = false
 
@@ -487,7 +522,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelUti
       val pkgSupportName = pkg.prefix + "PackageScalaSupport"
       using(new File(dir, pkgSupportName + ".scala")) { f ⇒
         logger debug s"Generated package support for ${pkg.packageName}"
-        EPackageScalaSupportTemplate(pkg, pkgName, pkgSupportName, useEMFBuilder, skipTypes.toList) >> f
+        EPackageScalaSupportTemplate(pkg, pkgName, pkgSupportName, useOption, useSeparateNamespace, useEMFBuilder, skipTypes.toList, mappings.toMap) >> f
       }
 
       for (clazz ← pkg.genClasses if !(skipTypes contains clazz.name)) {
