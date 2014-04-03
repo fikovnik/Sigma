@@ -1,5 +1,5 @@
-title: "Sigma"
-description: "The Sigma Model Manipulation DSLs"
+title: "SIGMA"
+description: "SIGMA Model Manipulation"
 githubProject: "https://github.com/fikovnik/Sigma"
 
 pygments: true
@@ -14,20 +14,20 @@ docs:
   - 
     title: Model Delegates
     url: model-delegates.html
-    desc: Support for implementing derived features and operation bodies through Scala delegates.
+    desc: Support for implementing derived features and operation bodies directly in Scala.
   - 
     title: Model Consistency Checking
     url: model-consistency-checking.html
-    desc: Model Consistency Checking DSL.
+    desc: A DSL for model consistency checking.
   - 
     title: M2M Transformation
     url: m2m-transformation.html
-    desc: Model-to-Model Transformation DSL.
+    desc: A DSL for model-to-model transformation.
   - 
     title: M2T Transformation
     url: m2t-transformation.html
-    desc: Model-to-Text Transformation DSL.
+    desc: A DSL for model-to-text transformation.
   - 
     title: Model Workflow Orchestration
     url: model-workflow-orchestration.html
-    desc: Model Workflow Orchestration DSL.
+    desc: A DSL for orchestrating model manipuation workflows.
