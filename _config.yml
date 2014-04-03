@@ -4,6 +4,8 @@ githubProject: "https://github.com/fikovnik/Sigma"
 
 pygments: true
 
+markdown: kramdown
+
 docs:
   - 
     title: Model Navigation and Modification
