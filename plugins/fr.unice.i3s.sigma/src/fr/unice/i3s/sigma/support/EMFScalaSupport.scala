@@ -127,6 +127,12 @@ trait EMFScalaSupport {
     }
 
     def copy = EcoreUtil.copy(that)
+
+    def contents[T <: EObject: ClassTag]: Seq[T] = {
+      import collection.JavaConversions.asScalaIterator
+      
+      (that.eAllContents collect { case x: T ⇒ x }).toSeq
+    }
   }
 
   /**
@@ -171,11 +177,18 @@ trait EMFScalaSupport {
       !that || b
     }
   }
-  
-    
+
   implicit class RichSigmaString(that: String) extends TextOutputting {
-    
-  } 
+
+  }
+
+  implicit class RichScalaResource(that: Resource) {
+    import collection.JavaConversions.asScalaIterator
+
+    def contents[T <: EObject: ClassTag]: Seq[T] = (that.getAllContents collect {
+      case x: T ⇒ x
+    }).toSeq
+  }
 
 }
 
