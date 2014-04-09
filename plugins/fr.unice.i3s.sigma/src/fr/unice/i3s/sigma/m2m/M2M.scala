@@ -2,12 +2,10 @@ package fr.unice.i3s.sigma.m2m
 
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
-
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
 import scala.reflect.classTag
 import scala.util.DynamicVariable
-
 import org.apache.commons.lang3.reflect.TypeUtils
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
@@ -15,12 +13,12 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-
 import com.typesafe.scalalogging.log4j.Logging
-
 import fr.unice.i3s.sigma.OverloadHack
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
+import fr.unice.i3s.sigma.m2m.annotations.Lazy
+import fr.unice.i3s.sigma.m2m.annotations.Unique
 
 trait RuleMethods { this: M2M with Logging ⇒
 
@@ -32,7 +30,13 @@ trait RuleMethods { this: M2M with Logging ⇒
     sourceClass: Class[_],
     targetClasses: Seq[Class[_]]) extends BasicRule(name, isLazy) {
 
-    override def isApplicable(source: EObject) = sourceClass.isAssignableFrom(source.getClass)
+    override def isApplicable(source: EObject) = {
+      // Greedy rule - kindOf relationship
+      // sourceClass.isAssignableFrom(source.getClass)
+
+      // Regular rule - typeOf relationship
+      source.eClass.getInstanceClass == sourceClass
+    }
 
     override def shouldTransfrorm = true
 
@@ -173,8 +177,7 @@ trait RuleMethods { this: M2M with Logging ⇒
             method.getReturnType.isAssignableFrom(classOf[EObject]) ||
             // or (S)Option[T1]
             // TODO: better check for Option[EObject]
-            method.getReturnType.isAssignableFrom(classOf[Option[EObject]])
-          ) &&
+            method.getReturnType.isAssignableFrom(classOf[Option[EObject]])) &&
             // one argument
             method.getParameterTypes.size == 1) {
 
@@ -203,8 +206,7 @@ trait RuleMethods { this: M2M with Logging ⇒
             method.getReturnType.isAssignableFrom(classOf[Unit]) ||
             // or (...)Option[Unit]
             // TODO: better check for Option[Unit]
-            method.getReturnType.isAssignableFrom(classOf[Option[Unit]])
-          ) &&
+            method.getReturnType.isAssignableFrom(classOf[Option[Unit]])) &&
             // at least 2 args
             method.getParameterTypes.size >= 2) {
 
@@ -221,7 +223,7 @@ trait RuleMethods { this: M2M with Logging ⇒
     }
 
     // TODO: make sure that there is no duplication (Source->Target)
-    
+
     getClass.getMethods.toSeq collect {
 
       // regular rule (S,T1,...,Tn)Unit or (T1,...,Tn)Option[Unit]
@@ -248,27 +250,34 @@ trait RuleMethods { this: M2M with Logging ⇒
   // TODO: use partial functions by default
   def partial[F, T](perform: PartialFunction[F, T]) = perform
 
+  implicit class OptionM2MSupport(that: Option[_ <: EObject]) {
+    def unary_~[B >: Null <: EObject]: B = that flatMap (transformOne(_, lazyRules = true)) match {
+      case Some(Seq(x, xs@_*)) ⇒ x.asInstanceOf[B]
+      case None ⇒ null
+    }
+  }
+
   implicit class EObjectM2MSupport(that: EObject) {
-    def unary_~[B >: Null <: EObject]: B = transformOne(that, true) match {
-      case Some(targets) ⇒ targets(0).asInstanceOf[B]
+    def unary_~[B >: Null <: EObject]: B = transformOne(that, lazyRules = true) match {
+      case Some(Seq(x, xs@_*)) ⇒ x.asInstanceOf[B]
       case None ⇒ null
     }
   }
 
   implicit class TraversableM2MSupport(that: Traversable[_ <: EObject]) {
     def unary_~[B <: EObject] = {
-      val result = that map (transformOne(_, true))
+      val result = that map (transformOne(_, lazyRules = true))
       result collect {
-        case Some(targets) ⇒ targets(0).asInstanceOf[B]
+        case Some(Seq(x, xs@_*)) ⇒ x.asInstanceOf[B]
       }
     }
   }
 
   implicit class EListM2MSupport(that: EList[_ <: EObject]) {
     def unary_~[B <: EObject] = {
-      val result = that map (transformOne(_, true))
+      val result = that map (transformOne(_, lazyRules = true))
       result collect {
-        case Some(targets) ⇒ targets(0).asInstanceOf[B]
+        case Some(Seq(x, xs@_*)) ⇒ x.asInstanceOf[B]
       }
     }
   }
@@ -295,12 +304,10 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
 
       // check
       if (shouldTransfrorm) {
-        // execute
         doApply(source) match {
           case Some(targets) ⇒
-            // add container-less eobjects into resource
+            // add container-less eObjects into resource
             resource.getContents ++= targets filter (_.eContainer == null)
-
             // add to trace log
             traceLog ++= targets map (source -> (this, _))
 
@@ -326,6 +333,7 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
     }
   }
 
+  // Source, (Rule, Target)
   type TraceLog = collection.mutable.HashMap[EObject, (TransformationRule, EObject)]
 
   // TODO: allow either single package or a sequence of packages
@@ -366,7 +374,7 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
     res.getContents
   }
 
-  protected[m2m] def transformOne(source: EObject, lazyRules: Boolean = true, rule: Option[TransformationRule] = None) = {
+  protected[m2m] def transformOne(source: EObject, lazyRules: Boolean, rule: Option[TransformationRule] = None) = {
     logger debug s"Transforming $source"
 
     val ruleToUse = rule orElse {
@@ -383,9 +391,9 @@ trait M2M extends EMFScalaSupport with OverloadHack with Logging {
   }
 
   protected[m2m] def transform(source: EObject) {
-    transformOne(source)
+    if (!traceLog.contains(source)) transformOne(source, lazyRules = false)
 
-    for (elem ← source.eContents) transform(elem)
+    for (elem ← source.eContents if !traceLog.contains(elem)) transform(elem)
   }
 
   def guardedBy[T](g: ⇒ Boolean) = g
