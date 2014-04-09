@@ -109,62 +109,11 @@ trait RuleMethods { this: M2M with Logging ⇒
     override def toString = "ExplicitTarget" + super.toString
   }
 
-  class PartialRule(
-    name: String,
-    isLazy: Boolean,
-    isUnique: Boolean,
-    underlying: Method,
-    sourceClass: Class[_],
-    targetClass: Class[_]) extends MethodBasedRule(name, isLazy, isUnique, underlying, sourceClass, Seq(targetClass)) {
-
-    protected def doTransform(source: EObject): Option[Seq[EObject]] = {
-
-      // 1. invoke method
-      underlying.invoke(RuleMethods.this) match {
-        // TODO: make type safe?
-        case pfce: PartialFunction[EObject, EObject] ⇒
-          if (pfce.isDefinedAt(source)) {
-            Some(Seq(pfce(source)))
-          } else {
-            None
-          }
-        case x ⇒ sys.error(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source")
-      }
-
-    }
-
-    override def toString = "ExplicitTarget" + super.toString
-  }
-
   def loadRules = {
     val ruleMethodPrefix = "rule"
 
     def isLazyRule(method: Method) = method.isAnnotationPresent(classOf[Lazy])
     def isUniqueRule(method: Method) = method.isAnnotationPresent(classOf[Unique])
-
-    object PartialRuleMethod {
-      def unapply(method: Method): Option[(String, Boolean, Boolean, Class[_], Class[_])] = {
-        if ( // must start with prefix
-        method.getName.startsWith(ruleMethodPrefix) &&
-          // longer than prefix
-          method.getName.size > ruleMethodPrefix.size &&
-          // ()PartialFunction[A,B]
-          // TODO: check for A and B are EObject
-          method.getReturnType.isAssignableFrom(classOf[PartialFunction[_, _]]) &&
-          // zero argument
-          method.getParameterTypes.size == 0) {
-
-          val name = method.getName.drop(ruleMethodPrefix.size)
-
-          // TODO: check for EObject
-          val typeArgs = TypeUtils.getTypeArguments(method.getGenericReturnType.asInstanceOf[ParameterizedType])
-          val source = typeArgs.get(classOf[PartialFunction[_, _]].getTypeParameters()(0)).asInstanceOf[Class[_]]
-          val target = typeArgs.get(classOf[PartialFunction[_, _]].getTypeParameters()(1)).asInstanceOf[Class[_]]
-
-          Some((name, isLazyRule(method), isUniqueRule(method), source, target))
-        } else None
-      }
-    }
 
     object ExplicitTargetRuleMethod {
       def unapply(method: Method): Option[(String, Boolean, Boolean, Class[_], Class[_])] = {
@@ -235,12 +184,6 @@ trait RuleMethods { this: M2M with Logging ⇒
       // rule (S)T1 or (S)Option[T1]
       case method @ ExplicitTargetRuleMethod(name, isLazy, isUnique, source, target) ⇒
         val rule = new ExplicitTargetRule(name, isLazy, isUnique, method, source, target)
-        logger debug s"Registered rule: $rule"
-        rule
-
-      // partial rule ()PartialFunction[S,T1]  
-      case method @ PartialRuleMethod(name, isLazy, isUnique, source, target) ⇒
-        val rule = new PartialRule(name, isLazy, isUnique, method, source, target)
         logger debug s"Registered rule: $rule"
         rule
 
