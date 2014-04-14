@@ -63,7 +63,7 @@
 									<source>true</source>
 								</artifact>
 								<artifact>
-									<id>org.scalatest:scalatest_2.10:2.0.M5b</id>
+									<id>org.scalatest:scalatest_2.10:2.1.3</id>
 									<source>true</source>
 									<transitive>false</transitive>
 								</artifact>
