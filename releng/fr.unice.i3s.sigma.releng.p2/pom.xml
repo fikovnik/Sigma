@@ -34,7 +34,7 @@
 									<source>true</source>
 								</artifact>
 								<artifact>
-									<id>org.mockito:mockito-all:1.9.0</id>
+									<id>org.mockito:mockito-all:1.9.5</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
