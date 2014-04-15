@@ -8,7 +8,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EGenericType;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 
 trait EParameterScalaSupport extends EMFScalaSupport {
@@ -31,10 +30,6 @@ trait EParameterScalaSupport extends EMFScalaSupport {
       
       _instance
     }
-  }
-  
-  implicit class EParameterScalaSupport(that: EParameter) {
-    def eOperation: EOperation = that.getEOperation
   }
 }
 

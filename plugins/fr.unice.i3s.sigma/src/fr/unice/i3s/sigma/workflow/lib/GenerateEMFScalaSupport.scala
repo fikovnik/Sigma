@@ -21,6 +21,8 @@ import com.typesafe.scalalogging.log4j.Logging
 import fr.unice.i3s.sigma.m2t.StaticTextTemplate
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
+import fr.unice.i3s.sigma.support.SigmaSupport._
+import fr.unice.i3s.sigma.support.ScalaEcorePackage
 import fr.unice.i3s.sigma.util.EMFUtils
 import fr.unice.i3s.sigma.util.IOUtils.using
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
@@ -372,23 +374,31 @@ case class EPackageScalaSupportTemplate(
       !traits.mkString("extends ", " with" + endl, "") curlyIndent {
         !endl
 
-        for (cls ← pkg.genClasses) {
+        for (cls ← pkg.genClasses filter { c ⇒ !(skipTypes contains c.name) }) {
           renderImplicitClass(cls)
           !endl
         }
 
         // separate namespace package
         if (useSeparateNamespace) {
-          val pkgTraits = pkg.genClasses
+          val genClassesNames = pkg.genClasses
             .filter { c ⇒ !(skipTypes contains c.name) }
             .map { _.name + "ScalaSupport" }
-            .mkString("extends ", " with" + endl + "  ", "")
+          val scalaPkgSupport = importManager.importName[ScalaEcorePackage[_]] + s"[${pkg.importedPackageInterfaceName}]"
+          val pkgTraits =
+            (scalaPkgSupport +: genClassesNames)
+              .mkString("extends ", " with" + endl + "  ", "")
 
           !endl
-          
+
           !s"object _${pkg.packageName} $pkgTraits" curlyIndent {
+            !endl
+            
             // get the package  
             !s"val ePackage = ${pkg.importedPackageInterfaceName}.eINSTANCE" << endl
+
+            // constants for all data types
+            pkg.genDataTypes foreach renderDataType("ePackage") _
           }
         }
       }
@@ -435,14 +445,16 @@ case class EPackageScalaSupportTemplate(
   def renderScalaPackageSupportObject {
     !s"object $pkgSupportName extends $pkgSupportName" curlyIndent {
       // get the package  
-      !s"private[this] val pkg = ${pkg.importedPackageInterfaceName}.eINSTANCE" << endl
+      !s"private[this] val ePackage = ${pkg.importedPackageInterfaceName}.eINSTANCE" << endl
       if (useEMFBuilder) {
         // TODO: externalize
-        !s"protected[support] val ${pkg.emfBuilderName} = new ${importManager.importName[EMFBuilder[_]]}(pkg)" << endl
+        !s"protected[support] val ${pkg.emfBuilderName} = new ${importManager.importName[EMFBuilder[_]]}(ePackage)" << endl
       }
 
-      // constants for all data types
-      pkg.genDataTypes foreach renderDataType("pkg") _
+      if (!useSeparateNamespace) {
+        // constants for all data types
+        pkg.genDataTypes foreach renderDataType("ePackage") _
+      }
     }
   }
 
@@ -481,9 +493,9 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelUti
   protected var delegatesBaseDir: File = _
   protected def delegatesBaseDir_=(v: String): Unit = delegatesBaseDir = new File(v)
 
-  protected var useSeparateNamespace: Boolean = false
-  protected var useOption: Boolean = false
-  protected var useEMFBuilder: Boolean = false
+  protected var useSeparateNamespace: Boolean = true
+  protected var useOption: Boolean = true
+  protected var useEMFBuilder: Boolean = true
 
   private var _packageName: String = _
   protected def packageName: String = _packageName

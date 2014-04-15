@@ -20,23 +20,33 @@ object EMFUtils {
 
   object IO {
 
-    def load[T <: EObject: ClassTag](uri: URI, resolveAll: Boolean = true, resourceSet: ResourceSet = new ResourceSetImpl): T = {
-      val r = resourceSet.getResource(uri, true)
+    def loadResource(uri: URI, resolveAll: Boolean = true, resourceSet: ResourceSet = new ResourceSetImpl): Resource = {
+      val res = resourceSet.getResource(uri, true)
 
       if (resolveAll) {
         EcoreUtil.resolveAll(resourceSet)
       }
 
-      r.getContents().get(0) match {
+      res
+    }
+
+    def loadResourceFromFile[T <: EObject: ClassTag](file: File, resolveAll: Boolean = true): Resource = {
+      val uri = URI.createFileURI(file.getAbsolutePath())
+      loadResource(uri, resolveAll)
+    }
+
+    def load[T <: EObject: ClassTag](uri: URI, resolveAll: Boolean = true, resourceSet: ResourceSet = new ResourceSetImpl): T = {
+      val res = loadResource(uri, resolveAll, resourceSet)
+
+      res.getContents().get(0) match {
         case x: T ⇒ x
         case x ⇒ throw new RuntimeException(s"Loaded model `$x` is not of type: `${classTag[T]}` but `${x.getClass.getName}`")
       }
     }
 
     def loadFromFile[T <: EObject: ClassTag](file: File, resolveAll: Boolean = true): T = {
-
       val uri = URI.createFileURI(file.getAbsolutePath())
-      load(uri, resolveAll) 
+      load(uri, resolveAll)
     }
 
     def saveToFile(root: EObject, file: File) {

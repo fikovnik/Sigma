@@ -14,9 +14,10 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 
 import com.typesafe.scalalogging.log4j.Logging
 
-import fr.unice.i3s.sigma.OverloadHack
+import fr.unice.i3s.sigma.internal.OverloadHack
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
+import fr.unice.i3s.sigma.support.SigmaSupport._
 
 trait RuleMethods { this: M2M with Logging ⇒
 

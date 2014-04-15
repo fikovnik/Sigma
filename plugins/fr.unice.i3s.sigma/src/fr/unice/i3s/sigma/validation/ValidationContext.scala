@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EObject
 import scala.reflect.{ ClassTag, classTag }
 import java.lang.reflect.Method
 import scala.collection.mutable.Buffer
-import fr.unice.i3s.sigma.OverloadHack
+import fr.unice.i3s.sigma.internal.OverloadHack
 
 trait Guardable {
   def guardedBy(g: Boolean) = g

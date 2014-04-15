@@ -4,21 +4,33 @@ import java.io.Closeable
 import java.io.File
 import java.io.FileWriter
 import java.io.Writer
-
 import scala.sys.process.ProcessLogger
 import scala.sys.process.stringSeqToProcess
 import scala.sys.process.stringToProcess
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-
 import com.google.common.io.Files.copy
+import java.io.InputStream
+import com.google.common.io.Files
+import com.google.common.io.ByteStreams
+import java.io.FileOutputStream
 
 object IOUtils {
 
   lazy val pathSep = System.getProperty("path.separator")
 
   implicit class RichSigmaFile(that: File) {
+    // TODO: this should be rewritten!!!
+    def <<<(in: InputStream): this.type = {
+      val fos = new FileOutputStream(that)
+      try {
+        ByteStreams.copy(in, fos)
+      } finally {
+        fos.close
+      }
+      this
+    }
     def <<(in: Any): this.type = {
       val fw = new FileWriter(that)
       try {
@@ -38,6 +50,7 @@ object IOUtils {
       try {
         val stderr = new StringBuilder
         cmd !! ProcessLogger(line ⇒ stderr append line)
+        // TODO: return value (ret, stderr.toString)
         Success(stderr.toString)
       } catch {
         case e: Throwable ⇒ Failure(e)
@@ -105,7 +118,7 @@ object IOUtils {
 
   def using[A <: Closeable, B](input: A)(fun: A ⇒ B): B = {
     require(input != null)
-    
+
     try fun(input)
     finally input.close()
   }

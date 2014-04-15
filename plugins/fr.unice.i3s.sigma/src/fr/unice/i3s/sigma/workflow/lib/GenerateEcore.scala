@@ -82,6 +82,8 @@ class GenerateEcore extends WorkflowTask with Logging {
     }
   }
 
+  // TODO: validate the model file
+  
   def doExecute {
     generateEcore
   }

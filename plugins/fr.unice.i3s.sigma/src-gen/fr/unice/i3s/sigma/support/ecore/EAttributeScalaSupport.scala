@@ -8,7 +8,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EGenericType;
 
 trait EAttributeScalaSupport extends EMFScalaSupport {
@@ -38,12 +37,6 @@ trait EAttributeScalaSupport extends EMFScalaSupport {
       
       _instance
     }
-  }
-  
-  implicit class EAttributeScalaSupport(that: EAttribute) {
-    def iD: Boolean = that.isID
-    def iD_=(value: Boolean): Unit = that.setID(value)
-    def eAttributeType: EDataType = that.getEAttributeType
   }
 }
 

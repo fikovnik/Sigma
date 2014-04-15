@@ -25,10 +25,6 @@ trait ETypeParameterScalaSupport extends EMFScalaSupport {
       _instance
     }
   }
-  
-  implicit class ETypeParameterScalaSupport(that: ETypeParameter) {
-    def eBounds: EList[EGenericType] = that.getEBounds
-  }
 }
 
 object ETypeParameterScalaSupport extends ETypeParameterScalaSupport

@@ -1,13 +1,11 @@
-package fr.unice.i3s.sigma.internal
+package fr.unice.i3s.sigma.internal.support
 
 import fr.unice.i3s.sigma.workflow.lib.CleanDirectory
 import fr.unice.i3s.sigma.workflow.lib.StandaloneSetup
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl
 import fr.unice.i3s.sigma.workflow.lib.GenerateEMFScalaSupport
 import fr.unice.i3s.sigma.workflow.WorkflowApp
 
-object GenerateEcoreSupport extends WorkflowApp {
+object GenerateEcoreModelSupport extends WorkflowApp {
 
   val projectName = "fr.unice.i3s.sigma"
   val runtimeProject = s"../$projectName"
@@ -29,8 +27,12 @@ object GenerateEcoreSupport extends WorkflowApp {
     baseDir = srcGen
     genModelURI = ecoreModel
     packageName = targetPackage
-    useEMFBuilder = true
     
+    // Ecore model is very relaxed when it comes to multiplicity and thus it
+    // does not make sense to use this feature
+    useOption = false
+    
+    // TODO: document why!
     skipType("EStringToStringMapEntry")
   }
 }

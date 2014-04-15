@@ -9,8 +9,6 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EPackage;
 
-import scala.Option;
-
 trait EFactoryScalaSupport extends EMFScalaSupport {
   type EFactory = org.eclipse.emf.ecore.EFactory
   
@@ -25,13 +23,6 @@ trait EFactoryScalaSupport extends EMFScalaSupport {
       
       _instance
     }
-  }
-  
-  implicit class EFactoryScalaSupport(that: EFactory) {
-    def ePackage: EPackage = that.getEPackage
-    def ePackage_=(value: EPackage): Unit = that.setEPackage(value)
-    def ePackage_=(value: => Option[EPackage]): Unit =
-      that.setEPackage(EcorePackageScalaSupport._ecoreBuilder.ref(value))
   }
 }
 

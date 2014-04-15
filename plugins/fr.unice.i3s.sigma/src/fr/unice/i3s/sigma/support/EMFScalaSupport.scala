@@ -1,26 +1,27 @@
 package fr.unice.i3s.sigma.support
 
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.common.util.Diagnostic
-import org.eclipse.emf.ecore.util.EcoreUtil
-import scala.reflect.{ ClassTag, classTag }
-import org.eclipse.emf.common.notify.Notifier
-import org.eclipse.emf.ecore.util.Diagnostician
+import java.io.PrintStream
+
+import scala.annotation.implicitNotFound
 import scala.collection.GenTraversableOnce
-import org.eclipse.emf.common.util.EMap
-import fr.unice.i3s.sigma.util.DelegatingEList
+import scala.collection.JavaConversions.asScalaIterator
+import scala.collection.JavaConversions.collectionAsScalaIterable
 import scala.collection.mutable.Buffer
 import scala.language.implicitConversions
-import java.io.PrintStream
-import org.eclipse.emf.ecore.util.EContentAdapter
-import org.eclipse.emf.common.notify.Notification
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.EReference
-import org.eclipse.emf.common.notify.impl.AdapterImpl
+import scala.reflect.ClassTag
+import scala.reflect.classTag
+
+import org.eclipse.emf.common.notify.Notifier
+import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.common.util.EList
-import scala.collection.SeqLike
-import scala.collection.IterableLike
-import fr.unice.i3s.sigma.m2t.TextOutputting
+import org.eclipse.emf.common.util.EMap
+import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.util.Diagnostician
+import org.eclipse.emf.ecore.util.EcoreUtil
+
+import fr.unice.i3s.sigma.util.DelegatingEList
 
 trait EMFScalaSupport {
 
@@ -80,6 +81,10 @@ trait EMFScalaSupport {
     }
   }
 
+  implicit class RichSigmaEClass(that: EClass) {
+    def newInstance: EObject = that.getEPackage.getEFactoryInstance.create(that)
+  }
+  
   implicit class RichSigmaEObject[A <: EObject](that: A) {
 
     def init(fun: A ⇒ Any): A = {
@@ -170,16 +175,6 @@ trait EMFScalaSupport {
     def +=(elem: ⇒ Option[A])(implicit proxyBuilder: EMFProxyBuilder[A]) {
       that.add(proxyBuilder(elem))
     }
-  }
-
-  implicit class RichSigmaBoolean(that: Boolean) {
-    def implies(b: ⇒ Boolean) = {
-      !that || b
-    }
-  }
-
-  implicit class RichSigmaString(that: String) extends TextOutputting {
-
   }
 
   implicit class RichScalaResource(that: Resource) {

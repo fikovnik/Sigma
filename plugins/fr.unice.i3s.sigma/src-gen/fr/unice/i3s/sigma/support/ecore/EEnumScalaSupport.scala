@@ -30,10 +30,6 @@ trait EEnumScalaSupport extends EMFScalaSupport {
       _instance
     }
   }
-  
-  implicit class EEnumScalaSupport(that: EEnum) {
-    def eLiterals: EList[EEnumLiteral] = that.getELiterals
-  }
 }
 
 object EEnumScalaSupport extends EEnumScalaSupport

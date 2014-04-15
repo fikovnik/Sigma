@@ -6,7 +6,6 @@ import fr.unice.i3s.sigma.support.EMFScalaSupport;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EOperation;
@@ -37,14 +36,6 @@ trait EOperationScalaSupport extends EMFScalaSupport {
       
       _instance
     }
-  }
-  
-  implicit class EOperationScalaSupport(that: EOperation) {
-    def eContainingClass: EClass = that.getEContainingClass
-    def eTypeParameters: EList[ETypeParameter] = that.getETypeParameters
-    def eParameters: EList[EParameter] = that.getEParameters
-    def eExceptions: EList[EClassifier] = that.getEExceptions
-    def eGenericExceptions: EList[EGenericType] = that.getEGenericExceptions
   }
 }
 
