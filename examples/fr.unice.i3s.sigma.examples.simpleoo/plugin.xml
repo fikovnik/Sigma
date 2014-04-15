@@ -4,22 +4,7 @@
 <!--
 -->
 
-<plugin
-      name="%pluginName"
-      id="fr.unice.i3s.sigma.examples.simpleoo"
-      version="1.0.0"
-      provider-name="%providerName">
-
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.emf.ecore" export="true"/>
-   </requires>
-
-   <runtime>
-      <library name=".">
-         <export name="*"/>
-      </library>
-   </runtime>
+<plugin>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated SimpleOO -->

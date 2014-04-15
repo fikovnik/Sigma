@@ -8,3 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: fr.unice.i3s.sigma;bundle-version="1.0.0",
  org.scala-lang.scala-library;bundle-version="2.10.0",
  org.scalatest;bundle-version="2.0.0"
+Export-Package: fr.unice.i3s.sigma.examples.simpleoo,
+ fr.unice.i3s.sigma.examples.simpleoo.impl,
+ fr.unice.i3s.sigma.examples.simpleoo.support,
+ fr.unice.i3s.sigma.examples.simpleoo.util
