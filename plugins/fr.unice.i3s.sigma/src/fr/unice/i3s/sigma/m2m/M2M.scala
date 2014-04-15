@@ -119,8 +119,6 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   /** Transformation trace log */
   protected[m2m] def traceLog = session.value._2
-  /** Transformation secondary elements - transformed elements that are not contained in any other resource. */
-  protected[m2m] def secondary = session.value._1
 
   protected def loadRules: Seq[Rule]
 
@@ -145,9 +143,12 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     val sc = collection.mutable.ListBuffer[EObject]()
 
     session.withValue((sc, tl)) {
-      val primary = transform(source)
+      transform(source)
 
-      (primary, secondary)
+      val pri = primaryTargetsForSource(source).toSeq
+      val sec = traceLog.values.flatMap(_.values).flatten.toSeq.diff(pri)
+      
+      (pri, sec)
     }
   }
 
@@ -225,10 +226,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
           // 2.4 execute rules
           executeRule(rule, source, targets)
 
-          // 2.5 add the secondary container-less eObjects into resource
-          secondary ++= targets drop 1 filter (_.eContainer == null)
-
-          // 2.6 store all targets
+          // 2.7 store all targets
           transformations += (rule -> targets)
         }
 
