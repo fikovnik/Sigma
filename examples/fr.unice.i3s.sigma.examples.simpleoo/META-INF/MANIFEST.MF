@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Examples based on Simple Object-Oriented model
+Bundle-SymbolicName: fr.unice.i3s.sigma.examples.simpleoo;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: I3S/INRIA
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: fr.unice.i3s.sigma;bundle-version="1.0.0",
+ org.scala-lang.scala-library;bundle-version="2.10.0",
+ org.scalatest;bundle-version="2.0.0"
