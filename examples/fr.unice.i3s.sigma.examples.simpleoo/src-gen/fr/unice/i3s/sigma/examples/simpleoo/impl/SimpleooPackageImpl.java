@@ -325,6 +325,16 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getClass_SuperClass()
+	{
+		return (EReference)classEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getPrimitiveType()
 	{
 		return primitiveTypeEClass;
@@ -469,6 +479,7 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 		createEReference(classEClass, CLASS__PROPERTIES);
 		createEReference(classEClass, CLASS__OPERATIONS);
 		createEReference(classEClass, CLASS__FEATURES);
+		createEReference(classEClass, CLASS__SUPER_CLASS);
 
 		primitiveTypeEClass = createEClass(PRIMITIVE_TYPE);
 
@@ -546,6 +557,7 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 		initEReference(getClass_Properties(), this.getProperty(), null, "properties", null, 0, -1, fr.unice.i3s.sigma.examples.simpleoo.Class.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getClass_Operations(), this.getOperation(), null, "operations", null, 0, -1, fr.unice.i3s.sigma.examples.simpleoo.Class.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getClass_Features(), this.getFeature(), null, "features", null, 0, -1, fr.unice.i3s.sigma.examples.simpleoo.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getClass_SuperClass(), this.getClass_(), null, "superClass", null, 1, 1, fr.unice.i3s.sigma.examples.simpleoo.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(primitiveTypeEClass, PrimitiveType.class, "PrimitiveType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

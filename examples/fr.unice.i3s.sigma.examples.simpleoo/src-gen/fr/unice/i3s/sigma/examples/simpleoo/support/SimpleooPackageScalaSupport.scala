@@ -50,6 +50,10 @@ trait SimpleooPackageScalaSupport
       def properties: EList[Property] = that.getProperties
       def operations: EList[Operation] = that.getOperations
       def features: EList[Feature] = that.getFeatures
+      def superClass: fr.unice.i3s.sigma.examples.simpleoo.Class = that.getSuperClass
+      def superClass_=(value: fr.unice.i3s.sigma.examples.simpleoo.Class): Unit = that.setSuperClass(value)
+      def superClass_=(value: ⇒ Option[fr.unice.i3s.sigma.examples.simpleoo.Class]): Unit =
+        that.setSuperClass(SimpleooPackageScalaSupport._simpleooBuilder.ref(value))
     }
     
     

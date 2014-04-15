@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.Class#getProperties <em>Properties</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.Class#getOperations <em>Operations</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.Class#getFeatures <em>Features</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.Class#getSuperClass <em>Super Class</em>}</li>
  * </ul>
  * </p>
  *
@@ -98,5 +99,31 @@ public interface Class extends Classifier
 	 * @generated
 	 */
 	EList<Feature> getFeatures();
+
+	/**
+	 * Returns the value of the '<em><b>Super Class</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Super Class</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Super Class</em>' reference.
+	 * @see #setSuperClass(Class)
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_SuperClass()
+	 * @model required="true"
+	 * @generated
+	 */
+	Class getSuperClass();
+
+	/**
+	 * Sets the value of the '{@link fr.unice.i3s.sigma.examples.simpleoo.Class#getSuperClass <em>Super Class</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Super Class</em>' reference.
+	 * @see #getSuperClass()
+	 * @generated
+	 */
+	void setSuperClass(Class value);
 
 } // Class

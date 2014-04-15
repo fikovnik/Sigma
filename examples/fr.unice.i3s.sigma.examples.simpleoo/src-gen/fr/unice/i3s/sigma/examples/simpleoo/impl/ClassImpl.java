@@ -33,6 +33,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.impl.ClassImpl#getProperties <em>Properties</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.impl.ClassImpl#getOperations <em>Operations</em>}</li>
  *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.impl.ClassImpl#getFeatures <em>Features</em>}</li>
+ *   <li>{@link fr.unice.i3s.sigma.examples.simpleoo.impl.ClassImpl#getSuperClass <em>Super Class</em>}</li>
  * </ul>
  * </p>
  *
@@ -69,6 +70,16 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	 * @ordered
 	 */
 	protected EList<Feature> features;
+
+	/**
+	 * The cached value of the '{@link #getSuperClass() <em>Super Class</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSuperClass()
+	 * @generated
+	 * @ordered
+	 */
+	protected fr.unice.i3s.sigma.examples.simpleoo.Class superClass;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -161,6 +172,49 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public fr.unice.i3s.sigma.examples.simpleoo.Class getSuperClass()
+	{
+		if (superClass != null && superClass.eIsProxy())
+		{
+			InternalEObject oldSuperClass = (InternalEObject)superClass;
+			superClass = (fr.unice.i3s.sigma.examples.simpleoo.Class)eResolveProxy(oldSuperClass);
+			if (superClass != oldSuperClass)
+			{
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, SimpleooPackage.CLASS__SUPER_CLASS, oldSuperClass, superClass));
+			}
+		}
+		return superClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public fr.unice.i3s.sigma.examples.simpleoo.Class basicGetSuperClass()
+	{
+		return superClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSuperClass(fr.unice.i3s.sigma.examples.simpleoo.Class newSuperClass)
+	{
+		fr.unice.i3s.sigma.examples.simpleoo.Class oldSuperClass = superClass;
+		superClass = newSuperClass;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.CLASS__SUPER_CLASS, oldSuperClass, superClass));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
@@ -190,6 +244,9 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 				return getOperations();
 			case SimpleooPackage.CLASS__FEATURES:
 				return getFeatures();
+			case SimpleooPackage.CLASS__SUPER_CLASS:
+				if (resolve) return getSuperClass();
+				return basicGetSuperClass();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -212,6 +269,9 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 				getFeatures().clear();
 				getFeatures().addAll((Collection<? extends Feature>)newValue);
 				return;
+			case SimpleooPackage.CLASS__SUPER_CLASS:
+				setSuperClass((fr.unice.i3s.sigma.examples.simpleoo.Class)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -231,6 +291,9 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 				return;
 			case SimpleooPackage.CLASS__FEATURES:
 				getFeatures().clear();
+				return;
+			case SimpleooPackage.CLASS__SUPER_CLASS:
+				setSuperClass((fr.unice.i3s.sigma.examples.simpleoo.Class)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -254,6 +317,8 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 				return !getOperations().isEmpty();
 			case SimpleooPackage.CLASS__FEATURES:
 				return features != null && !features.isEmpty();
+			case SimpleooPackage.CLASS__SUPER_CLASS:
+				return superClass != null;
 		}
 		return super.eIsSet(featureID);
 	}

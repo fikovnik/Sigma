@@ -334,13 +334,22 @@ public interface SimpleooPackage extends EPackage
 	int CLASS__FEATURES = CLASSIFIER_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Super Class</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CLASS__SUPER_CLASS = CLASSIFIER_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>Class</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS_FEATURE_COUNT = CLASSIFIER_FEATURE_COUNT + 4;
+	int CLASS_FEATURE_COUNT = CLASSIFIER_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of operations of the '<em>Class</em>' class.
@@ -834,6 +843,17 @@ public interface SimpleooPackage extends EPackage
 	EReference getClass_Features();
 
 	/**
+	 * Returns the meta object for the reference '{@link fr.unice.i3s.sigma.examples.simpleoo.Class#getSuperClass <em>Super Class</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Super Class</em>'.
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.Class#getSuperClass()
+	 * @see #getClass_()
+	 * @generated
+	 */
+	EReference getClass_SuperClass();
+
+	/**
 	 * Returns the meta object for class '{@link fr.unice.i3s.sigma.examples.simpleoo.PrimitiveType <em>Primitive Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1090,6 +1110,14 @@ public interface SimpleooPackage extends EPackage
 		 * @generated
 		 */
 		EReference CLASS__FEATURES = eINSTANCE.getClass_Features();
+
+		/**
+		 * The meta object literal for the '<em><b>Super Class</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CLASS__SUPER_CLASS = eINSTANCE.getClass_SuperClass();
 
 		/**
 		 * The meta object literal for the '{@link fr.unice.i3s.sigma.examples.simpleoo.impl.PrimitiveTypeImpl <em>Primitive Type</em>}' class.

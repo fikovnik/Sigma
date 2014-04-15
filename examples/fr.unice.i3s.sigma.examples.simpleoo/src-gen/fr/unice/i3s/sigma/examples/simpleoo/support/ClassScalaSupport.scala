@@ -14,13 +14,14 @@ trait ClassScalaSupport extends EMFScalaSupport {
   protected implicit val _classProxyBuilder = new EMFProxyBuilder[Class](SimpleooPackageScalaSupport._simpleooBuilder)
   
   object Class {
-    def apply(stereotypes: EList[Stereotype] = null, name: String = null, abstract_ : Boolean = false, features: EList[Feature] = null): Class = {
+    def apply(stereotypes: EList[Stereotype] = null, name: String = null, abstract_ : Boolean = false, features: EList[Feature] = null, superClass: fr.unice.i3s.sigma.examples.simpleoo.Class = null): Class = {
       val _instance = SimpleooPackageScalaSupport._simpleooBuilder.create[Class]
       
       if (stereotypes != null) _instance.getStereotypes.addAll(stereotypes)
       if (name != null) _instance.setName(name)
       if (abstract_  != false) _instance.setAbstract(abstract_ )
       if (features != null) _instance.getFeatures.addAll(features)
+      if (superClass != null) _instance.setSuperClass(superClass)
       
       _instance
     }
