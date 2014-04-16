@@ -1,7 +1,6 @@
 package fr.unice.i3s.sigma.support
 
 import java.io.PrintStream
-
 import scala.annotation.implicitNotFound
 import scala.collection.GenTraversableOnce
 import scala.collection.JavaConversions.asScalaIterator
@@ -10,7 +9,6 @@ import scala.collection.mutable.Buffer
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
 import scala.reflect.classTag
-
 import org.eclipse.emf.common.notify.Notifier
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.common.util.EList
@@ -20,8 +18,9 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.util.Diagnostician
 import org.eclipse.emf.ecore.util.EcoreUtil
-
 import fr.unice.i3s.sigma.util.DelegatingEList
+import org.eclipse.emf.ecore.EModelElement
+import org.eclipse.emf.ecore.EAnnotation
 
 trait EMFScalaSupport {
 
@@ -81,6 +80,21 @@ trait EMFScalaSupport {
     }
   }
 
+  implicit class RichSigmaEModelElement(that: EModelElement) {
+    def getAnnotationValue(name: String, detail: String): Option[String] = getAnnotation(name) flatMap { a => Option(a.getDetails.get(detail)) }
+      
+    def getAnnotation(name: String): Option[EAnnotation] = (that, that.getEAnnotations find (_.getSource == name)) match {
+      case (_, Some(annotation)) => 
+        Some(annotation)
+      case (cls: EClass, None) => 
+        cls.getESuperTypes map (_.getAnnotation(name)) collectFirst { case Some(x) => x }
+      case _ => 
+        None
+    }
+    
+    def isAnnotatedAs(name: String) = that.getAnnotation(name).isDefined    
+  }
+  
   implicit class RichSigmaEClass(that: EClass) {
     def newInstance: EObject = that.getEPackage.getEFactoryInstance.create(that)
   }
