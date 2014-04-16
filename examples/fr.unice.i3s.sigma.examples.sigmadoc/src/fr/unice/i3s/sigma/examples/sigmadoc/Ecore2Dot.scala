@@ -3,6 +3,7 @@ package fr.unice.i3s.sigma.examples.sigmadoc
 import collection.JavaConversions._
 import fr.unice.i3s.sigma.m2t.TextTemplate
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._ecore._
 import scala.annotation.tailrec
 import org.eclipse.emf.ecore.resource.Resource
 

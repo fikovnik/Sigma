@@ -7,6 +7,7 @@ import fr.unice.i3s.sigma.m2t.TextTemplate
 import scalatags.all._
 import scalatags.{ Node, Tags2 ⇒ tags }
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._ecore._
 
 class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
 

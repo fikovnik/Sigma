@@ -6,6 +6,7 @@ import scala.util.Success
 import scala.util.Try
 import org.eclipse.emf.ecore.EcorePackage
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._ecore._
 import fr.unice.i3s.sigma.util.EMFUtils
 import fr.unice.i3s.sigma.util.IOUtils
 import fr.unice.i3s.sigma.util.IOUtils.RichSigmaFile

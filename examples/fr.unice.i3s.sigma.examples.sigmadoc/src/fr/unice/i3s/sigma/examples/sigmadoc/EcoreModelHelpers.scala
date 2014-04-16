@@ -1,6 +1,7 @@
 package fr.unice.i3s.sigma.examples.sigmadoc
 
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._ecore._
 import org.eclipse.emf.ecore.util.EcoreUtil
 
 trait EcoreModelHelpers extends EcorePackageScalaSupport {
