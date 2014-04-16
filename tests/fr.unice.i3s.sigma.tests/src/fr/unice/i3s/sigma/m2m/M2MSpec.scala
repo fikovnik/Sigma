@@ -53,7 +53,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     }
 
     val source = _ecore.EClass()
-    val (pri, sec) = m2m(source)
+    val (pri, sec) = m2m.execute(source)
 
     pri should have size (3) // three unique targets
     // TODO: should contain instanceOf
@@ -104,7 +104,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
       }
     }
 
-    val (pri, sec) = m2m(_ecore.EClass())
+    val (pri, sec) = m2m.execute(_ecore.EClass())
 
     pri should have size (1)
     pri.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "A"
@@ -148,10 +148,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     val m2m = new TestM2M {
       def rule1(s: _ecore.EClass, t: _simpleoo.Class) {
         t.name = s.name
-        s.eSuperTypes.toSeq match {
-          case Seq(sType) ⇒ t.superClass = ~sType
-          case _ ⇒
-        }
+        t.superClass = ~ s.eSuperTypes.headOption
       }
     }
 
@@ -159,7 +156,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     val c2 = _ecore.EClass(name = "c2")
     c2.eSuperTypes += c1
 
-    val (pri, sec) = m2m(c2)
+    val (pri, sec) = m2m.execute(c2)
 
     pri should have size (1)
     pri.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "c2"
@@ -189,7 +186,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     c1.eStructuralFeatures += _ecore.EAttribute(name = "a1")
     c1.eStructuralFeatures += _ecore.EAttribute(name = "a2")
 
-    val (pri, sec) = m2m(c1)
+    val (pri, sec) = m2m.execute(c1)
 
     pri should have size (1)    
     val c1t = pri.toSeq(0).asInstanceOf[_simpleoo.Class]
