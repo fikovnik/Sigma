@@ -25,6 +25,13 @@ trait Rule {
 
   def targetClasses: Seq[EClass]
 
+  def primaryTargetClass: EClass = targetClasses(0)
+
+  def conflicts(rule: Rule): Boolean =
+    if (rule != this)
+      !(rule.sourceClass != this.sourceClass || rule.primaryTargetClass != this.primaryTargetClass)
+    else false
+
   def transform(source: EObject, targets: Seq[EObject]): Try[Boolean] =
     if (!isApplicable(source)) Success(false)
     else {
@@ -77,6 +84,11 @@ trait AbstractRule extends Rule {
 
 trait GreedyRule extends Rule {
 
+  override def conflicts(rule: Rule): Boolean =
+    if (rule != this)
+      !(rule.sourceClass.isSuperTypeOf(this.sourceClass) || rule.primaryTargetClass != this.primaryTargetClass)
+    else false
+
   override def isApplicable(source: EObject) = sourceClass isSuperTypeOf source.eClass
 
   override def toString = "Greedy" + super.toString
@@ -124,6 +136,21 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   lazy val rules: Seq[Rule] = {
     val res = loadRules
+
+    val nonAbstractRules = res filter {
+      _ match {
+        case _: AbstractRule ⇒ false
+        case _ ⇒ true
+      }
+    }
+
+    for (rule ← nonAbstractRules) {
+      res find { r ⇒ r.conflicts(rule) } match {
+        case Some(conflict) ⇒ throw new M2MTransformationException(s"Rule $rule conflits with $conflict likely because of having the same source->primary target relation")
+        case None ⇒
+      }
+    }
+
     res foreach { r ⇒ logger debug s"Loaded rule: $r" }
     res
   }
@@ -146,9 +173,11 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       transform(source)
 
       val pri = primaryTargetsForSource(source).toSeq
-      val sec = traceLog.values.flatMap(_.values).flatten.toSeq.diff(pri)
-      
-      (pri, sec)
+      val sec = traceLog.values.flatMap(_.values).flatten.toSeq
+      val secNonContained = sec filter (_.eContainer == null)
+      val secNonPri = secNonContained diff pri
+
+      (pri, secNonPri)
     }
   }
 
@@ -330,21 +359,24 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       transformOne(that)
       targetsForSource(that) collectFirst {
         // it takes the first one since that is the primary source-target relation
-        // TODO: can this be done better?
-        case Seq(x, xs @ _*) if x.getClass.isAssignableFrom(classTag[B].runtimeClass) ⇒ x.asInstanceOf[B]
+        //        case Seq(x, xs @ _*) if x.getClass.isAssignableFrom(classTag[B].runtimeClass) ⇒ x.asInstanceOf[B]
+        case Seq(x: B, xs @ _*) ⇒ x
       }
     }
   }
 
   implicit class TraversableM2MSupport(that: Traversable[_ <: EObject]) {
-    def unary_~[B >: Null <: EObject: ClassTag]: Traversable[B] = {
+    def unary_~[B <: EObject: ClassTag]: Traversable[B] = {
       that foreach transformOne
 
+      println(classTag[B])
+
       val primary = that map primaryTargetsForSource
-      val targets = primary map {
-        _ collectFirst {
-          //          case y if y.getClass.isAssignableFrom(classTag[B].runtimeClass) ⇒ y.asInstanceOf[B]
-          case y: B ⇒ y
+      val targets = primary map { x ⇒
+        x collectFirst {
+          case y if y.isInstanceOf[B] ⇒ y.asInstanceOf[B]
+          //          case y if classTag[B].runtimeClass.isAssignableFrom(y.getClass) ⇒ y.asInstanceOf[B]
+          //          case y: B ⇒ y
         }
       }
       targets collect { case Some(e) ⇒ e }
@@ -352,7 +384,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   }
 
   implicit class EListM2MSupport(that: EList[_ <: EObject]) {
-    def unary_~[B >: Null <: EObject: ClassTag]: Traversable[B] = ~(that.toSeq)
+    def unary_~[B <: EObject: ClassTag]: Traversable[B] = ~(that.toSeq)
   }
 
 }

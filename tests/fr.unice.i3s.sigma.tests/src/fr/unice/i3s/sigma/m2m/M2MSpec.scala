@@ -42,8 +42,8 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
 
     class M2M extends TestM2M {
       def rule1(s: _ecore.EClass, t: _simpleoo.Class) {}
-      def rule2(s: _ecore.EClass, t: _simpleoo.Class) {}
-      def rule3(s: _ecore.EClass, t: _simpleoo.Class) {}
+      def rule2(s: _ecore.EClass, t: _simpleoo.Property) {}
+      def rule3(s: _ecore.EClass, t: _simpleoo.Package) {}
       def rule4(s: _ecore.EPackage, t: _simpleoo.Class) {}
     }
 
@@ -53,15 +53,18 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     }
 
     val source = _ecore.EClass()
-    val (primary, secondary) = m2m(source)
+    val (pri, sec) = m2m(source)
 
-    primary.toSet should have size (3) // three unique targets
-    primary foreach (_ shouldBe a[_simpleoo.Class])
-    secondary shouldBe empty
+    pri should have size (3) // three unique targets
+    // TODO: should contain instanceOf
+    pri exists (_.isInstanceOf[_simpleoo.Class]) shouldBe true 
+    pri exists (_.isInstanceOf[_simpleoo.Package]) shouldBe true 
+    pri exists (_.isInstanceOf[_simpleoo.Property]) shouldBe true 
+    sec shouldBe empty
 
-    verify(mockedM2M, times(1)).rule1(refEq(source), anyOf(primary))
-    verify(mockedM2M, times(1)).rule2(refEq(source), anyOf(primary))
-    verify(mockedM2M, times(1)).rule3(refEq(source), anyOf(primary))
+    verify(mockedM2M, times(1)).rule1(refEq(source), anyOf(pri))
+    verify(mockedM2M, times(1)).rule2(refEq(source), anyOf(pri))
+    verify(mockedM2M, times(1)).rule3(refEq(source), anyOf(pri))
     verify(mockedM2M, never()).rule4(anyObject(), anyObject())
   }
 
@@ -72,7 +75,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
       @Abstract def rule3(s: _ecore.EPackage, t: _simpleoo.ModelElement) {}
 
       def rule4(s: _ecore.EClass, t: _simpleoo.Class) {}
-      def rule5(s: _ecore.EClass, t1: _simpleoo.Class, t2: _simpleoo.Class) {}
+      def rule5(s: _ecore.EClass, t1: _simpleoo.Package, t2: _simpleoo.Class) {}
     }
 
     val mockedM2M = mock[M2M]
@@ -92,29 +95,25 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
 
   it should "execute abstract rules with the correct arguments" in {
     val m2m = new TestM2M {
-      @Abstract def rule1AA(s: _ecore.ENamedElement, t: _simpleoo.ModelElement) {
+      @Abstract def rule1(s: _ecore.ENamedElement, t: _simpleoo.ModelElement) {
         t.name = "A"
       }
 
-      def rule2AA(s: _ecore.EClass, t1: _simpleoo.Class, t2: _simpleoo.Class) {
+      def rule2(s: _ecore.EClass, t1: _simpleoo.Class, t2: _simpleoo.Class) {
         t2.name = "B"
       }
     }
 
     val (pri, sec) = m2m(_ecore.EClass())
 
-    _simpleoo.ePackage.getModelElement.isSuperTypeOf(_simpleoo.ePackage.getClass_) should be (true)
-    
-    pri should have size(1)
+    pri should have size (1)
     pri.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "A"
-    sec should have size(1)
+    sec should have size (1)
     sec.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "B"
-    
+
   }
 
   it should "only execute abstract rule from regular rules" in {
-    val trace = collection.mutable.Buffer[Int]()
-
     class M2M extends TestM2M {
       @Abstract def rule1(s: _ecore.ENamedElement, t: _simpleoo.ModelElement) {}
       @Greedy def rule2(s: _ecore.EModelElement, t: _simpleoo.Class) {}
@@ -132,13 +131,26 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     verify(mockedM2M, times(1)).rule2(refEq(source), anyObject())
   }
 
-  "Equivalent operator" should "transform implicitly transform an element" in {
+  it should "not allow conflicting rules" in {
+    class M2M extends TestM2M {
+      def rule1(s: _ecore.EClass, t: _simpleoo.Class) {}
+      def rule2(s: _ecore.EClass, t: _simpleoo.Class) {}
+    }
+    
+    try {
+      new M2M
+    } catch {
+      case x: M2MTransformationException => x.printStackTrace()
+    }
+  }
+  
+  "Equivalent operator" should "implicitly transform an element" in {
     val m2m = new TestM2M {
       def rule1(s: _ecore.EClass, t: _simpleoo.Class) {
         t.name = s.name
         s.eSuperTypes.toSeq match {
-          case Seq(sType) => t.superClass = ~sType
-          case _ =>
+          case Seq(sType) ⇒ t.superClass = ~sType
+          case _ ⇒
         }
       }
     }
@@ -146,15 +158,47 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     val c1 = _ecore.EClass(name = "c1")
     val c2 = _ecore.EClass(name = "c2")
     c2.eSuperTypes += c1
-    
+
     val (pri, sec) = m2m(c2)
-    
-    pri should have size(1)
+
+    pri should have size (1)
     pri.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "c2"
     pri.toSeq(0).asInstanceOf[_simpleoo.Class].superClass.name = "c1"
-    
-    sec should have size(1)
+
+    sec should have size (1)
     sec.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "c1"
+  }
+
+  it should "implicitly transform a collection" in {
+    val m2m = new TestM2M {
+      def rule1(s: _ecore.EClass, t: _simpleoo.Class) {
+        t.name = s.name
+        t.features ++ ~s.eStructuralFeatures
+      }
+      
+      def rule2(s: _ecore.EAttribute, t: _simpleoo.Property) {
+        t.name = s.name
+      }
+      
+      def rule3(s: _ecore.EAttribute, t: _simpleoo.Class) {
+    	  t.name = s.name
+      }
+    }
+
+    val c1 = _ecore.EClass(name = "c1")
+    c1.eStructuralFeatures += _ecore.EAttribute(name = "a1")
+    c1.eStructuralFeatures += _ecore.EAttribute(name = "a2")
+
+    val (pri, sec) = m2m(c1)
+
+    pri should have size (1)
+//    sec shouldBe empty
+    
+    val c1t = pri.toSeq(0).asInstanceOf[_simpleoo.Class]
+    c1t.name shouldBe "c1"
+    c1t.features should have size(2)
+    c1t.features.map(_.name) shouldBe Seq("a1","a2") 
+
   }
 
   // TODO: greedy rules
@@ -167,7 +211,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     val targetClasses: Seq[_ecore.EClass]) extends Rule {
 
     val name = "NOPRule"
-    
+
     def isApplicable(source: _ecore.EObject) = true
     protected def doTransform(source: _ecore.EObject, targets: Seq[_ecore.EObject]): Try[Boolean] = Success(true)
   }
@@ -193,4 +237,24 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     rule6.isSuperRuleOf(rule5) shouldBe true
   }
 
+  "MatcherRule" should "conflict with a rule defining the same source - target relation" in {
+    val rule1 = new NOPRule(_ecore.ePackage.getEClass, Seq(_ecore.ePackage.getEClass))
+    val rule2 = new NOPRule(_ecore.ePackage.getEClass, Seq(_ecore.ePackage.getEClass))
+    
+    rule1.conflicts(rule2) shouldBe true
+    rule2.conflicts(rule1) shouldBe true
+    
+    val rule3 = new NOPRule(_ecore.ePackage.getEPackage, Seq(_ecore.ePackage.getEClass))
+    rule3.conflicts(rule1) shouldBe false
+    rule1.conflicts(rule3) shouldBe false
+  }
+  
+  "GreedyRule" should "conflict with a rule defining the same source - target relation" in {
+	  val rule1 = new NOPRule(_ecore.ePackage.getEClass, Seq(_ecore.ePackage.getEClass))
+	  val rule2 = new NOPRule(_ecore.ePackage.getEClassifier, Seq(_ecore.ePackage.getEClass)) with GreedyRule
+	  
+	  rule1.conflicts(rule2) shouldBe false
+	  rule2.conflicts(rule1) shouldBe true
+  }
+  
 }
