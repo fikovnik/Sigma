@@ -15,8 +15,9 @@ import org.eclipse.emf.ecore.EPackage
 import com.typesafe.scalalogging.log4j.Logging
 import fr.unice.i3s.sigma.support.SigmaSupport
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._
-import fr.unice.i3s.sigma.support.ScalaEcorePackage
+import fr.unice.i3s.sigma.support.SigmaEcorePackage
 import fr.unice.i3s.sigma.internal.OverloadHack
+import scala.collection.generic.Growable
 
 // TODO: shapeless
 trait Rule {
@@ -113,8 +114,8 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   }
   def sourceMetaModels_=(metaModel: EPackage) = _sourceMetaModels = Seq(metaModel)
   def sourceMetaModels_=(metaModels: Seq[EPackage]) = _sourceMetaModels = metaModels
-  def sourceMetaModels_=(metaModel: ScalaEcorePackage[_ <: EPackage]) = _sourceMetaModels = Seq(metaModel.ePackage)
-  def sourceMetaModels_=(metaModels: Seq[ScalaEcorePackage[_ <: EPackage]])(implicit o: Overloaded1) = _sourceMetaModels = metaModels map (_.ePackage)
+  def sourceMetaModels_=(metaModel: SigmaEcorePackage[_ <: EPackage]) = _sourceMetaModels = Seq(metaModel.ePackage)
+  def sourceMetaModels_=(metaModels: Seq[SigmaEcorePackage[_ <: EPackage]])(implicit o: Overloaded1) = _sourceMetaModels = metaModels map (_.ePackage)
 
   private[this] var _targetMetaModels: Seq[EPackage] = _
   def targetMetaModels: Seq[EPackage] = {
@@ -123,8 +124,8 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   }
   def targetMetaModels_=(metaModel: EPackage) = _targetMetaModels = Seq(metaModel)
   def targetMetaModels_=(metaModels: Seq[EPackage]) = _targetMetaModels = metaModels
-  def targetMetaModels_=(metaModel: ScalaEcorePackage[_ <: EPackage]) = _targetMetaModels = Seq(metaModel.ePackage)
-  def targetMetaModels_=(metaModels: Seq[ScalaEcorePackage[_ <: EPackage]])(implicit o: Overloaded1) = _targetMetaModels = metaModels map (_.ePackage)
+  def targetMetaModels_=(metaModel: SigmaEcorePackage[_ <: EPackage]) = _targetMetaModels = Seq(metaModel.ePackage)
+  def targetMetaModels_=(metaModels: Seq[SigmaEcorePackage[_ <: EPackage]])(implicit o: Overloaded1) = _targetMetaModels = metaModels map (_.ePackage)
 
   /** M2M Transformation session allowing to execute multiple M2M transformations at the same time. */
   private[this] val session = new DynamicVariable[(collection.mutable.ListBuffer[EObject], TraceLog)](null)
@@ -340,51 +341,102 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   def guardedBy[T](g: ⇒ Boolean) = g
 
+  private case class DefaultTransformable(that: EObject) extends Transformable {
+    def transform[A <: EObject: ClassTag]: Option[A] = Option(that.equivalent[A])
+  }
+
+  private case class NoTransformable extends Transformable {
+    def transform[A <: EObject: ClassTag]: Option[A] = None
+  }
+
+  private case class DefaultTransformableSequence(that: Traversable[EObject]) extends TransformableSequence {
+    def transform[A <: EObject: ClassTag]: Traversable[A] = that.equivalent[A]
+  }
+
   implicit class CheckedBoolean(that: Boolean) {
-    def transform[T](g: ⇒ T): Option[T] = {
-      if (that) {
-        Some(g)
-      } else {
-        None
-      }
-    }
+    def transform[T](g: ⇒ T): Option[T] = if (that) Some(g) else None
   }
 
   implicit class OptionM2MSupport(that: Option[_ <: EObject]) {
-    def unary_~[B >: Null <: EObject]: Option[B] = that flatMap (~_)
+    def unary_~ : Transformable = that map DefaultTransformable getOrElse NoTransformable()
   }
 
   implicit class EObjectM2MSupport(that: EObject) {
-    def unary_~[B <: EObject: ClassTag]: Option[B] = {
-      transformOne(that)
-      targetsForSource(that) collectFirst {
-        // it takes the first one since that is the primary source-target relation
-        //        case Seq(x, xs @ _*) if x.getClass.isAssignableFrom(classTag[B].runtimeClass) ⇒ x.asInstanceOf[B]
-        case Seq(x: B, xs @ _*) ⇒ x
-      }
-    }
+
+    def equivalents: Seq[EObject] = { transformOne(that); primaryTargetsForSource(that).toSeq }
+
+    def equivalent[T <: EObject: ClassTag]: T = equivalents collectFirst { case x: T ⇒ x } getOrElse (null.asInstanceOf[T])
+
+    def unary_~ : Transformable = DefaultTransformable(that)
+
   }
 
   implicit class TraversableM2MSupport(that: Traversable[_ <: EObject]) {
-    def unary_~[B <: EObject: ClassTag]: Traversable[B] = {
+
+    def equivalents: Seq[Seq[EObject]] = {
       that foreach transformOne
+      (that map (primaryTargetsForSource(_).toSeq)).toSeq
+    }
 
-      println(classTag[B])
+    def equivalent[T <: EObject: ClassTag]: Seq[T] = {
+      val primary = that.equivalents
+      val targets = primary map { x ⇒ x collectFirst { case y: T ⇒ y } }
 
-      val primary = that map primaryTargetsForSource
-      val targets = primary map { x ⇒
-        x collectFirst {
-          case y if y.isInstanceOf[B] ⇒ y.asInstanceOf[B]
-          //          case y if classTag[B].runtimeClass.isAssignableFrom(y.getClass) ⇒ y.asInstanceOf[B]
-          //          case y: B ⇒ y
-        }
-      }
       targets collect { case Some(e) ⇒ e }
     }
+
+    def unary_~ : TransformableSequence = DefaultTransformableSequence(that)
   }
 
-  implicit class EListM2MSupport(that: EList[_ <: EObject]) {
-    def unary_~[B <: EObject: ClassTag]: Traversable[B] = ~(that.toSeq)
+  trait GrowableM2MSupport {
+
+    type A <: EObject
+
+    protected def +=(elem: A): Unit
+
+    /**
+     * Adds a single element to this growable collection.
+     *
+     *  @param elem  the element to add.
+     *  @return the growable collection itself
+     */
+    def +=(elem: Transformable)(implicit ev: ClassTag[A]): this.type = { elem.transform[A] foreach (+=(_)); this }
+
+    /**
+     * Adds two or more elements to this growable collection.
+     *
+     *  @param elem1 the first element to add.
+     *  @param elem2 the second element to add.
+     *  @param elems the remaining elements to add.
+     *  @return the growable collection itself
+     */
+    def +=(elem1: Transformable, elem2: Transformable, elems: Transformable*)(implicit ev: ClassTag[A]): this.type = {
+      this += elem1 += elem2
+      elems foreach +=
+      this
+    }
+
+    /**
+     * Adds all elements produced by a TransformableSequence to this growable collection.
+     *
+     *  @param xs the TransformableSequence producing the elements to add.
+     *  @return	the growable collection itself.
+     */
+    def ++=(xs: TransformableSequence)(implicit ev: ClassTag[A]): this.type = { xs.transform[A] foreach +=; this }
+  }
+
+  implicit class ScalaGrowableM2MSupport[B <: EObject: ClassTag](that: Growable[B]) extends GrowableM2MSupport {
+    type A = B
+
+    protected def +=(elem: A) = that += elem
+  }
+
+  implicit class EListM2MSupport[B <: EObject: ClassTag](that: EList[B]) extends GrowableM2MSupport {
+    type A = B
+
+    protected def +=(elem: A) = that add elem
+
+    def unary_~ : TransformableSequence = ~(that.toSeq)
   }
 
 }

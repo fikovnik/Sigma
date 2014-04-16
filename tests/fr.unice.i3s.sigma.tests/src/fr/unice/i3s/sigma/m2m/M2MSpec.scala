@@ -163,7 +163,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
 
     pri should have size (1)
     pri.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "c2"
-    pri.toSeq(0).asInstanceOf[_simpleoo.Class].superClass.name = "c1"
+    pri.toSeq(0).asInstanceOf[_simpleoo.Class].superClass.get.name = "c1"
 
     sec should have size (1)
     sec.toSeq(0).asInstanceOf[_simpleoo.Class].name shouldBe "c1"
@@ -173,7 +173,7 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     val m2m = new TestM2M {
       def rule1(s: _ecore.EClass, t: _simpleoo.Class) {
         t.name = s.name
-        t.features ++ ~s.eStructuralFeatures
+        t.features ++= ~s.eStructuralFeatures
       }
       
       def rule2(s: _ecore.EAttribute, t: _simpleoo.Property) {
@@ -191,14 +191,14 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
 
     val (pri, sec) = m2m(c1)
 
-    pri should have size (1)
-//    sec shouldBe empty
-    
+    pri should have size (1)    
     val c1t = pri.toSeq(0).asInstanceOf[_simpleoo.Class]
     c1t.name shouldBe "c1"
     c1t.features should have size(2)
     c1t.features.map(_.name) shouldBe Seq("a1","a2") 
 
+    // from the rule3
+    sec should have size (2)
   }
 
   // TODO: greedy rules

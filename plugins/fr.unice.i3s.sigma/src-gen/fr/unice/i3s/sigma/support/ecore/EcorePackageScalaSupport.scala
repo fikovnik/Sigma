@@ -1,8 +1,10 @@
 package fr.unice.i3s.sigma.support.ecore
 
+import fr.unice.i3s.sigma.m2m.Transformable;
+
 import fr.unice.i3s.sigma.support.EMFBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
-import fr.unice.i3s.sigma.support.ScalaEcorePackage;
+import fr.unice.i3s.sigma.support.SigmaEcorePackage;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
@@ -47,6 +49,7 @@ trait EcorePackageScalaSupport
       def details: EMap[String, String] = that.getDetails
       def eModelElement: EModelElement = that.getEModelElement
       def eModelElement_=(value: EModelElement): Unit = that.setEModelElement(value)
+      def eModelElement_=(value: Transformable): Unit = value.transform[EModelElement].foreach(that.setEModelElement(_))
       def eModelElement_=(value: ⇒ Option[EModelElement]): Unit =
         that.setEModelElement(EcorePackageScalaSupport._ecoreBuilder.ref(value))
       def contents: EList[EObject] = that.getContents
@@ -107,6 +110,7 @@ trait EcorePackageScalaSupport
     implicit class EFactory2Sigma(that: EFactory) {
       def ePackage: EPackage = that.getEPackage
       def ePackage_=(value: EPackage): Unit = that.setEPackage(value)
+      def ePackage_=(value: Transformable): Unit = value.transform[EPackage].foreach(that.setEPackage(_))
       def ePackage_=(value: ⇒ Option[EPackage]): Unit =
         that.setEPackage(EcorePackageScalaSupport._ecoreBuilder.ref(value))
     }
@@ -136,6 +140,7 @@ trait EcorePackageScalaSupport
       def nsPrefix_=(value: String): Unit = that.setNsPrefix(value)
       def eFactoryInstance: EFactory = that.getEFactoryInstance
       def eFactoryInstance_=(value: EFactory): Unit = that.setEFactoryInstance(value)
+      def eFactoryInstance_=(value: Transformable): Unit = value.transform[EFactory].foreach(that.setEFactoryInstance(_))
       def eFactoryInstance_=(value: ⇒ Option[EFactory]): Unit =
         that.setEFactoryInstance(EcorePackageScalaSupport._ecoreBuilder.ref(value))
       def eClassifiers: EList[EClassifier] = that.getEClassifiers
@@ -155,6 +160,7 @@ trait EcorePackageScalaSupport
       def resolveProxies_=(value: Boolean): Unit = that.setResolveProxies(value)
       def eOpposite: EReference = that.getEOpposite
       def eOpposite_=(value: EReference): Unit = that.setEOpposite(value)
+      def eOpposite_=(value: Transformable): Unit = value.transform[EReference].foreach(that.setEOpposite(_))
       def eOpposite_=(value: ⇒ Option[EReference]): Unit =
         that.setEOpposite(EcorePackageScalaSupport._ecoreBuilder.ref(value))
       def eReferenceType: EClass = that.getEReferenceType
@@ -191,25 +197,31 @@ trait EcorePackageScalaSupport
       def required: Boolean = that.isRequired
       def eType: EClassifier = that.getEType
       def eType_=(value: EClassifier): Unit = that.setEType(value)
+      def eType_=(value: Transformable): Unit = value.transform[EClassifier].foreach(that.setEType(_))
       def eType_=(value: ⇒ Option[EClassifier]): Unit =
         that.setEType(EcorePackageScalaSupport._ecoreBuilder.ref(value))
       def eGenericType: EGenericType = that.getEGenericType
       def eGenericType_=(value: EGenericType): Unit = that.setEGenericType(value)
+      def eGenericType_=(value: Transformable): Unit = value.transform[EGenericType].foreach(that.setEGenericType(_))
     }
     
     implicit class EGenericType2Sigma(that: EGenericType) {
       def eUpperBound: EGenericType = that.getEUpperBound
       def eUpperBound_=(value: EGenericType): Unit = that.setEUpperBound(value)
+      def eUpperBound_=(value: Transformable): Unit = value.transform[EGenericType].foreach(that.setEUpperBound(_))
       def eTypeArguments: EList[EGenericType] = that.getETypeArguments
       def eRawType: EClassifier = that.getERawType
       def eLowerBound: EGenericType = that.getELowerBound
       def eLowerBound_=(value: EGenericType): Unit = that.setELowerBound(value)
+      def eLowerBound_=(value: Transformable): Unit = value.transform[EGenericType].foreach(that.setELowerBound(_))
       def eTypeParameter: ETypeParameter = that.getETypeParameter
       def eTypeParameter_=(value: ETypeParameter): Unit = that.setETypeParameter(value)
+      def eTypeParameter_=(value: Transformable): Unit = value.transform[ETypeParameter].foreach(that.setETypeParameter(_))
       def eTypeParameter_=(value: ⇒ Option[ETypeParameter]): Unit =
         that.setETypeParameter(EcorePackageScalaSupport._ecoreBuilder.ref(value))
       def eClassifier: EClassifier = that.getEClassifier
       def eClassifier_=(value: EClassifier): Unit = that.setEClassifier(value)
+      def eClassifier_=(value: Transformable): Unit = value.transform[EClassifier].foreach(that.setEClassifier(_))
       def eClassifier_=(value: ⇒ Option[EClassifier]): Unit =
         that.setEClassifier(EcorePackageScalaSupport._ecoreBuilder.ref(value))
     }
@@ -219,7 +231,7 @@ trait EcorePackageScalaSupport
     }
     
     
-    object _ecore extends ScalaEcorePackage[EcorePackage] with
+    object _ecore extends SigmaEcorePackage[EcorePackage] with
       EAttributeScalaSupport with
       EAnnotationScalaSupport with
       EClassScalaSupport with

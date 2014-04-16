@@ -22,8 +22,9 @@ import fr.unice.i3s.sigma.m2t.StaticTextTemplate
 import fr.unice.i3s.sigma.support.EMFBuilder
 import fr.unice.i3s.sigma.support.EMFScalaSupport
 import fr.unice.i3s.sigma.support.SigmaSupport._
-import fr.unice.i3s.sigma.support.ScalaEcorePackage
+import fr.unice.i3s.sigma.support.SigmaEcorePackage
 import fr.unice.i3s.sigma.util.EMFUtils
+import fr.unice.i3s.sigma.m2m.Transformable
 import fr.unice.i3s.sigma.util.IOUtils.using
 import fr.unice.i3s.sigma.workflow.WorkflowRunner
 import fr.unice.i3s.sigma.workflow.WorkflowTask
@@ -384,7 +385,7 @@ case class EPackageScalaSupportTemplate(
           val genClassesNames = pkg.genClasses
             .filter { c ⇒ !(skipTypes contains c.name) }
             .map { _.name + "ScalaSupport" }
-          val scalaPkgSupport = importManager.importName[ScalaEcorePackage[_]] + s"[${pkg.importedPackageInterfaceName}]"
+          val scalaPkgSupport = importManager.importName[SigmaEcorePackage[_]] + s"[${pkg.importedPackageInterfaceName}]"
           val pkgTraits =
             (scalaPkgSupport +: genClassesNames)
               .mkString("extends ", " with" + endl + "  ", "")
@@ -429,6 +430,10 @@ case class EPackageScalaSupportTemplate(
 
   protected def renderFeatureSetter(f: GenFeature) = {
     !s"def ${f.scalaNameWithoutSpace}_=(value: ${f.scalaType}): Unit = that.${f.setter}(value)"
+    
+    // generate support for M2M transformation for all non-primitive, non-list references 
+    if (f.getTypeGenClass() != null && !f.isListType) 
+      !s"def ${f.scalaNameWithoutSpace}_=(value: ${importManager.importName[Transformable]}): Unit = value.transform[${f.scalaType}].foreach(that.${f.setter}(_))"
 
     // a proxy setter for all non-containable references
     if (useEMFBuilder &&

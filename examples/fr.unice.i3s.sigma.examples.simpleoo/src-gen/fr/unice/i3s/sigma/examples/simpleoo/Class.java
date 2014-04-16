@@ -111,7 +111,7 @@ public interface Class extends Classifier
 	 * @return the value of the '<em>Super Class</em>' reference.
 	 * @see #setSuperClass(Class)
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_SuperClass()
-	 * @model required="true"
+	 * @model
 	 * @generated
 	 */
 	Class getSuperClass();
