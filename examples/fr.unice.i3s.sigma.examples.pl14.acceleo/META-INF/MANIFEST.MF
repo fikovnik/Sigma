@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: fr.unice.i3s.sigma.examples.pl14.acceleo
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: fr.unice.i3s.sigma.examples.pl14.acceleo.Activator
+Bundle-Activator: fr.unice.i3s.sigma.examples.performance.acceleo.Activator
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore,
@@ -20,5 +20,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
-Export-Package: fr.unice.i3s.sigma.examples.pl14.acceleo.main
 
