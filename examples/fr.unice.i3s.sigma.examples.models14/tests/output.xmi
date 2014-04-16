@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:Relational="http://Relational/1.0">
+  <Relational:Schema name="Test1"/>
+  <Relational:Table name="Marca">
+    <attributes name="Codigo_Marca" domain="/2"/>
+    <attributes name="Nombre" domain="/3"/>
+  </Relational:Table>
+  <Relational:PrimitiveType name="INT"/>
+  <Relational:PrimitiveType name="VARCHAR(25)"/>
+  <Relational:CandidateKey name="Codigo_Marca_CK">
+    <attributes href="default.xmi#//@nodes.0/@attributes.0"/>
+  </Relational:CandidateKey>
+</xmi:XMI>
