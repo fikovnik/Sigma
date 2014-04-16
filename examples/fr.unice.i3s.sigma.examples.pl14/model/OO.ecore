@@ -39,6 +39,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" lowerBound="1"
         eType="#//Classifier"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Constructor" eSuperTypes="#//Operation"/>
   <eClassifiers xsi:type="ecore:EEnum" name="ScopeKind">
     <eLiterals name="sk_instance"/>
     <eLiterals name="sk_classifier"/>
