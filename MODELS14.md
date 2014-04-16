@@ -9,7 +9,7 @@ This pages contains additional material accompanying the paper _"SIGMA: Scala In
 
 ### Simple Object-Oriented Model (OO Model)
 
-![OO Ecore Model](images/MODELS14/OO.ecorediag.png "OO Ecore Model")
+![OO Ecore Model](images/MODELS14/simpleoo.ecorediag.png "OO Ecore Model")
 
 
 ## Evaluation - Code Comparison
