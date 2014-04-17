@@ -490,7 +490,9 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelUti
   protected var genModelURI: URI = _
   protected def genModelURI_=(v: String): Unit = genModelURI = URI.createURI(v)
 
-  protected var packageNameMapping: String ⇒ String = _
+  protected var packageSuffix: String = ".support"
+  protected var packageNameMapping: String ⇒ String = { _ + packageSuffix }
+  protected var packageSupportNameSuffix: String = ""
 
   protected var generateExtractors: Boolean = false
 
@@ -536,7 +538,7 @@ class GenerateEMFScalaSupport extends WorkflowTask with Logging with GenModelUti
       val dir = (baseDir /: pkgName.split('.'))(new File(_, _))
       checkDir(dir)
 
-      val pkgSupportName = pkg.prefix + "PackageScalaSupport"
+      val pkgSupportName = pkg.prefix
       using(new File(dir, pkgSupportName + ".scala")) { f ⇒
         logger debug s"Generated package support for ${pkg.packageName}"
         EPackageScalaSupportTemplate(pkg, pkgName, pkgSupportName, useOption, useSeparateNamespace, useEMFBuilder, skipTypes.toList, mappings.toMap) >> f

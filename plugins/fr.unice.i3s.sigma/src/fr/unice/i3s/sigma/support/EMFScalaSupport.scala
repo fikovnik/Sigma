@@ -3,8 +3,7 @@ package fr.unice.i3s.sigma.support
 import java.io.PrintStream
 import scala.annotation.implicitNotFound
 import scala.collection.GenTraversableOnce
-import scala.collection.JavaConversions.asScalaIterator
-import scala.collection.JavaConversions.collectionAsScalaIterable
+import scala.collection.JavaConversions._
 import scala.collection.mutable.Buffer
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
@@ -30,7 +29,7 @@ trait EMFScalaSupport {
   implicit def asScalaBuffer[A](that: EList[A]): Buffer[A] =
     scala.collection.JavaConversions.asScalaBuffer(that)
   implicit def asEList[T](that: Buffer[T]) = new DelegatingEList(that)
-  implicit def asEList[T](that: Seq[T]) = new DelegatingEList(that.toBuffer)
+  implicit def asEList[T](that: Iterable[T]) = new DelegatingEList(that.toSeq)
 
   // TODO: rewrite the Diagnostics to be nomads
   implicit class RichSigmaDiagnostic(that: Diagnostic) {
