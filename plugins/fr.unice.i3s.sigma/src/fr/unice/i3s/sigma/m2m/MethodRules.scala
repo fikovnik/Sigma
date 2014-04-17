@@ -21,21 +21,13 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
     val targetClasses: Seq[EClass],
     underlying: Method) extends MatchedRule {
 
-    protected def doTransform(source: EObject, targets: Seq[EObject]): Try[Boolean] = {
-      val args = source +: targets
-
-      try {
-        underlying.invoke(target, args: _*) match {
-          // null will be the result of invoking (...)Unit
-          case null | Some(_: Unit) ⇒ Success(true)
-          case None ⇒ Success(false)
-          case x ⇒ Failure(new M2MTransformationException(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source"))
-        }
-      } catch {
-        case e: Throwable ⇒
-          Failure(new M2MTransformationException(s"Invocation of rule $name failed: ${e.getCause.getMessage}", e.getCause))
+    protected def doTransform(source: EObject, targets: Seq[EObject]): Try[Boolean] =
+      Try(underlying.invoke(target, (source +: targets): _*)) match {
+        case Success(None) ⇒ Success(false) // no transformation
+        case Success(null) | Success(Some(Unit)) ⇒ Success(true) // null will be the result of invoking (...)Unit
+        case Success(x) ⇒ Failure(new M2MTransformationException(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source"))
+        case Failure(e) ⇒ Failure(new M2MTransformationException(s"Invocation of rule $name failed: ${e.getCause.getMessage}", e.getCause))
       }
-    }
 
     override def toString = "Method" + super.toString
   }

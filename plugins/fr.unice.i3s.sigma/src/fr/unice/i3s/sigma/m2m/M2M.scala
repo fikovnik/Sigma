@@ -107,7 +107,7 @@ trait GreedyRule extends Rule {
 trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   /** Trace log entry*/
-  type TraceLogEntry = Map[Rule, Seq[EObject]]
+  type TraceLogEntry = collection.mutable.HashMap[Rule, Seq[EObject]]
   /** Trace log that contains the transformation trace used to resolve `source` <-> `target` elements. */
   type TraceLog = collection.mutable.HashMap[EObject, TraceLogEntry]
 
@@ -133,10 +133,10 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   def targetMetaModels_=(metaModels: Seq[SigmaEcorePackage[_ <: EPackage]])(implicit o: Overloaded1) = _targetMetaModels = metaModels map (_.ePackage)
 
   /** M2M Transformation session allowing to execute multiple M2M transformations at the same time. */
-  private[this] val session = new DynamicVariable[(collection.mutable.ListBuffer[EObject], TraceLog)](null)
+  private[this] val session = new DynamicVariable[TraceLog](null)
 
   /** Transformation trace log */
-  protected[m2m] def traceLog = session.value._2
+  protected[m2m] def traceLog = session.value
 
   private def applyUntilFailure[A, B](elems: Seq[A], res: Seq[B] = Seq())(fun: A ⇒ Try[B]): Either[(A, Failure[B]), Seq[B]] = elems match {
     case Seq() ⇒ Right(res)
@@ -185,10 +185,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   def apply(source: EObject): Try[(Iterable[EObject], Iterable[EObject])] = {
     check
 
-    val tl = new TraceLog
-    val sc = collection.mutable.ListBuffer[EObject]()
-
-    session.withValue((sc, tl)) {
+    session.withValue(new TraceLog) {
       transform(source) match {
         case Success(_) ⇒
 
@@ -231,6 +228,8 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   }
 
   protected def doTransformOne(source: EObject): Try[Unit] = {
+    logger debug s"Transforming $source"
+
     // 1. find matching rules
     findRules(source) match {
       case Seq() ⇒
@@ -249,7 +248,14 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
           // 2.1 create targets
           val targets = createTargets(rule, source)
-
+          
+          // 2.2 store targets so consecutive requests for the transformation
+          // will not cause the nest transformation of the same source
+          traceLog.get(source) match {
+            case Some(entry) => entry += rule -> targets
+            case None => traceLog += (source -> collection.mutable.HashMap(rule -> targets))
+          }
+          
           // 2.3 find and execute all abstract rules        
           val abstractRules = findAbstractRules(rule)
           logger debug {
@@ -280,21 +286,14 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
           abstractRuleExecution match {
             case Right(_) ⇒
               // 2.4 execute rules
-              executeRule(rule, source, targets) match {
-                case Success(_) ⇒
-                  Success(rule -> targets)
-                case Failure(e) ⇒ Failure(e)
-              }
+              executeRule(rule, source, targets)
 
             case Left((abstractRule, Failure(e))) ⇒ Failure(new M2MTransformationException(s"Invocation of ${abstractRule} failed", e))
           }
         }
 
         results match {
-          case Right(traces) ⇒
-            // 3 add to trace log
-            traceLog += source -> Map(traces: _*)
-            Success()
+          case Right(traces) ⇒ Success()
           case Left((rule, Failure(e))) ⇒ Failure(new M2MTransformationException(s"Invocation of ${rule} failed", e))
         }
 
@@ -303,17 +302,9 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   protected def transformOne(source: EObject): Try[Unit] = {
     require(source != null, "Source element cannot be null")
-    
-    logger debug s"Transforming $source"
 
-    // if source has been already transformed then return its result
-    targetsForSource(source) match {
-      case Seq() ⇒
-        doTransformOne(source)
-      case _ ⇒
-        logger debug s"$source has been already transformed"
-        Success()
-    }
+    if (transformed(source)) Success()
+    else doTransformOne(source)
   }
 
   protected[m2m] def transform(source: EObject): Try[Unit] = {
@@ -332,13 +323,15 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     }
   }
 
+  protected[m2m] def transformed(elem: EObject): Boolean = traceLog contains elem
+
   /**
    * Returns all traces `target` element which has been transformed by this `rule` using the given `elem` source element.
    *
    * @param elem the source element
    * @param rule the concerned rule
    */
-  protected[m2m] def tracesForSource(elem: EObject): TraceLogEntry = (traceLog get elem) getOrElse Map()
+  protected[m2m] def tracesForSource(elem: EObject): TraceLogEntry = (traceLog get elem) getOrElse collection.mutable.HashMap()
 
   /**
    * Returns all `target` elements which have been transformed from the given `elem` source element.
@@ -402,10 +395,10 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   implicit class EObjectM2MSupport(that: EObject) {
 
     def equivalents: Seq[EObject] = Option(that) match {
-      case Some(value) =>
-        transformOne(value); 
-        primaryTargetsForSource(value).toSeq 
-      case None =>
+      case Some(value) ⇒
+        transformOne(value);
+        primaryTargetsForSource(value).toSeq
+      case None ⇒
         Seq()
     }
 
@@ -471,7 +464,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     }
 
     /**
-     * Adds all elements produced by a TransformableSequence to this growable collection.
+     * Adds all elements produced by a [[TransformableSequence]] to this growable collection.
      *
      *  @param xs the TransformableSequence producing the elements to add.
      *  @return	the growable collection itself.
@@ -488,7 +481,15 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   implicit class EListM2MSupport[B <: EObject: ClassTag](that: EList[B]) extends GrowableM2MSupport {
     type A = B
 
-    protected def +=(elem: A) = that add elem
+    def +=(elem: A) = that add elem
+
+    /**
+     * Adds all elements produced by a [[TraversableOnce]] to this growable collection.
+     *
+     *  @param xs the [[TraversableOnce]] producing the elements to add.
+     *  @return	the growable collection itself.
+     */
+    def ++=(xs: TraversableOnce[A]): this.type = { xs foreach +=; this }
 
     def unary_~ : TransformableSequence = ~(that.toSeq)
   }
