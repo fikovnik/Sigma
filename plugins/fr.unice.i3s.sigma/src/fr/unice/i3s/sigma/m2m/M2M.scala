@@ -446,11 +446,6 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   // API
 
   protected def guardedBy[T](g: ⇒ Boolean) = g
-  protected def associate(source: EObject, target: EObject, targets: EObject*) {
-    require(executingRule.value != null, "associate can only be invoked from a rule body")
-
-    associate(source, executingRule.value, target +: targets.toSeq)
-  }
 
   private case class DefaultTransformable(that: EObject) extends Transformable {
     def transform[A <: EObject: ClassTag]: Option[A] = that.sEquivalent[A]
@@ -514,16 +509,16 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     /**
      * Triggers execution of all applicable rules.
      */
-    def sAllEquivalents: Seq[Seq[EObject]] = {
-      that foreach transformOne
-      (that map (primaryTargetsForSource(_).toSeq)).toSeq
+    def sAllEquivalents[T <: EObject: ClassTag]: Seq[Seq[T]] = {
+      val targets = that map (_.sAllEquivalents[T])
+      targets.toSeq
     }
 
     def sEquivalents[T <: EObject: ClassTag]: Seq[Seq[T]] = {
       val targets = that map (_.sEquivalents[T])
       targets.toSeq
     }
-    
+
     /**
      * Triggers execution only of a rule that can transform `that` into `T`.
      */
