@@ -29,11 +29,6 @@ trait Rule {
 
   def primaryTargetClass: EClass = targetClasses(0)
 
-  def conflicts(rule: Rule): Boolean =
-    if (rule != this)
-      !(rule.sourceClass != this.sourceClass || rule.primaryTargetClass != this.primaryTargetClass)
-    else false
-
   def transform(source: EObject, targets: Seq[EObject]): Try[Boolean] =
     if (!isApplicable(source)) Success(false)
     else {
@@ -85,11 +80,6 @@ trait AbstractRule extends Rule {
 }
 
 trait GreedyRule extends Rule {
-
-  override def conflicts(rule: Rule): Boolean =
-    if (rule != this)
-      !(rule.sourceClass.isSuperTypeOf(this.sourceClass) || rule.primaryTargetClass != this.primaryTargetClass)
-    else false
 
   override def isApplicable(source: EObject) = sourceClass isSuperTypeOf source.eClass
 
@@ -158,13 +148,6 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       _ match {
         case _: AbstractRule ⇒ false
         case _ ⇒ true
-      }
-    }
-
-    for (rule ← nonAbstractRules) {
-      res find { r ⇒ r.conflicts(rule) } match {
-        case Some(conflict) ⇒ throw new M2MTransformationException(s"Rule $rule conflits with $conflict likely because of having the same source->primary target relation")
-        case None ⇒
       }
     }
 
@@ -479,9 +462,9 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   implicit class EObjectM2MSupport(that: EObject) {
 
-    def sSource: Option[EObject] = 
-      traceLog find { case (s, t) => t.values exists (_ contains that) } map { case (s,t) => s }    
-    
+    def sSource: Option[EObject] =
+      traceLog find { case (s, t) ⇒ t.values exists (_ contains that) } map { case (s, t) ⇒ s }
+
     def sAllEquivalents[T <: EObject: ClassTag](): Seq[T] =
       findRules[T](that, considerAllTargets = true) match {
         case Seq() ⇒ Seq()
@@ -492,10 +475,15 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       }
 
     def sEquivalents[T <: EObject: ClassTag]: Seq[T] = findRules[T](that, considerAllTargets = false) match {
-      case Seq() ⇒ Seq()
-      case rules ⇒
-        rules foreach (doTransformOne(that, _))
-        targetsForSource(that).toSeq collect { case x: T ⇒ x }
+      case Seq() ⇒
+        logger trace s"No rule to transform $that into ${classTag[T]}"
+        Seq()
+      case Seq(rules @ _*) ⇒
+        val res = applyUntilFailure(rules) { r ⇒ doTransformOne(that, r) }
+        res match {
+          case Right(_) ⇒ targetsForSource(that).flatten.toSeq collect { case x: T ⇒ x }
+          case Left((elem, Failure(e))) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $elem: ${e}",e) 
+        }
     }
 
     /**
@@ -508,7 +496,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       case Seq(rule) ⇒
         doTransformOne(that, rule) match {
           case Success(_) ⇒ primaryTargetForSource(that, rule) map (_.asInstanceOf[T])
-          case Failure(e) ⇒ throw e 
+          case Failure(e) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $that: ${e}",e)
         }
       case Seq(rules @ _*) ⇒
         throw new M2MTransformationException(s"Method equivalent[${classTag[T]}] cannot be applied on ${that.getClass} since there are multiple rules that can transform it $rules")
