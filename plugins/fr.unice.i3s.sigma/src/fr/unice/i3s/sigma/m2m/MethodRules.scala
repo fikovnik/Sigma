@@ -24,7 +24,7 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
     protected def doTransform(source: EObject, targets: Seq[EObject]): Try[Boolean] =
       Try(underlying.invoke(target, (source +: targets): _*)) match {
         case Success(None) ⇒ Success(false) // no transformation
-        case Success(null) | Success(Some(Unit)) ⇒ Success(true) // null will be the result of invoking (...)Unit
+        case Success(null) | Success(Some(_:Unit)) ⇒ Success(true) // null will be the result of invoking (...)Unit
         case Success(x) ⇒ Failure(new M2MTransformationException(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source"))
         case Failure(e) ⇒ Failure(new M2MTransformationException(s"Invocation of rule $name failed: ${e.getCause.getMessage}", e.getCause))
       }
@@ -61,16 +61,32 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
 
     val isAbstract = method.isAnnotationPresent(classOf[Abstract])
     val isGreedy = method.isAnnotationPresent(classOf[Greedy])
+    val isLazy = method.isAnnotationPresent(classOf[Lazy])
+
+    // abstract rules cannot be lazy
+    if (isAbstract && isLazy)
+      throw new M2MTransformationException(s"Rule: $name cannot be both abstract and lazy at the same time")
+    // abstract rules cannot be greedy
+    if (isAbstract && isGreedy)
+      throw new M2MTransformationException(s"Rule: $name cannot be both abstract and greedy at the same time")
 
     // if the rule is not abstract then all target classes must be instantiable 
     if (!isAbstract && (targetClasses exists { c ⇒ c.isAbstract || c.isInterface }))
       throw new M2MTransformationException(s"Rule: $name is non-abstract and as such it cannot define a target which is an abstract class")
 
-    val rule = (isAbstract, isGreedy) match {
-      case (false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with MatchedRule
-      case (true, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with AbstractRule
-      case (false, true) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule
-      case (true, true) ⇒ throw new M2MTransformationException(s"A rule cannot be abstract and greedy at the same time as is the case for rule: $name")
+    val rule = (isAbstract, isGreedy, isLazy) match {
+      // matched rule
+      case (false, false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with MatchedRule
+      // abstract rule
+      case (true, false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with AbstractRule
+      // greedy rule
+      case (false, true, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule
+      // lazy rule
+      case (false, false, true) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with LazyRule
+      // greedy lazy rule
+      case (false, true, true) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule with LazyRule
+      // error
+      case _ ⇒ throw new M2MTransformationException(s"Rule: $name has an invalid modification attributes (abstract, lazy, greedy)")
     }
 
     rule
@@ -82,8 +98,6 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
     method.getName.startsWith(ruleMethodPrefix) &&
       // longer than prefix
       method.getName.size > ruleMethodPrefix.size &&
-      // not lazy rule
-      !method.isAnnotationPresent(classOf[Lazy]) &&
       (
         // either (...)Unit
         method.getReturnType.isAssignableFrom(classOf[Unit]) ||

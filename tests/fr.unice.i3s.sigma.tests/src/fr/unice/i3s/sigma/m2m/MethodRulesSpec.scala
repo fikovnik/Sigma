@@ -51,14 +51,25 @@ class MethodRulesSpec extends FlatSpec with Matchers with ExtraMatchers with Eco
     m2m.rules should have length (1)
   }
 
-  it should "not load a lazy rule" in {
+  it should "load a lazy rule" in {
     val m2m = new TestM2M {
       @Lazy def rule1(s: _ecore.EClass, t: _ecore.EPackage) {}
     }
 
-    m2m.rules shouldBe empty
+    m2m.rules should have length (1)
+    m2m.rules(0) shouldBe a[LazyRule]
   }
 
+  it should "load a lazy and greedy rule" in {
+    val m2m = new TestM2M {
+      @Lazy @Greedy def rule1(s: _ecore.EClass, t: _ecore.EPackage) {}
+    }
+
+    m2m.rules should have length (1)
+    m2m.rules(0) shouldBe a[LazyRule]
+    m2m.rules(0) shouldBe a[GreedyRule]
+  }  
+  
   it should "load an abstract rule" in {
     val m2m = new TestM2M {
       // note: t is abstract class which is fine
@@ -106,7 +117,7 @@ class MethodRulesSpec extends FlatSpec with Matchers with ExtraMatchers with Eco
 
     val mockedM2M = mock[M2M]
     
-    val m2m = new TestM2M {
+    val m2m = new M2M {
       override protected val target = mockedM2M
     }
     
