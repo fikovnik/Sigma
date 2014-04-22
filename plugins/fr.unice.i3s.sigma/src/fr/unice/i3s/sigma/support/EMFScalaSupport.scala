@@ -99,7 +99,7 @@ trait EMFScalaSupport {
     def newInstance: EObject = that.getEPackage.getEFactoryInstance.create(that)
   }
   
-  implicit class RichSigmaEObject[A <: EObject](that: A) extends OverloadHack {
+  implicit class RichSigmaEObject[A <: EObject : ClassTag](that: A) extends OverloadHack {
 
     def sInit(fun: A ⇒ Any): A = {
       fun(that)
@@ -152,6 +152,8 @@ trait EMFScalaSupport {
       case x: T => Some(x)
       case _ => None
     }
+    
+    def sSiblings: Seq[A] = Option(that.eContainer) map (_.eContents collect { case x: A => x}) getOrElse Seq()
     
     def sAllContents[T <: EObject: ClassTag]: Seq[T] = {
       import collection.JavaConversions.asScalaIterator
