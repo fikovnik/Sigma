@@ -12,6 +12,7 @@ import fr.unice.i3s.sigma.m2m.annotations.Lazy
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.SigmaSupport
 import fr.unice.i3s.sigma.m2m.annotations.Greedy
+import java.lang.annotation.Annotation
 
 trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Logging { this: BaseM2MT ⇒
 
@@ -24,7 +25,7 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
     protected def doTransform(source: EObject, targets: Seq[EObject]): Try[Boolean] =
       Try(underlying.invoke(target, (source +: targets): _*)) match {
         case Success(None) ⇒ Success(false) // no transformation
-        case Success(null) | Success(Some(_:Unit)) ⇒ Success(true) // null will be the result of invoking (...)Unit
+        case Success(null) | Success(Some(_: Unit)) ⇒ Success(true) // null will be the result of invoking (...)Unit
         case Success(x) ⇒ Failure(new M2MTransformationException(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source"))
         case Failure(e) ⇒ Failure(new M2MTransformationException(s"Invocation of rule $name failed: ${e.getCause.getMessage}", e.getCause))
       }
@@ -45,6 +46,20 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
   protected lazy val targetEClasses = targetMetaModels flatMap (_.eClassifiers) collect { case e: EClass ⇒ e }
 
   protected def createRule(method: Method): Rule = {
+
+    def findAnnotation[A <: Annotation](method: Method, annotationClass: Class[A]): Option[A] = {
+      Option(method.getAnnotation(annotationClass)) orElse {
+        val cl = method.getDeclaringClass.getSuperclass
+
+        if (cl != null && cl != classOf[Object]) {
+          Try(cl.getDeclaredMethod(method.getName(), method.getParameterTypes: _*))
+            .toOption
+            .flatMap(findAnnotation(_, annotationClass))
+        } else
+          None
+      }
+    }
+
     val name = method.getName.drop(ruleMethodPrefix.size)
 
     val source = method.getParameterTypes()(0)
@@ -59,9 +74,9 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
         .orThrow(new M2MTransformationException(s"The rule $name defines a target element ${c.getName} which has not been found in any of the target meta-models: ${targetMetaModels map (_.name) mkString (", ")}"))
     }
 
-    val isAbstract = method.isAnnotationPresent(classOf[Abstract])
-    val isGreedy = method.isAnnotationPresent(classOf[Greedy])
-    val isLazy = method.isAnnotationPresent(classOf[Lazy])
+    val isAbstract = findAnnotation(method, classOf[Abstract]).isDefined
+    val isGreedy = findAnnotation(method, classOf[Greedy]).isDefined
+    val isLazy = findAnnotation(method, classOf[Lazy]).isDefined
 
     // abstract rules cannot be lazy
     if (isAbstract && isLazy)
