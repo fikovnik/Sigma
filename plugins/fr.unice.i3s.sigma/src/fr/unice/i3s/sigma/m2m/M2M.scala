@@ -18,11 +18,6 @@ import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._
 import fr.unice.i3s.sigma.support.SigmaEcorePackage
 import fr.unice.i3s.sigma.internal.OverloadHack
 import scala.collection.generic.Growable
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Failure
-import scala.util.Failure
-import scala.util.Failure
 
 // TODO: shapeless
 trait Rule {
@@ -210,8 +205,8 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   protected[m2m] def findNonLazyRules(source: EObject): Seq[Rule] =
     rules filter { r ⇒ r.isApplicable(source) && !r.isInstanceOf[LazyRule] }
 
-  protected[m2m] def findRule[T <: EObject: ClassTag](source: EObject): Option[Rule] =
-    rules find { r ⇒
+  protected[m2m] def findRules[T <: EObject: ClassTag](source: EObject): Seq[Rule] =
+    rules filter { r ⇒
       r.isApplicable(source) &&
         classTag[T].runtimeClass.isAssignableFrom(r.primaryTargetClass.getInstanceClass)
     }
@@ -444,7 +439,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   def guardedBy[T](g: ⇒ Boolean) = g
 
   private case class DefaultTransformable(that: EObject) extends Transformable {
-    def transform[A <: EObject: ClassTag]: Option[A] = that.equivalent[A]
+    def transform[A <: EObject: ClassTag]: Option[A] = that.sEquivalent[A]
   }
 
   private case class NoTransformable extends Transformable {
@@ -452,7 +447,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   }
 
   private case class DefaultTransformableSequence(that: Traversable[EObject]) extends TransformableSequence {
-    def transform[A <: EObject: ClassTag]: Traversable[A] = that.equivalent[A]
+    def transform[A <: EObject: ClassTag]: Traversable[A] = that.sEquivalent[A]
   }
 
   implicit class CheckedBoolean(that: Boolean) {
@@ -465,7 +460,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   implicit class EObjectM2MSupport(that: EObject) {
 
-    def equivalents: Seq[EObject] = Option(that) match {
+    def sAllEquivalents: Seq[EObject] = Option(that) match {
       case Some(value) ⇒
         transformOne(value);
         primaryTargetsForSource(value).toSeq
@@ -473,19 +468,27 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
         Seq()
     }
 
+    def sEquivalents[T <: EObject: ClassTag]: Seq[T] = findRules[T](that) match {
+      case Seq() ⇒ Seq()
+      case rules ⇒
+        rules foreach (doTransformOne(that, _))
+        primaryTargetsForSource(that).toSeq collect { case x: T ⇒ x }
+    }
+
     /**
-     * @return the transformed object or `null` in the case there is no rule that can transform `that` into `T`
+     * @return the transformed object or [[None]] in the case there is no rule that can transform `that` into `T`
      */
-    // TODO: warn that there might be more than one!
-    def equivalent[T <: EObject: ClassTag]: Option[T] = findRule[T](that) match {
-      case Some(rule) ⇒
+    def sEquivalent[T <: EObject: ClassTag]: Option[T] = findRules[T](that) match {
+      case Seq() ⇒
+        logger trace s"No rule to transform $that into ${classTag[T]}"
+        None
+      case Seq(rule) ⇒
         doTransformOne(that, rule) match {
           case Success(_) ⇒ primaryTargetForSource(that, rule) map (_.asInstanceOf[T])
           case Failure(_) ⇒ None
         }
-      case None ⇒
-        logger trace s"No rule to transform $that into ${classTag[T]}"
-        None
+      case Seq(rules @ _*) ⇒
+        throw new M2MTransformationException(s"Method equivalent[${classTag[T]}] cannot be applied on ${that.getClass} since there are multiple rules that can transform it $rules")
     }
 
     def unary_~ : Transformable = DefaultTransformable(that)
@@ -497,16 +500,21 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     /**
      * Triggers execution of all applicable rules.
      */
-    def equivalents: Seq[Seq[EObject]] = {
+    def sAllEquivalents: Seq[Seq[EObject]] = {
       that foreach transformOne
       (that map (primaryTargetsForSource(_).toSeq)).toSeq
     }
 
+    def sEquivalents[T <: EObject: ClassTag]: Seq[Seq[T]] = {
+      val targets = that map (_.sEquivalents[T])
+      targets.toSeq
+    }
+    
     /**
      * Triggers execution only of a rule that can transform `that` into `T`.
      */
-    def equivalent[T <: EObject: ClassTag]: Seq[T] = {
-      val targets = that map (_.equivalent[T])
+    def sEquivalent[T <: EObject: ClassTag]: Seq[T] = {
+      val targets = that map (_.sEquivalent[T])
 
       targets.toSeq collect { case Some(v) ⇒ v }
     }
@@ -574,9 +582,11 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
     def ++=(xs: TraversableOnce[Option[A]])(implicit e: Overloaded1): this.type = { xs foreach +=; this }
 
-    def equivalents: Seq[Seq[EObject]] = that.toSeq.equivalents
+    def equivalents: Seq[Seq[EObject]] = that.toSeq.sAllEquivalents
 
-    def equivalent[T <: EObject: ClassTag]: Seq[T] = that.toSeq.equivalent[T]
+    def equivalents[T <: EObject: ClassTag]: Seq[Seq[T]] = that.toSeq.sEquivalents[T]
+
+    def equivalent[T <: EObject: ClassTag]: Seq[T] = that.toSeq.sEquivalent[T]
 
     def unary_~ : TransformableSequence = ~(that.toSeq)
   }
