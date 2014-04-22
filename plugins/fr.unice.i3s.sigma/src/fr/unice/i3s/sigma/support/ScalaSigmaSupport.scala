@@ -18,7 +18,9 @@ trait ScalaSigmaSupport {
   }
   
   /** Makes string to implement [[TextOutputting]] */
-  implicit class RichSigmaString(that: String) extends TextOutputting  
+  implicit class RichSigmaString(that: String) extends TextOutputting {
+    override def toString = that.toString
+  }
 }
 
 object ScalaSigmaSupport extends ScalaSigmaSupport
