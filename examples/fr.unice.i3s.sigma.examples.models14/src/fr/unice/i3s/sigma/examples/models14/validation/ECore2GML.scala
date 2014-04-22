@@ -27,20 +27,20 @@ class EPackageContext extends ValidationContext with InvMethods with EcoreExtras
   def invNodesAreDefined = guardedBy {
     self satisfies invDiagramIsDefined
   } check {
-    if (self.contents[EClass] filter (_.isNode) nonEmpty) Passed
+    if (self.sAllContents[EClass] filter (_.isNode) nonEmpty) Passed
     else Error("No nodes (gmf.node) have been defined")
   }
 
   def invReferenceLinksAreDefined = guardedBy {
     self satisfies invDiagramIsDefined
   } check {
-    if (getReferenceLinks.nonEmpty || (self.contents[EClass] filter (_.isLink) nonEmpty)) Passed
+    if (getReferenceLinks.nonEmpty || (self.sAllContents[EClass] filter (_.isLink) nonEmpty)) Passed
     else Warning("No reference links (gmf.link) have been defined")
   }
 
   def getReferenceLinks = self.getDiagramClass.get.getAnnotationValue("gmf.diagram", "refsarelinks") match {
-    case Some("true") ⇒ self.contents[EReference] filter (!_.containment)
-    case _ ⇒ self.contents[EReference] filter (_.isLink)
+    case Some("true") ⇒ self.sAllContents[EReference] filter (!_.containment)
+    case _ ⇒ self.sAllContents[EReference] filter (_.isLink)
   }
 }
 

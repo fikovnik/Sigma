@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import fr.unice.i3s.sigma.util.DelegatingEList
 import org.eclipse.emf.ecore.EModelElement
 import org.eclipse.emf.ecore.EAnnotation
+import fr.unice.i3s.sigma.internal.OverloadHack
 
 trait EMFScalaSupport {
 
@@ -98,14 +99,14 @@ trait EMFScalaSupport {
     def newInstance: EObject = that.getEPackage.getEFactoryInstance.create(that)
   }
   
-  implicit class RichSigmaEObject[A <: EObject](that: A) {
+  implicit class RichSigmaEObject[A <: EObject](that: A) extends OverloadHack {
 
-    def init(fun: A ⇒ Any): A = {
+    def sInit(fun: A ⇒ Any): A = {
       fun(that)
       that
     }
 
-    def initLater(fun: A ⇒ Any): A = {
+    def sInitLater(fun: A ⇒ Any): A = {
       that.adapter[PostponedInitizationAdapter[_]] match {
         case Some(_) ⇒ throw new IllegalStateException("Multiple postponed initialization is not supported. Object: " + that)
         case None ⇒ that.eAdapters += new PostponedInitizationAdapter(fun)
@@ -113,40 +114,46 @@ trait EMFScalaSupport {
       that
     }
 
-    def dump(out: PrintStream = System.out, indent: Int = 0) {
+    def sDump(out: PrintStream = System.out, indent: Int = 0) {
       out.println(" " * indent + that)
       for (e ← that.eContents) {
-        e.dump(out, indent + 2)
+        e.sDump(out, indent + 2)
       }
     }
 
-    def validate = Diagnostician.INSTANCE.validate(that)
+    def sValidate = Diagnostician.INSTANCE.validate(that)
 
-    def violations(severity: Int = Diagnostic.ERROR) = {
-      validate.flatten.filter(_.getSeverity() == severity)
+    def sViolations(severity: Int = Diagnostic.ERROR) = {
+      sValidate.flatten.filter(_.getSeverity() == severity)
     }
 
     /**
      * @returns true if object represented by this instance directly violates the given constrain
      */
-    def violatesConstraint(name: String, severity: Int = Diagnostic.ERROR) = {
-      validate.containsConstraint(name, Some(that), severity)
+    def sViolatesConstraint(name: String, severity: Int = Diagnostic.ERROR) = {
+      sValidate.containsConstraint(name, Some(that), severity)
     }
 
     /**
      * @returns true if object represented by this instance or any of its children violates the given constrain
      */
-    def violatesConstraintAny(name: String, severity: Int = Diagnostic.ERROR) = {
-      validate.containsConstraint(name, None, severity)
+    def sViolatesConstraintAny(name: String, severity: Int = Diagnostic.ERROR) = {
+      sValidate.containsConstraint(name, None, severity)
     }
 
-    def isValid = {
-      validate.isOK
+    def sIsValid = {
+      sValidate.isOK
     }
 
-    def copy = EcoreUtil.copy(that)
+    def sCopy = EcoreUtil.copy(that)
 
-    def contents[T <: EObject: ClassTag]: Seq[T] = {
+    def sContainer[T <: EObject: ClassTag]: Option[T] = that.eContainer match {
+      case null => None
+      case x: T => Some(x)
+      case _ => None
+    }
+    
+    def sAllContents[T <: EObject: ClassTag]: Seq[T] = {
       import collection.JavaConversions.asScalaIterator
       
       (that.eAllContents collect { case x: T ⇒ x }).toSeq

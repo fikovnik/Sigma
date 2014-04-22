@@ -108,9 +108,9 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
       ) +
         div(id := "classifiers",
           h1("Datatypes"),
-          listing[EDataType](source.contents[EDataType], c ⇒ c.name, clsFilename),
+          listing[EDataType](source.sAllContents[EDataType], c ⇒ c.name, clsFilename),
           h1("Classes"),
-          listing[EClass](source.contents[EClass], c ⇒ c.name, clsFilename)
+          listing[EClass](source.sAllContents[EClass], c ⇒ c.name, clsFilename)
         )
 
     def pageContent = img(src := metaModelOverviewFigure, alt := s"Overview of the $metaModelName metamodel")
@@ -135,9 +135,9 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
         ) +
           div(id := "classifiers",
             h1("Datatypes"),
-            listing[EDataType](source.ePackage.contents[EDataType], c ⇒ c.name, clsFilename),
+            listing[EDataType](source.ePackage.sAllContents[EDataType], c ⇒ c.name, clsFilename),
             h1("Classes"),
-            listing[EClass](source.ePackage.contents[EClass], c ⇒ c.name, clsFilename)
+            listing[EClass](source.ePackage.sAllContents[EClass], c ⇒ c.name, clsFilename)
           )
 
     def description = source.documentation.map { v ⇒

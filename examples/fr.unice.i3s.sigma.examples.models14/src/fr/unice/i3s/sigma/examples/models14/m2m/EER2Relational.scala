@@ -1,18 +1,13 @@
 package fr.unice.i3s.sigma.examples.models14.m2m
 
-import fr.unice.i3s.sigma.m2m.M2MT
-import fr.unice.i3s.sigma.util.EMFUtils
+import java.io.File
+
+import com.typesafe.scalalogging.log4j.Logging
+
 import EER.support.EERPackageScalaSupport
 import Relational.support.RelationalPackageScalaSupport
-import Relational.RelationalPackage
-import com.typesafe.scalalogging.log4j.Logging
-import sun.util.logging.resources.logging
-import org.junit.runner.RunWith
-import org.scalatest.matchers.MustMatchers
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
-import java.io.File
-import fr.unice.i3s.sigma.m2m.annotations.Lazy
+import fr.unice.i3s.sigma.m2m.M2MT
+import fr.unice.i3s.sigma.util.EMFUtils
 
 class EER2Relational extends M2MT with EERPackageScalaSupport with RelationalPackageScalaSupport with Logging {
 
@@ -101,6 +96,6 @@ object EER2RelationalTest extends App with EERPackageScalaSupport {
   val m2m = new EER2Relational()
   val (pri, sec) = m2m.execute(project)
 
-  pri foreach (_.dump())
+  pri foreach (_.sDump())
 
 }

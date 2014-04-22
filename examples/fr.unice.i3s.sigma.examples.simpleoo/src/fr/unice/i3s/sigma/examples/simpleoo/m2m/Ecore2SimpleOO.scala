@@ -50,7 +50,7 @@ object Ecore2SimpleOO extends App with EcorePackageScalaSupport {
   val (pri, sec) = m2m.execute(_ecore.ePackage)
 
   println(pri)
-  pri.head.dump()
+  pri.head.sDump()
   println(sec)
 
 }

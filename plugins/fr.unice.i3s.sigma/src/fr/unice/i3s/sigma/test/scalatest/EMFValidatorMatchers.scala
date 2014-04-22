@@ -10,14 +10,14 @@ import fr.unice.i3s.sigma.support.EMFScalaSupport
 trait EMFValidatorMatchers extends EMFScalaSupport {
 
   class ValidBePropertyMatcher extends BePropertyMatcher[EObject] {
-    def apply(left: EObject) = BePropertyMatchResult(left.isValid, "valid")
+    def apply(left: EObject) = BePropertyMatchResult(left.sIsValid, "valid")
   }
 
   def violate(right: String): Matcher[EObject] =
     new Matcher[EObject] {
       def apply(left: EObject): MatchResult = {
         MatchResult(
-          left violatesConstraint right,
+          left sViolatesConstraint right,
           "object `%s' did not violate `%s' constaint" format (left, right),
           "object `%s' violated `%s' constaint" format (left, right))
       }
@@ -27,7 +27,7 @@ trait EMFValidatorMatchers extends EMFScalaSupport {
     new Matcher[EObject] {
       def apply(left: EObject): MatchResult = {
         MatchResult(
-          left violatesConstraintAny right,
+          left sViolatesConstraintAny right,
           "object `%s' did not violate `%s' constaint" format (left, right),
           "object `%s' violated `%s' constaint" format (left, right))
       }
