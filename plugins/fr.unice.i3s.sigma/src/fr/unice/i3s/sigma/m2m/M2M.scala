@@ -191,10 +191,10 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       transform(source) match {
         case Success(_) ⇒
 
-          val pri = primaryTargetsForSource(source).toSeq
+          val pri = primaryTargetsForSource(source).toSet
           val priNonContained = pri filter (_.eContainer == null)
 
-          val sec = traceLog.values.flatMap(_.values).flatten.toSeq
+          val sec = traceLog.values.flatMap(_.values).flatten.toSet
           val secNonContained = sec filter (_.eContainer == null)
           val secNonPri = secNonContained diff pri
 
