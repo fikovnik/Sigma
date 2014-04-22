@@ -134,6 +134,9 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   /** M2M Transformation session allowing to execute multiple M2M transformations at the same time. */
   private[this] val session = new DynamicVariable[TraceLog](null)
 
+  /** Current executing rule */
+  private[this] val executingRule = new DynamicVariable[Rule](null)
+
   /** Transformation trace log */
   protected[m2m] def traceLog = session.value
 
@@ -220,16 +223,18 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   protected[m2m] def executeRule(rule: Rule, source: EObject, targets: Seq[EObject]): Try[Boolean] = {
     logger trace s"${rule.name}: executing"
 
-    rule.transform(source, targets) match {
-      case res @ Success(true) ⇒
-        logger trace s"${rule.name}: rule executed, result: ${targets}"
-        res
-      case res @ Success(false) ⇒
-        logger trace s"${rule.name}: rule did not execute, possibly because its guard did not match the source element"
-        res
-      case res @ Failure(e) ⇒
-        logger error s"${rule.name}: rule failure [${e.getClass.getName}]: ${e.getMessage}"
-        res
+    executingRule.withValue(rule) {
+      rule.transform(source, targets) match {
+        case res @ Success(true) ⇒
+          logger trace s"${rule.name}: rule executed, result: ${targets}"
+          res
+        case res @ Success(false) ⇒
+          logger trace s"${rule.name}: rule did not execute, possibly because its guard did not match the source element"
+          res
+        case res @ Failure(e) ⇒
+          logger error s"${rule.name}: rule failure [${e.getClass.getName}]: ${e.getMessage}"
+          res
+      }
     }
   }
 
@@ -252,12 +257,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
       // store targets so consecutive requests for the transformation
       // will not cause the nest transformation of the same source
-      traceLog.get(source) match {
-        case Some(entry) ⇒
-          entry += rule -> targets
-        case None ⇒
-          traceLog += (source -> collection.mutable.HashMap(rule -> targets))
-      }
+      associate(source, rule, targets)
 
       // find and execute all applicable abstract rules        
       val abstractRules = findAbstractRules(rule)
@@ -434,9 +434,23 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     case Seq(x, xs @ _*) ⇒ Some(x)
   }
 
-  // TODO: move following to API
+  protected[m2m] def associate(source: EObject, rule: Rule, targets: Seq[EObject]) {
+    traceLog.get(source) match {
+      case Some(entry) ⇒
+        entry += rule -> targets
+      case None ⇒
+        traceLog += (source -> collection.mutable.HashMap(rule -> targets))
+    }
+  }
 
-  def guardedBy[T](g: ⇒ Boolean) = g
+  // API
+
+  protected def guardedBy[T](g: ⇒ Boolean) = g
+  protected def associate(source: EObject, target: EObject, targets: EObject*) {
+    require(executingRule.value != null, "associate can only be invoked from a rule body")
+
+    associate(source, executingRule.value, target +: targets.toSeq)
+  }
 
   private case class DefaultTransformable(that: EObject) extends Transformable {
     def transform[A <: EObject: ClassTag]: Option[A] = that.sEquivalent[A]
