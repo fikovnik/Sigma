@@ -49,17 +49,18 @@ object EMFUtils {
       load(uri, resolveAll)
     }
 
-    def saveToFile(root: EObject, file: File) {
+    def saveToFile(file: File, elem1: EObject, elems: EObject*) {
       val uri = URI.createFileURI(file.getAbsolutePath())
 
-      save(root, uri);
+      save(uri, elem1, elems:_*);
     }
 
-    def save(root: EObject, uri: URI) {
+    def save(uri: URI, elem1: EObject, elems: EObject*) {
       val resourceSet = new ResourceSetImpl()
       val resource = resourceSet.createResource(uri)
 
-      resource.getContents().add(root)
+      resource.getContents().add(elem1)
+      resource.getContents().addAll(elems)
 
       // TODO: reogrganize - should be a boolean param
       // TODO: should we have XMI dependency?
