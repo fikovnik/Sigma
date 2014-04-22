@@ -90,6 +90,10 @@ trait LazyRule extends Rule {
   override def toString = "Lazy" + super.toString
 }
 
+trait LazyUniqueRule extends Rule {
+	override def toString = "LazyUnique" + super.toString
+}
+
 /**
  * The base trait for all Model-to-Model Transformations
  */
@@ -190,7 +194,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   }
 
   protected[m2m] def findNonLazyRules(source: EObject): Seq[Rule] =
-    rules filter { r ⇒ r.isApplicable(source) && !r.isInstanceOf[LazyRule] }
+    rules filter { r ⇒ r.isApplicable(source) && !r.isInstanceOf[LazyRule]  && !r.isInstanceOf[LazyUniqueRule]}
 
   protected[m2m] def findRules[T <: EObject: ClassTag](source: EObject, considerAllTargets: Boolean): Seq[Rule] =
     rules filter { r ⇒
@@ -234,10 +238,8 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
     logger trace s"Transforming $source using $rule"
 
-    // execute abstract rules
-    // it could be that an execution of the last rule has already triggered 
-    // an execution of this rule on the source object
-    if (transformed(source, rule)) {
+    // FIXME: the rule execution should be moved back to the rule itself
+    if (!rule.isInstanceOf[LazyRule] && transformed(source, rule)) {
       logger trace s"${rule.name}: has already transformed $source"
       Success()
     } else {
@@ -248,6 +250,10 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
       // store targets so consecutive requests for the transformation
       // will not cause the nest transformation of the same source
+      if (rule.isInstanceOf[LazyRule]) {
+        // remove the last one
+        traceLog get (source) flatMap (_.get(rule)) foreach (_.clear)
+      }
       associate(source, rule, targets)
 
       // find and execute all applicable abstract rules        
@@ -473,7 +479,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
         val res = applyUntilFailure(rules) { r ⇒ doTransformOne(that, r) }
         res match {
           case Right(_) ⇒ targetsForSource(that).flatten.toSeq collect { case x: T ⇒ x }
-          case Left((elem, Failure(e))) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $elem: ${e}",e) 
+          case Left((elem, Failure(e))) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $elem: ${e}", e)
         }
     }
 
@@ -487,7 +493,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       case Seq(rule) ⇒
         doTransformOne(that, rule) match {
           case Success(_) ⇒ primaryTargetForSource(that, rule) map (_.asInstanceOf[T])
-          case Failure(e) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $that: ${e}",e)
+          case Failure(e) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $that: ${e}", e)
         }
       case Seq(rules @ _*) ⇒
         throw new M2MTransformationException(s"Method equivalent[${classTag[T]}] cannot be applied on ${that.getClass} since there are multiple rules that can transform it $rules")

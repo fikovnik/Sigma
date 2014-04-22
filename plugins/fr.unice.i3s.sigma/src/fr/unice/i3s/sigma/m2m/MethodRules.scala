@@ -13,6 +13,7 @@ import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.SigmaSupport
 import fr.unice.i3s.sigma.m2m.annotations.Greedy
 import java.lang.annotation.Annotation
+import fr.unice.i3s.sigma.m2m.annotations.LazyUnique
 
 trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Logging { this: BaseM2MT ⇒
 
@@ -77,6 +78,7 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
     val isAbstract = findAnnotation(method, classOf[Abstract]).isDefined
     val isGreedy = findAnnotation(method, classOf[Greedy]).isDefined
     val isLazy = findAnnotation(method, classOf[Lazy]).isDefined
+    val isLazyUnique = findAnnotation(method, classOf[LazyUnique]).isDefined
 
     // abstract rules cannot be lazy
     if (isAbstract && isLazy)
@@ -84,22 +86,29 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
     // abstract rules cannot be greedy
     if (isAbstract && isGreedy)
       throw new M2MTransformationException(s"Rule: $name cannot be both abstract and greedy at the same time")
+    // abstract rules cannot be lazy unique
+    if (isAbstract && isLazyUnique)
+    	throw new M2MTransformationException(s"Rule: $name cannot be both abstract and lazy unique at the same time")
 
     // if the rule is not abstract then all target classes must be instantiable 
     if (!isAbstract && (targetClasses exists { c ⇒ c.isAbstract || c.isInterface }))
       throw new M2MTransformationException(s"Rule: $name is non-abstract and as such it cannot define a target which is an abstract class")
 
-    val rule = (isAbstract, isGreedy, isLazy) match {
+    val rule = (isAbstract, isGreedy, isLazy, isLazyUnique) match {
       // matched rule
-      case (false, false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with MatchedRule
+      case (false, false, false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with MatchedRule
       // abstract rule
-      case (true, false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with AbstractRule
+      case (true, false, false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with AbstractRule
       // greedy rule
-      case (false, true, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule
+      case (false, true, false, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule
       // lazy rule
-      case (false, false, true) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with LazyRule
+      case (false, false, true, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with LazyRule
+      // lazy unique rule
+      case (false, false, false, true) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with LazyUniqueRule
       // greedy lazy rule
-      case (false, true, true) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule with LazyRule
+      case (false, true, true, false) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule with LazyRule
+      // greedy lazy unique rule
+      case (false, true, true, true) ⇒ new MethodRule(name, sourceClass, targetClasses, method) with GreedyRule with LazyUniqueRule
       // error
       case _ ⇒ throw new M2MTransformationException(s"Rule: $name has an invalid modification attributes (abstract, lazy, greedy)")
     }
