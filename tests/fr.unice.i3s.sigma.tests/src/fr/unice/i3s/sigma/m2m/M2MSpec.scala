@@ -292,24 +292,4 @@ class M2MSpec extends FlatSpec with Matchers with ExtraMatchers with MockitoSuga
     rule6.isSuperRuleOf(rule5) shouldBe true
   }
 
-  "MatcherRule" should "conflict with a rule defining the same source - target relation" in {
-    val rule1 = new NOPRule(_ecore.ePackage.getEClass, Seq(_ecore.ePackage.getEClass))
-    val rule2 = new NOPRule(_ecore.ePackage.getEClass, Seq(_ecore.ePackage.getEClass))
-
-    rule1.conflicts(rule2) shouldBe true
-    rule2.conflicts(rule1) shouldBe true
-
-    val rule3 = new NOPRule(_ecore.ePackage.getEPackage, Seq(_ecore.ePackage.getEClass))
-    rule3.conflicts(rule1) shouldBe false
-    rule1.conflicts(rule3) shouldBe false
-  }
-
-  "GreedyRule" should "conflict with a rule defining the same source - target relation" in {
-    val rule1 = new NOPRule(_ecore.ePackage.getEClass, Seq(_ecore.ePackage.getEClass))
-    val rule2 = new NOPRule(_ecore.ePackage.getEClassifier, Seq(_ecore.ePackage.getEClass)) with GreedyRule
-
-    rule1.conflicts(rule2) shouldBe false
-    rule2.conflicts(rule1) shouldBe true
-  }
-
 }
