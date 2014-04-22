@@ -18,6 +18,7 @@ import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._
 import fr.unice.i3s.sigma.support.SigmaEcorePackage
 import fr.unice.i3s.sigma.internal.OverloadHack
 import scala.collection.generic.Growable
+import scala.collection.mutable.Buffer
 
 // TODO: shapeless
 trait Rule {
@@ -106,7 +107,7 @@ trait LazyRule extends Rule {
 trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   /** Trace log entry*/
-  type TraceLogEntry = collection.mutable.HashMap[Rule, Seq[EObject]]
+  type TraceLogEntry = collection.mutable.HashMap[Rule, Buffer[EObject]]
   /** Trace log that contains the transformation trace used to resolve `source` <-> `target` elements. */
   type TraceLog = collection.mutable.HashMap[EObject, TraceLogEntry]
 
@@ -208,10 +209,17 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   protected[m2m] def findNonLazyRules(source: EObject): Seq[Rule] =
     rules filter { r ⇒ r.isApplicable(source) && !r.isInstanceOf[LazyRule] }
 
-  protected[m2m] def findRules[T <: EObject: ClassTag](source: EObject): Seq[Rule] =
+  protected[m2m] def findRules[T <: EObject: ClassTag](source: EObject, considerAllTargets: Boolean): Seq[Rule] =
     rules filter { r ⇒
-      r.isApplicable(source) &&
-        classTag[T].runtimeClass.isAssignableFrom(r.primaryTargetClass.getInstanceClass)
+      r.isApplicable(source) && (
+        (
+          considerAllTargets && r.targetClasses.exists { t ⇒
+            classTag[T].runtimeClass.isAssignableFrom(t.getInstanceClass)
+          }
+        ) || (
+            !considerAllTargets && classTag[T].runtimeClass.isAssignableFrom(r.primaryTargetClass.getInstanceClass)
+          )
+      )
     }
 
   protected[m2m] def findAbstractRules(rule: Rule): Seq[AbstractRule] =
@@ -299,9 +307,9 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
               // rule executed and transformed
               Success()
             case Success(false) ⇒
-              // rule executed, but did not transformed
-              // this is marked by an empty Seq() stored in the trace log
-              traceLog(source)(rule) = Seq()
+              // rule executed, but did not transformed - the original targets
+              // are therefore replaced this is marked by an empty Buffer()
+              traceLog(source)(rule) = Buffer()
               Success()
             case Failure(e) ⇒ Failure(e)
           }
@@ -436,10 +444,12 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   protected[m2m] def associate(source: EObject, rule: Rule, targets: Seq[EObject]) {
     traceLog.get(source) match {
-      case Some(entry) ⇒
-        entry += rule -> targets
+      case Some(entry) ⇒ entry.get(rule) match {
+        case Some(trace) ⇒ trace ++= targets filter (!trace.contains(_))
+        case None ⇒ entry += rule -> targets.toBuffer
+      }
       case None ⇒
-        traceLog += (source -> collection.mutable.HashMap(rule -> targets))
+        traceLog += (source -> collection.mutable.HashMap(rule -> targets.toBuffer))
     }
   }
 
@@ -469,35 +479,49 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   implicit class EObjectM2MSupport(that: EObject) {
 
-    def sAllEquivalents: Seq[EObject] = Option(that) match {
-      case Some(value) ⇒
-        transformOne(value);
-        primaryTargetsForSource(value).toSeq
-      case None ⇒
-        Seq()
-    }
+    def sSource: Option[EObject] = 
+      traceLog find { case (s, t) => t.values exists (_ contains that) } map { case (s,t) => s }    
+    
+    def sAllEquivalents[T <: EObject: ClassTag](): Seq[T] =
+      findRules[T](that, considerAllTargets = true) match {
+        case Seq() ⇒ Seq()
+        case rules ⇒
+          rules foreach (doTransformOne(that, _))
+          targetsForSource(that).flatten.toSeq collect { case x: T ⇒ x }
 
-    def sEquivalents[T <: EObject: ClassTag]: Seq[T] = findRules[T](that) match {
+      }
+
+    def sEquivalents[T <: EObject: ClassTag]: Seq[T] = findRules[T](that, considerAllTargets = false) match {
       case Seq() ⇒ Seq()
       case rules ⇒
         rules foreach (doTransformOne(that, _))
-        primaryTargetsForSource(that).toSeq collect { case x: T ⇒ x }
+        targetsForSource(that).toSeq collect { case x: T ⇒ x }
     }
 
     /**
      * @return the transformed object or [[None]] in the case there is no rule that can transform `that` into `T`
      */
-    def sEquivalent[T <: EObject: ClassTag]: Option[T] = findRules[T](that) match {
+    def sEquivalent[T <: EObject: ClassTag]: Option[T] = findRules[T](that, considerAllTargets = false) match {
       case Seq() ⇒
         logger trace s"No rule to transform $that into ${classTag[T]}"
         None
       case Seq(rule) ⇒
         doTransformOne(that, rule) match {
           case Success(_) ⇒ primaryTargetForSource(that, rule) map (_.asInstanceOf[T])
-          case Failure(_) ⇒ None
+          case Failure(e) ⇒ throw e 
         }
       case Seq(rules @ _*) ⇒
         throw new M2MTransformationException(s"Method equivalent[${classTag[T]}] cannot be applied on ${that.getClass} since there are multiple rules that can transform it $rules")
+    }
+
+    def sAssociate(targets: Seq[EObject]) {
+      require(executingRule.value != null, "associate can only be invoked from a rule body")
+      associate(that, executingRule.value, targets)
+    }
+
+    def sAssociate(target: EObject, targets: EObject*) {
+      require(executingRule.value != null, "associate can only be invoked from a rule body")
+      that.sAssociate(target +: targets.toSeq)
     }
 
     def unary_~ : Transformable = DefaultTransformable(that)
