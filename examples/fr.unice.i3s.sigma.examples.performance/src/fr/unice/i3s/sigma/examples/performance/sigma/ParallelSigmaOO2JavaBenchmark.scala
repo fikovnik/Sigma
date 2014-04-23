@@ -1,13 +1,13 @@
 package fr.unice.i3s.sigma.examples.performance.sigma
 
 import scala.collection.JavaConversions._
-import fr.unice.i3s.sigma.examples.pl14.benchmark.M2TMicroBenchmark
+import fr.unice.i3s.sigma.examples.performance.benchmark.M2TMicroBenchmark
 import org.eclipse.emf.ecore.resource.Resource
 import oo.support.OOPackageScalaSupport
 import fr.unice.i3s.sigma.util.IOUtils
 import java.io.File
-import fr.unice.i3s.sigma.examples.pl14.benchmark.BenchmarkRunner
-import fr.unice.i3s.sigma.examples.pl14.benchmark.OO2JavaModelGenerator
+import fr.unice.i3s.sigma.examples.performance.benchmark.BenchmarkRunner
+import fr.unice.i3s.sigma.examples.performance.benchmark.OO2JavaModelGenerator
 import IOUtils.RichSigmaFile
 
 class ParellelSigmaOO2JavaBenchmark extends M2TMicroBenchmark with OOPackageScalaSupport {

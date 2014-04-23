@@ -1,13 +1,13 @@
 package fr.unice.i3s.sigma.examples.performance.sigma
 
 import oo.support.OOPackageScalaSupport
-import fr.unice.i3s.sigma.m2t.TextTemplate
+import fr.unice.i3s.sigma.m2t.M2T
 
-class OO2Java extends TextTemplate with OOPackageScalaSupport {
-  type M2TSource = Class
+class OO2Java extends M2T with OOPackageScalaSupport {
+  
+  type Source = Class
 
-  // main template
-  protected def execute =
+  def main =
     !s"public class ${source.name}" curlyIndent {
       !endl
 

@@ -184,7 +184,7 @@ case class EClassScalaSupportTemplate(
   val importManager = new ImportManager(pkgName, clazzSupportName)
   clazz.genModel.importManager = importManager
 
-  override def execute {
+  def main {
     !s"package $pkgName"
 
     // mark imports
@@ -305,7 +305,7 @@ case class DelegateTemplate(
 
   val clazzDelegateName = s"${clazz.importedInterfaceName}Delegate"
 
-  override def execute {
+  def main {
     !s"package ${pkgName}"
 
     // mark imports
@@ -342,7 +342,7 @@ case class EPackageScalaSupportTemplate(
   val importManager = new ImportManager(pkgName, pkgSupportName)
   pkg.genModel.importManager = importManager
 
-  override def execute {
+  def main {
     !s"package $pkgName"
 
     // mark imports

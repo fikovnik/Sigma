@@ -55,7 +55,7 @@ class CommonInfrastructureTest extends FunSuite with MustMatchers with BeforeAnd
   }
 
   test("Delayed init") {
-    val cls = Class() initLater { x ⇒
+    val cls = Class() sInitLater { x ⇒
       x.name = "MyClass"
     }
 

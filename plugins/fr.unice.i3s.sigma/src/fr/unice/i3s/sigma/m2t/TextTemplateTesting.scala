@@ -7,12 +7,12 @@ import scala.util.DynamicVariable
  */
 trait TextTemplateTesting { this: TextTemplate ⇒
 
-  override def source: M2TSource = base.value._1
+  override def source: Source = base.value._1
   /** Sets new transformation context to be the given source and a new text */
-  def source_=(value: M2TSource) = base.value = (value, new Text(stripWhitespace, relaxedNewLines))
+  def source_=(value: Source) = base.value = (value, new Text(stripWhitespace, relaxedNewLines))
 
   /** Executes block with a new transformation context using given source as the transformation source */
-  def withSource(value: M2TSource)(block: ⇒ Unit): Unit = {
+  def withSource(value: Source)(block: ⇒ Unit): Unit = {
     base.withValue(value, new Text(stripWhitespace, relaxedNewLines)) {
       block
     }

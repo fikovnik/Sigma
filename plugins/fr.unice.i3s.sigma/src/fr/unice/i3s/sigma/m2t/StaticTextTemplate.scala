@@ -9,7 +9,7 @@ abstract class StaticTextTemplate(
   protected[m2t] val out: Text = new Text(stripWhitespace, relaxedNewLines)
 
   override lazy val toString = {
-    execute
+    main
     out.toString
   }
 

@@ -3,11 +3,11 @@ package fr.unice.i3s.sigma.examples.sigmadoc
 import collection.JavaConversions._
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.resource.Resource
-import fr.unice.i3s.sigma.m2t.TextTemplate
 import scalatags.all._
 import scalatags.{ Node, Tags2 ⇒ tags }
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._ecore._
+import fr.unice.i3s.sigma.m2t.M2T
 
 class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
 
@@ -21,7 +21,7 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
     )
   }
 
-  abstract class Page extends TextTemplate {
+  abstract class Page extends M2T {
     // extension of the ScalaTags
     val httpEquiv = new scalatags.TypedStyle[String]("http-equiv", "http-equiv")
     val media = new scalatags.TypedStyle[String]("media", "media")
@@ -42,7 +42,7 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
       def +(sibling: Node) = new SiblingNode(that, sibling)
     }
 
-    def execute {
+    def main {
       !html(xmlns := "http://www.w3.org/1999/xhtml",
         header,
         body(onload := "setupControls()",
@@ -84,7 +84,7 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
   }
 
   class IndexPage extends Page {
-    type M2TSource = Resource
+    type Source = Resource
 
     var metaModelOverviewFigure: String = _
 
@@ -97,7 +97,7 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
   }
 
   class PackagePage extends Page {
-    type M2TSource = EPackage
+    type Source = EPackage
 
     var metaModelOverviewFigure: String = _
 
@@ -117,7 +117,7 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
   }
 
   abstract class ClassifierPage extends Page {
-    override type M2TSource >: Null <: EClassifier
+    override type Source >: Null <: EClassifier
 
     def pageSidebar =
       div(id := "controls",
@@ -157,7 +157,7 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
   }
 
   class ClassPage extends ClassifierPage {
-    override type M2TSource = EClass
+    override type Source = EClass
 
     def pageContent =
       h1(s"Package: ${source.ePackage.name}") +
@@ -311,7 +311,7 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
   }
 
   abstract class AbstractDataTypePage extends ClassifierPage {
-    override type M2TSource >: Null <: EDataType
+    override type Source >: Null <: EDataType
 
     def pageContent =
       h1(s"Package: ${source.ePackage.name}") +
@@ -322,11 +322,11 @@ class Ecore2HTML extends EcorePackageScalaSupport with EcoreModelHelpers {
   }
 
   class DataTypePage extends AbstractDataTypePage {
-    override type M2TSource = EDataType
+    override type Source = EDataType
   }
 
   class EnumPage extends AbstractDataTypePage {
-    override type M2TSource = EEnum
+    override type Source = EEnum
 
     override def pageContent = super.pageContent + (source.eLiterals.toSeq match {
       case Seq() ⇒ empty

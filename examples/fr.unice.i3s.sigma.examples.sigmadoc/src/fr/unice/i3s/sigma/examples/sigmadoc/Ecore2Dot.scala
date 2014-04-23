@@ -1,17 +1,17 @@
 package fr.unice.i3s.sigma.examples.sigmadoc
 
 import collection.JavaConversions._
-import fr.unice.i3s.sigma.m2t.TextTemplate
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._ecore._
 import scala.annotation.tailrec
 import org.eclipse.emf.ecore.resource.Resource
+import fr.unice.i3s.sigma.m2t.M2T
 
-class Ecore2Dot extends TextTemplate with EcorePackageScalaSupport with EcoreModelHelpers {
+class Ecore2Dot extends M2T with EcorePackageScalaSupport with EcoreModelHelpers {
 
-  type M2TSource = Resource
+  type Source = Resource
 
-  def execute {
+  def main {
     !"digraph G" curlyIndent {
       !s"""
         node [shape=record, fontname=Tahoma, fontsize=10];

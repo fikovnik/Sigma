@@ -10,14 +10,14 @@ abstract class AbstractTextTemplate(
     def singleQuoted = Decorators.surroundText("'")(that)
   }
 
-  /** New line string */
+  /** New line constant */
   final protected val endl = Text.endl
 
   /** Returns the primary text section for output */
-  protected[m2t] def out: Text
+  protected def out: Text
 
-  /** Template entry point */
-  protected def execute: Unit
+  /** Transformation entry point */
+  protected def main: Unit
 
   /**
    * Starts a new section
