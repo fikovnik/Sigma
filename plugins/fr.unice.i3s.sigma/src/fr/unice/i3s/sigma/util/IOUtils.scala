@@ -106,6 +106,7 @@ object IOUtils {
 
   }
 
+  def mkdirs(dir: File) = assert(dir.mkdirs(), s"Unable to create directory ${dir.getAbsolutePath}")
   def mkdtemp: File = mkdtemp("temp", System.nanoTime.toString)
   def mkdtemp(prefix: String, suffix: String): File = {
     val f = File.createTempFile(prefix, suffix)
