@@ -23,8 +23,8 @@ for msg in output/*; do
   if [[ -d cpp ]]; then
     echo "$msg: Compiling C++"
     cd cpp
-   	g++ -c *.cpp
-	  g++ -shared -o lib$msg.so *.o
+   	g++ -std=c++0x -c *.cpp
+	  g++ -shared -o lib`basename $msg`.so *.o
 	  cd ..
 	fi
   
