@@ -36,6 +36,7 @@
 <Pty ID="OCC" R="21"/>
 <Pty ID="99999" R="4"/>
 <Pty ID="C" R="38">
+<Sub ID="ZZZZZ" Typ="2"/>
 <Sub ID="ZZZ" Typ="2"/>
 </Pty>
 <Qty Typ="SOD" Long="35" Short="0"/>
