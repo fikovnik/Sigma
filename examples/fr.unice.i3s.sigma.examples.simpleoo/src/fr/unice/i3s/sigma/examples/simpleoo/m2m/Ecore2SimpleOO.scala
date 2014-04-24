@@ -47,10 +47,7 @@ object Ecore2SimpleOO extends App with EcorePackageScalaSupport {
 
   val m2m = new Ecore2SimpleOO
 
-  val (pri, sec) = m2m.execute(_ecore.ePackage)
+  val targets = m2m.transform(_ecore.ePackage)
 
-  println(pri)
-  pri.head.sDump()
-  println(sec)
-
+   targets.head.sDump()
 }

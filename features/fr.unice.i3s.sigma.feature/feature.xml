@@ -38,7 +38,6 @@
       <import plugin="org.eclipse.jdt.launching" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.debug" version="3.7.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.pde.core" version="3.7.1" match="greaterOrEqual"/>
-      <import plugin="fr.unice.i3s.sigma.examples.library" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.log4j-core"/>
    </requires>
 

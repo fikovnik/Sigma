@@ -16,7 +16,7 @@ import com.typesafe.scalalogging.log4j.Logging
 import fr.unice.i3s.sigma.support.SigmaSupport
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._
 import fr.unice.i3s.sigma.support.SigmaEcorePackage
-import fr.unice.i3s.sigma.internal.OverloadHack
+import fr.unice.i3s.sigma.OverloadHack
 import scala.collection.generic.Growable
 import scala.collection.mutable.Buffer
 
@@ -91,7 +91,7 @@ trait LazyRule extends Rule {
 }
 
 trait LazyUniqueRule extends Rule {
-	override def toString = "LazyUnique" + super.toString
+  override def toString = "LazyUnique" + super.toString
 }
 
 /**
@@ -135,29 +135,13 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   /** Transformation trace log */
   protected[m2m] def traceLog = session.value
 
-  private def applyUntilFailure[A, B](elems: Seq[A], res: Seq[B] = Seq())(fun: A ⇒ Try[B]): Either[(A, Failure[B]), Seq[B]] = elems match {
-    case Seq() ⇒ Right(res)
-    case Seq(x, xs @ _*) ⇒ fun(x) match {
-      case Success(succ) ⇒ applyUntilFailure(xs, res :+ succ)(fun)
-      case fail @ Failure(_) ⇒ Left((x, fail))
-    }
-  }
-
-  protected def loadRules: Seq[Rule]
-
   lazy val rules: Seq[Rule] = {
     val res = loadRules
-
-    val nonAbstractRules = res filter {
-      _ match {
-        case _: AbstractRule ⇒ false
-        case _ ⇒ true
-      }
-    }
-
     res foreach { r ⇒ logger debug s"Loaded rule: $r" }
     res
   }
+
+  protected def loadRules: Seq[Rule]
 
   protected def check = {
     require(_sourceMetaModels != null, "Source meta models cannot be empty.")
@@ -165,36 +149,26 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     require(rules != null && rules.nonEmpty, "There must be at least one rule defined")
   }
 
-  // TODO: apply(source: Resource): Resource
+  def transform(source: EObject): Iterable[EObject] = transform(Seq(source))
 
-  def execute(source: EObject): (Iterable[EObject], Iterable[EObject]) = this(source) match {
-    case Success(res) ⇒ res
-    case Failure(e) ⇒ throw e
-  }
-
-  def apply(source: EObject): Try[(Iterable[EObject], Iterable[EObject])] = {
+  def transform(sources: Iterable[EObject]): Seq[EObject] = {
     check
 
     session.withValue(new TraceLog) {
-      transform(source) match {
-        case Success(_) ⇒
-
-          val pri = primaryTargetsForSource(source).toSet
-          val priNonContained = pri filter (_.eContainer == null)
-
-          val sec = traceLog.values.flatMap(_.values).flatten.toSet
-          val secNonContained = sec filter (_.eContainer == null)
-          val secNonPri = secNonContained diff pri
-
-          Success(priNonContained, secNonPri)
-
-        case Failure(e) ⇒ Failure(e)
+      applyUntilFailure(sources) { s ⇒
+        applyUntilFailure(s +: s.eContents)(transformOne)
       }
+
+      val targets = traceLog.values.flatMap(_.values).flatten.toSet
+      val nonContainedTargets = targets filter (_.eContainer == null)
+
+      nonContainedTargets.toSeq
     }
+
   }
 
   protected[m2m] def findNonLazyRules(source: EObject): Seq[Rule] =
-    rules filter { r ⇒ r.isApplicable(source) && !r.isInstanceOf[LazyRule]  && !r.isInstanceOf[LazyUniqueRule]}
+    rules filter { r ⇒ r.isApplicable(source) && !r.isInstanceOf[LazyRule] && !r.isInstanceOf[LazyUniqueRule] }
 
   protected[m2m] def findRules[T <: EObject: ClassTag](source: EObject, considerAllTargets: Boolean): Seq[Rule] =
     rules filter { r ⇒
@@ -285,7 +259,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
       // based on the result of abstract rule execution
       abstractRuleExecution match {
-        case Right(_) ⇒
+        case Success(_) ⇒
           // execute rules
           val res = executeRule(rule, source, targets)
 
@@ -302,9 +276,9 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
               Success()
             case Failure(e) ⇒ Failure(e)
           }
-        case Left((abstractRule, Failure(e))) ⇒
+        case Failure(e) ⇒
           // bubble-up the failure
-          Failure(new M2MTransformationException(s"Invocation of ${abstractRule} failed", e))
+          Failure(new M2MTransformationException(s"Abstract rule invocation on $source failed", e))
       }
     }
   }
@@ -327,33 +301,20 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
         val results = applyUntilFailure(rules) { rule ⇒ doTransformOne(source, rule) }
 
         results match {
-          case Right(traces) ⇒ Success()
-          case Left((rule, Failure(e))) ⇒ Failure(new M2MTransformationException(s"Invocation of ${rule} failed", e))
+          case Success(traces) ⇒ Success()
+          case Failure(e) ⇒ Failure(new M2MTransformationException(s"Transformation of $source failed", e))
         }
 
     }
   }
 
-  protected[m2m] def transformOne(source: EObject): Try[Unit] = {
+  protected[m2m] def transformOne(source: EObject): Try[Seq[EObject]] = {
     require(source != null, "Source element cannot be null")
 
-    if (transformed(source)) Success()
-    else doTransformOne(source)
-  }
-
-  protected[m2m] def transform(source: EObject): Try[Unit] = {
-
-    // transform the element
-    transformOne(source) match {
-      case Success(x) ⇒
-
-        // transform all its content
-        applyUntilFailure(source.eContents)(transform(_)) match {
-          case Right(_) ⇒ Success()
-          case Left((elem, fail)) ⇒ fail
-        }
-
-      case fail @ Failure(_) ⇒ fail
+    if (transformed(source)) {
+      Success(targetsForSource(source).flatten.toSeq)
+    } else {
+      doTransformOne(source) map { _ ⇒ targetsForSource(source).flatten.toSeq }
     }
   }
 
@@ -478,8 +439,8 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       case Seq(rules @ _*) ⇒
         val res = applyUntilFailure(rules) { r ⇒ doTransformOne(that, r) }
         res match {
-          case Right(_) ⇒ targetsForSource(that).flatten.toSeq collect { case x: T ⇒ x }
-          case Left((elem, Failure(e))) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $elem: ${e}", e)
+          case Success(_) ⇒ targetsForSource(that).flatten.toSeq collect { case x: T ⇒ x }
+          case Failure(e) ⇒ throw new M2MTransformationException(s"Failed to compute target of ${classTag[T]}", e)
         }
     }
 
@@ -597,6 +558,12 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     def sTarget[T <: EObject: ClassTag]: Seq[T] = that.toSeq.sTarget[T]
 
     def unary_~ : TransformableSequence = ~(that.toSeq)
+  }
+
+  private def applyUntilFailure[A, B](elems: TraversableOnce[A])(fun: A ⇒ Try[B]): Try[Seq[B]] = Try {
+    (elems foldLeft Seq[B]()) { (a, b) ⇒
+      a :+ fun(b).get
+    }
   }
 
 }

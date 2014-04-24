@@ -4,43 +4,20 @@ import java.io.Closeable
 import java.io.File
 import java.io.FileWriter
 import java.io.Writer
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+
 import scala.sys.process.ProcessLogger
 import scala.sys.process.stringSeqToProcess
 import scala.sys.process.stringToProcess
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-import com.google.common.io.Files.copy
-import java.io.InputStream
-import com.google.common.io.Files
-import com.google.common.io.ByteStreams
-import java.io.FileOutputStream
 
 object IOUtils {
 
   lazy val pathSep = System.getProperty("path.separator")
-
-  implicit class RichSigmaFile(that: File) {
-    // TODO: this should be rewritten!!!
-    def <<<(in: InputStream): this.type = {
-      val fos = new FileOutputStream(that)
-      try {
-        ByteStreams.copy(in, fos)
-      } finally {
-        fos.close
-      }
-      this
-    }
-    def <<(in: Any): this.type = {
-      val fw = new FileWriter(that)
-      try {
-        fw.write(in.toString)
-      } finally {
-        fw.close
-      }
-      this
-    }
-  }
 
   object SystemExecutor extends Executor {
 
@@ -96,7 +73,7 @@ object IOUtils {
       case VisitFile(f) ⇒
         val dest = new File(to, f.getName)
         logger(f, dest)
-        copy(f, dest)
+        Files.copy(Paths.get(f.toURI), Paths.get(dest.toURI), StandardCopyOption.REPLACE_EXISTING)
         Continue
       case PreVisitDir(f) if f != from ⇒
         val dest = new File(to, f.getName)

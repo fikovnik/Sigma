@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil
 import fr.unice.i3s.sigma.util.DelegatingEList
 import org.eclipse.emf.ecore.EModelElement
 import org.eclipse.emf.ecore.EAnnotation
-import fr.unice.i3s.sigma.internal.OverloadHack
+import fr.unice.i3s.sigma.OverloadHack
 
 trait EMFScalaSupport {
 

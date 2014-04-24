@@ -1,12 +1,11 @@
 package fr.unice.i3s.sigma.m2t
 
-import java.io.Writer
-import java.io.OutputStreamWriter
-import java.io.OutputStream
-import com.google.common.base.Charsets
 import java.io.File
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.io.Writer
+
 import fr.unice.i3s.sigma.util.IOUtils
-import java.io.FileWriter
 
 /**
  * Provides some convenient methods for outputting text into streams and writers.
@@ -21,7 +20,7 @@ trait TextOutputting {
   }
 
   def output(out: OutputStream): TextOutputting.this.type = {
-    output(new OutputStreamWriter(out, Charsets.UTF_8))
+    output(new OutputStreamWriter(out))
   }
 
   def output(file: File): TextOutputting.this.type = {

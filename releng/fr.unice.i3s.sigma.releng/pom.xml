@@ -10,35 +10,29 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.18.0</tycho-version>
-		<tycho-extras-version>0.18.0</tycho-extras-version>
-		<scala-version>2.10.2</scala-version>
-		<scala-maven-plugin-version>3.1.5</scala-maven-plugin-version>
+		<tycho-version>0.20.0</tycho-version>
+		<tycho-extras-version>0.20.0</tycho-extras-version>
+		<scala-version>2.10.3</scala-version>
+		<scala-maven-plugin-version>3.1.6</scala-maven-plugin-version>
 
 		<!-- repositories -->
-		
 		<!-- this is the one which is build manually -->
 		<p2.sigma-3rdparty>file://${basedir}/../../releng/fr.unice.i3s.sigma.releng.p2/target/repository/</p2.sigma-3rdparty>
 		<!-- regular repositories -->
-		<p2.scala-ide>http://download.scala-ide.org/sdk/e37/scala210/dev/site</p2.scala-ide>
+		<p2.scala-ide>http://download.scala-ide.org/sdk/e38/scala210/dev/site</p2.scala-ide>
 		<p2.eclipse-juno>http://download.eclipse.org/releases/juno/</p2.eclipse-juno>
-		<p2.eclipse-uml>http://download.eclipse.org/modeling/mdt/uml2/updates/releases/</p2.eclipse-uml>
-		<p2.eclipse-swtbot>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</p2.eclipse-swtbot>
 	</properties>
 
 	<modules>
 		<module>../../plugins/fr.unice.i3s.sigma</module>
-		<module>../../plugins/fr.unice.i3s.sigma.docgen</module>
-
-		<module>../../tests/fr.unice.i3s.sigma.tests</module>
-		<module>../../tests/fr.unice.i3s.sigma.docgen.tests</module>
-
-		<module>../../features/fr.unice.i3s.sigma.feature</module>
-
-		<module>../../examples/fr.unice.i3s.sigma.examples.library</module>
-		<module>../../examples/fr.unice.i3s.sigma.examples.uml</module>
-
-		<module>../../releng/fr.unice.i3s.sigma.site</module>
+		<!-- <module>../../tests/fr.unice.i3s.sigma.tests</module> -->
+		<!-- <module>../../examples/fr.unice.i3s.sigma.examples.simpleoo</module> -->
+		
+ 		<!-- <module>../../plugins/fr.unice.i3s.sigma.docgen</module> -->
+		<!-- <module>../../tests/fr.unice.i3s.sigma.docgen.tests</module> -->
+		<!-- <module>../../features/fr.unice.i3s.sigma.feature</module> -->
+		<!-- <module>../../examples/fr.unice.i3s.sigma.examples.uml</module> -->
+		<!-- <module>../../releng/fr.unice.i3s.sigma.site</module> -->
 	</modules>
 
 	<repositories>
@@ -60,17 +54,10 @@
 			<layout>p2</layout>
 			<url>${p2.eclipse-juno}</url>
 		</repository>
-		<repository>
-			<id>eclipse-uml</id>
-			<name>Eclipse UML repository</name>
-			<layout>p2</layout>
-			<url>${p2.eclipse-uml}</url>
-		</repository>
-		<repository>
-			<id>eclipse-swtbot</id>
-			<name>Eclipse SWTBot repository</name>
-			<layout>p2</layout>
-			<url>${p2.eclipse-swtbot}</url>
+ 		<repository>
+			<id>oss.sonatype.org</id>
+			<name>Sonatype OSS</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 
@@ -143,7 +130,7 @@
 				<artifactId>scala-maven-plugin</artifactId>
 				<version>${scala-maven-plugin-version}</version>
 				<executions>
-				    <!-- Compile Scala before Java -->
+					<!-- Compile Scala before Java -->
 					<execution>
 						<id>scala-compile-first</id>
 						<phase>process-resources</phase>

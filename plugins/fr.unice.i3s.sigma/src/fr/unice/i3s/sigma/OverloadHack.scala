@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.internal
+package fr.unice.i3s.sigma
 
 trait OverloadHack {
   class Overloaded1
