@@ -2,12 +2,17 @@
  */
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.impl;
 
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.Classifier;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Constructor;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ConstructorCall;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Expression;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Field;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.FieldInitialisiation;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Member;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.NamedElement;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.NullLiteral;
@@ -15,15 +20,11 @@ import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangFactory;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Parameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ParameterAccess;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.StringLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -49,7 +50,28 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass classifierEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EClass classEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dataTypeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass typedElementEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -77,20 +99,6 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass referenceParameterEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass primitiveParameterEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass fieldInitialisiationEClass = null;
 
 	/**
@@ -105,20 +113,6 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass referenceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass attributeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass expressionEClass = null;
 
 	/**
@@ -127,6 +121,27 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * @generated
 	 */
 	private EClass stringLiteralEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass doubleLiteralEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass longLiteralEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass integerLiteralEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -154,7 +169,7 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EEnum primitiveTypeEEnum = null;
+	private EClass arrayLiteralEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -244,6 +259,16 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getClassifier()
+	{
+		return classifierEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getClass_()
 	{
 		return classEClass;
@@ -284,7 +309,7 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getClass_Attributes()
+	public EReference getClass_Fields()
 	{
 		return (EReference)classEClass.getEStructuralFeatures().get(3);
 	}
@@ -294,9 +319,39 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getClass_References()
+	public EClass getDataType()
 	{
-		return (EReference)classEClass.getEStructuralFeatures().get(4);
+		return dataTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getTypedElement()
+	{
+		return typedElementEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getTypedElement_Type()
+	{
+		return (EReference)typedElementEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTypedElement_Many()
+	{
+		return (EAttribute)typedElementEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -364,46 +419,6 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getReferenceParameter()
-	{
-		return referenceParameterEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getReferenceParameter_Type()
-	{
-		return (EReference)referenceParameterEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getPrimitiveParameter()
-	{
-		return primitiveParameterEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getPrimitiveParameter_Type()
-	{
-		return (EAttribute)primitiveParameterEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getFieldInitialisiation()
 	{
 		return fieldInitialisiationEClass;
@@ -454,46 +469,6 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getReference()
-	{
-		return referenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getReference_Type()
-	{
-		return (EReference)referenceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getAttribute()
-	{
-		return attributeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getAttribute_Type()
-	{
-		return (EAttribute)attributeEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getExpression()
 	{
 		return expressionEClass;
@@ -517,6 +492,66 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	public EAttribute getStringLiteral_Value()
 	{
 		return (EAttribute)stringLiteralEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDoubleLiteral()
+	{
+		return doubleLiteralEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDoubleLiteral_Value()
+	{
+		return (EAttribute)doubleLiteralEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getLongLiteral()
+	{
+		return longLiteralEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getLongLiteral_Value()
+	{
+		return (EAttribute)longLiteralEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getIntegerLiteral()
+	{
+		return integerLiteralEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIntegerLiteral_Value()
+	{
+		return (EAttribute)integerLiteralEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -584,9 +619,29 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getPrimitiveType()
+	public EClass getArrayLiteral()
 	{
-		return primitiveTypeEEnum;
+		return arrayLiteralEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getArrayLiteral_Type()
+	{
+		return (EReference)arrayLiteralEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getArrayLiteral_Elements()
+	{
+		return (EReference)arrayLiteralEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -622,12 +677,19 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 		namedElementEClass = createEClass(NAMED_ELEMENT);
 		createEAttribute(namedElementEClass, NAMED_ELEMENT__NAME);
 
+		classifierEClass = createEClass(CLASSIFIER);
+
 		classEClass = createEClass(CLASS);
 		createEReference(classEClass, CLASS__SUPERCLASS);
 		createEReference(classEClass, CLASS__MEMBERS);
 		createEReference(classEClass, CLASS__CONSTRUCTORS);
-		createEReference(classEClass, CLASS__ATTRIBUTES);
-		createEReference(classEClass, CLASS__REFERENCES);
+		createEReference(classEClass, CLASS__FIELDS);
+
+		dataTypeEClass = createEClass(DATA_TYPE);
+
+		typedElementEClass = createEClass(TYPED_ELEMENT);
+		createEReference(typedElementEClass, TYPED_ELEMENT__TYPE);
+		createEAttribute(typedElementEClass, TYPED_ELEMENT__MANY);
 
 		memberEClass = createEClass(MEMBER);
 		createEReference(memberEClass, MEMBER__PARENT);
@@ -638,12 +700,6 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 
 		parameterEClass = createEClass(PARAMETER);
 
-		referenceParameterEClass = createEClass(REFERENCE_PARAMETER);
-		createEReference(referenceParameterEClass, REFERENCE_PARAMETER__TYPE);
-
-		primitiveParameterEClass = createEClass(PRIMITIVE_PARAMETER);
-		createEAttribute(primitiveParameterEClass, PRIMITIVE_PARAMETER__TYPE);
-
 		fieldInitialisiationEClass = createEClass(FIELD_INITIALISIATION);
 		createEReference(fieldInitialisiationEClass, FIELD_INITIALISIATION__FIELD);
 		createEReference(fieldInitialisiationEClass, FIELD_INITIALISIATION__EXPRESSION);
@@ -651,16 +707,19 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 		fieldEClass = createEClass(FIELD);
 		createEReference(fieldEClass, FIELD__INITIAL_VALUE);
 
-		referenceEClass = createEClass(REFERENCE);
-		createEReference(referenceEClass, REFERENCE__TYPE);
-
-		attributeEClass = createEClass(ATTRIBUTE);
-		createEAttribute(attributeEClass, ATTRIBUTE__TYPE);
-
 		expressionEClass = createEClass(EXPRESSION);
 
 		stringLiteralEClass = createEClass(STRING_LITERAL);
 		createEAttribute(stringLiteralEClass, STRING_LITERAL__VALUE);
+
+		doubleLiteralEClass = createEClass(DOUBLE_LITERAL);
+		createEAttribute(doubleLiteralEClass, DOUBLE_LITERAL__VALUE);
+
+		longLiteralEClass = createEClass(LONG_LITERAL);
+		createEAttribute(longLiteralEClass, LONG_LITERAL__VALUE);
+
+		integerLiteralEClass = createEClass(INTEGER_LITERAL);
+		createEAttribute(integerLiteralEClass, INTEGER_LITERAL__VALUE);
 
 		constructorCallEClass = createEClass(CONSTRUCTOR_CALL);
 		createEReference(constructorCallEClass, CONSTRUCTOR_CALL__CONSTRUCTOR);
@@ -671,8 +730,9 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 
 		nullLiteralEClass = createEClass(NULL_LITERAL);
 
-		// Create enums
-		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
+		arrayLiteralEClass = createEClass(ARRAY_LITERAL);
+		createEReference(arrayLiteralEClass, ARRAY_LITERAL__TYPE);
+		createEReference(arrayLiteralEClass, ARRAY_LITERAL__ELEMENTS);
 	}
 
 	/**
@@ -704,30 +764,40 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		classEClass.getESuperTypes().add(this.getNamedElement());
+		classifierEClass.getESuperTypes().add(this.getNamedElement());
+		classEClass.getESuperTypes().add(this.getClassifier());
+		dataTypeEClass.getESuperTypes().add(this.getClassifier());
+		typedElementEClass.getESuperTypes().add(this.getNamedElement());
 		constructorEClass.getESuperTypes().add(this.getMember());
-		parameterEClass.getESuperTypes().add(this.getNamedElement());
-		referenceParameterEClass.getESuperTypes().add(this.getParameter());
-		primitiveParameterEClass.getESuperTypes().add(this.getParameter());
-		fieldEClass.getESuperTypes().add(this.getNamedElement());
+		parameterEClass.getESuperTypes().add(this.getTypedElement());
+		fieldEClass.getESuperTypes().add(this.getTypedElement());
 		fieldEClass.getESuperTypes().add(this.getMember());
-		referenceEClass.getESuperTypes().add(this.getField());
-		attributeEClass.getESuperTypes().add(this.getField());
 		stringLiteralEClass.getESuperTypes().add(this.getExpression());
+		doubleLiteralEClass.getESuperTypes().add(this.getExpression());
+		longLiteralEClass.getESuperTypes().add(this.getExpression());
+		integerLiteralEClass.getESuperTypes().add(this.getExpression());
 		constructorCallEClass.getESuperTypes().add(this.getExpression());
 		parameterAccessEClass.getESuperTypes().add(this.getExpression());
 		nullLiteralEClass.getESuperTypes().add(this.getExpression());
+		arrayLiteralEClass.getESuperTypes().add(this.getExpression());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(namedElementEClass, NamedElement.class, "NamedElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getNamedElement_Name(), ecorePackage.getEString(), "name", null, 1, 1, NamedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(classifierEClass, Classifier.class, "Classifier", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
 		initEClass(classEClass, fr.inria.spirals.sigma.ttc14.fixml.objlang.Class.class, "Class", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getClass_Superclass(), this.getClass_(), null, "superclass", null, 1, 1, fr.inria.spirals.sigma.ttc14.fixml.objlang.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getClass_Members(), this.getMember(), this.getMember_Parent(), "members", null, 0, -1, fr.inria.spirals.sigma.ttc14.fixml.objlang.Class.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getClass_Constructors(), this.getConstructor(), null, "constructors", null, 0, -1, fr.inria.spirals.sigma.ttc14.fixml.objlang.Class.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEReference(getClass_Attributes(), this.getAttribute(), null, "attributes", null, 0, -1, fr.inria.spirals.sigma.ttc14.fixml.objlang.Class.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEReference(getClass_References(), this.getReference(), null, "references", null, 0, -1, fr.inria.spirals.sigma.ttc14.fixml.objlang.Class.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getClass_Fields(), this.getField(), null, "fields", null, 0, -1, fr.inria.spirals.sigma.ttc14.fixml.objlang.Class.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+
+		initEClass(dataTypeEClass, DataType.class, "DataType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(typedElementEClass, TypedElement.class, "TypedElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getTypedElement_Type(), this.getClassifier(), null, "type", null, 1, 1, TypedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTypedElement_Many(), ecorePackage.getEBoolean(), "many", null, 1, 1, TypedElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(memberEClass, Member.class, "Member", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getMember_Parent(), this.getClass_(), this.getClass_Members(), "parent", null, 1, 1, Member.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -736,31 +806,28 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 		initEReference(getConstructor_Parameters(), this.getParameter(), null, "parameters", null, 0, -1, Constructor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getConstructor_Initialisations(), this.getFieldInitialisiation(), null, "initialisations", null, 0, -1, Constructor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(parameterEClass, Parameter.class, "Parameter", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(referenceParameterEClass, ReferenceParameter.class, "ReferenceParameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getReferenceParameter_Type(), this.getClass_(), null, "type", null, 1, 1, ReferenceParameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(primitiveParameterEClass, PrimitiveParameter.class, "PrimitiveParameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPrimitiveParameter_Type(), this.getPrimitiveType(), "type", null, 1, 1, PrimitiveParameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(parameterEClass, Parameter.class, "Parameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(fieldInitialisiationEClass, FieldInitialisiation.class, "FieldInitialisiation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFieldInitialisiation_Field(), this.getField(), null, "field", null, 1, 1, FieldInitialisiation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFieldInitialisiation_Expression(), this.getExpression(), null, "expression", null, 1, 1, FieldInitialisiation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(fieldEClass, Field.class, "Field", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(fieldEClass, Field.class, "Field", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getField_InitialValue(), this.getExpression(), null, "initialValue", null, 0, 1, Field.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(referenceEClass, Reference.class, "Reference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getReference_Type(), this.getClass_(), null, "type", null, 1, 1, Reference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(attributeEClass, Attribute.class, "Attribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getAttribute_Type(), this.getPrimitiveType(), "type", null, 1, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(stringLiteralEClass, StringLiteral.class, "StringLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getStringLiteral_Value(), ecorePackage.getEString(), "value", null, 1, 1, StringLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(doubleLiteralEClass, DoubleLiteral.class, "DoubleLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDoubleLiteral_Value(), ecorePackage.getEDouble(), "value", null, 1, 1, DoubleLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(longLiteralEClass, LongLiteral.class, "LongLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getLongLiteral_Value(), ecorePackage.getELong(), "value", null, 1, 1, LongLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(integerLiteralEClass, IntegerLiteral.class, "IntegerLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIntegerLiteral_Value(), ecorePackage.getEInt(), "value", null, 1, 1, IntegerLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(constructorCallEClass, ConstructorCall.class, "ConstructorCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConstructorCall_Constructor(), this.getConstructor(), null, "constructor", null, 1, 1, ConstructorCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -771,9 +838,9 @@ public class ObjLangPackageImpl extends EPackageImpl implements ObjLangPackage
 
 		initEClass(nullLiteralEClass, NullLiteral.class, "NullLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		// Initialize enums and add enum literals
-		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");
-		addEEnumLiteral(primitiveTypeEEnum, PrimitiveType.STRING);
+		initEClass(arrayLiteralEClass, ArrayLiteral.class, "ArrayLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getArrayLiteral_Type(), this.getClassifier(), null, "type", null, 1, 1, ArrayLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getArrayLiteral_Elements(), this.getExpression(), null, "elements", null, 0, -1, ArrayLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

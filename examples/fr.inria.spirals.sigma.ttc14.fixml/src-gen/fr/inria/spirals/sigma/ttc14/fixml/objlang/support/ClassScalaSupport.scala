@@ -1,9 +1,8 @@
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.support
 
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Constructor;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.Field;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Member;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference;
 
 import fr.unice.i3s.sigma.support.EMFProxyBuilder;
 import fr.unice.i3s.sigma.support.EMFScalaSupport;
@@ -26,8 +25,8 @@ trait ClassScalaSupport extends EMFScalaSupport {
       _instance
     }
     
-    def unapply(that: Class): Option[(String,fr.inria.spirals.sigma.ttc14.fixml.objlang.Class,EList[Member],EList[Constructor],EList[Attribute],EList[Reference])] =
-      Some((that.getName,that.getSuperclass,that.getMembers,that.getConstructors,that.getAttributes,that.getReferences))
+    def unapply(that: Class): Option[(String,fr.inria.spirals.sigma.ttc14.fixml.objlang.Class,EList[Member],EList[Constructor],EList[Field])] =
+      Some((that.getName,that.getSuperclass,that.getMembers,that.getConstructors,that.getFields))
   }
 }
 

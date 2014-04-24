@@ -52,6 +52,7 @@ protected trait GenModelUtils extends GenModelPackageScalaSupport {
     case "byte" ⇒ "Byte"
     case "short" ⇒ "Short"
     case "int" ⇒ "Int"
+    case "long" ⇒ "Long"
     case "char" ⇒ "Char"
     case "float" ⇒ "Float"
     case "double" ⇒ "Double"

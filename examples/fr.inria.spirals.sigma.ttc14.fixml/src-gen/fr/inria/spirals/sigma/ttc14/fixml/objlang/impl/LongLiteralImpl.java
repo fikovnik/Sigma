@@ -2,9 +2,8 @@
  */
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.impl;
 
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -14,45 +13,45 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Primitive Parameter</b></em>'.
+ * An implementation of the model object '<em><b>Long Literal</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.PrimitiveParameterImpl#getType <em>Type</em>}</li>
+ *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.LongLiteralImpl#getValue <em>Value</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class PrimitiveParameterImpl extends ParameterImpl implements PrimitiveParameter
+public class LongLiteralImpl extends ExpressionImpl implements LongLiteral
 {
 	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getType()
+	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final PrimitiveType TYPE_EDEFAULT = PrimitiveType.STRING;
+	protected static final long VALUE_EDEFAULT = 0L;
 
 	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getType()
+	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected PrimitiveType type = TYPE_EDEFAULT;
+	protected long value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected PrimitiveParameterImpl()
+	protected LongLiteralImpl()
 	{
 		super();
 	}
@@ -65,7 +64,7 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 	@Override
 	protected EClass eStaticClass()
 	{
-		return ObjLangPackage.Literals.PRIMITIVE_PARAMETER;
+		return ObjLangPackage.Literals.LONG_LITERAL;
 	}
 
 	/**
@@ -73,9 +72,9 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PrimitiveType getType()
+	public long getValue()
 	{
-		return type;
+		return value;
 	}
 
 	/**
@@ -83,12 +82,12 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setType(PrimitiveType newType)
+	public void setValue(long newValue)
 	{
-		PrimitiveType oldType = type;
-		type = newType == null ? TYPE_EDEFAULT : newType;
+		long oldValue = value;
+		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ObjLangPackage.PRIMITIVE_PARAMETER__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, ObjLangPackage.LONG_LITERAL__VALUE, oldValue, value));
 	}
 
 	/**
@@ -101,8 +100,8 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.PRIMITIVE_PARAMETER__TYPE:
-				return getType();
+			case ObjLangPackage.LONG_LITERAL__VALUE:
+				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -117,8 +116,8 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.PRIMITIVE_PARAMETER__TYPE:
-				setType((PrimitiveType)newValue);
+			case ObjLangPackage.LONG_LITERAL__VALUE:
+				setValue((Long)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -134,8 +133,8 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.PRIMITIVE_PARAMETER__TYPE:
-				setType(TYPE_EDEFAULT);
+			case ObjLangPackage.LONG_LITERAL__VALUE:
+				setValue(VALUE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -151,8 +150,8 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.PRIMITIVE_PARAMETER__TYPE:
-				return type != TYPE_EDEFAULT;
+			case ObjLangPackage.LONG_LITERAL__VALUE:
+				return value != VALUE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -168,10 +167,10 @@ public class PrimitiveParameterImpl extends ParameterImpl implements PrimitivePa
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (type: ");
-		result.append(type);
+		result.append(" (value: ");
+		result.append(value);
 		result.append(')');
 		return result.toString();
 	}
 
-} //PrimitiveParameterImpl
+} //LongLiteralImpl

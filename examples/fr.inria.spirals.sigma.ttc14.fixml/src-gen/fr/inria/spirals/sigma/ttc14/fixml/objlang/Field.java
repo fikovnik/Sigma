@@ -16,10 +16,10 @@ package fr.inria.spirals.sigma.ttc14.fixml.objlang;
  * </p>
  *
  * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage#getField()
- * @model abstract="true"
+ * @model
  * @generated
  */
-public interface Field extends NamedElement, Member
+public interface Field extends TypedElement, Member
 {
 	/**
 	 * Returns the value of the '<em><b>Initial Value</b></em>' containment reference.

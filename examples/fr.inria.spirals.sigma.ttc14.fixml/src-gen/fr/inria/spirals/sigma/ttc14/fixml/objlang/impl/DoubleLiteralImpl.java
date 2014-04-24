@@ -2,9 +2,8 @@
  */
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.impl;
 
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -14,45 +13,45 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Attribute</b></em>'.
+ * An implementation of the model object '<em><b>Double Literal</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.AttributeImpl#getType <em>Type</em>}</li>
+ *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DoubleLiteralImpl#getValue <em>Value</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class AttributeImpl extends FieldImpl implements Attribute
+public class DoubleLiteralImpl extends ExpressionImpl implements DoubleLiteral
 {
 	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getType()
+	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final PrimitiveType TYPE_EDEFAULT = PrimitiveType.STRING;
+	protected static final double VALUE_EDEFAULT = 0.0;
 
 	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getType()
+	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected PrimitiveType type = TYPE_EDEFAULT;
+	protected double value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected AttributeImpl()
+	protected DoubleLiteralImpl()
 	{
 		super();
 	}
@@ -65,7 +64,7 @@ public class AttributeImpl extends FieldImpl implements Attribute
 	@Override
 	protected EClass eStaticClass()
 	{
-		return ObjLangPackage.Literals.ATTRIBUTE;
+		return ObjLangPackage.Literals.DOUBLE_LITERAL;
 	}
 
 	/**
@@ -73,9 +72,9 @@ public class AttributeImpl extends FieldImpl implements Attribute
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PrimitiveType getType()
+	public double getValue()
 	{
-		return type;
+		return value;
 	}
 
 	/**
@@ -83,12 +82,12 @@ public class AttributeImpl extends FieldImpl implements Attribute
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setType(PrimitiveType newType)
+	public void setValue(double newValue)
 	{
-		PrimitiveType oldType = type;
-		type = newType == null ? TYPE_EDEFAULT : newType;
+		double oldValue = value;
+		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ObjLangPackage.ATTRIBUTE__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, ObjLangPackage.DOUBLE_LITERAL__VALUE, oldValue, value));
 	}
 
 	/**
@@ -101,8 +100,8 @@ public class AttributeImpl extends FieldImpl implements Attribute
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.ATTRIBUTE__TYPE:
-				return getType();
+			case ObjLangPackage.DOUBLE_LITERAL__VALUE:
+				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -117,8 +116,8 @@ public class AttributeImpl extends FieldImpl implements Attribute
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.ATTRIBUTE__TYPE:
-				setType((PrimitiveType)newValue);
+			case ObjLangPackage.DOUBLE_LITERAL__VALUE:
+				setValue((Double)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -134,8 +133,8 @@ public class AttributeImpl extends FieldImpl implements Attribute
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.ATTRIBUTE__TYPE:
-				setType(TYPE_EDEFAULT);
+			case ObjLangPackage.DOUBLE_LITERAL__VALUE:
+				setValue(VALUE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -151,8 +150,8 @@ public class AttributeImpl extends FieldImpl implements Attribute
 	{
 		switch (featureID)
 		{
-			case ObjLangPackage.ATTRIBUTE__TYPE:
-				return type != TYPE_EDEFAULT;
+			case ObjLangPackage.DOUBLE_LITERAL__VALUE:
+				return value != VALUE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -168,10 +167,10 @@ public class AttributeImpl extends FieldImpl implements Attribute
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (type: ");
-		result.append(type);
+		result.append(" (value: ");
+		result.append(value);
 		result.append(')');
 		return result.toString();
 	}
 
-} //AttributeImpl
+} //DoubleLiteralImpl

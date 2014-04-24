@@ -7,5 +7,5 @@ Bundle-Vendor: INRIA SPIRALS team
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.scala-lang.scala-library;bundle-version="2.10.3",
  fr.unice.i3s.sigma;bundle-version="1.0.0",
- org.junit;bundle-version="4.11.0",
+ org.junit;bundle-version="4.8.0",
  org.scalatest;bundle-version="2.1.3"

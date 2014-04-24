@@ -22,14 +22,15 @@ class XMLMM2ObjLangTest extends FlatSpec with Matchers with XMLMM with ScalaSigm
 
     val test =
       <FIXML>
-        <car>
-          <engine name="A"/>
-          <engine type="B"/>
-          <engine>
-            <part serial="C"/>
-            <part serial="C" subpart="1"/>
-          </engine>
-        </car>
+        <PosRpt RptID="541386431">
+          <Pty ID="OCC" R="21"/>
+          <Pty ID="C" R="38">
+            <Sub ID="ZZZ" Typ="2"/>
+          </Pty>
+          <Pty ID="C" R="38">
+            <Sub ID="ZZZ" Typ="2"/>
+          </Pty>
+        </PosRpt>
       </FIXML>
 
     val fixml = FIXMLParser.parse(test).get
@@ -40,10 +41,10 @@ class XMLMM2ObjLangTest extends FlatSpec with Matchers with XMLMM with ScalaSigm
     val targets = m2m.transform(fixml.head)
 
     targets foreach (_.sDump())
-    
+
     println("\nNo container\n")
-    
-    targets filter {_.eContainer == null}  foreach (println(_))
+
+    targets filter { _.eContainer == null } foreach (println(_))
 
     EMFUtils.IO.registerDefaultFactories
     EMFUtils.IO.saveToFile(new File("test1.xmi"), targets)
@@ -54,27 +55,27 @@ class XMLMM2ObjLangTest extends FlatSpec with Matchers with XMLMM with ScalaSigm
 
   }
 
-//  it should "transform the test cases" in {
-//    val m2ts = Map(
-//      "java" -> (new XMLMM2Java, new ObjLang2Java),
-//      "cs" -> (new XMLMM2CSharp, new ObjLang2CSharp),
-//      "cpp" -> (new XMLMM2CPP, new ObjLang2CPPWithInitializerList)
-//    )
-//
-//    for (file ← Set("test1.xml", "test2.xml", "test5.xml", "test6.xml")) {
-//      FIXMLParser.parseFromURL(classOf[FIXMLParserTest].getResource(s"resources/$file")) match {
-//        case Success(fixml) ⇒
-//
-//          for ((ext, (m2m, m2t)) ← m2ts) {
-//            val targets = m2m.transform(fixml.head)
-//            val code = targets collect { case x: Class ⇒ m2t.transform(x) } mkString ("\n\n")
-//
-//            code >> new File(file + "." + ext)
-//          }
-//
-//        case Failure(e) ⇒ fail(s"File $file is a file - should not fail", e)
-//      }
-//    }
-//  }
+  //  it should "transform the test cases" in {
+  //    val m2ts = Map(
+  //      "java" -> (new XMLMM2Java, new ObjLang2Java),
+  //      "cs" -> (new XMLMM2CSharp, new ObjLang2CSharp),
+  //      "cpp" -> (new XMLMM2CPP, new ObjLang2CPPWithInitializerList)
+  //    )
+  //
+  //    for (file ← Set("test1.xml", "test2.xml", "test5.xml", "test6.xml")) {
+  //      FIXMLParser.parseFromURL(classOf[FIXMLParserTest].getResource(s"resources/$file")) match {
+  //        case Success(fixml) ⇒
+  //
+  //          for ((ext, (m2m, m2t)) ← m2ts) {
+  //            val targets = m2m.transform(fixml.head)
+  //            val code = targets collect { case x: Class ⇒ m2t.transform(x) } mkString ("\n\n")
+  //
+  //            code >> new File(file + "." + ext)
+  //          }
+  //
+  //        case Failure(e) ⇒ fail(s"File $file is a file - should not fail", e)
+  //      }
+  //    }
+  //  }
 
 }

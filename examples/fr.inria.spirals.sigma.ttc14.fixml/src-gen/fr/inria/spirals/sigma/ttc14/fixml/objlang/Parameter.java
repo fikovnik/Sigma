@@ -10,9 +10,9 @@ package fr.inria.spirals.sigma.ttc14.fixml.objlang;
  *
  *
  * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage#getParameter()
- * @model abstract="true"
+ * @model
  * @generated
  */
-public interface Parameter extends NamedElement
+public interface Parameter extends TypedElement
 {
 } // Parameter

@@ -2,11 +2,10 @@
  */
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.impl;
 
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Constructor;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.Field;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Member;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference;
 
 import java.util.Collection;
 
@@ -33,14 +32,13 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl#getSuperclass <em>Superclass</em>}</li>
  *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl#getMembers <em>Members</em>}</li>
  *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl#getConstructors <em>Constructors</em>}</li>
- *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl#getAttributes <em>Attributes</em>}</li>
- *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl#getReferences <em>References</em>}</li>
+ *   <li>{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl#getFields <em>Fields</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ClassImpl extends NamedElementImpl implements fr.inria.spirals.sigma.ttc14.fixml.objlang.Class
+public class ClassImpl extends ClassifierImpl implements fr.inria.spirals.sigma.ttc14.fixml.objlang.Class
 {
 	/**
 	 * The cached value of the '{@link #getSuperclass() <em>Superclass</em>}' reference.
@@ -159,23 +157,9 @@ public class ClassImpl extends NamedElementImpl implements fr.inria.spirals.sigm
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Attribute> getAttributes()
+	public EList<Field> getFields()
 	{
-		// TODO: implement this method to return the 'Attributes' reference list
-		// Ensure that you remove @generated or mark it @generated NOT
-		// The list is expected to implement org.eclipse.emf.ecore.util.InternalEList and org.eclipse.emf.ecore.EStructuralFeature.Setting
-		// so it's likely that an appropriate subclass of org.eclipse.emf.ecore.util.EcoreEList should be used.
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<Reference> getReferences()
-	{
-		// TODO: implement this method to return the 'References' reference list
+		// TODO: implement this method to return the 'Fields' reference list
 		// Ensure that you remove @generated or mark it @generated NOT
 		// The list is expected to implement org.eclipse.emf.ecore.util.InternalEList and org.eclipse.emf.ecore.EStructuralFeature.Setting
 		// so it's likely that an appropriate subclass of org.eclipse.emf.ecore.util.EcoreEList should be used.
@@ -232,10 +216,8 @@ public class ClassImpl extends NamedElementImpl implements fr.inria.spirals.sigm
 				return getMembers();
 			case ObjLangPackage.CLASS__CONSTRUCTORS:
 				return getConstructors();
-			case ObjLangPackage.CLASS__ATTRIBUTES:
-				return getAttributes();
-			case ObjLangPackage.CLASS__REFERENCES:
-				return getReferences();
+			case ObjLangPackage.CLASS__FIELDS:
+				return getFields();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -298,10 +280,8 @@ public class ClassImpl extends NamedElementImpl implements fr.inria.spirals.sigm
 				return members != null && !members.isEmpty();
 			case ObjLangPackage.CLASS__CONSTRUCTORS:
 				return !getConstructors().isEmpty();
-			case ObjLangPackage.CLASS__ATTRIBUTES:
-				return !getAttributes().isEmpty();
-			case ObjLangPackage.CLASS__REFERENCES:
-				return !getReferences().isEmpty();
+			case ObjLangPackage.CLASS__FIELDS:
+				return !getFields().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

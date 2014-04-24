@@ -2,22 +2,24 @@
  */
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.impl;
 
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Constructor;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ConstructorCall;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.Field;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.FieldInitialisiation;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.NullLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangFactory;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.Parameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ParameterAccess;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.StringLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -78,52 +80,22 @@ public class ObjLangFactoryImpl extends EFactoryImpl implements ObjLangFactory
 		switch (eClass.getClassifierID())
 		{
 			case ObjLangPackage.CLASS: return createClass();
+			case ObjLangPackage.DATA_TYPE: return createDataType();
+			case ObjLangPackage.TYPED_ELEMENT: return createTypedElement();
 			case ObjLangPackage.CONSTRUCTOR: return createConstructor();
-			case ObjLangPackage.REFERENCE_PARAMETER: return createReferenceParameter();
-			case ObjLangPackage.PRIMITIVE_PARAMETER: return createPrimitiveParameter();
+			case ObjLangPackage.PARAMETER: return createParameter();
 			case ObjLangPackage.FIELD_INITIALISIATION: return createFieldInitialisiation();
-			case ObjLangPackage.REFERENCE: return createReference();
-			case ObjLangPackage.ATTRIBUTE: return createAttribute();
+			case ObjLangPackage.FIELD: return createField();
 			case ObjLangPackage.STRING_LITERAL: return createStringLiteral();
+			case ObjLangPackage.DOUBLE_LITERAL: return createDoubleLiteral();
+			case ObjLangPackage.LONG_LITERAL: return createLongLiteral();
+			case ObjLangPackage.INTEGER_LITERAL: return createIntegerLiteral();
 			case ObjLangPackage.CONSTRUCTOR_CALL: return createConstructorCall();
 			case ObjLangPackage.PARAMETER_ACCESS: return createParameterAccess();
 			case ObjLangPackage.NULL_LITERAL: return createNullLiteral();
+			case ObjLangPackage.ARRAY_LITERAL: return createArrayLiteral();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public Object createFromString(EDataType eDataType, String initialValue)
-	{
-		switch (eDataType.getClassifierID())
-		{
-			case ObjLangPackage.PRIMITIVE_TYPE:
-				return createPrimitiveTypeFromString(eDataType, initialValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue)
-	{
-		switch (eDataType.getClassifierID())
-		{
-			case ObjLangPackage.PRIMITIVE_TYPE:
-				return convertPrimitiveTypeToString(eDataType, instanceValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -143,6 +115,28 @@ public class ObjLangFactoryImpl extends EFactoryImpl implements ObjLangFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public DataType createDataType()
+	{
+		DataTypeImpl dataType = new DataTypeImpl();
+		return dataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TypedElement createTypedElement()
+	{
+		TypedElementImpl typedElement = new TypedElementImpl();
+		return typedElement;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public Constructor createConstructor()
 	{
 		ConstructorImpl constructor = new ConstructorImpl();
@@ -154,21 +148,10 @@ public class ObjLangFactoryImpl extends EFactoryImpl implements ObjLangFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ReferenceParameter createReferenceParameter()
+	public Parameter createParameter()
 	{
-		ReferenceParameterImpl referenceParameter = new ReferenceParameterImpl();
-		return referenceParameter;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PrimitiveParameter createPrimitiveParameter()
-	{
-		PrimitiveParameterImpl primitiveParameter = new PrimitiveParameterImpl();
-		return primitiveParameter;
+		ParameterImpl parameter = new ParameterImpl();
+		return parameter;
 	}
 
 	/**
@@ -187,21 +170,10 @@ public class ObjLangFactoryImpl extends EFactoryImpl implements ObjLangFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Reference createReference()
+	public Field createField()
 	{
-		ReferenceImpl reference = new ReferenceImpl();
-		return reference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Attribute createAttribute()
-	{
-		AttributeImpl attribute = new AttributeImpl();
-		return attribute;
+		FieldImpl field = new FieldImpl();
+		return field;
 	}
 
 	/**
@@ -213,6 +185,39 @@ public class ObjLangFactoryImpl extends EFactoryImpl implements ObjLangFactory
 	{
 		StringLiteralImpl stringLiteral = new StringLiteralImpl();
 		return stringLiteral;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DoubleLiteral createDoubleLiteral()
+	{
+		DoubleLiteralImpl doubleLiteral = new DoubleLiteralImpl();
+		return doubleLiteral;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LongLiteral createLongLiteral()
+	{
+		LongLiteralImpl longLiteral = new LongLiteralImpl();
+		return longLiteral;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public IntegerLiteral createIntegerLiteral()
+	{
+		IntegerLiteralImpl integerLiteral = new IntegerLiteralImpl();
+		return integerLiteral;
 	}
 
 	/**
@@ -253,21 +258,10 @@ public class ObjLangFactoryImpl extends EFactoryImpl implements ObjLangFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PrimitiveType createPrimitiveTypeFromString(EDataType eDataType, String initialValue)
+	public ArrayLiteral createArrayLiteral()
 	{
-		PrimitiveType result = PrimitiveType.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertPrimitiveTypeToString(EDataType eDataType, Object instanceValue)
-	{
-		return instanceValue == null ? null : instanceValue.toString();
+		ArrayLiteralImpl arrayLiteral = new ArrayLiteralImpl();
+		return arrayLiteral;
 	}
 
 	/**

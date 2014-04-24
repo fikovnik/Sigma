@@ -2,28 +2,28 @@
  */
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.impl;
 
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Parameter;
 
 import org.eclipse.emf.ecore.EClass;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Parameter</b></em>'.
+ * An implementation of the model object '<em><b>Data Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * </p>
  *
  * @generated
  */
-public class ParameterImpl extends TypedElementImpl implements Parameter
+public class DataTypeImpl extends ClassifierImpl implements DataType
 {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ParameterImpl()
+	protected DataTypeImpl()
 	{
 		super();
 	}
@@ -36,7 +36,7 @@ public class ParameterImpl extends TypedElementImpl implements Parameter
 	@Override
 	protected EClass eStaticClass()
 	{
-		return ObjLangPackage.Literals.PARAMETER;
+		return ObjLangPackage.Literals.DATA_TYPE;
 	}
 
-} //ParameterImpl
+} //DataTypeImpl

@@ -10,24 +10,31 @@
     <genClasses image="false" ecoreClass="objlang.ecore#//NamedElement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute objlang.ecore#//NamedElement/name"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="objlang.ecore#//Classifier"/>
     <genClasses ecoreClass="objlang.ecore#//Class">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//Class/members"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Class/superclass"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//Class/members"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference objlang.ecore#//Class/constructors"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference objlang.ecore#//Class/fields"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="objlang.ecore#//Member"/>
+    <genClasses ecoreClass="objlang.ecore#//DataType"/>
+    <genClasses ecoreClass="objlang.ecore#//TypedElement">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//TypedElement/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute objlang.ecore#//TypedElement/many"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="objlang.ecore#//Member">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference objlang.ecore#//Member/parent"/>
+    </genClasses>
     <genClasses ecoreClass="objlang.ecore#//Constructor">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//Constructor/parameters"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//Constructor/initialisations"/>
     </genClasses>
-    <genClasses ecoreClass="objlang.ecore#//Parameter">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Parameter/type"/>
-    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//Parameter"/>
     <genClasses ecoreClass="objlang.ecore#//FieldInitialisiation">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//FieldInitialisiation/field"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//FieldInitialisiation/expression"/>
     </genClasses>
     <genClasses ecoreClass="objlang.ecore#//Field">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Field/type"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Field/initialValue"/>
     </genClasses>
     <genClasses image="false" ecoreClass="objlang.ecore#//Expression"/>
@@ -35,11 +42,16 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute objlang.ecore#//StringLiteral/value"/>
     </genClasses>
     <genClasses ecoreClass="objlang.ecore#//ConstructorCall">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//ConstructorCall/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//ConstructorCall/constructor"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//ConstructorCall/arguments"/>
     </genClasses>
     <genClasses ecoreClass="objlang.ecore#//ParameterAccess">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//ParameterAccess/parameter"/>
+    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//NullLiteral"/>
+    <genClasses ecoreClass="objlang.ecore#//ArrayLiteral">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//ArrayLiteral/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//ArrayLiteral/elements"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -19,6 +19,7 @@ import fr.unice.i3s.sigma.support.SigmaEcorePackage
 import fr.unice.i3s.sigma.OverloadHack
 import scala.collection.generic.Growable
 import scala.collection.mutable.Buffer
+import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 
 // TODO: shapeless
 trait Rule {
@@ -105,6 +106,9 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   /** Trace log that contains the transformation trace used to resolve `source` <-> `target` elements. */
   type TraceLog = collection.mutable.HashMap[EObject, TraceLogEntry]
 
+  // it is used to associate extra transformation results that would otherwise be lost
+  private[this] val ExtraSource = EcorePackageScalaSupport._ecore.EObject()
+
   // TODO: allow either a single package or a sequence of packages
   private[this] var _sourceMetaModels: Seq[EPackage] = _
   def sourceMetaModels: Seq[EPackage] = {
@@ -143,6 +147,14 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   protected def loadRules: Seq[Rule]
 
+  object MaintainanceRule extends Rule {
+    def sourceClass = ???
+    def targetClasses = ???
+    def doTransform(source: EObject, targets: Seq[EObject]) = ???
+    def isApplicable(source: EObject) = false
+    def name: String = "MaintainanceRule"
+  }
+
   protected def check = {
     require(_sourceMetaModels != null, "Source meta models cannot be empty.")
     require(_targetMetaModels != null, "Target meta models cannot be empty.")
@@ -155,6 +167,10 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     check
 
     session.withValue(new TraceLog) {
+      executingRule.withValue(MaintainanceRule) {
+        setUp
+      }
+
       applyUntilFailure(sources) { s ⇒
         applyUntilFailure(s +: s.eContents)(transformOne)
       }
@@ -162,9 +178,12 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
       val targets = traceLog.values.flatMap(_.values).flatten.toSet
       val nonContainedTargets = targets filter (_.eContainer == null)
 
+      executingRule.withValue(MaintainanceRule) {
+        tearDown
+      }
+
       nonContainedTargets.toSeq
     }
-
   }
 
   protected[m2m] def findNonLazyRules(source: EObject): Seq[Rule] =
@@ -176,11 +195,8 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
         (
           considerAllTargets && r.targetClasses.exists { t ⇒
             classTag[T].runtimeClass.isAssignableFrom(t.getInstanceClass)
-          }
-        ) || (
-            !considerAllTargets && classTag[T].runtimeClass.isAssignableFrom(r.primaryTargetClass.getInstanceClass)
-          )
-      )
+          }) || (
+            !considerAllTargets && classTag[T].runtimeClass.isAssignableFrom(r.primaryTargetClass.getInstanceClass)))
     }
 
   protected[m2m] def findAbstractRules(rule: Rule): Seq[AbstractRule] =
@@ -405,13 +421,30 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   // API
 
+  protected def associate(source: EObject, targets: Seq[EObject]) {
+    require(executingRule.value != null, "associate can only be invoked from a rule body")
+    associate(source, executingRule.value, targets)
+  }
+
+  protected def associate(source: EObject, target: EObject) {
+    associate(source, Seq(target))
+  }
+
+  protected def associate(target: EObject) {
+    associate(ExtraSource, target)
+  }
+
+  protected def setUp: Unit = {}
+
+  protected def tearDown: Unit = {}
+
   protected def guardedBy[T](g: ⇒ Boolean) = g
 
   private case class DefaultTransformable(that: EObject) extends Transformable {
     def transform[A <: EObject: ClassTag]: Option[A] = that.sTarget[A]
   }
 
-  private case class NoTransformable extends Transformable {
+  private case object NoTransformable extends Transformable {
     def transform[A <: EObject: ClassTag]: Option[A] = None
   }
 
@@ -424,7 +457,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   }
 
   implicit class OptionM2MSupport(that: Option[_ <: EObject]) {
-    def unary_~ : Transformable = that map DefaultTransformable getOrElse NoTransformable()
+    def unary_~ : Transformable = that map DefaultTransformable getOrElse NoTransformable
   }
 
   implicit class EObjectM2MSupport(that: EObject) {
@@ -458,16 +491,6 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
         }
       case Seq(rules @ _*) ⇒
         throw new M2MTransformationException(s"Method equivalent[${classTag[T]}] cannot be applied on ${that.getClass} since there are multiple rules that can transform it $rules")
-    }
-
-    def sAssociate(targets: Seq[EObject]) {
-      require(executingRule.value != null, "associate can only be invoked from a rule body")
-      associate(that, executingRule.value, targets)
-    }
-
-    def sAssociate(target: EObject, targets: EObject*) {
-      require(executingRule.value != null, "associate can only be invoked from a rule body")
-      that.sAssociate(target +: targets.toSeq)
     }
 
     def unary_~ : Transformable = DefaultTransformable(that)

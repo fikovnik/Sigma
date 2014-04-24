@@ -31,7 +31,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  *
  * @generated
  */
-public abstract class FieldImpl extends NamedElementImpl implements Field
+public class FieldImpl extends TypedElementImpl implements Field
 {
 	/**
 	 * The cached value of the '{@link #getInitialValue() <em>Initial Value</em>}' containment reference.

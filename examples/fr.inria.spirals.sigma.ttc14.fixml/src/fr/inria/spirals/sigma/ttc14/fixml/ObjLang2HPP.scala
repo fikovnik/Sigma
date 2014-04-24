@@ -3,7 +3,6 @@ package fr.inria.spirals.sigma.ttc14.fixml
 import fr.unice.i3s.sigma.m2t.M2T
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.support.ObjLang
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.support.ObjLang._objlang._
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType
 
 class ObjLang2HPP extends ObjLang2CPPBase {
 
@@ -18,7 +17,7 @@ class ObjLang2HPP extends ObjLang2CPPBase {
 
     !endl
 
-    source.references map (_.type_.cppHeaderFile) foreach { hdr ⇒
+    source.fields map (_.type_) collect { case x: Class => x } map (_.cppHeaderFile) foreach { hdr ⇒
       !s"#include ${hdr.quoted}"
     }
 
@@ -38,6 +37,9 @@ class ObjLang2HPP extends ObjLang2CPPBase {
     }
   }
 
+  override def genField(c: Field) =
+      !s"${type2Code(c)} ${c.name};"
+
   override def genConstructors = {
     !"public:" indent {
       super.genConstructors
@@ -45,17 +47,10 @@ class ObjLang2HPP extends ObjLang2CPPBase {
   }
 
   override def genConstructor(c: Constructor) = {
-    val args = c.parameters map toCode mkString (", ")
+    val args = c.parameters map param2Code mkString (", ")
 
     !s"${source.name}($args);"
 
     !endl
   }
-
-  override def genAttribute(c: Attribute) =
-    !s"${toCode(c.type_)} ${c.name};"
-
-  override def genReference(c: Reference) =
-    !s"${c.type_.name}* ${c.name};"
-
 }

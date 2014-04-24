@@ -4,7 +4,6 @@ package fr.inria.spirals.sigma.ttc14.fixml.objlang;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -96,14 +95,14 @@ public interface ObjLangPackage extends EPackage
 	int NAMED_ELEMENT_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl <em>Class</em>}' class.
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassifierImpl <em>Classifier</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getClass_()
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassifierImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getClassifier()
 	 * @generated
 	 */
-	int CLASS = 1;
+	int CLASSIFIER = 1;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -112,7 +111,44 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS__NAME = NAMED_ELEMENT__NAME;
+	int CLASSIFIER__NAME = NAMED_ELEMENT__NAME;
+
+	/**
+	 * The number of structural features of the '<em>Classifier</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CLASSIFIER_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Classifier</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CLASSIFIER_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl <em>Class</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getClass_()
+	 * @generated
+	 */
+	int CLASS = 2;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CLASS__NAME = CLASSIFIER__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Superclass</b></em>' reference.
@@ -121,7 +157,7 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS__SUPERCLASS = NAMED_ELEMENT_FEATURE_COUNT + 0;
+	int CLASS__SUPERCLASS = CLASSIFIER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Members</b></em>' containment reference list.
@@ -130,7 +166,7 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS__MEMBERS = NAMED_ELEMENT_FEATURE_COUNT + 1;
+	int CLASS__MEMBERS = CLASSIFIER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Constructors</b></em>' reference list.
@@ -139,25 +175,16 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS__CONSTRUCTORS = NAMED_ELEMENT_FEATURE_COUNT + 2;
+	int CLASS__CONSTRUCTORS = CLASSIFIER_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Attributes</b></em>' reference list.
+	 * The feature id for the '<em><b>Fields</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS__ATTRIBUTES = NAMED_ELEMENT_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>References</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CLASS__REFERENCES = NAMED_ELEMENT_FEATURE_COUNT + 4;
+	int CLASS__FIELDS = CLASSIFIER_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Class</em>' class.
@@ -166,7 +193,7 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 5;
+	int CLASS_FEATURE_COUNT = CLASSIFIER_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of operations of the '<em>Class</em>' class.
@@ -175,7 +202,99 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CLASS_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
+	int CLASS_OPERATION_COUNT = CLASSIFIER_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DataTypeImpl <em>Data Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DataTypeImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getDataType()
+	 * @generated
+	 */
+	int DATA_TYPE = 3;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_TYPE__NAME = CLASSIFIER__NAME;
+
+	/**
+	 * The number of structural features of the '<em>Data Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_TYPE_FEATURE_COUNT = CLASSIFIER_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Data Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_TYPE_OPERATION_COUNT = CLASSIFIER_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.TypedElementImpl <em>Typed Element</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.TypedElementImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getTypedElement()
+	 * @generated
+	 */
+	int TYPED_ELEMENT = 4;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPED_ELEMENT__NAME = NAMED_ELEMENT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPED_ELEMENT__TYPE = NAMED_ELEMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Many</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPED_ELEMENT__MANY = NAMED_ELEMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Typed Element</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPED_ELEMENT_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Typed Element</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPED_ELEMENT_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.MemberImpl <em>Member</em>}' class.
@@ -185,7 +304,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getMember()
 	 * @generated
 	 */
-	int MEMBER = 2;
+	int MEMBER = 5;
 
 	/**
 	 * The feature id for the '<em><b>Parent</b></em>' container reference.
@@ -222,7 +341,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getConstructor()
 	 * @generated
 	 */
-	int CONSTRUCTOR = 3;
+	int CONSTRUCTOR = 6;
 
 	/**
 	 * The feature id for the '<em><b>Parent</b></em>' container reference.
@@ -277,7 +396,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getParameter()
 	 * @generated
 	 */
-	int PARAMETER = 4;
+	int PARAMETER = 7;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -286,44 +405,7 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PARAMETER__NAME = NAMED_ELEMENT__NAME;
-
-	/**
-	 * The number of structural features of the '<em>Parameter</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Parameter</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceParameterImpl <em>Reference Parameter</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceParameterImpl
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getReferenceParameter()
-	 * @generated
-	 */
-	int REFERENCE_PARAMETER = 5;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REFERENCE_PARAMETER__NAME = PARAMETER__NAME;
+	int PARAMETER__NAME = TYPED_ELEMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' reference.
@@ -332,71 +414,34 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int REFERENCE_PARAMETER__TYPE = PARAMETER_FEATURE_COUNT + 0;
+	int PARAMETER__TYPE = TYPED_ELEMENT__TYPE;
 
 	/**
-	 * The number of structural features of the '<em>Reference Parameter</em>' class.
+	 * The feature id for the '<em><b>Many</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REFERENCE_PARAMETER_FEATURE_COUNT = PARAMETER_FEATURE_COUNT + 1;
+	int PARAMETER__MANY = TYPED_ELEMENT__MANY;
 
 	/**
-	 * The number of operations of the '<em>Reference Parameter</em>' class.
+	 * The number of structural features of the '<em>Parameter</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REFERENCE_PARAMETER_OPERATION_COUNT = PARAMETER_OPERATION_COUNT + 0;
+	int PARAMETER_FEATURE_COUNT = TYPED_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.PrimitiveParameterImpl <em>Primitive Parameter</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.PrimitiveParameterImpl
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getPrimitiveParameter()
-	 * @generated
-	 */
-	int PRIMITIVE_PARAMETER = 6;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * The number of operations of the '<em>Parameter</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PRIMITIVE_PARAMETER__NAME = PARAMETER__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PRIMITIVE_PARAMETER__TYPE = PARAMETER_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Primitive Parameter</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PRIMITIVE_PARAMETER_FEATURE_COUNT = PARAMETER_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Primitive Parameter</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PRIMITIVE_PARAMETER_OPERATION_COUNT = PARAMETER_OPERATION_COUNT + 0;
+	int PARAMETER_OPERATION_COUNT = TYPED_ELEMENT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.FieldInitialisiationImpl <em>Field Initialisiation</em>}' class.
@@ -406,7 +451,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getFieldInitialisiation()
 	 * @generated
 	 */
-	int FIELD_INITIALISIATION = 7;
+	int FIELD_INITIALISIATION = 8;
 
 	/**
 	 * The feature id for the '<em><b>Field</b></em>' reference.
@@ -452,7 +497,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getField()
 	 * @generated
 	 */
-	int FIELD = 8;
+	int FIELD = 9;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -461,80 +506,7 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FIELD__NAME = NAMED_ELEMENT__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Parent</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FIELD__PARENT = NAMED_ELEMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Initial Value</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FIELD__INITIAL_VALUE = NAMED_ELEMENT_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of structural features of the '<em>Field</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FIELD_FEATURE_COUNT = NAMED_ELEMENT_FEATURE_COUNT + 2;
-
-	/**
-	 * The number of operations of the '<em>Field</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FIELD_OPERATION_COUNT = NAMED_ELEMENT_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceImpl <em>Reference</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceImpl
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getReference()
-	 * @generated
-	 */
-	int REFERENCE = 9;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REFERENCE__NAME = FIELD__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Parent</b></em>' container reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REFERENCE__PARENT = FIELD__PARENT;
-
-	/**
-	 * The feature id for the '<em><b>Initial Value</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REFERENCE__INITIAL_VALUE = FIELD__INITIAL_VALUE;
+	int FIELD__NAME = TYPED_ELEMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' reference.
@@ -543,44 +515,16 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int REFERENCE__TYPE = FIELD_FEATURE_COUNT + 0;
+	int FIELD__TYPE = TYPED_ELEMENT__TYPE;
 
 	/**
-	 * The number of structural features of the '<em>Reference</em>' class.
+	 * The feature id for the '<em><b>Many</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REFERENCE_FEATURE_COUNT = FIELD_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int REFERENCE_OPERATION_COUNT = FIELD_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.AttributeImpl <em>Attribute</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.AttributeImpl
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getAttribute()
-	 * @generated
-	 */
-	int ATTRIBUTE = 10;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ATTRIBUTE__NAME = FIELD__NAME;
+	int FIELD__MANY = TYPED_ELEMENT__MANY;
 
 	/**
 	 * The feature id for the '<em><b>Parent</b></em>' container reference.
@@ -589,7 +533,7 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int ATTRIBUTE__PARENT = FIELD__PARENT;
+	int FIELD__PARENT = TYPED_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Initial Value</b></em>' containment reference.
@@ -598,34 +542,25 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int ATTRIBUTE__INITIAL_VALUE = FIELD__INITIAL_VALUE;
+	int FIELD__INITIAL_VALUE = TYPED_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * The number of structural features of the '<em>Field</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ATTRIBUTE__TYPE = FIELD_FEATURE_COUNT + 0;
+	int FIELD_FEATURE_COUNT = TYPED_ELEMENT_FEATURE_COUNT + 2;
 
 	/**
-	 * The number of structural features of the '<em>Attribute</em>' class.
+	 * The number of operations of the '<em>Field</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ATTRIBUTE_FEATURE_COUNT = FIELD_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Attribute</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ATTRIBUTE_OPERATION_COUNT = FIELD_OPERATION_COUNT + 0;
+	int FIELD_OPERATION_COUNT = TYPED_ELEMENT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ExpressionImpl <em>Expression</em>}' class.
@@ -635,7 +570,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getExpression()
 	 * @generated
 	 */
-	int EXPRESSION = 11;
+	int EXPRESSION = 10;
 
 	/**
 	 * The number of structural features of the '<em>Expression</em>' class.
@@ -663,7 +598,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getStringLiteral()
 	 * @generated
 	 */
-	int STRING_LITERAL = 12;
+	int STRING_LITERAL = 11;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -693,6 +628,117 @@ public interface ObjLangPackage extends EPackage
 	int STRING_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DoubleLiteralImpl <em>Double Literal</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DoubleLiteralImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getDoubleLiteral()
+	 * @generated
+	 */
+	int DOUBLE_LITERAL = 12;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOUBLE_LITERAL__VALUE = EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Double Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOUBLE_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Double Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOUBLE_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.LongLiteralImpl <em>Long Literal</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.LongLiteralImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getLongLiteral()
+	 * @generated
+	 */
+	int LONG_LITERAL = 13;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LONG_LITERAL__VALUE = EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Long Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LONG_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Long Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LONG_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.IntegerLiteralImpl <em>Integer Literal</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.IntegerLiteralImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getIntegerLiteral()
+	 * @generated
+	 */
+	int INTEGER_LITERAL = 14;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INTEGER_LITERAL__VALUE = EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Integer Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INTEGER_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Integer Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INTEGER_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ConstructorCallImpl <em>Constructor Call</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -700,7 +746,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getConstructorCall()
 	 * @generated
 	 */
-	int CONSTRUCTOR_CALL = 13;
+	int CONSTRUCTOR_CALL = 15;
 
 	/**
 	 * The feature id for the '<em><b>Constructor</b></em>' reference.
@@ -746,7 +792,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getParameterAccess()
 	 * @generated
 	 */
-	int PARAMETER_ACCESS = 14;
+	int PARAMETER_ACCESS = 16;
 
 	/**
 	 * The feature id for the '<em><b>Parameter</b></em>' reference.
@@ -783,7 +829,7 @@ public interface ObjLangPackage extends EPackage
 	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getNullLiteral()
 	 * @generated
 	 */
-	int NULL_LITERAL = 15;
+	int NULL_LITERAL = 17;
 
 	/**
 	 * The number of structural features of the '<em>Null Literal</em>' class.
@@ -804,14 +850,50 @@ public interface ObjLangPackage extends EPackage
 	int NULL_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType <em>Primitive Type</em>}' enum.
+	 * The meta object id for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ArrayLiteralImpl <em>Array Literal</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getPrimitiveType()
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ArrayLiteralImpl
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getArrayLiteral()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 16;
+	int ARRAY_LITERAL = 18;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY_LITERAL__TYPE = EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Elements</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY_LITERAL__ELEMENTS = EXPRESSION_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Array Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of operations of the '<em>Array Literal</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ARRAY_LITERAL_OPERATION_COUNT = EXPRESSION_OPERATION_COUNT + 0;
 
 
 	/**
@@ -834,6 +916,16 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getNamedElement_Name();
+
+	/**
+	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Classifier <em>Classifier</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Classifier</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Classifier
+	 * @generated
+	 */
+	EClass getClassifier();
 
 	/**
 	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Class <em>Class</em>}'.
@@ -879,26 +971,57 @@ public interface ObjLangPackage extends EPackage
 	EReference getClass_Constructors();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Class#getAttributes <em>Attributes</em>}'.
+	 * Returns the meta object for the reference list '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Class#getFields <em>Fields</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Attributes</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Class#getAttributes()
+	 * @return the meta object for the reference list '<em>Fields</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Class#getFields()
 	 * @see #getClass_()
 	 * @generated
 	 */
-	EReference getClass_Attributes();
+	EReference getClass_Fields();
 
 	/**
-	 * Returns the meta object for the reference list '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Class#getReferences <em>References</em>}'.
+	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType <em>Data Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>References</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Class#getReferences()
-	 * @see #getClass_()
+	 * @return the meta object for class '<em>Data Type</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType
 	 * @generated
 	 */
-	EReference getClass_References();
+	EClass getDataType();
+
+	/**
+	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement <em>Typed Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Typed Element</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement
+	 * @generated
+	 */
+	EClass getTypedElement();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Type</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement#getType()
+	 * @see #getTypedElement()
+	 * @generated
+	 */
+	EReference getTypedElement_Type();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement#isMany <em>Many</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Many</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement#isMany()
+	 * @see #getTypedElement()
+	 * @generated
+	 */
+	EAttribute getTypedElement_Many();
 
 	/**
 	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Member <em>Member</em>}'.
@@ -964,48 +1087,6 @@ public interface ObjLangPackage extends EPackage
 	EClass getParameter();
 
 	/**
-	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter <em>Reference Parameter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Reference Parameter</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter
-	 * @generated
-	 */
-	EClass getReferenceParameter();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Type</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter#getType()
-	 * @see #getReferenceParameter()
-	 * @generated
-	 */
-	EReference getReferenceParameter_Type();
-
-	/**
-	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter <em>Primitive Parameter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Primitive Parameter</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter
-	 * @generated
-	 */
-	EClass getPrimitiveParameter();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter#getType()
-	 * @see #getPrimitiveParameter()
-	 * @generated
-	 */
-	EAttribute getPrimitiveParameter_Type();
-
-	/**
 	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.FieldInitialisiation <em>Field Initialisiation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1059,48 +1140,6 @@ public interface ObjLangPackage extends EPackage
 	EReference getField_InitialValue();
 
 	/**
-	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference <em>Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Reference</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference
-	 * @generated
-	 */
-	EClass getReference();
-
-	/**
-	 * Returns the meta object for the reference '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Type</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference#getType()
-	 * @see #getReference()
-	 * @generated
-	 */
-	EReference getReference_Type();
-
-	/**
-	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute <em>Attribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Attribute</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute
-	 * @generated
-	 */
-	EClass getAttribute();
-
-	/**
-	 * Returns the meta object for the attribute '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute#getType()
-	 * @see #getAttribute()
-	 * @generated
-	 */
-	EAttribute getAttribute_Type();
-
-	/**
 	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Expression <em>Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1130,6 +1169,69 @@ public interface ObjLangPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getStringLiteral_Value();
+
+	/**
+	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral <em>Double Literal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Double Literal</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral
+	 * @generated
+	 */
+	EClass getDoubleLiteral();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral#getValue()
+	 * @see #getDoubleLiteral()
+	 * @generated
+	 */
+	EAttribute getDoubleLiteral_Value();
+
+	/**
+	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral <em>Long Literal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Long Literal</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral
+	 * @generated
+	 */
+	EClass getLongLiteral();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral#getValue()
+	 * @see #getLongLiteral()
+	 * @generated
+	 */
+	EAttribute getLongLiteral_Value();
+
+	/**
+	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral <em>Integer Literal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Integer Literal</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral
+	 * @generated
+	 */
+	EClass getIntegerLiteral();
+
+	/**
+	 * Returns the meta object for the attribute '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral#getValue()
+	 * @see #getIntegerLiteral()
+	 * @generated
+	 */
+	EAttribute getIntegerLiteral_Value();
 
 	/**
 	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ConstructorCall <em>Constructor Call</em>}'.
@@ -1195,14 +1297,36 @@ public interface ObjLangPackage extends EPackage
 	EClass getNullLiteral();
 
 	/**
-	 * Returns the meta object for enum '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType <em>Primitive Type</em>}'.
+	 * Returns the meta object for class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral <em>Array Literal</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Primitive Type</em>'.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType
+	 * @return the meta object for class '<em>Array Literal</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral
 	 * @generated
 	 */
-	EEnum getPrimitiveType();
+	EClass getArrayLiteral();
+
+	/**
+	 * Returns the meta object for the reference '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Type</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral#getType()
+	 * @see #getArrayLiteral()
+	 * @generated
+	 */
+	EReference getArrayLiteral_Type();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral#getElements <em>Elements</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Elements</em>'.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral#getElements()
+	 * @see #getArrayLiteral()
+	 * @generated
+	 */
+	EReference getArrayLiteral_Elements();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -1247,6 +1371,16 @@ public interface ObjLangPackage extends EPackage
 		EAttribute NAMED_ELEMENT__NAME = eINSTANCE.getNamedElement_Name();
 
 		/**
+		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassifierImpl <em>Classifier</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassifierImpl
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getClassifier()
+		 * @generated
+		 */
+		EClass CLASSIFIER = eINSTANCE.getClassifier();
+
+		/**
 		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ClassImpl <em>Class</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1281,20 +1415,48 @@ public interface ObjLangPackage extends EPackage
 		EReference CLASS__CONSTRUCTORS = eINSTANCE.getClass_Constructors();
 
 		/**
-		 * The meta object literal for the '<em><b>Attributes</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Fields</b></em>' reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CLASS__ATTRIBUTES = eINSTANCE.getClass_Attributes();
+		EReference CLASS__FIELDS = eINSTANCE.getClass_Fields();
 
 		/**
-		 * The meta object literal for the '<em><b>References</b></em>' reference list feature.
+		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DataTypeImpl <em>Data Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DataTypeImpl
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getDataType()
+		 * @generated
+		 */
+		EClass DATA_TYPE = eINSTANCE.getDataType();
+
+		/**
+		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.TypedElementImpl <em>Typed Element</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.TypedElementImpl
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getTypedElement()
+		 * @generated
+		 */
+		EClass TYPED_ELEMENT = eINSTANCE.getTypedElement();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CLASS__REFERENCES = eINSTANCE.getClass_References();
+		EReference TYPED_ELEMENT__TYPE = eINSTANCE.getTypedElement_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Many</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TYPED_ELEMENT__MANY = eINSTANCE.getTypedElement_Many();
 
 		/**
 		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.MemberImpl <em>Member</em>}' class.
@@ -1351,42 +1513,6 @@ public interface ObjLangPackage extends EPackage
 		EClass PARAMETER = eINSTANCE.getParameter();
 
 		/**
-		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceParameterImpl <em>Reference Parameter</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceParameterImpl
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getReferenceParameter()
-		 * @generated
-		 */
-		EClass REFERENCE_PARAMETER = eINSTANCE.getReferenceParameter();
-
-		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference REFERENCE_PARAMETER__TYPE = eINSTANCE.getReferenceParameter_Type();
-
-		/**
-		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.PrimitiveParameterImpl <em>Primitive Parameter</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.PrimitiveParameterImpl
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getPrimitiveParameter()
-		 * @generated
-		 */
-		EClass PRIMITIVE_PARAMETER = eINSTANCE.getPrimitiveParameter();
-
-		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PRIMITIVE_PARAMETER__TYPE = eINSTANCE.getPrimitiveParameter_Type();
-
-		/**
 		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.FieldInitialisiationImpl <em>Field Initialisiation</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1431,42 +1557,6 @@ public interface ObjLangPackage extends EPackage
 		EReference FIELD__INITIAL_VALUE = eINSTANCE.getField_InitialValue();
 
 		/**
-		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceImpl <em>Reference</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ReferenceImpl
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getReference()
-		 * @generated
-		 */
-		EClass REFERENCE = eINSTANCE.getReference();
-
-		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference REFERENCE__TYPE = eINSTANCE.getReference_Type();
-
-		/**
-		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.AttributeImpl <em>Attribute</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.AttributeImpl
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getAttribute()
-		 * @generated
-		 */
-		EClass ATTRIBUTE = eINSTANCE.getAttribute();
-
-		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ATTRIBUTE__TYPE = eINSTANCE.getAttribute_Type();
-
-		/**
 		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ExpressionImpl <em>Expression</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1493,6 +1583,60 @@ public interface ObjLangPackage extends EPackage
 		 * @generated
 		 */
 		EAttribute STRING_LITERAL__VALUE = eINSTANCE.getStringLiteral_Value();
+
+		/**
+		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DoubleLiteralImpl <em>Double Literal</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.DoubleLiteralImpl
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getDoubleLiteral()
+		 * @generated
+		 */
+		EClass DOUBLE_LITERAL = eINSTANCE.getDoubleLiteral();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOUBLE_LITERAL__VALUE = eINSTANCE.getDoubleLiteral_Value();
+
+		/**
+		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.LongLiteralImpl <em>Long Literal</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.LongLiteralImpl
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getLongLiteral()
+		 * @generated
+		 */
+		EClass LONG_LITERAL = eINSTANCE.getLongLiteral();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LONG_LITERAL__VALUE = eINSTANCE.getLongLiteral_Value();
+
+		/**
+		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.IntegerLiteralImpl <em>Integer Literal</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.IntegerLiteralImpl
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getIntegerLiteral()
+		 * @generated
+		 */
+		EClass INTEGER_LITERAL = eINSTANCE.getIntegerLiteral();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute INTEGER_LITERAL__VALUE = eINSTANCE.getIntegerLiteral_Value();
 
 		/**
 		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ConstructorCallImpl <em>Constructor Call</em>}' class.
@@ -1549,14 +1693,30 @@ public interface ObjLangPackage extends EPackage
 		EClass NULL_LITERAL = eINSTANCE.getNullLiteral();
 
 		/**
-		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType <em>Primitive Type</em>}' enum.
+		 * The meta object literal for the '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ArrayLiteralImpl <em>Array Literal</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType
-		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getPrimitiveType()
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ArrayLiteralImpl
+		 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.impl.ObjLangPackageImpl#getArrayLiteral()
 		 * @generated
 		 */
-		EEnum PRIMITIVE_TYPE = eINSTANCE.getPrimitiveType();
+		EClass ARRAY_LITERAL = eINSTANCE.getArrayLiteral();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ARRAY_LITERAL__TYPE = eINSTANCE.getArrayLiteral_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Elements</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ARRAY_LITERAL__ELEMENTS = eINSTANCE.getArrayLiteral_Elements();
 
 	}
 

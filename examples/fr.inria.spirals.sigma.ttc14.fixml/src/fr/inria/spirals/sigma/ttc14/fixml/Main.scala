@@ -12,17 +12,13 @@ object Main extends App with ScalaSigmaSupport with ObjLang {
 
   // currently implemented drivers
   val drivers = Seq(
-    ("java", new XMLMM2ObjLang, M2TF(
-      (new ObjLang2Java, { s: Class ⇒ s"${s.name}.java" })
-    )),
-    ("cs", new XMLMM2ObjLang, M2TF(
-      (new ObjLang2CSharp, { s: Class ⇒ s"${s.name}.cs" })
-    )),
-    ("cpp", new XMLMM2CPP, M2TF(
+    ("java", M2TF(
+      (new ObjLang2Java, { s: Class ⇒ s"${s.name}.java" }))),
+    ("cs", M2TF(
+      (new ObjLang2CSharp, { s: Class ⇒ s"${s.name}.cs" }))),
+    ("cpp", M2TF(
       (new ObjLang2CPP, { s: Class ⇒ s"${s.name}.cpp" }),
-      (new ObjLang2HPP, { s: Class ⇒ s"${s.name}.h" })
-    ))
-  )
+      (new ObjLang2HPP, { s: Class ⇒ s"${s.name}.h" }))))
 
   def execute(src: File, dest: File) {
 
@@ -34,17 +30,19 @@ object Main extends App with ScalaSigmaSupport with ObjLang {
       IOUtils.mkdirs(dest)
     }
 
-    val files = if (src.isDirectory) { 
-      src.listFiles filter (_.getName.endsWith("xml")) 
+    val files = if (src.isDirectory) {
+      src.listFiles filter (_.getName.endsWith("xml"))
     } else {
       Array(src)
     }
 
+    val m2m = new XMLMM2ObjLang
+    
     for {
       file ← files
-      (ext, m2m, m2tf) ← drivers
+      (ext, m2tf) ← drivers
     } {
-      println(s"Processing $file")
+      println(s"Processing $file -> $ext")
 
       val fixml = FIXMLParser.parseFromFile(file) orCrash s"Unable to load FIXML from ${src}"
 

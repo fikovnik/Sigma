@@ -10,8 +10,6 @@ trait ClassDelegate extends Class with ObjLang {
 
   override def getConstructors = this.members collect { case e: Constructor ⇒ e }
   
-  override def getAttributes = this.members collect { case e: Attribute ⇒ e }
-  
-  override def getReferences = this.members collect { case e: Reference ⇒ e }
-  
+  override def getFields = this.members collect { case e: Field ⇒ e }
+    
 }

@@ -1,21 +1,22 @@
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.support
 
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.Classifier;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Constructor;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ConstructorCall;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Expression;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Field;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.FieldInitialisiation;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Member;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.NamedElement;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Parameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ParameterAccess;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveType;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.StringLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement;
 
 import fr.unice.i3s.sigma.m2m.Transformable;
 
@@ -36,6 +37,7 @@ trait ObjLang
       def name_=(value: String): Unit = that.setName(value)
     }
     
+    
     implicit class Class2Sigma(that: fr.inria.spirals.sigma.ttc14.fixml.objlang.Class) {
       def superclass: fr.inria.spirals.sigma.ttc14.fixml.objlang.Class = that.getSuperclass
       def superclass_=(value: fr.inria.spirals.sigma.ttc14.fixml.objlang.Class): Unit = that.setSuperclass(value)
@@ -44,8 +46,18 @@ trait ObjLang
         that.setSuperclass(ObjLang._objlangBuilder.ref(value))
       def members: EList[Member] = that.getMembers
       def constructors: EList[Constructor] = that.getConstructors
-      def attributes: EList[Attribute] = that.getAttributes
-      def references: EList[Reference] = that.getReferences
+      def fields: EList[Field] = that.getFields
+    }
+    
+    
+    implicit class TypedElement2Sigma(that: TypedElement) {
+      def type_ : Classifier = that.getType
+      def type__=(value: Classifier): Unit = that.setType(value)
+      def type__=(value: Transformable): Unit = value.transform[Classifier].foreach(that.setType(_))
+      def type__=(value: ⇒ Option[Classifier]): Unit =
+        that.setType(ObjLang._objlangBuilder.ref(value))
+      def many: Boolean = that.isMany
+      def many_=(value: Boolean): Unit = that.setMany(value)
     }
     
     implicit class Member2Sigma(that: Member) {
@@ -61,19 +73,6 @@ trait ObjLang
       def initialisations: EList[FieldInitialisiation] = that.getInitialisations
     }
     
-    
-    implicit class ReferenceParameter2Sigma(that: ReferenceParameter) {
-      def type_ : fr.inria.spirals.sigma.ttc14.fixml.objlang.Class = that.getType
-      def type__=(value: fr.inria.spirals.sigma.ttc14.fixml.objlang.Class): Unit = that.setType(value)
-      def type__=(value: Transformable): Unit = value.transform[fr.inria.spirals.sigma.ttc14.fixml.objlang.Class].foreach(that.setType(_))
-      def type__=(value: ⇒ Option[fr.inria.spirals.sigma.ttc14.fixml.objlang.Class]): Unit =
-        that.setType(ObjLang._objlangBuilder.ref(value))
-    }
-    
-    implicit class PrimitiveParameter2Sigma(that: PrimitiveParameter) {
-      def type_ : PrimitiveType = that.getType
-      def type__=(value: PrimitiveType): Unit = that.setType(value)
-    }
     
     implicit class FieldInitialisiation2Sigma(that: FieldInitialisiation) {
       def field: Field = that.getField
@@ -92,23 +91,25 @@ trait ObjLang
       def initialValue_=(value: Transformable): Unit = value.transform[Expression].foreach(that.setInitialValue(_))
     }
     
-    implicit class Reference2Sigma(that: Reference) {
-      def type_ : fr.inria.spirals.sigma.ttc14.fixml.objlang.Class = that.getType
-      def type__=(value: fr.inria.spirals.sigma.ttc14.fixml.objlang.Class): Unit = that.setType(value)
-      def type__=(value: Transformable): Unit = value.transform[fr.inria.spirals.sigma.ttc14.fixml.objlang.Class].foreach(that.setType(_))
-      def type__=(value: ⇒ Option[fr.inria.spirals.sigma.ttc14.fixml.objlang.Class]): Unit =
-        that.setType(ObjLang._objlangBuilder.ref(value))
-    }
-    
-    implicit class Attribute2Sigma(that: Attribute) {
-      def type_ : PrimitiveType = that.getType
-      def type__=(value: PrimitiveType): Unit = that.setType(value)
-    }
-    
     
     implicit class StringLiteral2Sigma(that: StringLiteral) {
       def value: String = that.getValue
       def value_=(value: String): Unit = that.setValue(value)
+    }
+    
+    implicit class DoubleLiteral2Sigma(that: DoubleLiteral) {
+      def value: Double = that.getValue
+      def value_=(value: Double): Unit = that.setValue(value)
+    }
+    
+    implicit class LongLiteral2Sigma(that: LongLiteral) {
+      def value: Long = that.getValue
+      def value_=(value: Long): Unit = that.setValue(value)
+    }
+    
+    implicit class IntegerLiteral2Sigma(that: IntegerLiteral) {
+      def value: Int = that.getValue
+      def value_=(value: Int): Unit = that.setValue(value)
     }
     
     implicit class ConstructorCall2Sigma(that: ConstructorCall) {
@@ -129,24 +130,36 @@ trait ObjLang
     }
     
     
+    implicit class ArrayLiteral2Sigma(that: ArrayLiteral) {
+      def type_ : Classifier = that.getType
+      def type__=(value: Classifier): Unit = that.setType(value)
+      def type__=(value: Transformable): Unit = value.transform[Classifier].foreach(that.setType(_))
+      def type__=(value: ⇒ Option[Classifier]): Unit =
+        that.setType(ObjLang._objlangBuilder.ref(value))
+      def elements: EList[Expression] = that.getElements
+    }
+    
     
     object _objlang extends SigmaEcorePackage[ObjLangPackage] with
       NamedElementScalaSupport with
+      ClassifierScalaSupport with
       ClassScalaSupport with
+      DataTypeScalaSupport with
+      TypedElementScalaSupport with
       MemberScalaSupport with
       ConstructorScalaSupport with
       ParameterScalaSupport with
-      ReferenceParameterScalaSupport with
-      PrimitiveParameterScalaSupport with
       FieldInitialisiationScalaSupport with
       FieldScalaSupport with
-      ReferenceScalaSupport with
-      AttributeScalaSupport with
       ExpressionScalaSupport with
       StringLiteralScalaSupport with
+      DoubleLiteralScalaSupport with
+      LongLiteralScalaSupport with
+      IntegerLiteralScalaSupport with
       ConstructorCallScalaSupport with
       ParameterAccessScalaSupport with
-      NullLiteralScalaSupport {
+      NullLiteralScalaSupport with
+      ArrayLiteralScalaSupport {
       
       val ePackage = ObjLangPackage.eINSTANCE
     }

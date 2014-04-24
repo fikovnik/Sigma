@@ -2,22 +2,25 @@
  */
 package fr.inria.spirals.sigma.ttc14.fixml.objlang.util;
 
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.Classifier;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Constructor;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ConstructorCall;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Expression;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Field;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.FieldInitialisiation;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Member;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.NamedElement;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.NullLiteral;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Parameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.ParameterAccess;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference;
-import fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter;
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.StringLiteral;
+import fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -95,9 +98,24 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 				return createNamedElementAdapter();
 			}
 			@Override
+			public Adapter caseClassifier(Classifier object)
+			{
+				return createClassifierAdapter();
+			}
+			@Override
 			public Adapter caseClass(fr.inria.spirals.sigma.ttc14.fixml.objlang.Class object)
 			{
 				return createClassAdapter();
+			}
+			@Override
+			public Adapter caseDataType(DataType object)
+			{
+				return createDataTypeAdapter();
+			}
+			@Override
+			public Adapter caseTypedElement(TypedElement object)
+			{
+				return createTypedElementAdapter();
 			}
 			@Override
 			public Adapter caseMember(Member object)
@@ -115,16 +133,6 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 				return createParameterAdapter();
 			}
 			@Override
-			public Adapter caseReferenceParameter(ReferenceParameter object)
-			{
-				return createReferenceParameterAdapter();
-			}
-			@Override
-			public Adapter casePrimitiveParameter(PrimitiveParameter object)
-			{
-				return createPrimitiveParameterAdapter();
-			}
-			@Override
 			public Adapter caseFieldInitialisiation(FieldInitialisiation object)
 			{
 				return createFieldInitialisiationAdapter();
@@ -135,16 +143,6 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 				return createFieldAdapter();
 			}
 			@Override
-			public Adapter caseReference(Reference object)
-			{
-				return createReferenceAdapter();
-			}
-			@Override
-			public Adapter caseAttribute(Attribute object)
-			{
-				return createAttributeAdapter();
-			}
-			@Override
 			public Adapter caseExpression(Expression object)
 			{
 				return createExpressionAdapter();
@@ -153,6 +151,21 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 			public Adapter caseStringLiteral(StringLiteral object)
 			{
 				return createStringLiteralAdapter();
+			}
+			@Override
+			public Adapter caseDoubleLiteral(DoubleLiteral object)
+			{
+				return createDoubleLiteralAdapter();
+			}
+			@Override
+			public Adapter caseLongLiteral(LongLiteral object)
+			{
+				return createLongLiteralAdapter();
+			}
+			@Override
+			public Adapter caseIntegerLiteral(IntegerLiteral object)
+			{
+				return createIntegerLiteralAdapter();
 			}
 			@Override
 			public Adapter caseConstructorCall(ConstructorCall object)
@@ -168,6 +181,11 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 			public Adapter caseNullLiteral(NullLiteral object)
 			{
 				return createNullLiteralAdapter();
+			}
+			@Override
+			public Adapter caseArrayLiteral(ArrayLiteral object)
+			{
+				return createArrayLiteralAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object)
@@ -207,6 +225,21 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Classifier <em>Classifier</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Classifier
+	 * @generated
+	 */
+	public Adapter createClassifierAdapter()
+	{
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Class <em>Class</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -217,6 +250,36 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createClassAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType <em>Data Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.DataType
+	 * @generated
+	 */
+	public Adapter createDataTypeAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement <em>Typed Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.TypedElement
+	 * @generated
+	 */
+	public Adapter createTypedElementAdapter()
 	{
 		return null;
 	}
@@ -267,36 +330,6 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter <em>Reference Parameter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ReferenceParameter
-	 * @generated
-	 */
-	public Adapter createReferenceParameterAdapter()
-	{
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter <em>Primitive Parameter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.PrimitiveParameter
-	 * @generated
-	 */
-	public Adapter createPrimitiveParameterAdapter()
-	{
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.FieldInitialisiation <em>Field Initialisiation</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -327,36 +360,6 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference <em>Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Reference
-	 * @generated
-	 */
-	public Adapter createReferenceAdapter()
-	{
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute <em>Attribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.Attribute
-	 * @generated
-	 */
-	public Adapter createAttributeAdapter()
-	{
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.Expression <em>Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -382,6 +385,51 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createStringLiteralAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral <em>Double Literal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.DoubleLiteral
+	 * @generated
+	 */
+	public Adapter createDoubleLiteralAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral <em>Long Literal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.LongLiteral
+	 * @generated
+	 */
+	public Adapter createLongLiteralAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral <em>Integer Literal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.IntegerLiteral
+	 * @generated
+	 */
+	public Adapter createIntegerLiteralAdapter()
 	{
 		return null;
 	}
@@ -427,6 +475,21 @@ public class ObjLangAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createNullLiteralAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral <em>Array Literal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see fr.inria.spirals.sigma.ttc14.fixml.objlang.ArrayLiteral
+	 * @generated
+	 */
+	public Adapter createArrayLiteralAdapter()
 	{
 		return null;
 	}

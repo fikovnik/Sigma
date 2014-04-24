@@ -32,6 +32,24 @@ public interface ObjLangFactory extends EFactory
 	Class createClass();
 
 	/**
+	 * Returns a new object of class '<em>Data Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type</em>'.
+	 * @generated
+	 */
+	DataType createDataType();
+
+	/**
+	 * Returns a new object of class '<em>Typed Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Typed Element</em>'.
+	 * @generated
+	 */
+	TypedElement createTypedElement();
+
+	/**
 	 * Returns a new object of class '<em>Constructor</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -41,22 +59,13 @@ public interface ObjLangFactory extends EFactory
 	Constructor createConstructor();
 
 	/**
-	 * Returns a new object of class '<em>Reference Parameter</em>'.
+	 * Returns a new object of class '<em>Parameter</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Reference Parameter</em>'.
+	 * @return a new object of class '<em>Parameter</em>'.
 	 * @generated
 	 */
-	ReferenceParameter createReferenceParameter();
-
-	/**
-	 * Returns a new object of class '<em>Primitive Parameter</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Primitive Parameter</em>'.
-	 * @generated
-	 */
-	PrimitiveParameter createPrimitiveParameter();
+	Parameter createParameter();
 
 	/**
 	 * Returns a new object of class '<em>Field Initialisiation</em>'.
@@ -68,22 +77,13 @@ public interface ObjLangFactory extends EFactory
 	FieldInitialisiation createFieldInitialisiation();
 
 	/**
-	 * Returns a new object of class '<em>Reference</em>'.
+	 * Returns a new object of class '<em>Field</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Reference</em>'.
+	 * @return a new object of class '<em>Field</em>'.
 	 * @generated
 	 */
-	Reference createReference();
-
-	/**
-	 * Returns a new object of class '<em>Attribute</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Attribute</em>'.
-	 * @generated
-	 */
-	Attribute createAttribute();
+	Field createField();
 
 	/**
 	 * Returns a new object of class '<em>String Literal</em>'.
@@ -93,6 +93,33 @@ public interface ObjLangFactory extends EFactory
 	 * @generated
 	 */
 	StringLiteral createStringLiteral();
+
+	/**
+	 * Returns a new object of class '<em>Double Literal</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Double Literal</em>'.
+	 * @generated
+	 */
+	DoubleLiteral createDoubleLiteral();
+
+	/**
+	 * Returns a new object of class '<em>Long Literal</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Long Literal</em>'.
+	 * @generated
+	 */
+	LongLiteral createLongLiteral();
+
+	/**
+	 * Returns a new object of class '<em>Integer Literal</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Integer Literal</em>'.
+	 * @generated
+	 */
+	IntegerLiteral createIntegerLiteral();
 
 	/**
 	 * Returns a new object of class '<em>Constructor Call</em>'.
@@ -120,6 +147,15 @@ public interface ObjLangFactory extends EFactory
 	 * @generated
 	 */
 	NullLiteral createNullLiteral();
+
+	/**
+	 * Returns a new object of class '<em>Array Literal</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Array Literal</em>'.
+	 * @generated
+	 */
+	ArrayLiteral createArrayLiteral();
 
 	/**
 	 * Returns the package supported by this factory.
