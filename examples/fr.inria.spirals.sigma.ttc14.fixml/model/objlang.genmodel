@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.inria.spirals.sigma.ttc14.fixml/src-gen" modelPluginID="fr.inria.spirals.sigma.ttc14.fixml"
+    modelName="Objlang" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>objlang.ecore</foreignModel>
+  <genPackages prefix="ObjLang" basePackage="fr.inria.spirals.sigma.ttc14.fixml" disposableProviderFactory="true"
+      ecorePackage="objlang.ecore#/">
+    <genClasses image="false" ecoreClass="objlang.ecore#//NamedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute objlang.ecore#//NamedElement/name"/>
+    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//Class">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//Class/members"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Class/superclass"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="objlang.ecore#//Member"/>
+    <genClasses ecoreClass="objlang.ecore#//Constructor">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//Constructor/parameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//Constructor/initialisations"/>
+    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//Parameter">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Parameter/type"/>
+    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//FieldInitialisiation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//FieldInitialisiation/field"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//FieldInitialisiation/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//Field">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Field/type"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//Field/initialValue"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="objlang.ecore#//Expression"/>
+    <genClasses ecoreClass="objlang.ecore#//StringLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute objlang.ecore#//StringLiteral/value"/>
+    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//ConstructorCall">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//ConstructorCall/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference objlang.ecore#//ConstructorCall/arguments"/>
+    </genClasses>
+    <genClasses ecoreClass="objlang.ecore#//ParameterAccess">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference objlang.ecore#//ParameterAccess/parameter"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

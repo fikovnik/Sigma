@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TTC'14 Fixml Case Study
+Bundle-SymbolicName: fr.inria.spirals.sigma.ttc14.fixml;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: INRIA SPIRALS team
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.scala-lang.scala-library;bundle-version="2.10.3",
+ fr.unice.i3s.sigma;bundle-version="1.0.0",
+ org.junit;bundle-version="4.11.0",
+ org.scalatest;bundle-version="2.1.3"

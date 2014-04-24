@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ASCII"?>
+<FIXML>
+<PosRpt RptID="541386431" Rslt="0" 
+           BizDt="2003-09-10T00:00:00" Acct="1" AcctTyp="1" 
+           SetPx="0.00" SetPxTyp="1" PriSetPx="0.00" ReqTyp="0" Ccy="USD">
+       <Hdr Snt="2001-12-17T09:30:47-05:00" PosDup="N" PosRsnd="N" SeqNum="1002">
+<Sndr ID="String" Sub="String" Loc="String"/>
+<Tgt ID="String" Sub="String" Loc="String"/>
+<OnBhlfOf ID="String" Sub="String" Loc="String"/>
+<DlvrTo ID="String" Sub="String" Loc="String"/>
+</Hdr>
+<Pty ID="OCC" R="21"/>
+<Pty ID="99999" R="4"/>
+<Pty ID="C" R="38">
+<Sub ID="ZZZ" Typ="2"/>
+</Pty>
+<Qty Typ="SOD" Long="35" Short="0"/>
+<Qty Typ="FIN" Long="20" Short="10"/>
+<Qty Typ="IAS" Long="10"/>
+<Amt Typ="FMTM" Amt="0.00"/>
+<Instrmt Sym="AOL" ID="KW" IDSrc="J" CFI="OCASPS" MMY="20031122" 
+                     Mat="2003-11-22T00:00:00" Strk="47.50" StrkCcy="USD" Mult="100"/>
+</PosRpt>
+</FIXML>

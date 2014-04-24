@@ -25,6 +25,7 @@
 
 	<modules>
 		<module>../../plugins/fr.unice.i3s.sigma</module>
+		<module>../../examples/fr.inria.spirals.sigma.ttc14.fixml</module>
 		<!-- <module>../../tests/fr.unice.i3s.sigma.tests</module> -->
 		<!-- <module>../../examples/fr.unice.i3s.sigma.examples.simpleoo</module> -->
 		

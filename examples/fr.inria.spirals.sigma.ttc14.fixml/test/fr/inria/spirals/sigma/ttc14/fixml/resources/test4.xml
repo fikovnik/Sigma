@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<FIXML>
+<FIXMLMessage>
+<Header>
+<Sender>
+<CompID>MEEF</CompID>
+<SubID>IAN</SubID>
+</Sender>
+<Target>
+<CompID>TAL</CompID>
+<SubID>ARCA</SubID>
+</Target>
+<SendingTime>20010226-15:00:00</SendingTime>
+</Header>
+<ApplicationMessage>
+<Order>
+<ClOrdID>FOO 1234</ClOrdID>
+<HandInst Value="2" />
+<Instrument>
+<Symbol>CSCO</Symbol>
+<SecurityType>
+<Equity Value="CS" />
+</SecurityType>
+</Instrument>
+<Side Value="1" />
+<TransactTime>20010226-15:00:00</TransactTime>
+<OrderQuantity>
+<OrderQty>5000</OrderQty>
+</OrderQuantity>
+<OrderType>
+<LimitOrder>
+<Price>32.25</Price>
+</LimitOrder>
+</OrderType>
+<Currency Value="USD" />
+<OrderDuration>
+<TimeInForce Value="0" />
+</OrderDuration>
+<Rule80A Value="A" />
+</Order>
+</ApplicationMessage>
+</FIXMLMessage>
+</FIXML>

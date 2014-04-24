@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated xmlmm -->
+      <package
+            uri="http://spirals.inria.fr/sigma/ttc14/fixml/xmlmm/1.0"
+            class="fr.inria.spirals.sigma.ttc14.fixml.xmlmm.XMLMMPackage"
+            genModel="model/xmlmm.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated objlang -->
+      <package
+            uri="http://spirals.inria.fr/sigma/ttc14/fixml/objlang/1.0"
+            class="fr.inria.spirals.sigma.ttc14.fixml.objlang.ObjLangPackage"
+            genModel="model/objlang.genmodel"/>
+   </extension>
+
+</plugin>

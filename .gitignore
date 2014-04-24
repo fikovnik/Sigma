@@ -7,3 +7,4 @@ bin/
 /fr.unice.i3s.sigma.ui.ide.tests/screenshots/
 docs/_site
 examples/fr.unice.i3s.sigma.examples.sigmadoc/output
+examples/fr.inria.spirals.sigma.ttc14.fixml/output

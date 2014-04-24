@@ -1,0 +1,26 @@
+<FIXML><FIXMLMessage>
+<ApplicationMessage>
+<Order>
+<ClOrdID>ORD_1</ClOrdID>
+<HandInst Value="2" />
+<MinQty>1000</MinQty>
+<Instrument>
+<Symbol>EK</Symbol>
+<IDSource>1</IDSource>
+<SecurityID>277461109</SecurityID>
+</Instrument>
+<Side Value="1" />
+<TransactTime>20000907-09:25:56</TransactTime>
+<OrderQuantity>
+<OrderQty>5000</OrderQty>
+</OrderQuantity>
+<OrderType>
+<LimitOrder Value="2">
+<Price>62.5</Price>
+</LimitOrder>
+</OrderType>
+<Currency Value="USD" />
+<Rule80A Value="A" />
+</Order>
+</ApplicationMessage>
+</FIXMLMessage></FIXML>

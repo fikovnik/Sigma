@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ASCII"?>
+<FIXML>
+     <Order ClOrdID="123456"
+                    Side="2"
+                    TransactTm="2001-09-11T09:30:47-05:00"
+                    OrdTyp="2"
+                    Px="93.25"
+                    Acct="26522154">
+         <Hdr Snt="2001-09-11T09:30:47-05:00"
+                 PosDup="N"
+                 PosRsnd="N"
+                 SeqNum="521">
+             <Sndr ID="AFUNDMGR"/>
+             <Tgt ID="ABROKER"/>
+         </Hdr>
+         <Instrmt Sym="IBM"
+                    ID="459200101"
+                    IDSrc="1"/>
+         <OrdQty Qty="1000"/>
+       </Order>
+</FIXML>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="scala.application">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/fr.inria.spirals.sigma.ttc14.fixml/src/fr/inria/spirals/sigma/ttc14/fixml/Main.scala"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fr.inria.spirals.sigma.ttc14.fixml.Main"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="resources/messages/test2.xml output"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="fr.inria.spirals.sigma.ttc14.fixml.tests"/>
+</launchConfiguration>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:objlang="http://spirals.inria.fr/sigma/ttc14/fixml/objlang/1.0">
+  <objlang:Class name="part">
+    <members xsi:type="objlang:Constructor">
+      <parameters xsi:type="objlang:PrimitiveParameter" name="_serial"/>
+      <parameters xsi:type="objlang:PrimitiveParameter" name="_subpart"/>
+      <initialisations field="/0/@members.2">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/0/@members.0/@parameters.0"/>
+      </initialisations>
+      <initialisations field="/0/@members.3">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/0/@members.0/@parameters.1"/>
+      </initialisations>
+    </members>
+    <members xsi:type="objlang:Constructor"/>
+    <members xsi:type="objlang:Attribute" name="_serial">
+      <initialValue xsi:type="objlang:StringLiteral" value="C"/>
+    </members>
+    <members xsi:type="objlang:Attribute" name="_subpart">
+      <initialValue xsi:type="objlang:StringLiteral" value="1"/>
+    </members>
+  </objlang:Class>
+  <objlang:Class name="car">
+    <members xsi:type="objlang:Constructor">
+      <parameters xsi:type="objlang:ReferenceParameter" name="_engine_1" type="/2"/>
+      <parameters xsi:type="objlang:ReferenceParameter" name="_engine_2" type="/2"/>
+      <parameters xsi:type="objlang:ReferenceParameter" name="_engine_3" type="/2"/>
+      <initialisations field="/1/@members.2">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/1/@members.0/@parameters.0"/>
+      </initialisations>
+      <initialisations field="/1/@members.3">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/1/@members.0/@parameters.1"/>
+      </initialisations>
+      <initialisations field="/1/@members.4">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/1/@members.0/@parameters.2"/>
+      </initialisations>
+    </members>
+    <members xsi:type="objlang:Constructor"/>
+    <members xsi:type="objlang:Reference" name="engine_object_1" type="/2">
+      <initialValue xsi:type="objlang:ConstructorCall" constructor="/2/@members.0">
+        <arguments xsi:type="objlang:StringLiteral" value="A"/>
+        <arguments xsi:type="objlang:NullLiteral"/>
+        <arguments xsi:type="objlang:NullLiteral"/>
+        <arguments xsi:type="objlang:NullLiteral"/>
+      </initialValue>
+    </members>
+    <members xsi:type="objlang:Reference" name="engine_object_2" type="/2">
+      <initialValue xsi:type="objlang:ConstructorCall" constructor="/2/@members.0">
+        <arguments xsi:type="objlang:NullLiteral"/>
+        <arguments xsi:type="objlang:StringLiteral" value="B"/>
+        <arguments xsi:type="objlang:NullLiteral"/>
+        <arguments xsi:type="objlang:NullLiteral"/>
+      </initialValue>
+    </members>
+    <members xsi:type="objlang:Reference" name="engine_object_3" type="/2">
+      <initialValue xsi:type="objlang:ConstructorCall" constructor="/2/@members.0">
+        <arguments xsi:type="objlang:NullLiteral"/>
+        <arguments xsi:type="objlang:NullLiteral"/>
+        <arguments xsi:type="objlang:ConstructorCall" constructor="/0/@members.0">
+          <arguments xsi:type="objlang:StringLiteral" value="C"/>
+          <arguments xsi:type="objlang:NullLiteral"/>
+        </arguments>
+        <arguments xsi:type="objlang:ConstructorCall" constructor="/0/@members.0">
+          <arguments xsi:type="objlang:NullLiteral"/>
+          <arguments xsi:type="objlang:StringLiteral" value="1"/>
+        </arguments>
+      </initialValue>
+    </members>
+  </objlang:Class>
+  <objlang:Class name="engine">
+    <members xsi:type="objlang:Constructor">
+      <parameters xsi:type="objlang:PrimitiveParameter" name="_name"/>
+      <parameters xsi:type="objlang:PrimitiveParameter" name="_type"/>
+      <parameters xsi:type="objlang:ReferenceParameter" name="_part_1" type="/0"/>
+      <parameters xsi:type="objlang:ReferenceParameter" name="_part_2" type="/0"/>
+      <initialisations field="/2/@members.2">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/2/@members.0/@parameters.0"/>
+      </initialisations>
+      <initialisations field="/2/@members.3">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/2/@members.0/@parameters.1"/>
+      </initialisations>
+      <initialisations field="/2/@members.4">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/2/@members.0/@parameters.2"/>
+      </initialisations>
+      <initialisations field="/2/@members.5">
+        <expression xsi:type="objlang:ParameterAccess" parameter="/2/@members.0/@parameters.3"/>
+      </initialisations>
+    </members>
+    <members xsi:type="objlang:Constructor"/>
+    <members xsi:type="objlang:Attribute" name="_name">
+      <initialValue xsi:type="objlang:StringLiteral" value="A"/>
+    </members>
+    <members xsi:type="objlang:Attribute" name="_type">
+      <initialValue xsi:type="objlang:StringLiteral" value="B"/>
+    </members>
+    <members xsi:type="objlang:Reference" name="part_object_1" type="/0">
+      <initialValue xsi:type="objlang:ConstructorCall" constructor="/0/@members.0">
+        <arguments xsi:type="objlang:StringLiteral" value="C"/>
+        <arguments xsi:type="objlang:NullLiteral"/>
+      </initialValue>
+    </members>
+    <members xsi:type="objlang:Reference" name="part_object_2" type="/0">
+      <initialValue xsi:type="objlang:ConstructorCall" constructor="/0/@members.0">
+        <arguments xsi:type="objlang:NullLiteral"/>
+        <arguments xsi:type="objlang:StringLiteral" value="1"/>
+      </initialValue>
+    </members>
+  </objlang:Class>
+</xmi:XMI>
