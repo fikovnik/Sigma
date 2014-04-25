@@ -1,12 +1,12 @@
 package fr.inria.spirals.sigma.ttc14.fixml
 
 import java.io.File
-
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.Class
 import fr.inria.spirals.sigma.ttc14.fixml.objlang.support.ObjLang
 import fr.unice.i3s.sigma.m2t.M2TF
 import fr.unice.i3s.sigma.support.ScalaSigmaSupport
 import fr.unice.i3s.sigma.util.IOUtils
+import fr.inria.spirals.sigma.ttc14.fixml.xmlmm.XMLNode
 
 object Main extends App with ScalaSigmaSupport with ObjLang {
 
@@ -36,21 +36,40 @@ object Main extends App with ScalaSigmaSupport with ObjLang {
       Array(src)
     }
 
-    val m2m = new XMLMM2ObjLang
-    
-    for {
-      file ← files
-      (ext, m2tf) ← drivers
-    } {
-      println(s"Processing $file -> $ext")
+    def timeStamp[T](msg: String)(thunk: => T): T = {
+      val start = System.currentTimeMillis
+      val res = thunk
+      val time = System.currentTimeMillis - start
 
-      val fixml = FIXMLParser.parseFromFile(file) orCrash s"Unable to load FIXML from ${src}"
+      println(s"$msg in ${time}ms")
 
-      val output = new File(new File(dest, file.getName), ext)
-      IOUtils.mkdirs(output)
+      res
+    }
 
-      val targets = m2m.transform(fixml)
-      targets collect { case c: Class ⇒ c } foreach { m2tf.transform(_, output) }
+    timeStamp(s"Transforming all") {
+      for (file ← files) {
+
+        timeStamp(s"Transformed $file") {
+          val fixml = timeStamp(s"\t$file: Transformed XML -> XMLMM (T2M)") {
+            FIXMLParser.parseFromFile(file) orCrash s"Unable to load FIXML from ${src}"
+          }
+
+          val objlang = timeStamp(s"\t$file: Trasformed XMLMM -> ObjLang (M2M)") {
+            new XMLMM2ObjLang().transform(fixml)
+          }
+
+          for ((ext, m2tf) ← drivers) {
+            val output = new File(new File(dest, file.getName), ext)
+            IOUtils.mkdirs(output)
+
+            val classes = objlang collect { case c: Class ⇒ c }
+
+            timeStamp(s"\t$file: Transformed ObjLang to $ext (M2T)") {
+              classes foreach (m2tf.transform(_, output))
+            }
+          }
+        }
+      }
     }
   }
 
