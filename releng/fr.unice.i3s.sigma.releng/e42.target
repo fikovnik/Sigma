@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="e42" sequenceNumber="42">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.pde.feature.group" version="3.8.2.v20130116-091538-7c7wFj0FFt6Zr9bd4AM1JEQMS"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.8.3.v20130125-0826"/>
+<unit id="org.eclipse.jdt.feature.group" version="3.8.2.v20130116-090414-8-8nFu3FNOfwKLRuqgXKIy9z0I83"/>
+<repository location="http://download.eclipse.org/releases/juno/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.scala-ide.sdt.feature.feature.group" version="4.0.0.m1-2_10-201311011355-8ed264f"/>
+<repository location="http://download.scala-ide.org/sdk/e38/scala210/dev/site"/>
+</location>
+<location path="${container_loc:/fr.unice.i3s.sigma.releng/e42.target}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
+</locations>
+</target>

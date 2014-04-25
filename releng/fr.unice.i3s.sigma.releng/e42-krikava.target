@@ -2,7 +2,7 @@
 <?pde version="3.8"?><target name="e42-krikava" sequenceNumber="40">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.2.rc02-2_10-201310081317-0880865"/>
+<unit id="org.scala-ide.sdt.feature.feature.group" version="4.0.0.m1-2_10-201311011355-8ed264f"/>
 <repository location="file:/Users/krikava/Development/p2-mirrors/repository/scala-ide-e38/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -11,6 +11,6 @@
 <unit id="org.eclipse.jdt.feature.group" version="3.8.2.v20130116-090414-8-8nFu3FNOfwKLRuqgXKIy9z0I83"/>
 <repository location="file:/Users/krikava/Development/p2-mirrors/repository/eclipse-juno/"/>
 </location>
-<location path="${container_loc}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
+<location path="${container_loc:/fr.unice.i3s.sigma.releng/e42-krikava.target}/../fr.unice.i3s.sigma.releng.p2/target/repository" type="Directory"/>
 </locations>
 </target>
