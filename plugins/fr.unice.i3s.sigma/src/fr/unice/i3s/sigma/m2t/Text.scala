@@ -217,6 +217,9 @@ class Text(
     this
   }
 
+  def quoted(block: ⇒ Unit): this.type = surroundWith("\"", "\"") {block}
+
+  
   def curlyIndent(block: ⇒ Unit): this.type = {
     surroundWith(" {", "}") {
       indent(block)

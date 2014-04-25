@@ -4,6 +4,9 @@ import java.io.Closeable
 import java.io.File
 import java.io.FileWriter
 import java.io.Writer
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
 import scala.sys.process.ProcessLogger
 import scala.sys.process.stringSeqToProcess
@@ -12,24 +15,10 @@ import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 
-import com.google.common.io.Files.copy
-
 object IOUtils {
 
   lazy val pathSep = System.getProperty("path.separator")
-
-  implicit class RichSigmaFile(that: File) {
-    def <<(in: Any): this.type = {
-      val fw = new FileWriter(that)
-      try {
-        fw.write(in.toString)
-      } finally {
-        fw.close
-      }
-      this
-    }
-  }
-
+  
   object SystemExecutor extends Executor {
 
     import sys.process._
@@ -38,6 +27,7 @@ object IOUtils {
       try {
         val stderr = new StringBuilder
         cmd !! ProcessLogger(line ⇒ stderr append line)
+        // TODO: return value (ret, stderr.toString)
         Success(stderr.toString)
       } catch {
         case e: Throwable ⇒ Failure(e)
@@ -83,7 +73,7 @@ object IOUtils {
       case VisitFile(f) ⇒
         val dest = new File(to, f.getName)
         logger(f, dest)
-        copy(f, dest)
+        Files.copy(Paths.get(f.toURI), Paths.get(dest.toURI), StandardCopyOption.REPLACE_EXISTING)
         Continue
       case PreVisitDir(f) if f != from ⇒
         val dest = new File(to, f.getName)
@@ -93,6 +83,7 @@ object IOUtils {
 
   }
 
+  def mkdirs(dir: File) = assert(dir.mkdirs(), s"Unable to create directory ${dir.getAbsolutePath}")
   def mkdtemp: File = mkdtemp("temp", System.nanoTime.toString)
   def mkdtemp(prefix: String, suffix: String): File = {
     val f = File.createTempFile(prefix, suffix)
@@ -105,7 +96,7 @@ object IOUtils {
 
   def using[A <: Closeable, B](input: A)(fun: A ⇒ B): B = {
     require(input != null)
-    
+
     try fun(input)
     finally input.close()
   }

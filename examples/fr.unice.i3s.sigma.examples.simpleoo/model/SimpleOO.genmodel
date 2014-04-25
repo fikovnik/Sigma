@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.unice.i3s.sigma.examples.simpleoo/src-gen"
+    modelPluginID="fr.unice.i3s.sigma.examples.simpleoo" modelName="SimpleOO" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>SimpleOO.ecore</foreignModel>
+  <genPackages prefix="Simpleoo" basePackage="fr.unice.i3s.sigma.examples" disposableProviderFactory="true"
+      ecorePackage="SimpleOO.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="SimpleOO.ecore#//ScopeKind">
+      <genEnumLiterals ecoreEnumLiteral="SimpleOO.ecore#//ScopeKind/sk_instance"/>
+      <genEnumLiterals ecoreEnumLiteral="SimpleOO.ecore#//ScopeKind/sk_classifier"/>
+    </genEnums>
+    <genClasses image="false" ecoreClass="SimpleOO.ecore#//ModelElement">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//ModelElement/stereotypes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SimpleOO.ecore#//ModelElement/name"/>
+    </genClasses>
+    <genClasses ecoreClass="SimpleOO.ecore#//Stereotype">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SimpleOO.ecore#//Stereotype/name"/>
+    </genClasses>
+    <genClasses ecoreClass="SimpleOO.ecore#//Package">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//Package/ownedElements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//Package/ownedStereotypes"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="SimpleOO.ecore#//Classifier">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference SimpleOO.ecore#//Classifier/pkg"/>
+    </genClasses>
+    <genClasses ecoreClass="SimpleOO.ecore#//Class">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SimpleOO.ecore#//Class/abstract"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference SimpleOO.ecore#//Class/properties"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference SimpleOO.ecore#//Class/operations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//Class/features"/>
+    </genClasses>
+    <genClasses ecoreClass="SimpleOO.ecore#//PrimitiveType"/>
+    <genClasses image="false" ecoreClass="SimpleOO.ecore#//Feature">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SimpleOO.ecore#//Feature/ownerScope"/>
+    </genClasses>
+    <genClasses ecoreClass="SimpleOO.ecore#//Property">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//Property/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SimpleOO.ecore#//Property/multi"/>
+    </genClasses>
+    <genClasses ecoreClass="SimpleOO.ecore#//Operation">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//Operation/returnType"/>
+    </genClasses>
+    <genClasses ecoreClass="SimpleOO.ecore#//Constructor"/>
+  </genPackages>
+</genmodel:GenModel>

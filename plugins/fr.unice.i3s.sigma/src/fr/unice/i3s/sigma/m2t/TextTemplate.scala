@@ -12,29 +12,29 @@ abstract class TextTemplate(
 
   extends AbstractTextTemplate(stripWhitespace, relaxedNewLines) {
 
-  /** Type of the source object to be transformed */
-  type M2TSource >: Null
+  /** The type of the model element that is used as the entry point for the transformation */
+  type Source >: Null
 
-  /** Returns the given source instance that is being transformed */
-  protected def source: M2TSource = base.value._1
-  protected[m2t] def out: Text = base.value._2
+  /** A source for current transformation */
+  protected def source: Source = base.value._1
+  /** An output for current transformation */
+  protected def out: Text = base.value._2
 
   // transformation context
-  protected[m2t] val base = new DynamicVariable[(M2TSource, Text)](null)
+  protected[m2t] val base = new DynamicVariable[(Source, Text)](null)
 
-  /**
-   * Transformation entry point
+  /** 
+   * Executes the transformation using `source` as the transformation source.
+   * Returns a string that results from executing the `main` entry point with the given source as `source`. 
+   * 
+   * @param source the transformation source
    */
-  def transform(source: M2TSource): String = {
-    val res = base.withValue(
-      (source, new Text(stripWhitespace, relaxedNewLines))) {
-        execute
-        out.toString
-      }
+  def transform(source: Source): String = base.withValue(
+    (source, new Text(stripWhitespace, relaxedNewLines))) {
+      main
+      out.toString
+    }
 
-    res
-  }
-  
   /**
    * Executes {{{block}}} with {{{section}}} as a current section
    */

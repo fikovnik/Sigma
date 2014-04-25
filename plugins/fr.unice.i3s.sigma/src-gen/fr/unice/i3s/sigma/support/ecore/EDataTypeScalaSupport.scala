@@ -28,11 +28,6 @@ trait EDataTypeScalaSupport extends EMFScalaSupport {
       _instance
     }
   }
-  
-  implicit class EDataTypeScalaSupport(that: EDataType) {
-    def serializable: Boolean = that.isSerializable
-    def serializable_=(value: Boolean): Unit = that.setSerializable(value)
-  }
 }
 
 object EDataTypeScalaSupport extends EDataTypeScalaSupport

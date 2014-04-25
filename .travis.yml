@@ -1,5 +1,0 @@
-language: java
-jdk:
-  - oraclejdk6
-before_script: ./build-deps.sh install
-script: ./build.sh install 

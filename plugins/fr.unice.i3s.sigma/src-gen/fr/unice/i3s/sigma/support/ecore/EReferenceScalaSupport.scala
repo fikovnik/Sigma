@@ -7,12 +7,9 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EReference;
-
-import scala.Option;
 
 trait EReferenceScalaSupport extends EMFScalaSupport {
   type EReference = org.eclipse.emf.ecore.EReference
@@ -44,20 +41,6 @@ trait EReferenceScalaSupport extends EMFScalaSupport {
       
       _instance
     }
-  }
-  
-  implicit class EReferenceScalaSupport(that: EReference) {
-    def containment: Boolean = that.isContainment
-    def containment_=(value: Boolean): Unit = that.setContainment(value)
-    def container: Boolean = that.isContainer
-    def resolveProxies: Boolean = that.isResolveProxies
-    def resolveProxies_=(value: Boolean): Unit = that.setResolveProxies(value)
-    def eOpposite: EReference = that.getEOpposite
-    def eOpposite_=(value: EReference): Unit = that.setEOpposite(value)
-    def eOpposite_=(value: => Option[EReference]): Unit =
-      that.setEOpposite(EcorePackageScalaSupport._ecoreBuilder.ref(value))
-    def eReferenceType: EClass = that.getEReferenceType
-    def eKeys: EList[EAttribute] = that.getEKeys
   }
 }
 

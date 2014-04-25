@@ -1,60 +1,70 @@
 package fr.unice.i3s.sigma.util
 
-import scala.collection.JavaConversions._
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
-import com.google.common.io.Files
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.resource.Resource
 import java.io.File
-import com.google.common.base.Charsets
+
+import scala.collection.JavaConversions._
+import scala.reflect.ClassTag
+import scala.reflect.classTag
+
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
+import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.emf.ecore.xmi.XMLResource
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl
-import org.eclipse.emf.ecore.EcorePackage
-import org.eclipse.emf.codegen.ecore.genmodel.GenModelPackage
-import scala.reflect.{ ClassTag, classTag }
 
 object EMFUtils {
 
   object IO {
 
-    def load[T <: EObject: ClassTag](uri: URI, resolveAll: Boolean = true, resourceSet: ResourceSet = new ResourceSetImpl): T = {
-      val r = resourceSet.getResource(uri, true)
+    def loadResource(uri: URI, resolveAll: Boolean = true, resourceSet: ResourceSet = new ResourceSetImpl): Resource = {
+      val res = resourceSet.getResource(uri, true)
 
       if (resolveAll) {
         EcoreUtil.resolveAll(resourceSet)
       }
 
-      r.getContents().get(0) match {
+      res
+    }
+
+    def loadResourceFromFile[T <: EObject: ClassTag](file: File, resolveAll: Boolean = true): Resource = {
+      val uri = URI.createFileURI(file.getAbsolutePath())
+      loadResource(uri, resolveAll)
+    }
+
+    def load[T <: EObject: ClassTag](uri: URI, resolveAll: Boolean = true, resourceSet: ResourceSet = new ResourceSetImpl): T = {
+      val res = loadResource(uri, resolveAll, resourceSet)
+
+      res.getContents().get(0) match {
         case x: T ⇒ x
         case x ⇒ throw new RuntimeException(s"Loaded model `$x` is not of type: `${classTag[T]}` but `${x.getClass.getName}`")
       }
     }
 
-    def loadFromFile[T <: EObject](file: File, resolveAll: Boolean = true): (T, ResourceSet) = {
-
+    def loadFromFile[T <: EObject: ClassTag](file: File, resolveAll: Boolean = true): T = {
       val uri = URI.createFileURI(file.getAbsolutePath())
       load(uri, resolveAll)
     }
 
-    def saveToFile(root: EObject, file: File) {
+    def saveToFile(file: File, elems: TraversableOnce[EObject]) {
       val uri = URI.createFileURI(file.getAbsolutePath())
-
-      save(root, uri);
+      save(uri, elems);
     }
 
-    def save(root: EObject, uri: URI) {
+    def save(uri: URI, elems: TraversableOnce[EObject]) {
       val resourceSet = new ResourceSetImpl()
       val resource = resourceSet.createResource(uri)
+      val contents = resource.getContents()
 
-      resource.getContents().add(root)
+      elems foreach contents.add
 
-      // TODO: reogrganize - should be a boolean param
+      // TODO: re-organize - should be a boolean param
       // TODO: should we have XMI dependency?
       resource.save(Map(
-        XMLResource.OPTION_SCHEMA_LOCATION -> (true: java.lang.Boolean)))
+        XMLResource.OPTION_SCHEMA_LOCATION -> (true: java.lang.Boolean)
+      ))
     }
 
     def registerDefaultFactories {
