@@ -1,18 +1,20 @@
 package fr.unice.i3s.sigma.examples.sigmadoc
 
 import java.io.File
+
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
+
 import org.eclipse.emf.ecore.EcorePackage
+
+import fr.unice.i3s.sigma.support.SigmaSupport
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
 import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._ecore._
 import fr.unice.i3s.sigma.util.EMFUtils
 import fr.unice.i3s.sigma.util.IOUtils
-import fr.unice.i3s.sigma.util.IOUtils.RichSigmaFile
-import scala.util.Success
 
-object Main extends App with EcorePackageScalaSupport {
+object Main extends App with EcorePackageScalaSupport with SigmaSupport {
 
   class Options(var destination: String, var graphviz: Option[String], var modelFile: File)
 
@@ -81,7 +83,7 @@ object Main extends App with EcorePackageScalaSupport {
         val pngFile = file(options.destination + s"/${options.modelFile.getName}-overview.png")
         val dot = new Ecore2Dot
         
-        dotFile << dot.transform(res)
+        dot.transform(res) >> dotFile 
         val cmd = s"$graphviz -Tpng ${dotFile.getAbsolutePath} -o ${pngFile.getAbsolutePath}"
         println(cmd)
         IOUtils.SystemExecutor.execute(cmd) match {
@@ -115,22 +117,23 @@ object Main extends App with EcorePackageScalaSupport {
     val classPage = new ecore2html.ClassPage
 
     // run the template    
-    file(options.destination + "/index.html") << indexPage.transform(res)
+    indexPage.transform(res) >> file(options.destination + "/index.html")
     for (p ← res.contents[EPackage]) {
       for (c ← p.eClassifiers) {
-        file(options.destination + "/" + cFilename(c)) << (c match {
+        val classifier  = c match {
           case enum: EEnum ⇒ enumPage.transform(enum)
           case dt: EDataType ⇒ dataTypePage.transform(dt)
           case cls: EClass ⇒ classPage.transform(cls)
-        })
+        } 
+        classifier >> file(options.destination + "/" + cFilename(c))
       }
-      file(options.destination + "/" + pFilename(p)) << packagePage.transform(p)
+      packagePage.transform(p) >> file(options.destination + "/" + pFilename(p))
     }
 
     // copy common files
-    file(options.destination + "/css/screen.css") <<< this.getClass.getResourceAsStream("resources/css/screen.css")
-    file(options.destination + "/img/arrow_up.png") <<< this.getClass.getResourceAsStream("resources/img/arrow_up.png")
-    file(options.destination + "/scripts/controls.js") <<< this.getClass.getResourceAsStream("resources/scripts/controls.js")
+    this.getClass.getResourceAsStream("resources/css/screen.css") >> file(options.destination + "/css/screen.css")
+    this.getClass.getResourceAsStream("resources/img/arrow_up.png") >> file(options.destination + "/img/arrow_up.png")
+    this.getClass.getResourceAsStream("resources/scripts/controls.js") >> file(options.destination + "/scripts/controls.js")
   }
 
   Try {

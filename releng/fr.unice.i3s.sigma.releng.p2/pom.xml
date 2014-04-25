@@ -41,6 +41,11 @@
 									</instructions>
 								</artifact>
 								<artifact>
+									<id>com.scalatags:scalatags_2.10:0.2.3</id>
+									<source>true</source>
+									<transitive>false</transitive>
+								</artifact>
+								<artifact>
 									<id>org.apache.logging.log4j:log4j-core:2.0-beta3</id>
 									<source>true</source>
 									<override>true</override>

@@ -7,10 +7,10 @@ Bundle-ClassPath: .
 Bundle-Vendor: I3S laboratory
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.scala-lang.scala-library;bundle-version="2.10.0",
+Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0",
+ fr.unice.i3s.sigma;bundle-version="1.0.0",
+ fr.unice.i3s.sigma.examples.simpleoo;bundle-version="1.0.0",
  org.junit;bundle-version="4.8.2",
  org.scalatest;bundle-version="2.0.0",
- org.mockito.mockito-all;bundle-version="1.9.0",
- fr.unice.i3s.sigma;bundle-version="1.0.0",
- fr.unice.i3s.sigma.examples.simpleoo;bundle-version="1.0.0"
+ org.mockito.mockito-all;bundle-version="1.9.0"
 Bundle-ActivationPolicy: lazy

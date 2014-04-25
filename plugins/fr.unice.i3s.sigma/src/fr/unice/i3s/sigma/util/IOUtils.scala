@@ -18,7 +18,7 @@ import scala.util.Try
 object IOUtils {
 
   lazy val pathSep = System.getProperty("path.separator")
-
+  
   object SystemExecutor extends Executor {
 
     import sys.process._
