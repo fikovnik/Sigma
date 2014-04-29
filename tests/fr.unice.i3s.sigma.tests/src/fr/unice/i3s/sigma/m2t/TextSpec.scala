@@ -495,8 +495,7 @@ class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
       """|class A {
     	 |  val a = 1
      	 |  val b = 1
-     	 |}
-         |""".stripMargin))
+     	 |}""".stripMargin))
 
   }
 
