@@ -5,7 +5,7 @@ import org.scalatest.matchers.MustMatchers
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import java.io.StringWriter
-import fr.unice.i3s.sigma.test.scalatest.TextMatchers
+import fr.unice.i3s.sigma.scalatest.TextMatchers
 
 @RunWith(classOf[JUnitRunner])
 class TextSpec extends FlatSpec with MustMatchers with TextMatchers {
