@@ -11,7 +11,7 @@ package object m2m {
     protected[m2m] def sourcesForTarget(elem: AnyRef): Seq[AnyRef]
     
     protected[m2m] def targetsForSource[T : ClassTag](elem: AnyRef): Set[T]
-    protected[m2m] def allTargetsForSource(elem: AnyRef): Seq[Set[AnyRef]]
+    protected[m2m] def allTargetsForSource(elem: AnyRef): Set[Set[AnyRef]]
   }
 
   def applyUntilFailure[A, B](elems: TraversableOnce[A])(fun: A ⇒ Try[B]): Try[Seq[B]] = Try {

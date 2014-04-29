@@ -44,15 +44,15 @@ trait BaseM2MT extends M2MContext with Logging {
     res
   }
 
-  private[this] var _sourceMetaModels: Seq[MetaModel] = _
-  def sourceMetaModels: Seq[MetaModel] = _sourceMetaModels ensuring (_sourceMetaModels != null, "Source meta-models cannot be empty.")
-  def sourceMetaModels_=(metaModel: MetaModel) = _sourceMetaModels = Seq(metaModel)
-  def sourceMetaModels_=(metaModels: TraversableOnce[MetaModel]) = _sourceMetaModels = Seq(_sourceMetaModels: _*)
+  private[this] var _sourceMetaModels: Set[MetaModel] = _
+  def sourceMetaModels: Set[MetaModel] = _sourceMetaModels ensuring (_sourceMetaModels != null, "Source meta-models cannot be empty.")
+  def sourceMetaModels_=(metaModel: MetaModel) = _sourceMetaModels = Set(metaModel)
+  def sourceMetaModels_=(metaModels: TraversableOnce[MetaModel]) = _sourceMetaModels = Set(metaModels.toArray: _*)
 
-  private[this] var _targetMetaModels: Seq[MetaModel] = _
-  def targetMetaModels: Seq[MetaModel] = _targetMetaModels ensuring (_ != null, "Target meta-models cannot be empty.")
-  def targetMetaModels_=(metaModel: MetaModel) = _targetMetaModels = Seq(metaModel)
-  def targetMetaModels_=(metaModels: TraversableOnce[MetaModel]) = _targetMetaModels = Seq(_targetMetaModels: _*)
+  private[this] var _targetMetaModels: Set[MetaModel] = _
+  def targetMetaModels: Set[MetaModel] = _targetMetaModels ensuring (_targetMetaModels != null, "Target meta-models cannot be empty.")
+  def targetMetaModels_=(metaModel: MetaModel) = _targetMetaModels = Set(metaModel)
+  def targetMetaModels_=(metaModels: TraversableOnce[MetaModel]) = _targetMetaModels = Set(metaModels.toArray: _*)
 
   protected def loadRules: Seq[Rule]
 
@@ -300,14 +300,14 @@ trait BaseM2MT extends M2MContext with Logging {
    *
    * @param elem the source element
    */
-  protected[m2m] def allTargetsForSource(elem: AnyRef): Seq[Set[AnyRef]] = {
+  protected[m2m] def allTargetsForSource(elem: AnyRef): Set[Set[AnyRef]] = {
     val rules = findAllRules(elem)
     if (rules.isEmpty) {
       logger trace s"No rule to transform $elem"
-      Seq()
+      Set()
     } else {
       val pending = rules filterNot (transformed(elem, _))
-      val res = pending map (doTransformOne(elem, _))
+      val res = pending map (doTransformOne(elem, _)) toSet
       // currently executed once with all the already executed matched rules
       val all = res ++ (tracesForSource(elem) collect { case (k, v) if !pending.contains(k) => v })
       all

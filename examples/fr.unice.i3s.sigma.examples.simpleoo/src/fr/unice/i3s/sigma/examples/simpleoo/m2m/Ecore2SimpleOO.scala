@@ -11,8 +11,8 @@ import org.eclipse.emf.ecore.EStructuralFeature
 
 class Ecore2SimpleOO extends M2MT with SimpleOO with EcorePackageScalaSupport {
 
-  sourceMetaModels = EMFModel(_ecore)
-  targetMetaModels = EMFModel(_simpleoo)
+  sourceMetaModels = _ecore
+  targetMetaModels = _simpleoo
   
   @Abstract
   def ruleENamedElement2ModelElement(s: _ecore.ENamedElement, t: _simpleoo.ModelElement) {

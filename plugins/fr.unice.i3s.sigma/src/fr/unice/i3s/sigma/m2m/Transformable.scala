@@ -22,7 +22,7 @@ trait Transformable {
 
   def sTargets[T: ClassTag]: Set[T]
 
-  def sAllTargets: Seq[Set[AnyRef]]
+  def sAllTargets: Set[Set[AnyRef]]
 }
 
 class DefaultTransformable[T <: AnyRef](context: M2MContext, that: T) extends Transformable with Logging {
@@ -37,7 +37,7 @@ class DefaultTransformable[T <: AnyRef](context: M2MContext, that: T) extends Tr
 
   def sTargets[T: ClassTag]: Set[T] = context.targetsForSource[T](that)
 
-  def sAllTargets: Seq[Set[AnyRef]] = context.allTargetsForSource(that)
+  def sAllTargets: Set[Set[AnyRef]] = context.allTargetsForSource(that)
 }
 
 class SigmaM2MSequenceSupport[A <% Transformable](that: Traversable[A]) {
