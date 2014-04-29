@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.test.scalatest
+package fr.unice.i3s.sigma.scalatest
 
 import com.typesafe.scalalogging.log4j.Logging
 import fr.unice.i3s.sigma.workflow.WorkflowRunner

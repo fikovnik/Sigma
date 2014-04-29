@@ -1,4 +1,4 @@
-package fr.unice.i3s.sigma.test.scalatest
+package fr.unice.i3s.sigma.scalatest
 
 import org.scalatest.matchers.Matcher
 import org.eclipse.emf.ecore.EObject

@@ -1,9 +1,7 @@
-package fr.unice.i3s.sigma.test.scalatest
+package fr.unice.i3s.sigma.scalatest
 
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.MatchResult
-import fr.unice.i3s.sigma.m2t.TextTemplateTesting
-import fr.unice.i3s.sigma.m2t.Text
 
 trait TextMatchers {
   

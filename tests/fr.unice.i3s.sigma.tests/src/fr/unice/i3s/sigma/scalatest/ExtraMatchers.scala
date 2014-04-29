@@ -1,8 +1,7 @@
-package fr.unice.i3s.sigma.test.scalatest
+package fr.unice.i3s.sigma.scalatest
 
 import scala.reflect.ClassTag
 import scala.reflect.classTag
-
 import org.eclipse.emf.ecore.EClass
 import org.scalatest.matchers.BeMatcher
 import org.scalatest.matchers.MatchResult
