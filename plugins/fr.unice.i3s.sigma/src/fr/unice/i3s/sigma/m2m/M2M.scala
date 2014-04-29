@@ -201,7 +201,7 @@ trait BaseM2MT extends M2MContext with Logging {
         def findTargets(cls: Seq[MetaClass], vals: Seq[AnyRef], res: Seq[AnyRef] = Seq()): Seq[AnyRef] = cls match {
           case Seq() ⇒ res
           case Seq(x, xs @ _*) ⇒
-            val i = vals.indexWhere { y ⇒ x isKindOf y.getClass }
+            val i = vals.indexWhere { y ⇒ x isKindOf y }
             findTargets(xs, vals.slice(i, vals.size), res :+ vals(i))
         }
 

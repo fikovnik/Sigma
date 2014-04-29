@@ -27,7 +27,7 @@ trait MethodRules extends EcorePackageScalaSupport with SigmaSupport with Loggin
     protected def doTransform(source: AnyRef, targets: Seq[AnyRef]): Try[Boolean] =
       Try(underlying.invoke(target, (source +: targets): _*)) match {
         case Success(None) ⇒ Success(false) // no transformation
-        case Success(null) | Success(Some(_: Unit)) ⇒ Success(true) // null will be the result of invoking (...)Unit
+        case Success(null) | Success(Some(_)) ⇒ Success(true) // null will be the result of invoking (...)Unit
         case Success(x) ⇒ Failure(new M2MTransformationException(s"Unexpected return value `$x` from rule application: $this ($underlying) when transforming $source"))
         case Failure(e) ⇒ Failure(new M2MTransformationException(s"Invocation of rule $name failed: ${e.getCause.getMessage}", e.getCause))
       }

@@ -25,10 +25,6 @@ package emf {
     def apply[T <: EPackage: ClassTag](pkg: SigmaEcorePackage[T]) = new EMFMetaModel(pkg.ePackage)
   }
 
-  class EClassMetaClass(val eclass: EClass) {
-
-  }
-
   class EMFMetaModel[T <: EPackage : ClassTag](val pkg: T) extends MetaModel with SigmaSupport with EcorePackageScalaSupport {
 
     case class EClassMetaClass(eclass: EClass) extends MetaClass {
