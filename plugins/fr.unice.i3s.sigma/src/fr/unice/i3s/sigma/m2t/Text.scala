@@ -213,6 +213,10 @@ class Text(
     }
 
     append(end)
+    
+    if (relaxedNewLines) {
+      dropRight(1)
+    }
 
     this
   }
