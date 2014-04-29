@@ -4,7 +4,7 @@ package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
 import fr.unice.i3s.sigma.examples.simpleoo.Classifier;
 import fr.unice.i3s.sigma.examples.simpleoo.Operation;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -56,7 +56,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.OPERATION;
+		return SimpleOOPackage.Literals.OPERATION;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 			if (returnType != oldReturnType)
 			{
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, SimpleooPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, SimpleOOPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
 			}
 		}
 		return returnType;
@@ -99,7 +99,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 		Classifier oldReturnType = returnType;
 		returnType = newReturnType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.OPERATION__RETURN_TYPE, oldReturnType, returnType));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.OPERATION__RETURN_TYPE:
+			case SimpleOOPackage.OPERATION__RETURN_TYPE:
 				if (resolve) return getReturnType();
 				return basicGetReturnType();
 		}
@@ -129,7 +129,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.OPERATION__RETURN_TYPE:
+			case SimpleOOPackage.OPERATION__RETURN_TYPE:
 				setReturnType((Classifier)newValue);
 				return;
 		}
@@ -146,7 +146,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.OPERATION__RETURN_TYPE:
+			case SimpleOOPackage.OPERATION__RETURN_TYPE:
 				setReturnType((Classifier)null);
 				return;
 		}
@@ -163,7 +163,7 @@ public class OperationImpl extends FeatureImpl implements Operation
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.OPERATION__RETURN_TYPE:
+			case SimpleOOPackage.OPERATION__RETURN_TYPE:
 				return returnType != null;
 		}
 		return super.eIsSet(featureID);

@@ -20,11 +20,11 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooFactory
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOFactory
  * @model kind="package"
  * @generated
  */
-public interface SimpleooPackage extends EPackage
+public interface SimpleOOPackage extends EPackage
 {
 	/**
 	 * The package name.
@@ -56,14 +56,14 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	SimpleooPackage eINSTANCE = fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl.init();
+	SimpleOOPackage eINSTANCE = fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl.init();
 
 	/**
 	 * The meta object id for the '{@link fr.unice.i3s.sigma.examples.simpleoo.impl.ModelElementImpl <em>Model Element</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ModelElementImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getModelElement()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getModelElement()
 	 * @generated
 	 */
 	int MODEL_ELEMENT = 0;
@@ -109,7 +109,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.StereotypeImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getStereotype()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getStereotype()
 	 * @generated
 	 */
 	int STEREOTYPE = 1;
@@ -146,7 +146,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.PackageImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getPackage()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getPackage()
 	 * @generated
 	 */
 	int PACKAGE = 2;
@@ -210,7 +210,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ClassifierImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getClassifier()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getClassifier()
 	 * @generated
 	 */
 	int CLASSIFIER = 3;
@@ -265,7 +265,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ClassImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getClass_()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getClass_()
 	 * @generated
 	 */
 	int CLASS = 4;
@@ -365,7 +365,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.PrimitiveTypeImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getPrimitiveType()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getPrimitiveType()
 	 * @generated
 	 */
 	int PRIMITIVE_TYPE = 5;
@@ -420,7 +420,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.FeatureImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getFeature()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getFeature()
 	 * @generated
 	 */
 	int FEATURE = 6;
@@ -475,7 +475,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.PropertyImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getProperty()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getProperty()
 	 * @generated
 	 */
 	int PROPERTY = 7;
@@ -548,7 +548,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.OperationImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getOperation()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getOperation()
 	 * @generated
 	 */
 	int OPERATION = 8;
@@ -612,7 +612,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ConstructorImpl
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getConstructor()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getConstructor()
 	 * @generated
 	 */
 	int CONSTRUCTOR = 9;
@@ -676,7 +676,7 @@ public interface SimpleooPackage extends EPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.ScopeKind
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getScopeKind()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getScopeKind()
 	 * @generated
 	 */
 	int SCOPE_KIND = 10;
@@ -964,7 +964,7 @@ public interface SimpleooPackage extends EPackage
 	 * @return the factory that creates the instances of the model.
 	 * @generated
 	 */
-	SimpleooFactory getSimpleooFactory();
+	SimpleOOFactory getSimpleOOFactory();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -986,7 +986,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ModelElementImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getModelElement()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getModelElement()
 		 * @generated
 		 */
 		EClass MODEL_ELEMENT = eINSTANCE.getModelElement();
@@ -1012,7 +1012,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.StereotypeImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getStereotype()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getStereotype()
 		 * @generated
 		 */
 		EClass STEREOTYPE = eINSTANCE.getStereotype();
@@ -1030,7 +1030,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.PackageImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getPackage()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getPackage()
 		 * @generated
 		 */
 		EClass PACKAGE = eINSTANCE.getPackage();
@@ -1056,7 +1056,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ClassifierImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getClassifier()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getClassifier()
 		 * @generated
 		 */
 		EClass CLASSIFIER = eINSTANCE.getClassifier();
@@ -1074,7 +1074,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ClassImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getClass_()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getClass_()
 		 * @generated
 		 */
 		EClass CLASS = eINSTANCE.getClass_();
@@ -1124,7 +1124,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.PrimitiveTypeImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getPrimitiveType()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getPrimitiveType()
 		 * @generated
 		 */
 		EClass PRIMITIVE_TYPE = eINSTANCE.getPrimitiveType();
@@ -1134,7 +1134,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.FeatureImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getFeature()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getFeature()
 		 * @generated
 		 */
 		EClass FEATURE = eINSTANCE.getFeature();
@@ -1152,7 +1152,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.PropertyImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getProperty()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getProperty()
 		 * @generated
 		 */
 		EClass PROPERTY = eINSTANCE.getProperty();
@@ -1178,7 +1178,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.OperationImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getOperation()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getOperation()
 		 * @generated
 		 */
 		EClass OPERATION = eINSTANCE.getOperation();
@@ -1196,7 +1196,7 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.ConstructorImpl
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getConstructor()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getConstructor()
 		 * @generated
 		 */
 		EClass CONSTRUCTOR = eINSTANCE.getConstructor();
@@ -1206,11 +1206,11 @@ public interface SimpleooPackage extends EPackage
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see fr.unice.i3s.sigma.examples.simpleoo.ScopeKind
-		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooPackageImpl#getScopeKind()
+		 * @see fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOPackageImpl#getScopeKind()
 		 * @generated
 		 */
 		EEnum SCOPE_KIND = eINSTANCE.getScopeKind();
 
 	}
 
-} //SimpleooPackage
+} //SimpleOOPackage

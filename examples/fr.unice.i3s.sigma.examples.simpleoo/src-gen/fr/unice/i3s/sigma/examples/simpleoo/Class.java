@@ -20,7 +20,7 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClass_()
  * @model
  * @generated
  */
@@ -36,7 +36,7 @@ public interface Class extends Classifier
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Abstract</em>' attribute.
 	 * @see #setAbstract(boolean)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_Abstract()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClass_Abstract()
 	 * @model required="true"
 	 * @generated
 	 */
@@ -62,7 +62,7 @@ public interface Class extends Classifier
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Properties</em>' reference list.
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_Properties()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClass_Properties()
 	 * @model transient="true" changeable="false" volatile="true" derived="true"
 	 * @generated
 	 */
@@ -78,7 +78,7 @@ public interface Class extends Classifier
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Operations</em>' reference list.
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_Operations()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClass_Operations()
 	 * @model transient="true" changeable="false" volatile="true" derived="true"
 	 * @generated
 	 */
@@ -94,7 +94,7 @@ public interface Class extends Classifier
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Features</em>' containment reference list.
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_Features()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClass_Features()
 	 * @model containment="true"
 	 * @generated
 	 */
@@ -110,7 +110,7 @@ public interface Class extends Classifier
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Super Class</em>' reference.
 	 * @see #setSuperClass(Class)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClass_SuperClass()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClass_SuperClass()
 	 * @model
 	 * @generated
 	 */

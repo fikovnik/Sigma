@@ -3,7 +3,7 @@
 package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
 import fr.unice.i3s.sigma.examples.simpleoo.Constructor;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 
 import org.eclipse.emf.ecore.EClass;
 
@@ -36,7 +36,7 @@ public class ConstructorImpl extends OperationImpl implements Constructor
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.CONSTRUCTOR;
+		return SimpleOOPackage.Literals.CONSTRUCTOR;
 	}
 
 } //ConstructorImpl

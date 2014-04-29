@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getModelElement()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getModelElement()
  * @model abstract="true"
  * @generated
  */
@@ -35,7 +35,7 @@ public interface ModelElement extends EObject
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Stereotypes</em>' reference list.
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getModelElement_Stereotypes()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getModelElement_Stereotypes()
 	 * @model
 	 * @generated
 	 */
@@ -51,7 +51,7 @@ public interface ModelElement extends EObject
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getModelElement_Name()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getModelElement_Name()
 	 * @model required="true"
 	 * @generated
 	 */

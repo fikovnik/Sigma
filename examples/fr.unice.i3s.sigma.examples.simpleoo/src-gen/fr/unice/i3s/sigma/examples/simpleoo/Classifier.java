@@ -15,7 +15,7 @@ package fr.unice.i3s.sigma.examples.simpleoo;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClassifier()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClassifier()
  * @model abstract="true"
  * @generated
  */
@@ -32,7 +32,7 @@ public interface Classifier extends ModelElement
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Pkg</em>' container reference.
 	 * @see #setPkg(fr.unice.i3s.sigma.examples.simpleoo.Package)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getClassifier_Pkg()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getClassifier_Pkg()
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.Package#getOwnedElements
 	 * @model opposite="ownedElements" required="true" transient="false"
 	 * @generated

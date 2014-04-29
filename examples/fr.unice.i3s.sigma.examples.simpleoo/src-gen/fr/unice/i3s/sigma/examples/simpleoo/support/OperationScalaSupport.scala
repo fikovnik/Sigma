@@ -13,11 +13,11 @@ import org.eclipse.emf.common.util.EList;
 trait OperationScalaSupport extends EMFScalaSupport {
   type Operation = fr.unice.i3s.sigma.examples.simpleoo.Operation
   
-  protected implicit val _operationProxyBuilder = new EMFProxyBuilder[Operation](SimpleooPackageScalaSupport._simpleooBuilder)
+  protected implicit val _operationProxyBuilder = new EMFProxyBuilder[Operation](SimpleOO._simpleooBuilder)
   
   object Operation {
     def apply(stereotypes: EList[Stereotype] = null, name: String = null, ownerScope: ScopeKind = ScopeKind.SK_INSTANCE, returnType: Classifier = null): Operation = {
-      val _instance = SimpleooPackageScalaSupport._simpleooBuilder.create[Operation]
+      val _instance = SimpleOO._simpleooBuilder.create[Operation]
       
       if (stereotypes != null) _instance.getStereotypes.addAll(stereotypes)
       if (name != null) _instance.setName(name)

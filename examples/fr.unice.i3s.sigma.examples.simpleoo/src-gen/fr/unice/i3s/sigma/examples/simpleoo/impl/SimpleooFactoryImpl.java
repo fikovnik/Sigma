@@ -7,8 +7,8 @@ import fr.unice.i3s.sigma.examples.simpleoo.Operation;
 import fr.unice.i3s.sigma.examples.simpleoo.PrimitiveType;
 import fr.unice.i3s.sigma.examples.simpleoo.Property;
 import fr.unice.i3s.sigma.examples.simpleoo.ScopeKind;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooFactory;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOFactory;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 import fr.unice.i3s.sigma.examples.simpleoo.Stereotype;
 
 import org.eclipse.emf.ecore.EClass;
@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * <!-- end-user-doc -->
  * @generated
  */
-public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
+public class SimpleOOFactoryImpl extends EFactoryImpl implements SimpleOOFactory
 {
 	/**
 	 * Creates the default factory implementation.
@@ -34,21 +34,21 @@ public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static SimpleooFactory init()
+	public static SimpleOOFactory init()
 	{
 		try
 		{
-			SimpleooFactory theSimpleooFactory = (SimpleooFactory)EPackage.Registry.INSTANCE.getEFactory(SimpleooPackage.eNS_URI);
-			if (theSimpleooFactory != null)
+			SimpleOOFactory theSimpleOOFactory = (SimpleOOFactory)EPackage.Registry.INSTANCE.getEFactory("http://sigma.i3s.unice.fr/examples/simpleoo/1.0"); 
+			if (theSimpleOOFactory != null)
 			{
-				return theSimpleooFactory;
+				return theSimpleOOFactory;
 			}
 		}
 		catch (Exception exception)
 		{
 			EcorePlugin.INSTANCE.log(exception);
 		}
-		return new SimpleooFactoryImpl();
+		return new SimpleOOFactoryImpl();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleooFactoryImpl()
+	public SimpleOOFactoryImpl()
 	{
 		super();
 	}
@@ -72,13 +72,13 @@ public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
 	{
 		switch (eClass.getClassifierID())
 		{
-			case SimpleooPackage.STEREOTYPE: return createStereotype();
-			case SimpleooPackage.PACKAGE: return createPackage();
-			case SimpleooPackage.CLASS: return createClass();
-			case SimpleooPackage.PRIMITIVE_TYPE: return createPrimitiveType();
-			case SimpleooPackage.PROPERTY: return createProperty();
-			case SimpleooPackage.OPERATION: return createOperation();
-			case SimpleooPackage.CONSTRUCTOR: return createConstructor();
+			case SimpleOOPackage.STEREOTYPE: return createStereotype();
+			case SimpleOOPackage.PACKAGE: return createPackage();
+			case SimpleOOPackage.CLASS: return createClass();
+			case SimpleOOPackage.PRIMITIVE_TYPE: return createPrimitiveType();
+			case SimpleOOPackage.PROPERTY: return createProperty();
+			case SimpleOOPackage.OPERATION: return createOperation();
+			case SimpleOOPackage.CONSTRUCTOR: return createConstructor();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -94,7 +94,7 @@ public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
 	{
 		switch (eDataType.getClassifierID())
 		{
-			case SimpleooPackage.SCOPE_KIND:
+			case SimpleOOPackage.SCOPE_KIND:
 				return createScopeKindFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
@@ -111,7 +111,7 @@ public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
 	{
 		switch (eDataType.getClassifierID())
 		{
-			case SimpleooPackage.SCOPE_KIND:
+			case SimpleOOPackage.SCOPE_KIND:
 				return convertScopeKindToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
@@ -222,9 +222,9 @@ public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleooPackage getSimpleooPackage()
+	public SimpleOOPackage getSimpleOOPackage()
 	{
-		return (SimpleooPackage)getEPackage();
+		return (SimpleOOPackage)getEPackage();
 	}
 
 	/**
@@ -234,9 +234,9 @@ public class SimpleooFactoryImpl extends EFactoryImpl implements SimpleooFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static SimpleooPackage getPackage()
+	public static SimpleOOPackage getPackage()
 	{
-		return SimpleooPackage.eINSTANCE;
+		return SimpleOOPackage.eINSTANCE;
 	}
 
-} //SimpleooFactoryImpl
+} //SimpleOOFactoryImpl

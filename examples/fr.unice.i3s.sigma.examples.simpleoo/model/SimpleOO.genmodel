@@ -2,10 +2,10 @@
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/fr.unice.i3s.sigma.examples.simpleoo/src-gen"
     modelPluginID="fr.unice.i3s.sigma.examples.simpleoo" modelName="SimpleOO" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
-    operationReflection="true" importOrganizing="true">
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
+    operationReflection="true">
   <foreignModel>SimpleOO.ecore</foreignModel>
-  <genPackages prefix="Simpleoo" basePackage="fr.unice.i3s.sigma.examples" disposableProviderFactory="true"
+  <genPackages prefix="SimpleOO" basePackage="fr.unice.i3s.sigma.examples" disposableProviderFactory="true"
       ecorePackage="SimpleOO.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="SimpleOO.ecore#//ScopeKind">
       <genEnumLiterals ecoreEnumLiteral="SimpleOO.ecore#//ScopeKind/sk_instance"/>
@@ -30,6 +30,7 @@
       <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference SimpleOO.ecore#//Class/properties"/>
       <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference SimpleOO.ecore#//Class/operations"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//Class/features"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SimpleOO.ecore#//Class/superClass"/>
     </genClasses>
     <genClasses ecoreClass="SimpleOO.ecore#//PrimitiveType"/>
     <genClasses image="false" ecoreClass="SimpleOO.ecore#//Feature">

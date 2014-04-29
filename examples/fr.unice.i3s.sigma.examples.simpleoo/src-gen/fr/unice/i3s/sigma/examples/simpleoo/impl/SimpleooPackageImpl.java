@@ -10,8 +10,8 @@ import fr.unice.i3s.sigma.examples.simpleoo.Operation;
 import fr.unice.i3s.sigma.examples.simpleoo.PrimitiveType;
 import fr.unice.i3s.sigma.examples.simpleoo.Property;
 import fr.unice.i3s.sigma.examples.simpleoo.ScopeKind;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooFactory;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOFactory;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 import fr.unice.i3s.sigma.examples.simpleoo.Stereotype;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
  * <!-- end-user-doc -->
  * @generated
  */
-public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
+public class SimpleOOPackageImpl extends EPackageImpl implements SimpleOOPackage
 {
 	/**
 	 * <!-- begin-user-doc -->
@@ -118,13 +118,13 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#eNS_URI
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
-	private SimpleooPackageImpl()
+	private SimpleOOPackageImpl()
 	{
-		super(eNS_URI, SimpleooFactory.eINSTANCE);
+		super(eNS_URI, SimpleOOFactory.eINSTANCE);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
-	 * <p>This method is used to initialize {@link SimpleooPackage#eINSTANCE} when that field is accessed.
+	 * <p>This method is used to initialize {@link SimpleOOPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -146,28 +146,28 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static SimpleooPackage init()
+	public static SimpleOOPackage init()
 	{
-		if (isInited) return (SimpleooPackage)EPackage.Registry.INSTANCE.getEPackage(SimpleooPackage.eNS_URI);
+		if (isInited) return (SimpleOOPackage)EPackage.Registry.INSTANCE.getEPackage(SimpleOOPackage.eNS_URI);
 
 		// Obtain or create and register package
-		SimpleooPackageImpl theSimpleooPackage = (SimpleooPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof SimpleooPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new SimpleooPackageImpl());
+		SimpleOOPackageImpl theSimpleOOPackage = (SimpleOOPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof SimpleOOPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new SimpleOOPackageImpl());
 
 		isInited = true;
 
 		// Create package meta-data objects
-		theSimpleooPackage.createPackageContents();
+		theSimpleOOPackage.createPackageContents();
 
 		// Initialize created meta-data
-		theSimpleooPackage.initializePackageContents();
+		theSimpleOOPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
-		theSimpleooPackage.freeze();
+		theSimpleOOPackage.freeze();
 
   
 		// Update the registry and return the package
-		EPackage.Registry.INSTANCE.put(SimpleooPackage.eNS_URI, theSimpleooPackage);
-		return theSimpleooPackage;
+		EPackage.Registry.INSTANCE.put(SimpleOOPackage.eNS_URI, theSimpleOOPackage);
+		return theSimpleOOPackage;
 	}
 
 	/**
@@ -435,9 +435,9 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleooFactory getSimpleooFactory()
+	public SimpleOOFactory getSimpleOOFactory()
 	{
-		return (SimpleooFactory)getEFactoryInstance();
+		return (SimpleOOFactory)getEFactoryInstance();
 	}
 
 	/**
@@ -582,4 +582,4 @@ public class SimpleooPackageImpl extends EPackageImpl implements SimpleooPackage
 		createResource(eNS_URI);
 	}
 
-} //SimpleooPackageImpl
+} //SimpleOOPackageImpl

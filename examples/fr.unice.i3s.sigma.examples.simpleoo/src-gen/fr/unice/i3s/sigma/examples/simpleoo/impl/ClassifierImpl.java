@@ -3,7 +3,7 @@
 package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
 import fr.unice.i3s.sigma.examples.simpleoo.Classifier;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -48,7 +48,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.CLASSIFIER;
+		return SimpleOOPackage.Literals.CLASSIFIER;
 	}
 
 	/**
@@ -58,8 +58,8 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	 */
 	public fr.unice.i3s.sigma.examples.simpleoo.Package getPkg()
 	{
-		if (eContainerFeatureID() != SimpleooPackage.CLASSIFIER__PKG) return null;
-		return (fr.unice.i3s.sigma.examples.simpleoo.Package)eInternalContainer();
+		if (eContainerFeatureID() != SimpleOOPackage.CLASSIFIER__PKG) return null;
+		return (fr.unice.i3s.sigma.examples.simpleoo.Package)eContainer();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	 */
 	public NotificationChain basicSetPkg(fr.unice.i3s.sigma.examples.simpleoo.Package newPkg, NotificationChain msgs)
 	{
-		msgs = eBasicSetContainer((InternalEObject)newPkg, SimpleooPackage.CLASSIFIER__PKG, msgs);
+		msgs = eBasicSetContainer((InternalEObject)newPkg, SimpleOOPackage.CLASSIFIER__PKG, msgs);
 		return msgs;
 	}
 
@@ -80,7 +80,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	 */
 	public void setPkg(fr.unice.i3s.sigma.examples.simpleoo.Package newPkg)
 	{
-		if (newPkg != eInternalContainer() || (eContainerFeatureID() != SimpleooPackage.CLASSIFIER__PKG && newPkg != null))
+		if (newPkg != eInternalContainer() || (eContainerFeatureID() != SimpleOOPackage.CLASSIFIER__PKG && newPkg != null))
 		{
 			if (EcoreUtil.isAncestor(this, newPkg))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -88,12 +88,12 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
 			if (newPkg != null)
-				msgs = ((InternalEObject)newPkg).eInverseAdd(this, SimpleooPackage.PACKAGE__OWNED_ELEMENTS, fr.unice.i3s.sigma.examples.simpleoo.Package.class, msgs);
+				msgs = ((InternalEObject)newPkg).eInverseAdd(this, SimpleOOPackage.PACKAGE__OWNED_ELEMENTS, fr.unice.i3s.sigma.examples.simpleoo.Package.class, msgs);
 			msgs = basicSetPkg(newPkg, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.CLASSIFIER__PKG, newPkg, newPkg));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.CLASSIFIER__PKG, newPkg, newPkg));
 	}
 
 	/**
@@ -106,7 +106,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASSIFIER__PKG:
+			case SimpleOOPackage.CLASSIFIER__PKG:
 				if (eInternalContainer() != null)
 					msgs = eBasicRemoveFromContainer(msgs);
 				return basicSetPkg((fr.unice.i3s.sigma.examples.simpleoo.Package)otherEnd, msgs);
@@ -124,7 +124,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASSIFIER__PKG:
+			case SimpleOOPackage.CLASSIFIER__PKG:
 				return basicSetPkg(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -140,8 +140,8 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	{
 		switch (eContainerFeatureID())
 		{
-			case SimpleooPackage.CLASSIFIER__PKG:
-				return eInternalContainer().eInverseRemove(this, SimpleooPackage.PACKAGE__OWNED_ELEMENTS, fr.unice.i3s.sigma.examples.simpleoo.Package.class, msgs);
+			case SimpleOOPackage.CLASSIFIER__PKG:
+				return eInternalContainer().eInverseRemove(this, SimpleOOPackage.PACKAGE__OWNED_ELEMENTS, fr.unice.i3s.sigma.examples.simpleoo.Package.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -156,7 +156,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASSIFIER__PKG:
+			case SimpleOOPackage.CLASSIFIER__PKG:
 				return getPkg();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -172,7 +172,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASSIFIER__PKG:
+			case SimpleOOPackage.CLASSIFIER__PKG:
 				setPkg((fr.unice.i3s.sigma.examples.simpleoo.Package)newValue);
 				return;
 		}
@@ -189,7 +189,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASSIFIER__PKG:
+			case SimpleOOPackage.CLASSIFIER__PKG:
 				setPkg((fr.unice.i3s.sigma.examples.simpleoo.Package)null);
 				return;
 		}
@@ -206,7 +206,7 @@ public abstract class ClassifierImpl extends ModelElementImpl implements Classif
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASSIFIER__PKG:
+			case SimpleOOPackage.CLASSIFIER__PKG:
 				return getPkg() != null;
 		}
 		return super.eIsSet(featureID);

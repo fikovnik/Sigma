@@ -13,11 +13,11 @@ import org.eclipse.emf.common.util.EList;
 trait PropertyScalaSupport extends EMFScalaSupport {
   type Property = fr.unice.i3s.sigma.examples.simpleoo.Property
   
-  protected implicit val _propertyProxyBuilder = new EMFProxyBuilder[Property](SimpleooPackageScalaSupport._simpleooBuilder)
+  protected implicit val _propertyProxyBuilder = new EMFProxyBuilder[Property](SimpleOO._simpleooBuilder)
   
   object Property {
     def apply(stereotypes: EList[Stereotype] = null, name: String = null, ownerScope: ScopeKind = ScopeKind.SK_INSTANCE, type_ : Classifier = null, multi: Boolean = false): Property = {
-      val _instance = SimpleooPackageScalaSupport._simpleooBuilder.create[Property]
+      val _instance = SimpleOO._simpleooBuilder.create[Property]
       
       if (stereotypes != null) _instance.getStereotypes.addAll(stereotypes)
       if (name != null) _instance.setName(name)

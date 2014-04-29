@@ -9,7 +9,7 @@ package fr.unice.i3s.sigma.examples.simpleoo;
  * <!-- end-user-doc -->
  *
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getPrimitiveType()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getPrimitiveType()
  * @model
  * @generated
  */

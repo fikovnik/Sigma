@@ -9,7 +9,7 @@ import fr.unice.i3s.sigma.examples.simpleoo.ModelElement;
 import fr.unice.i3s.sigma.examples.simpleoo.Operation;
 import fr.unice.i3s.sigma.examples.simpleoo.PrimitiveType;
 import fr.unice.i3s.sigma.examples.simpleoo.Property;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 import fr.unice.i3s.sigma.examples.simpleoo.Stereotype;
 
 import org.eclipse.emf.ecore.EObject;
@@ -27,10 +27,10 @@ import org.eclipse.emf.ecore.util.Switch;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage
  * @generated
  */
-public class SimpleooSwitch<T> extends Switch<T>
+public class SimpleOOSwitch<T> extends Switch<T>
 {
 	/**
 	 * The cached model package
@@ -38,7 +38,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static SimpleooPackage modelPackage;
+	protected static SimpleOOPackage modelPackage;
 
 	/**
 	 * Creates an instance of the switch.
@@ -46,11 +46,11 @@ public class SimpleooSwitch<T> extends Switch<T>
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleooSwitch()
+	public SimpleOOSwitch()
 	{
 		if (modelPackage == null)
 		{
-			modelPackage = SimpleooPackage.eINSTANCE;
+			modelPackage = SimpleOOPackage.eINSTANCE;
 		}
 	}
 
@@ -80,21 +80,21 @@ public class SimpleooSwitch<T> extends Switch<T>
 	{
 		switch (classifierID)
 		{
-			case SimpleooPackage.MODEL_ELEMENT:
+			case SimpleOOPackage.MODEL_ELEMENT:
 			{
 				ModelElement modelElement = (ModelElement)theEObject;
 				T result = caseModelElement(modelElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.STEREOTYPE:
+			case SimpleOOPackage.STEREOTYPE:
 			{
 				Stereotype stereotype = (Stereotype)theEObject;
 				T result = caseStereotype(stereotype);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.PACKAGE:
+			case SimpleOOPackage.PACKAGE:
 			{
 				fr.unice.i3s.sigma.examples.simpleoo.Package package_ = (fr.unice.i3s.sigma.examples.simpleoo.Package)theEObject;
 				T result = casePackage(package_);
@@ -102,7 +102,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.CLASSIFIER:
+			case SimpleOOPackage.CLASSIFIER:
 			{
 				Classifier classifier = (Classifier)theEObject;
 				T result = caseClassifier(classifier);
@@ -110,7 +110,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.CLASS:
+			case SimpleOOPackage.CLASS:
 			{
 				fr.unice.i3s.sigma.examples.simpleoo.Class class_ = (fr.unice.i3s.sigma.examples.simpleoo.Class)theEObject;
 				T result = caseClass(class_);
@@ -119,7 +119,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.PRIMITIVE_TYPE:
+			case SimpleOOPackage.PRIMITIVE_TYPE:
 			{
 				PrimitiveType primitiveType = (PrimitiveType)theEObject;
 				T result = casePrimitiveType(primitiveType);
@@ -128,7 +128,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.FEATURE:
+			case SimpleOOPackage.FEATURE:
 			{
 				Feature feature = (Feature)theEObject;
 				T result = caseFeature(feature);
@@ -136,7 +136,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.PROPERTY:
+			case SimpleOOPackage.PROPERTY:
 			{
 				Property property = (Property)theEObject;
 				T result = caseProperty(property);
@@ -145,7 +145,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.OPERATION:
+			case SimpleOOPackage.OPERATION:
 			{
 				Operation operation = (Operation)theEObject;
 				T result = caseOperation(operation);
@@ -154,7 +154,7 @@ public class SimpleooSwitch<T> extends Switch<T>
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case SimpleooPackage.CONSTRUCTOR:
+			case SimpleOOPackage.CONSTRUCTOR:
 			{
 				Constructor constructor = (Constructor)theEObject;
 				T result = caseConstructor(constructor);
@@ -345,4 +345,4 @@ public class SimpleooSwitch<T> extends Switch<T>
 		return null;
 	}
 
-} //SimpleooSwitch
+} //SimpleOOSwitch

@@ -16,7 +16,7 @@ package fr.unice.i3s.sigma.examples.simpleoo;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getProperty()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getProperty()
  * @model
  * @generated
  */
@@ -32,7 +32,7 @@ public interface Property extends Feature
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Type</em>' reference.
 	 * @see #setType(Classifier)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getProperty_Type()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getProperty_Type()
 	 * @model required="true"
 	 * @generated
 	 */
@@ -58,7 +58,7 @@ public interface Property extends Feature
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Multi</em>' attribute.
 	 * @see #setMulti(boolean)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getProperty_Multi()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getProperty_Multi()
 	 * @model required="true"
 	 * @generated
 	 */

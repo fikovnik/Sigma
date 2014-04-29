@@ -4,7 +4,7 @@ package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
 import fr.unice.i3s.sigma.examples.simpleoo.Classifier;
 import fr.unice.i3s.sigma.examples.simpleoo.Property;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -77,7 +77,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.PROPERTY;
+		return SimpleOOPackage.Literals.PROPERTY;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 			if (type != oldType)
 			{
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, SimpleooPackage.PROPERTY__TYPE, oldType, type));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, SimpleOOPackage.PROPERTY__TYPE, oldType, type));
 			}
 		}
 		return type;
@@ -120,7 +120,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 		Classifier oldType = type;
 		type = newType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.PROPERTY__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.PROPERTY__TYPE, oldType, type));
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class PropertyImpl extends FeatureImpl implements Property
 		boolean oldMulti = multi;
 		multi = newMulti;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.PROPERTY__MULTI, oldMulti, multi));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.PROPERTY__MULTI, oldMulti, multi));
 	}
 
 	/**
@@ -156,10 +156,10 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PROPERTY__TYPE:
+			case SimpleOOPackage.PROPERTY__TYPE:
 				if (resolve) return getType();
 				return basicGetType();
-			case SimpleooPackage.PROPERTY__MULTI:
+			case SimpleOOPackage.PROPERTY__MULTI:
 				return isMulti();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -175,10 +175,10 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PROPERTY__TYPE:
+			case SimpleOOPackage.PROPERTY__TYPE:
 				setType((Classifier)newValue);
 				return;
-			case SimpleooPackage.PROPERTY__MULTI:
+			case SimpleOOPackage.PROPERTY__MULTI:
 				setMulti((Boolean)newValue);
 				return;
 		}
@@ -195,10 +195,10 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PROPERTY__TYPE:
+			case SimpleOOPackage.PROPERTY__TYPE:
 				setType((Classifier)null);
 				return;
-			case SimpleooPackage.PROPERTY__MULTI:
+			case SimpleOOPackage.PROPERTY__MULTI:
 				setMulti(MULTI_EDEFAULT);
 				return;
 		}
@@ -215,9 +215,9 @@ public class PropertyImpl extends FeatureImpl implements Property
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PROPERTY__TYPE:
+			case SimpleOOPackage.PROPERTY__TYPE:
 				return type != null;
-			case SimpleooPackage.PROPERTY__MULTI:
+			case SimpleOOPackage.PROPERTY__MULTI:
 				return multi != MULTI_EDEFAULT;
 		}
 		return super.eIsSet(featureID);

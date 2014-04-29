@@ -13,7 +13,7 @@ import org.eclipse.emf.common.util.Enumerator;
  * A representation of the literals of the enumeration '<em><b>Scope Kind</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getScopeKind()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getScopeKind()
  * @model
  * @generated
  */

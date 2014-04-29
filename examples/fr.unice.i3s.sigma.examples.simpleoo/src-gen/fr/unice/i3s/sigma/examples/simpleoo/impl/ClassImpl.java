@@ -5,7 +5,7 @@ package fr.unice.i3s.sigma.examples.simpleoo.impl;
 import fr.unice.i3s.sigma.examples.simpleoo.Feature;
 import fr.unice.i3s.sigma.examples.simpleoo.Operation;
 import fr.unice.i3s.sigma.examples.simpleoo.Property;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 
 import java.util.Collection;
 
@@ -99,7 +99,7 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.CLASS;
+		return SimpleOOPackage.Literals.CLASS;
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 		boolean oldAbstract = abstract_;
 		abstract_ = newAbstract;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.CLASS__ABSTRACT, oldAbstract, abstract_));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.CLASS__ABSTRACT, oldAbstract, abstract_));
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	{
 		if (features == null)
 		{
-			features = new EObjectContainmentEList<Feature>(Feature.class, this, SimpleooPackage.CLASS__FEATURES);
+			features = new EObjectContainmentEList<Feature>(Feature.class, this, SimpleOOPackage.CLASS__FEATURES);
 		}
 		return features;
 	}
@@ -181,7 +181,7 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 			if (superClass != oldSuperClass)
 			{
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, SimpleooPackage.CLASS__SUPER_CLASS, oldSuperClass, superClass));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, SimpleOOPackage.CLASS__SUPER_CLASS, oldSuperClass, superClass));
 			}
 		}
 		return superClass;
@@ -207,7 +207,7 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 		fr.unice.i3s.sigma.examples.simpleoo.Class oldSuperClass = superClass;
 		superClass = newSuperClass;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.CLASS__SUPER_CLASS, oldSuperClass, superClass));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.CLASS__SUPER_CLASS, oldSuperClass, superClass));
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASS__FEATURES:
+			case SimpleOOPackage.CLASS__FEATURES:
 				return ((InternalEList<?>)getFeatures()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -236,15 +236,15 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASS__ABSTRACT:
+			case SimpleOOPackage.CLASS__ABSTRACT:
 				return isAbstract();
-			case SimpleooPackage.CLASS__PROPERTIES:
+			case SimpleOOPackage.CLASS__PROPERTIES:
 				return getProperties();
-			case SimpleooPackage.CLASS__OPERATIONS:
+			case SimpleOOPackage.CLASS__OPERATIONS:
 				return getOperations();
-			case SimpleooPackage.CLASS__FEATURES:
+			case SimpleOOPackage.CLASS__FEATURES:
 				return getFeatures();
-			case SimpleooPackage.CLASS__SUPER_CLASS:
+			case SimpleOOPackage.CLASS__SUPER_CLASS:
 				if (resolve) return getSuperClass();
 				return basicGetSuperClass();
 		}
@@ -262,14 +262,14 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASS__ABSTRACT:
+			case SimpleOOPackage.CLASS__ABSTRACT:
 				setAbstract((Boolean)newValue);
 				return;
-			case SimpleooPackage.CLASS__FEATURES:
+			case SimpleOOPackage.CLASS__FEATURES:
 				getFeatures().clear();
 				getFeatures().addAll((Collection<? extends Feature>)newValue);
 				return;
-			case SimpleooPackage.CLASS__SUPER_CLASS:
+			case SimpleOOPackage.CLASS__SUPER_CLASS:
 				setSuperClass((fr.unice.i3s.sigma.examples.simpleoo.Class)newValue);
 				return;
 		}
@@ -286,13 +286,13 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASS__ABSTRACT:
+			case SimpleOOPackage.CLASS__ABSTRACT:
 				setAbstract(ABSTRACT_EDEFAULT);
 				return;
-			case SimpleooPackage.CLASS__FEATURES:
+			case SimpleOOPackage.CLASS__FEATURES:
 				getFeatures().clear();
 				return;
-			case SimpleooPackage.CLASS__SUPER_CLASS:
+			case SimpleOOPackage.CLASS__SUPER_CLASS:
 				setSuperClass((fr.unice.i3s.sigma.examples.simpleoo.Class)null);
 				return;
 		}
@@ -309,15 +309,15 @@ public class ClassImpl extends ClassifierImpl implements fr.unice.i3s.sigma.exam
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.CLASS__ABSTRACT:
+			case SimpleOOPackage.CLASS__ABSTRACT:
 				return abstract_ != ABSTRACT_EDEFAULT;
-			case SimpleooPackage.CLASS__PROPERTIES:
+			case SimpleOOPackage.CLASS__PROPERTIES:
 				return !getProperties().isEmpty();
-			case SimpleooPackage.CLASS__OPERATIONS:
+			case SimpleOOPackage.CLASS__OPERATIONS:
 				return !getOperations().isEmpty();
-			case SimpleooPackage.CLASS__FEATURES:
+			case SimpleOOPackage.CLASS__FEATURES:
 				return features != null && !features.isEmpty();
-			case SimpleooPackage.CLASS__SUPER_CLASS:
+			case SimpleOOPackage.CLASS__SUPER_CLASS:
 				return superClass != null;
 		}
 		return super.eIsSet(featureID);

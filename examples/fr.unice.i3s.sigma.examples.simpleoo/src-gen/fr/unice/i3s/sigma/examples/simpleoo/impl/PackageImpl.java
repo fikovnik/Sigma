@@ -3,7 +3,7 @@
 package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
 import fr.unice.i3s.sigma.examples.simpleoo.Classifier;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 import fr.unice.i3s.sigma.examples.simpleoo.Stereotype;
 
 import java.util.Collection;
@@ -73,7 +73,7 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.PACKAGE;
+		return SimpleOOPackage.Literals.PACKAGE;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		if (ownedElements == null)
 		{
-			ownedElements = new EObjectContainmentWithInverseEList<Classifier>(Classifier.class, this, SimpleooPackage.PACKAGE__OWNED_ELEMENTS, SimpleooPackage.CLASSIFIER__PKG);
+			ownedElements = new EObjectContainmentWithInverseEList<Classifier>(Classifier.class, this, SimpleOOPackage.PACKAGE__OWNED_ELEMENTS, SimpleOOPackage.CLASSIFIER__PKG);
 		}
 		return ownedElements;
 	}
@@ -99,7 +99,7 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		if (ownedStereotypes == null)
 		{
-			ownedStereotypes = new EObjectContainmentEList<Stereotype>(Stereotype.class, this, SimpleooPackage.PACKAGE__OWNED_STEREOTYPES);
+			ownedStereotypes = new EObjectContainmentEList<Stereotype>(Stereotype.class, this, SimpleOOPackage.PACKAGE__OWNED_STEREOTYPES);
 		}
 		return ownedStereotypes;
 	}
@@ -115,7 +115,7 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PACKAGE__OWNED_ELEMENTS:
+			case SimpleOOPackage.PACKAGE__OWNED_ELEMENTS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getOwnedElements()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -131,9 +131,9 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PACKAGE__OWNED_ELEMENTS:
+			case SimpleOOPackage.PACKAGE__OWNED_ELEMENTS:
 				return ((InternalEList<?>)getOwnedElements()).basicRemove(otherEnd, msgs);
-			case SimpleooPackage.PACKAGE__OWNED_STEREOTYPES:
+			case SimpleOOPackage.PACKAGE__OWNED_STEREOTYPES:
 				return ((InternalEList<?>)getOwnedStereotypes()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -149,9 +149,9 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PACKAGE__OWNED_ELEMENTS:
+			case SimpleOOPackage.PACKAGE__OWNED_ELEMENTS:
 				return getOwnedElements();
-			case SimpleooPackage.PACKAGE__OWNED_STEREOTYPES:
+			case SimpleOOPackage.PACKAGE__OWNED_STEREOTYPES:
 				return getOwnedStereotypes();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -168,11 +168,11 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PACKAGE__OWNED_ELEMENTS:
+			case SimpleOOPackage.PACKAGE__OWNED_ELEMENTS:
 				getOwnedElements().clear();
 				getOwnedElements().addAll((Collection<? extends Classifier>)newValue);
 				return;
-			case SimpleooPackage.PACKAGE__OWNED_STEREOTYPES:
+			case SimpleOOPackage.PACKAGE__OWNED_STEREOTYPES:
 				getOwnedStereotypes().clear();
 				getOwnedStereotypes().addAll((Collection<? extends Stereotype>)newValue);
 				return;
@@ -190,10 +190,10 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PACKAGE__OWNED_ELEMENTS:
+			case SimpleOOPackage.PACKAGE__OWNED_ELEMENTS:
 				getOwnedElements().clear();
 				return;
-			case SimpleooPackage.PACKAGE__OWNED_STEREOTYPES:
+			case SimpleOOPackage.PACKAGE__OWNED_STEREOTYPES:
 				getOwnedStereotypes().clear();
 				return;
 		}
@@ -210,9 +210,9 @@ public class PackageImpl extends ModelElementImpl implements fr.unice.i3s.sigma.
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.PACKAGE__OWNED_ELEMENTS:
+			case SimpleOOPackage.PACKAGE__OWNED_ELEMENTS:
 				return ownedElements != null && !ownedElements.isEmpty();
-			case SimpleooPackage.PACKAGE__OWNED_STEREOTYPES:
+			case SimpleOOPackage.PACKAGE__OWNED_STEREOTYPES:
 				return ownedStereotypes != null && !ownedStereotypes.isEmpty();
 		}
 		return super.eIsSet(featureID);

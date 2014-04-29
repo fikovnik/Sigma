@@ -15,7 +15,7 @@ package fr.unice.i3s.sigma.examples.simpleoo;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getOperation()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getOperation()
  * @model
  * @generated
  */
@@ -31,7 +31,7 @@ public interface Operation extends Feature
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Return Type</em>' reference.
 	 * @see #setReturnType(Classifier)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getOperation_ReturnType()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getOperation_ReturnType()
 	 * @model required="true"
 	 * @generated
 	 */

@@ -4,7 +4,7 @@ package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
 import fr.unice.i3s.sigma.examples.simpleoo.Feature;
 import fr.unice.i3s.sigma.examples.simpleoo.ScopeKind;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -65,7 +65,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.FEATURE;
+		return SimpleOOPackage.Literals.FEATURE;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 		ScopeKind oldOwnerScope = ownerScope;
 		ownerScope = newOwnerScope == null ? OWNER_SCOPE_EDEFAULT : newOwnerScope;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.FEATURE__OWNER_SCOPE, oldOwnerScope, ownerScope));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.FEATURE__OWNER_SCOPE, oldOwnerScope, ownerScope));
 	}
 
 	/**
@@ -101,7 +101,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.FEATURE__OWNER_SCOPE:
+			case SimpleOOPackage.FEATURE__OWNER_SCOPE:
 				return getOwnerScope();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -117,7 +117,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.FEATURE__OWNER_SCOPE:
+			case SimpleOOPackage.FEATURE__OWNER_SCOPE:
 				setOwnerScope((ScopeKind)newValue);
 				return;
 		}
@@ -134,7 +134,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.FEATURE__OWNER_SCOPE:
+			case SimpleOOPackage.FEATURE__OWNER_SCOPE:
 				setOwnerScope(OWNER_SCOPE_EDEFAULT);
 				return;
 		}
@@ -151,7 +151,7 @@ public abstract class FeatureImpl extends ModelElementImpl implements Feature
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.FEATURE__OWNER_SCOPE:
+			case SimpleOOPackage.FEATURE__OWNER_SCOPE:
 				return ownerScope != OWNER_SCOPE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);

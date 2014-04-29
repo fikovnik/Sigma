@@ -3,7 +3,7 @@
 package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
 import fr.unice.i3s.sigma.examples.simpleoo.ModelElement;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 import fr.unice.i3s.sigma.examples.simpleoo.Stereotype;
 
 import java.util.Collection;
@@ -83,7 +83,7 @@ public abstract class ModelElementImpl extends MinimalEObjectImpl.Container impl
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.MODEL_ELEMENT;
+		return SimpleOOPackage.Literals.MODEL_ELEMENT;
 	}
 
 	/**
@@ -95,7 +95,7 @@ public abstract class ModelElementImpl extends MinimalEObjectImpl.Container impl
 	{
 		if (stereotypes == null)
 		{
-			stereotypes = new EObjectResolvingEList<Stereotype>(Stereotype.class, this, SimpleooPackage.MODEL_ELEMENT__STEREOTYPES);
+			stereotypes = new EObjectResolvingEList<Stereotype>(Stereotype.class, this, SimpleOOPackage.MODEL_ELEMENT__STEREOTYPES);
 		}
 		return stereotypes;
 	}
@@ -120,7 +120,7 @@ public abstract class ModelElementImpl extends MinimalEObjectImpl.Container impl
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.MODEL_ELEMENT__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.MODEL_ELEMENT__NAME, oldName, name));
 	}
 
 	/**
@@ -133,9 +133,9 @@ public abstract class ModelElementImpl extends MinimalEObjectImpl.Container impl
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.MODEL_ELEMENT__STEREOTYPES:
+			case SimpleOOPackage.MODEL_ELEMENT__STEREOTYPES:
 				return getStereotypes();
-			case SimpleooPackage.MODEL_ELEMENT__NAME:
+			case SimpleOOPackage.MODEL_ELEMENT__NAME:
 				return getName();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -152,11 +152,11 @@ public abstract class ModelElementImpl extends MinimalEObjectImpl.Container impl
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.MODEL_ELEMENT__STEREOTYPES:
+			case SimpleOOPackage.MODEL_ELEMENT__STEREOTYPES:
 				getStereotypes().clear();
 				getStereotypes().addAll((Collection<? extends Stereotype>)newValue);
 				return;
-			case SimpleooPackage.MODEL_ELEMENT__NAME:
+			case SimpleOOPackage.MODEL_ELEMENT__NAME:
 				setName((String)newValue);
 				return;
 		}
@@ -173,10 +173,10 @@ public abstract class ModelElementImpl extends MinimalEObjectImpl.Container impl
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.MODEL_ELEMENT__STEREOTYPES:
+			case SimpleOOPackage.MODEL_ELEMENT__STEREOTYPES:
 				getStereotypes().clear();
 				return;
-			case SimpleooPackage.MODEL_ELEMENT__NAME:
+			case SimpleOOPackage.MODEL_ELEMENT__NAME:
 				setName(NAME_EDEFAULT);
 				return;
 		}
@@ -193,9 +193,9 @@ public abstract class ModelElementImpl extends MinimalEObjectImpl.Container impl
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.MODEL_ELEMENT__STEREOTYPES:
+			case SimpleOOPackage.MODEL_ELEMENT__STEREOTYPES:
 				return stereotypes != null && !stereotypes.isEmpty();
-			case SimpleooPackage.MODEL_ELEMENT__NAME:
+			case SimpleOOPackage.MODEL_ELEMENT__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 		}
 		return super.eIsSet(featureID);

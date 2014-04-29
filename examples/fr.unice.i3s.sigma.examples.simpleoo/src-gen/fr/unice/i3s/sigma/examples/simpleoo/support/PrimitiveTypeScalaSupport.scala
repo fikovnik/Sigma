@@ -11,11 +11,11 @@ import org.eclipse.emf.common.util.EList;
 trait PrimitiveTypeScalaSupport extends EMFScalaSupport {
   type PrimitiveType = fr.unice.i3s.sigma.examples.simpleoo.PrimitiveType
   
-  protected implicit val _primitivetypeProxyBuilder = new EMFProxyBuilder[PrimitiveType](SimpleooPackageScalaSupport._simpleooBuilder)
+  protected implicit val _primitivetypeProxyBuilder = new EMFProxyBuilder[PrimitiveType](SimpleOO._simpleooBuilder)
   
   object PrimitiveType {
     def apply(stereotypes: EList[Stereotype] = null, name: String = null): PrimitiveType = {
-      val _instance = SimpleooPackageScalaSupport._simpleooBuilder.create[PrimitiveType]
+      val _instance = SimpleOO._simpleooBuilder.create[PrimitiveType]
       
       if (stereotypes != null) _instance.getStereotypes.addAll(stereotypes)
       if (name != null) _instance.setName(name)

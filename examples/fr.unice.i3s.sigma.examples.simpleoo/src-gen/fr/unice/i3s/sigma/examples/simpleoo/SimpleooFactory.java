@@ -9,10 +9,10 @@ import org.eclipse.emf.ecore.EFactory;
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
  * <!-- end-user-doc -->
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage
  * @generated
  */
-public interface SimpleooFactory extends EFactory
+public interface SimpleOOFactory extends EFactory
 {
 	/**
 	 * The singleton instance of the factory.
@@ -20,7 +20,7 @@ public interface SimpleooFactory extends EFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	SimpleooFactory eINSTANCE = fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleooFactoryImpl.init();
+	SimpleOOFactory eINSTANCE = fr.unice.i3s.sigma.examples.simpleoo.impl.SimpleOOFactoryImpl.init();
 
 	/**
 	 * Returns a new object of class '<em>Stereotype</em>'.
@@ -92,6 +92,6 @@ public interface SimpleooFactory extends EFactory
 	 * @return the package supported by this factory.
 	 * @generated
 	 */
-	SimpleooPackage getSimpleooPackage();
+	SimpleOOPackage getSimpleOOPackage();
 
-} //SimpleooFactory
+} //SimpleOOFactory

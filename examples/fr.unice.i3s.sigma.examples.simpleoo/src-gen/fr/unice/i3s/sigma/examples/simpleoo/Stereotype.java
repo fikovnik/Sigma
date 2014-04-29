@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getStereotype()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getStereotype()
  * @model
  * @generated
  */
@@ -32,7 +32,7 @@ public interface Stereotype extends EObject
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getStereotype_Name()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getStereotype_Name()
 	 * @model required="true"
 	 * @generated
 	 */

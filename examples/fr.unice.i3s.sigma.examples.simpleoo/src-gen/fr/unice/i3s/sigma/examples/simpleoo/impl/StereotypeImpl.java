@@ -2,7 +2,7 @@
  */
 package fr.unice.i3s.sigma.examples.simpleoo.impl;
 
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 import fr.unice.i3s.sigma.examples.simpleoo.Stereotype;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -65,7 +65,7 @@ public class StereotypeImpl extends MinimalEObjectImpl.Container implements Ster
 	@Override
 	protected EClass eStaticClass()
 	{
-		return SimpleooPackage.Literals.STEREOTYPE;
+		return SimpleOOPackage.Literals.STEREOTYPE;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class StereotypeImpl extends MinimalEObjectImpl.Container implements Ster
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, SimpleooPackage.STEREOTYPE__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, SimpleOOPackage.STEREOTYPE__NAME, oldName, name));
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class StereotypeImpl extends MinimalEObjectImpl.Container implements Ster
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.STEREOTYPE__NAME:
+			case SimpleOOPackage.STEREOTYPE__NAME:
 				return getName();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -117,7 +117,7 @@ public class StereotypeImpl extends MinimalEObjectImpl.Container implements Ster
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.STEREOTYPE__NAME:
+			case SimpleOOPackage.STEREOTYPE__NAME:
 				setName((String)newValue);
 				return;
 		}
@@ -134,7 +134,7 @@ public class StereotypeImpl extends MinimalEObjectImpl.Container implements Ster
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.STEREOTYPE__NAME:
+			case SimpleOOPackage.STEREOTYPE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
 		}
@@ -151,7 +151,7 @@ public class StereotypeImpl extends MinimalEObjectImpl.Container implements Ster
 	{
 		switch (featureID)
 		{
-			case SimpleooPackage.STEREOTYPE__NAME:
+			case SimpleOOPackage.STEREOTYPE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 		}
 		return super.eIsSet(featureID);

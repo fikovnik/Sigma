@@ -9,7 +9,7 @@ import fr.unice.i3s.sigma.examples.simpleoo.ModelElement;
 import fr.unice.i3s.sigma.examples.simpleoo.Operation;
 import fr.unice.i3s.sigma.examples.simpleoo.PrimitiveType;
 import fr.unice.i3s.sigma.examples.simpleoo.Property;
-import fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage;
+import fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage;
 import fr.unice.i3s.sigma.examples.simpleoo.Stereotype;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -24,10 +24,10 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage
  * @generated
  */
-public class SimpleooAdapterFactory extends AdapterFactoryImpl
+public class SimpleOOAdapterFactory extends AdapterFactoryImpl
 {
 	/**
 	 * The cached model package.
@@ -35,7 +35,7 @@ public class SimpleooAdapterFactory extends AdapterFactoryImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static SimpleooPackage modelPackage;
+	protected static SimpleOOPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -43,11 +43,11 @@ public class SimpleooAdapterFactory extends AdapterFactoryImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SimpleooAdapterFactory()
+	public SimpleOOAdapterFactory()
 	{
 		if (modelPackage == null)
 		{
-			modelPackage = SimpleooPackage.eINSTANCE;
+			modelPackage = SimpleOOPackage.eINSTANCE;
 		}
 	}
 
@@ -79,8 +79,8 @@ public class SimpleooAdapterFactory extends AdapterFactoryImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected SimpleooSwitch<Adapter> modelSwitch =
-		new SimpleooSwitch<Adapter>()
+	protected SimpleOOSwitch<Adapter> modelSwitch =
+		new SimpleOOSwitch<Adapter>()
 		{
 			@Override
 			public Adapter caseModelElement(ModelElement object)
@@ -317,4 +317,4 @@ public class SimpleooAdapterFactory extends AdapterFactoryImpl
 		return null;
 	}
 
-} //SimpleooAdapterFactory
+} //SimpleOOAdapterFactory

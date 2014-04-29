@@ -15,7 +15,7 @@ package fr.unice.i3s.sigma.examples.simpleoo;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getFeature()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getFeature()
  * @model abstract="true"
  * @generated
  */
@@ -33,7 +33,7 @@ public interface Feature extends ModelElement
 	 * @return the value of the '<em>Owner Scope</em>' attribute.
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.ScopeKind
 	 * @see #setOwnerScope(ScopeKind)
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getFeature_OwnerScope()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getFeature_OwnerScope()
 	 * @model required="true"
 	 * @generated
 	 */

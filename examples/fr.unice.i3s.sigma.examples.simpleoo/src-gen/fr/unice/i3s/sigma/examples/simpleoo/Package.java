@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.EList;
  * </ul>
  * </p>
  *
- * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getPackage()
+ * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getPackage()
  * @model
  * @generated
  */
@@ -34,7 +34,7 @@ public interface Package extends ModelElement
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Owned Elements</em>' containment reference list.
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getPackage_OwnedElements()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getPackage_OwnedElements()
 	 * @see fr.unice.i3s.sigma.examples.simpleoo.Classifier#getPkg
 	 * @model opposite="pkg" containment="true"
 	 * @generated
@@ -51,7 +51,7 @@ public interface Package extends ModelElement
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Owned Stereotypes</em>' containment reference list.
-	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleooPackage#getPackage_OwnedStereotypes()
+	 * @see fr.unice.i3s.sigma.examples.simpleoo.SimpleOOPackage#getPackage_OwnedStereotypes()
 	 * @model containment="true"
 	 * @generated
 	 */
