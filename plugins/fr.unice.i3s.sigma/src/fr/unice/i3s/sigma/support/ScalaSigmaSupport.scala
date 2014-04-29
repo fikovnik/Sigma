@@ -5,13 +5,21 @@ import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
 import scala.collection.TraversableLike
+import java.lang.reflect.Modifier
 
 trait ScalaSigmaSupport {
 
   implicit class SigmaOption[T](that: Option[T]) {
 
     /** Returns the option's value if it is nonempty, or throw the given exception `t` if it is empty. */
-    def orThrow(t: Throwable): T = if (that.isDefined) that.get else throw t
+    def orThrow(t: => Throwable): T = if (that.isDefined) that.get else throw t
+
+    		/** Asserts the presence of the option's value, throwing an [[AssertionError]] if false. */
+    def asserting: T = { assert(that.isDefined); that.get }
+    
+    /** Asserts the presence of the option's value, throwing an [[AssertionError]] if false with the given message. */
+    def asserting(msg: => String): T = { assert(that.isDefined, msg); that.get }
+    
   }
 
   implicit class SigmaTry[T](that: Try[T]) {
@@ -34,14 +42,19 @@ trait ScalaSigmaSupport {
     def distinctBy[B, That](f: A => B) =
       that.filterNot {
         var set = Set[B]()
-        
+
         elem =>
-          
+
           val b = f(elem)
           val contains = set(b)
           set += b;
           contains
       }
+  }
+
+  implicit class SigmaClass[A](that: Class[A]) {
+    def name = that.getName
+    def isAbstract = Modifier.isAbstract(that.getModifiers)
   }
 
   /** Makes string to implement [[TextOutputting]] */

@@ -9,126 +9,23 @@ import scala.util.Success
 import scala.util.Try
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.EClass
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.EPackage
 import com.typesafe.scalalogging.log4j.Logging
-import fr.unice.i3s.sigma.support.SigmaSupport
-import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport._
-import fr.unice.i3s.sigma.support.SigmaEcorePackage
-import fr.unice.i3s.sigma.OverloadHack
+import fr.unice.i3s.sigma.support.SigmaSupport._
+import fr.unice.i3s.sigma.m2m._
 import scala.collection.generic.Growable
-import scala.collection.mutable.Buffer
-import fr.unice.i3s.sigma.support.ecore.EcorePackageScalaSupport
-
-// TODO: shapeless
-trait Rule {
-
-  def sourceClass: EClass
-
-  def targetClasses: Seq[EClass]
-
-  def primaryTargetClass: EClass = targetClasses(0)
-
-  def transform(source: EObject, targets: Seq[EObject]): Try[Boolean] =
-    if (!isApplicable(source)) Success(false)
-    else {
-      doTransform(source, targets)
-    }
-
-  protected def doTransform(source: EObject, targets: Seq[EObject]): Try[Boolean]
-
-  /** Determines if the rule represented by this `Rule` instance is applicable for the given `source` model element. */
-  def isApplicable(source: EObject): Boolean
-
-  /** The name of the rule. */
-  def name: String
-
-  override def toString =
-    s"Rule $name (${sourceClass.name} -> ${targetClasses map (_.name) mkString (", ")})"
-}
-
-/**
- * A regular rule is using *type-of* relation for matching the source model elements `sourceClass`.
- */
-trait MatchedRule extends Rule {
-
-  def isApplicable(source: EObject) = sourceClass == source.eClass
-
-  override def toString = "Matched" + super.toString
-}
-
-trait AbstractRule extends Rule {
-  def isSuperRuleOf(baseRule: Rule): Boolean = {
-
-    @tailrec
-    def checkTargets(baseTargets: Seq[EClass], superTargets: Seq[EClass]): Boolean = superTargets match {
-      case Seq() ⇒ true
-      case Seq(x, xs @ _*) ⇒ baseTargets.indexWhere { y ⇒ x.isSuperTypeOf(y) } match {
-        case -1 ⇒ false
-        case idx ⇒ checkTargets(baseTargets.slice(idx, baseTargets.size), xs)
-      }
-    }
-
-    sourceClass.isSuperTypeOf(baseRule.sourceClass) && checkTargets(baseRule.targetClasses, targetClasses)
-  }
-
-  override def transform(source: EObject, targets: Seq[EObject]) = doTransform(source, targets)
-
-  override def isApplicable(source: EObject) = false
-
-  override def toString = "Abstract" + super.toString
-}
-
-trait GreedyRule extends Rule {
-
-  override def isApplicable(source: EObject) = sourceClass isSuperTypeOf source.eClass
-
-  override def toString = "Greedy" + super.toString
-}
-
-trait LazyRule extends Rule {
-  override def toString = "Lazy" + super.toString
-}
-
-trait LazyUniqueRule extends Rule {
-  override def toString = "LazyUnique" + super.toString
-}
 
 /**
  * The base trait for all Model-to-Model Transformations
  */
-// TODO: rename to M2MT
-trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
+trait BaseM2MT extends M2MContext with Logging {
 
   /** Trace log entry*/
-  type TraceLogEntry = collection.mutable.HashMap[Rule, Buffer[EObject]]
+  type TraceLogEntry = collection.mutable.HashMap[Rule, Set[AnyRef]]
   /** Trace log that contains the transformation trace used to resolve `source` <-> `target` elements. */
-  type TraceLog = collection.mutable.HashMap[EObject, TraceLogEntry]
+  type TraceLog = collection.mutable.HashMap[AnyRef, TraceLogEntry]
 
   // it is used to associate extra transformation results that would otherwise be lost
-  private[this] val ExtraSource = EcorePackageScalaSupport._ecore.EObject()
-
-  // TODO: allow either a single package or a sequence of packages
-  private[this] var _sourceMetaModels: Seq[EPackage] = _
-  def sourceMetaModels: Seq[EPackage] = {
-    require(_sourceMetaModels != null, "Source meta-models cannot be empty.")
-    _sourceMetaModels.toSeq
-  }
-  def sourceMetaModels_=(metaModel: EPackage) = _sourceMetaModels = Seq(metaModel)
-  def sourceMetaModels_=(metaModels: Seq[EPackage]) = _sourceMetaModels = metaModels
-  def sourceMetaModels_=(metaModel: SigmaEcorePackage[_ <: EPackage]) = _sourceMetaModels = Seq(metaModel.ePackage)
-  def sourceMetaModels_=(metaModels: Seq[SigmaEcorePackage[_ <: EPackage]])(implicit o: Overloaded1) = _sourceMetaModels = metaModels map (_.ePackage)
-
-  private[this] var _targetMetaModels: Seq[EPackage] = _
-  def targetMetaModels: Seq[EPackage] = {
-    require(_targetMetaModels != null, "Target meta-models cannot be empty.")
-    _targetMetaModels.toSeq
-  }
-  def targetMetaModels_=(metaModel: EPackage) = _targetMetaModels = Seq(metaModel)
-  def targetMetaModels_=(metaModels: Seq[EPackage]) = _targetMetaModels = metaModels
-  def targetMetaModels_=(metaModel: SigmaEcorePackage[_ <: EPackage]) = _targetMetaModels = Seq(metaModel.ePackage)
-  def targetMetaModels_=(metaModels: Seq[SigmaEcorePackage[_ <: EPackage]])(implicit o: Overloaded1) = _targetMetaModels = metaModels map (_.ePackage)
+  private[this] val ExtraSource = new AnyRef
 
   /** M2M Transformation session allowing to execute multiple M2M transformations at the same time. */
   private[this] val session = new DynamicVariable[TraceLog](null)
@@ -139,73 +36,113 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
   /** Transformation trace log */
   protected[m2m] def traceLog = session.value
 
+  protected implicit val context: M2MContext = this
+
   lazy val rules: Seq[Rule] = {
     val res = loadRules
     res foreach { r ⇒ logger debug s"Loaded rule: $r" }
     res
   }
 
+  private[this] var _sourceMetaModels: Seq[MetaModel] = _
+  def sourceMetaModels: Seq[MetaModel] = _sourceMetaModels ensuring (_sourceMetaModels != null, "Source meta-models cannot be empty.")
+  def sourceMetaModels_=(metaModel: MetaModel) = _sourceMetaModels = Seq(metaModel)
+  def sourceMetaModels_=(metaModels: TraversableOnce[MetaModel]) = _sourceMetaModels = Seq(_sourceMetaModels: _*)
+
+  private[this] var _targetMetaModels: Seq[MetaModel] = _
+  def targetMetaModels: Seq[MetaModel] = _targetMetaModels ensuring (_ != null, "Target meta-models cannot be empty.")
+  def targetMetaModels_=(metaModel: MetaModel) = _targetMetaModels = Seq(metaModel)
+  def targetMetaModels_=(metaModels: TraversableOnce[MetaModel]) = _targetMetaModels = Seq(_targetMetaModels: _*)
+
   protected def loadRules: Seq[Rule]
 
   object MaintainanceRule extends Rule {
     def sourceClass = ???
     def targetClasses = ???
-    def doTransform(source: EObject, targets: Seq[EObject]) = ???
-    def isApplicable(source: EObject) = false
+    def doTransform(source: AnyRef, targets: Seq[AnyRef]) = ???
+    def isApplicable(source: AnyRef) = false
     def name: String = "MaintainanceRule"
   }
 
-  protected def check = {
-    require(_sourceMetaModels != null, "Source meta models cannot be empty.")
-    require(_targetMetaModels != null, "Target meta models cannot be empty.")
-    require(rules != null && rules.nonEmpty, "There must be at least one rule defined")
+  protected[m2m] def findSourceMetaClass(elem: AnyRef): MetaClass = sourceMetaModels collectFirst {
+    case e if e.containsElement(elem) => e.findMetaClass(elem).get
+  } asserting {
+    s"Element $elem could not be found in any source meta models ${sourceMetaModels mkString ("(", ")", ")")}"
   }
 
-  def transform(source: EObject): Iterable[EObject] = transform(Seq(source))
+  protected[m2m] def findSourceMetaClass(clazz: Class[_]): MetaClass = sourceMetaModels collectFirst {
+    case e if e.containsClass(clazz) => e.findMetaClass(clazz).get
+  } asserting {
+    s"Class ${clazz.name} could not be found in any source meta models ${sourceMetaModels mkString ("(", ")", ")")}"
+  }
 
-  def transform(sources: Iterable[EObject]): Seq[EObject] = {
-    check
+  protected[m2m] def findTargetMetaClass(elem: AnyRef): MetaClass = targetMetaModels collectFirst {
+    case e if e.containsElement(elem) => e.findMetaClass(elem).get
+  } asserting {
+    s"Element $elem could not be found in any target meta models ${targetMetaModels mkString ("(", ")", ")")}"
+  }
 
+  protected[m2m] def findTargetMetaClass(clazz: Class[_]): MetaClass = targetMetaModels collectFirst {
+    case e if e.containsClass(clazz) => e.findMetaClass(clazz).get
+  } asserting {
+    s"Class ${clazz.name} could not be found in any target meta models ${targetMetaModels mkString ("(", ")", ")")}"
+  }
+
+  def transform(source: AnyRef): Set[AnyRef] = transformAll(Seq(source))
+
+  def transformAll(sources: TraversableOnce[AnyRef]): Set[AnyRef] = {
     session.withValue(new TraceLog) {
+
       executingRule.withValue(MaintainanceRule) {
         setUp
       }
 
-      applyUntilFailure(sources) { s ⇒
-        applyUntilFailure(s +: s.eContents)(transformOne)
-      }
+      applyUntilFailure(sources) { source ⇒
+        val mm = findSourceMetaClass(source)
+        val sourceContents = mm.contents(source)
+
+        applyUntilFailure(source +: sourceContents)(transformOne)
+      }.get
 
       val targets = traceLog.values.flatMap(_.values).flatten.toSet
-      val nonContainedTargets = targets filter (_.eContainer == null)
 
       executingRule.withValue(MaintainanceRule) {
         tearDown
       }
 
-      nonContainedTargets.toSeq
+      targets
     }
   }
 
-  protected[m2m] def findNonLazyRules(source: EObject): Seq[Rule] =
-    rules filter { r ⇒ r.isApplicable(source) && !r.isInstanceOf[LazyRule] && !r.isInstanceOf[LazyUniqueRule] }
+  protected[m2m] def findAllRules(source: AnyRef): Seq[Rule] =
+    rules filter (_.isApplicable(source))
 
-  protected[m2m] def findRules[T <: EObject: ClassTag](source: EObject, considerAllTargets: Boolean): Seq[Rule] =
-    rules filter { r ⇒
-      r.isApplicable(source) && (
-        (
-          considerAllTargets && r.targetClasses.exists { t ⇒
-            classTag[T].runtimeClass.isAssignableFrom(t.getInstanceClass)
-          }) || (
-            !considerAllTargets && classTag[T].runtimeClass.isAssignableFrom(r.primaryTargetClass.getInstanceClass)))
+  protected[m2m] def findNonLazyRules(source: AnyRef): Seq[Rule] =
+    findAllRules(source) filter { r ⇒
+      r.isApplicable(source) &&
+        !r.isInstanceOf[LazyRule] &&
+        !r.isInstanceOf[LazyUniqueRule]
     }
+
+  protected[m2m] def findRules[T: ClassTag](source: AnyRef, considerAllTargets: Boolean): Seq[Rule] = {
+    val applicable = findAllRules(source)
+    val meta = findTargetMetaClass(classTag[T].runtimeClass)
+
+    if (considerAllTargets) {
+      applicable filter (_.targetClasses exists { t ⇒ meta isKindOf t })
+    } else {
+      applicable filter { r => meta isKindOf r.primaryTargetClass }
+    }
+  }
 
   protected[m2m] def findAbstractRules(rule: Rule): Seq[AbstractRule] =
     rules collect { case r: AbstractRule if r.isSuperRuleOf(rule) ⇒ r }
 
-  protected[m2m] def createTargets(rule: Rule, source: EObject): Seq[EObject] =
+  protected[m2m] def createTargets(rule: Rule, source: AnyRef): Seq[AnyRef] = {
     rule.targetClasses map (_.newInstance)
+  }
 
-  protected[m2m] def executeRule(rule: Rule, source: EObject, targets: Seq[EObject]): Try[Boolean] = {
+  protected[m2m] def executeRule(rule: Rule, source: AnyRef, targets: Seq[AnyRef]): Try[Boolean] = {
     logger trace s"${rule.name}: executing"
 
     executingRule.withValue(rule) {
@@ -223,7 +160,7 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     }
   }
 
-  protected[m2m] def doTransformOne(source: EObject, rule: Rule): Try[Unit] = {
+  protected[m2m] def doTransformOne(source: AnyRef, rule: Rule): Set[AnyRef] = {
     require(!rule.isInstanceOf[AbstractRule], "doTransformOne cannot be called on an AbstractRule")
 
     logger trace s"Transforming $source using $rule"
@@ -231,7 +168,9 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
     // FIXME: the rule execution should be moved back to the rule itself
     if (!rule.isInstanceOf[LazyRule] && transformed(source, rule)) {
       logger trace s"${rule.name}: has already transformed $source"
-      Success()
+
+      // return the already traced targets
+      tracesForSource(source)(rule)
     } else {
       logger trace s"${rule.name}: begin execution"
 
@@ -240,10 +179,6 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
       // store targets so consecutive requests for the transformation
       // will not cause the nest transformation of the same source
-      if (rule.isInstanceOf[LazyRule]) {
-        // remove the last one
-        traceLog get (source) flatMap (_.get(rule)) foreach (_.clear)
-      }
       associate(source, rule, targets)
 
       // find and execute all applicable abstract rules        
@@ -263,10 +198,10 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
         //  R: S, T1, T2, T3
         // => should take only T1 and T3 from R
         @tailrec
-        def findTargets(cls: Seq[EClass], vals: Seq[EObject], res: Seq[EObject] = Seq()): Seq[EObject] = cls match {
+        def findTargets(cls: Seq[MetaClass], vals: Seq[AnyRef], res: Seq[AnyRef] = Seq()): Seq[AnyRef] = cls match {
           case Seq() ⇒ res
           case Seq(x, xs @ _*) ⇒
-            val i = vals.indexWhere { y ⇒ x.isSuperTypeOf(y.eClass) }
+            val i = vals.indexWhere { y ⇒ x isKindOf y.getClass }
             findTargets(xs, vals.slice(i, vals.size), res :+ vals(i))
         }
 
@@ -284,153 +219,141 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
           res match {
             case Success(true) ⇒
               // rule executed and transformed
-              Success()
+              targets.toSet
             case Success(false) ⇒
               // rule executed, but did not transformed - the original targets
-              // are therefore replaced this is marked by an empty Buffer()
-              traceLog(source)(rule) = Buffer()
-              Success()
-            case Failure(e) ⇒ Failure(e)
+              // are therefore replaced this is marked by an empty sequence
+              traceLog(source)(rule) = Set()
+              Set()
+            case Failure(e) ⇒ throw e
           }
         case Failure(e) ⇒
           // bubble-up the failure
-          Failure(new M2MTransformationException(s"Abstract rule invocation on $source failed", e))
+          throw new M2MTransformationException(s"Abstract rule invocation on $source failed", e)
       }
     }
   }
 
-  protected[m2m] def doTransformOne(source: EObject): Try[Unit] = {
-    logger debug s"Transforming $source"
-
-    // find matching rules
-    findNonLazyRules(source) match {
-      case Seq() ⇒
-        logger info s"No rule applicable to $source found."
-
-        // no results
-        Success()
-
-      case Seq(rules @ _*) ⇒
-        logger trace s"Matched rules: ${rules map (_.name) mkString (", ")}"
-
-        // execute all not-applied matching rules
-        val results = applyUntilFailure(rules) { rule ⇒ doTransformOne(source, rule) }
-
-        results match {
-          case Success(traces) ⇒ Success()
-          case Failure(e) ⇒ Failure(new M2MTransformationException(s"Transformation of $source failed", e))
-        }
-
-    }
-  }
-
-  protected[m2m] def transformOne(source: EObject): Try[Seq[EObject]] = {
-    require(source != null, "Source element cannot be null")
-
+  protected[m2m] def transformOne(source: AnyRef): Try[Unit] = {
     if (transformed(source)) {
-      Success(targetsForSource(source).flatten.toSeq)
+      Success()
     } else {
-      doTransformOne(source) map { _ ⇒ targetsForSource(source).flatten.toSeq }
+      // find matching rules
+      findNonLazyRules(source) match {
+        case Seq() ⇒
+          logger info s"No rule applicable to $source found."
+          // no results
+          Success()
+
+        case Seq(rules @ _*) ⇒
+          logger trace s"Matched rules to transform $source: ${rules map (_.name) mkString (", ")}"
+
+          // execute all not-applied matching rules
+          val res = applyUntilFailure(rules) { rule ⇒ Try(doTransformOne(source, rule)) }
+
+          res match {
+            case Success(traces) ⇒ Success()
+            case Failure(e) ⇒ Failure(new M2MTransformationException(s"Transformation of $source failed", e))
+          }
+
+      }
     }
   }
 
   /**
-   * Returns `true` if all the non-lazy rules have already been executed on the given `source` and `false` otherwise.
+   * Returns `true` if all non-lazy rules have already been executed on the given `source`, `false` otherwise.
    *
    * @param elem the source element
    */
-  protected[m2m] def transformed(elem: EObject): Boolean = {
-    val rules = findNonLazyRules(elem)
-    rules forall (transformed(elem, _))
-  }
+  protected[m2m] def transformed(elem: AnyRef): Boolean =
+    findNonLazyRules(elem) forall (transformed(elem, _))
 
   /**
-   * Returns `true` if the `rule` has already been executed on the given `source` and `false` otherwise.
+   * Returns `true` if the `rule` has already been executed on the given `source`, `false` otherwise.
    *
    * @param elem the source element
    * @param rule the concerned rule
    */
-  protected[m2m] def transformed(elem: EObject, rule: Rule): Boolean = {
-    traceLog get elem flatMap (_ get rule) isDefined
-  }
+  protected[m2m] def transformed(elem: AnyRef, rule: Rule): Boolean =
+    if (rule.isInstanceOf[LazyRule])
+      false
+    else
+      traceLog get (elem) flatMap (_ get rule) isDefined
+
+  def sourceForTarget(elem: AnyRef): Option[AnyRef] =
+    traceLog find { case (s, t) ⇒ t.values exists (_ contains elem) } map { case (s, t) ⇒ s }
+
+  def sourcesForTarget(elem: AnyRef): Seq[AnyRef] =
+    traceLog filter { case (s, t) ⇒ t.values exists (_ contains elem) } map { case (s, t) ⇒ s } toSeq
 
   /**
-   * Returns all traces `target` element which has been transformed by this `rule` using the given `elem` source element.
+   * Returns all targets elements which have been transformed from the given `elem` source element using regular matched rules.
    *
    * @param elem the source element
    * @param rule the concerned rule
    */
-  protected[m2m] def tracesForSource(elem: EObject): TraceLogEntry = (traceLog get elem) getOrElse collection.mutable.HashMap()
+  protected[m2m] def tracesForSource(elem: AnyRef): TraceLogEntry =
+    (traceLog get elem) getOrElse collection.mutable.HashMap()
 
   /**
-   * Returns all `target` elements which have been transformed from the given `elem` source element.
+   * Returns all targets elements which have been transformed from the given `elem` source element using all rules.
    *
    * @param elem the source element
    */
-  protected[m2m] def targetsForSource(elem: EObject): Iterable[Iterable[EObject]] = tracesForSource(elem).values.toSeq
-
-  /**
-   * Returns all `target` elements which have been transformed by the given `rule` from the given `elem` source element.
-   *
-   * @param elem the source element
-   * @param rule the rule that was involved in the transformation
-   */
-  protected[m2m] def targetsForSource(elem: EObject, rule: Rule): Iterable[EObject] =
-    (tracesForSource(elem) get rule) getOrElse Seq()
-
-  /**
-   * Returns the primary `target` elements which have been transformed from the given `elem` source element.
-   *
-   * @param elem the source element
-   */
-  protected[m2m] def primaryTargetsForSource(elem: EObject): Iterable[EObject] =
-    targetsForSource(elem) collect { case Seq(x, xs @ _*) ⇒ x }
-
-  /**
-   * Returns the primary `target` elements which have been transformed from the given `elem` source element.
-   *
-   * @param elem the source element
-   */
-  protected[m2m] def primaryTargetForSource(elem: EObject, rule: Rule): Option[EObject] =
-    targetForSource(elem, rule).toSeq match {
-      case Seq() ⇒ None
-      case Seq(x, xs @ _*) ⇒ Some(x)
+  protected[m2m] def allTargetsForSource(elem: AnyRef): Seq[Set[AnyRef]] = {
+    val rules = findAllRules(elem)
+    if (rules.isEmpty) {
+      logger trace s"No rule to transform $elem"
+      Seq()
+    } else {
+      val pending = rules filterNot (transformed(elem, _))
+      val res = pending map (doTransformOne(elem, _))
+      // currently executed once with all the already executed matched rules
+      val all = res ++ (tracesForSource(elem) collect { case (k, v) if !pending.contains(k) => v })
+      all
     }
-
-  /**
-   * Returns the primary `target` element which has been transformed by the given `rule` from the given `elem` source element.
-   *
-   * @param elem the source element
-   * @param rule the concerned rule
-   */
-  protected[m2m] def targetForSource(elem: EObject, rule: Rule): Option[EObject] = targetsForSource(elem, rule) match {
-    case Seq() ⇒ None
-    case Seq(x, xs @ _*) ⇒ Some(x)
   }
 
-  protected[m2m] def associate(source: EObject, rule: Rule, targets: Seq[EObject]) {
-    traceLog.get(source) match {
-      case Some(entry) ⇒ entry.get(rule) match {
-        case Some(trace) ⇒ trace ++= targets filter (!trace.contains(_))
-        case None ⇒ entry += rule -> targets.toBuffer
+  protected[m2m] def targetsForSource[T: ClassTag](elem: AnyRef): Set[T] = {
+    val rules = findRules[T](elem, considerAllTargets = false)
+    if (rules.isEmpty) {
+      logger trace s"No rule to transform $elem (${elem.getClass}) to ${classTag[T]}"
+      Set()
+    } else {
+      val pending = rules filterNot (transformed(elem, _))
+      val res = pending flatMap (doTransformOne(elem, _))
+      // currently executed once with all the already executed matched rules
+      val all = res.toSet ++ (tracesForSource(elem) collect { case (k, v) if !pending.contains(k) => v }).flatten
+      all collect { case x: T => x }
+    }
+  }
+
+  protected[m2m] def associate(source: AnyRef, rule: Rule, targets: Seq[AnyRef]) {
+
+    traceLog get (source) match {
+      case Some(entry) ⇒ entry get (rule) match {
+        // lazy rules always overwrites the targets 
+        case Some(trace) if rule.isInstanceOf[LazyRule] ⇒ entry(rule) = targets.toSet
+        case Some(trace) ⇒ entry(rule) = trace ++ targets
+        case None ⇒ entry += rule -> targets.toSet
       }
       case None ⇒
-        traceLog += (source -> collection.mutable.HashMap(rule -> targets.toBuffer))
+        traceLog += source -> collection.mutable.HashMap(rule -> targets.toSet)
     }
   }
 
   // API
 
-  protected def associate(source: EObject, targets: Seq[EObject]) {
+  protected def associate(source: AnyRef, targets: Seq[AnyRef]) {
     require(executingRule.value != null, "associate can only be invoked from a rule body")
     associate(source, executingRule.value, targets)
   }
 
-  protected def associate(source: EObject, target: EObject) {
+  protected def associate(source: AnyRef, target: AnyRef) {
     associate(source, Seq(target))
   }
 
-  protected def associate(target: EObject) {
+  protected def associate(target: AnyRef) {
     associate(ExtraSource, target)
   }
 
@@ -440,155 +363,11 @@ trait BaseM2MT extends SigmaSupport with Logging with OverloadHack {
 
   protected def guardedBy[T](g: ⇒ Boolean) = g
 
-  private case class DefaultTransformable(that: EObject) extends Transformable {
-    def transform[A <: EObject: ClassTag]: Option[A] = that.sTarget[A]
-  }
-
-  private case object NoTransformable extends Transformable {
-    def transform[A <: EObject: ClassTag]: Option[A] = None
-  }
-
-  private case class DefaultTransformableSequence(that: Traversable[EObject]) extends TransformableSequence {
-    def transform[A <: EObject: ClassTag]: Traversable[A] = that.sTarget[A]
-  }
-
   implicit class CheckedBoolean(that: Boolean) {
     def transform[T](g: ⇒ T): Option[T] = if (that) Some(g) else None
   }
 
-  implicit class OptionM2MSupport(that: Option[_ <: EObject]) {
-    def unary_~ : Transformable = that map DefaultTransformable getOrElse NoTransformable
-  }
-
-  implicit class EObjectM2MSupport(that: EObject) {
-
-    def sSource: Option[EObject] =
-      traceLog find { case (s, t) ⇒ t.values exists (_ contains that) } map { case (s, t) ⇒ s }
-
-    def sTargets[T <: EObject: ClassTag]: Seq[T] = findRules[T](that, considerAllTargets = false) match {
-      case Seq() ⇒
-        logger trace s"No rule to transform $that into ${classTag[T]}"
-        Seq()
-      case Seq(rules @ _*) ⇒
-        val res = applyUntilFailure(rules) { r ⇒ doTransformOne(that, r) }
-        res match {
-          case Success(_) ⇒ targetsForSource(that).flatten.toSeq collect { case x: T ⇒ x }
-          case Failure(e) ⇒ throw new M2MTransformationException(s"Failed to compute target of ${classTag[T]}", e)
-        }
-    }
-
-    /**
-     * @return the transformed object or [[None]] in the case there is no rule that can transform `that` into `T`
-     */
-    def sTarget[T <: EObject: ClassTag]: Option[T] = findRules[T](that, considerAllTargets = false) match {
-      case Seq() ⇒
-        logger trace s"No rule to transform $that into ${classTag[T]}"
-        None
-      case Seq(rule) ⇒
-        doTransformOne(that, rule) match {
-          case Success(_) ⇒ primaryTargetForSource(that, rule) map (_.asInstanceOf[T])
-          case Failure(e) ⇒ throw new M2MTransformationException(s"Failed to compute targets of ${classTag[T]} for $that: ${e}", e)
-        }
-      case Seq(rules @ _*) ⇒
-        throw new M2MTransformationException(s"Method equivalent[${classTag[T]}] cannot be applied on ${that.getClass} since there are multiple rules that can transform it $rules")
-    }
-
-    def unary_~ : Transformable = DefaultTransformable(that)
-
-  }
-
-  implicit class TraversableM2MSupport(that: Traversable[_ <: EObject]) {
-
-    def sTargets[T <: EObject: ClassTag]: Seq[Seq[T]] = {
-      val targets = that map (_.sTargets[T])
-      targets.toSeq
-    }
-
-    /**
-     * Triggers execution only of a rule that can transform `that` into `T`.
-     */
-    def sTarget[T <: EObject: ClassTag]: Seq[T] = {
-      val targets = that map (_.sTarget[T])
-
-      targets.toSeq collect { case Some(v) ⇒ v }
-    }
-
-    def unary_~ : TransformableSequence = DefaultTransformableSequence(that)
-  }
-
-  trait GrowableM2MSupport {
-
-    type A <: EObject
-
-    protected def +=(elem: A): this.type
-
-    /**
-     * Adds a single element to this growable collection.
-     *
-     *  @param elem  the element to add.
-     *  @return the growable collection itself
-     */
-    def +=(elem: Transformable)(implicit ev: ClassTag[A]): this.type = { elem.transform[A] foreach (+=(_)); this }
-
-    /**
-     * Adds two or more elements to this growable collection.
-     *
-     *  @param elem1 the first element to add.
-     *  @param elem2 the second element to add.
-     *  @param elems the remaining elements to add.
-     *  @return the growable collection itself
-     */
-    def +=(elem1: Transformable, elem2: Transformable, elems: Transformable*)(implicit ev: ClassTag[A]): this.type = {
-      this += elem1 += elem2
-      elems foreach +=
-      this
-    }
-
-    /**
-     * Adds all elements produced by a [[TransformableSequence]] to this growable collection.
-     *
-     *  @param xs the TransformableSequence producing the elements to add.
-     *  @return	the growable collection itself.
-     */
-    def ++=(xs: TransformableSequence)(implicit ev: ClassTag[A]): this.type = { xs.transform[A] foreach +=; this }
-  }
-
-  implicit class ScalaGrowableM2MSupport[B <: EObject: ClassTag](that: Growable[B]) extends GrowableM2MSupport {
-    type A = B
-
-    protected def +=(elem: A) = { that += elem; this }
-  }
-
-  implicit class EListM2MSupport[B <: EObject: ClassTag](that: EList[B]) extends GrowableM2MSupport {
-    type A = B
-
-    def +=(elem: A): this.type = { that add elem; this }
-
-    def +=(elem: Option[A]): this.type = { elem foreach +=; this }
-
-    /**
-     * Adds all elements produced by a [[TraversableOnce]] to this growable collection.
-     *
-     *  @param xs the [[TraversableOnce]] producing the elements to add.
-     *  @return	the growable collection itself.
-     */
-    def ++=(xs: TraversableOnce[A]): this.type = { xs foreach +=; this }
-
-    def ++=(xs: TraversableOnce[Option[A]])(implicit e: Overloaded1): this.type = { xs foreach +=; this }
-
-    def sTargets[T <: EObject: ClassTag]: Seq[Seq[T]] = that.toSeq.sTargets[T]
-
-    def sTarget[T <: EObject: ClassTag]: Seq[T] = that.toSeq.sTarget[T]
-
-    def unary_~ : TransformableSequence = ~(that.toSeq)
-  }
-
-  private def applyUntilFailure[A, B](elems: TraversableOnce[A])(fun: A ⇒ Try[B]): Try[Seq[B]] = Try {
-    (elems foldLeft Seq[B]()) { (a, b) ⇒
-      a :+ fun(b).get
-    }
-  }
-
+  implicit def seq2TransformableSeq[A <% Transformable](that: Traversable[A]) = new SigmaM2MSequenceSupport(that)
 }
 
 trait M2MT extends BaseM2MT with MethodRules

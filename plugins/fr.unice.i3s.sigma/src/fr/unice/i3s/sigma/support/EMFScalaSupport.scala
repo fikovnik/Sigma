@@ -82,24 +82,24 @@ trait EMFScalaSupport {
 
   implicit class RichSigmaEModelElement(that: EModelElement) {
     def getAnnotationValue(name: String, detail: String): Option[String] = getAnnotation(name) flatMap { a => Option(a.getDetails.get(detail)) }
-      
+
     def getAnnotation(name: String): Option[EAnnotation] = (that, that.getEAnnotations find (_.getSource == name)) match {
-      case (_, Some(annotation)) => 
+      case (_, Some(annotation)) =>
         Some(annotation)
-      case (cls: EClass, None) => 
+      case (cls: EClass, None) =>
         cls.getESuperTypes map (_.getAnnotation(name)) collectFirst { case Some(x) => x }
-      case _ => 
+      case _ =>
         None
     }
-    
-    def isAnnotatedAs(name: String) = that.getAnnotation(name).isDefined    
+
+    def isAnnotatedAs(name: String) = that.getAnnotation(name).isDefined
   }
-  
+
   implicit class RichSigmaEClass(that: EClass) {
     def newInstance: EObject = that.getEPackage.getEFactoryInstance.create(that)
   }
-  
-  implicit class RichSigmaEObject[A <: EObject : ClassTag](that: A) extends OverloadHack {
+
+  implicit class RichSigmaEObject[A <: EObject: ClassTag](that: A) extends OverloadHack {
 
     def sInit(fun: A ⇒ Any): A = {
       fun(that)
@@ -152,13 +152,13 @@ trait EMFScalaSupport {
       case x: T => Some(x)
       case _ => None
     }
-    
-    def sSiblings: Seq[A] = Option(that.eContainer) map (_.eContents collect { case x: A => x}) getOrElse Seq()
-    
+
+    def sSiblings: Seq[A] = Option(that.eContainer) map (_.eContents collect { case x: A => x }) getOrElse Seq()
+
     def sAllContents[T <: EObject: ClassTag]: Seq[T] = {
       import collection.JavaConversions.asScalaIterator
-      
-      (that.eAllContents collect { case x: T ⇒ x }).toSeq
+
+      that.eAllContents collect { case x: T ⇒ x } toSeq
     }
   }
 
